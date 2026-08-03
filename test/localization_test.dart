@@ -98,7 +98,6 @@ void main() {
     final List<AppMessage> all = <AppMessage>[
       AppMessage.loadScreenshots,
       AppMessage.loadFolders,
-      AppMessage.loadRules,
       AppMessage.scanDuplicates,
       AppMessage.deleteSelected,
       AppMessage.onboarding,
@@ -181,46 +180,5 @@ void main() {
           'the .arb files and name it through AppMessage instead — a bloc has '
           'no BuildContext, so a literal here can never be translated.',
     );
-  });
-
-  /// **The "or" that joins two rule conditions keeps its spaces.**
-  ///
-  /// Caught on a real device, in Arabic. `ruleJoinOr` was `" أو"` — a leading
-  /// space and no trailing one — so a two-condition rule read back as
-  /// «فيها رقم بطاقة أوفيها «total»: the joiner fused onto the condition after
-  /// it, in the one sentence whose entire job is to be readable. Nothing
-  /// threw and nothing logged; it was simply wrong on screen, in one language.
-  ///
-  /// Checked against the file rather than the rendered sentence, because the
-  /// value in the file is exactly what broke — and detecting "two words ran
-  /// together" in rendered output needs a regex per language that would be
-  /// wrong more often than the string it guards.
-  ///
-  /// `ruleJoinAnd` is deliberately **not** checked this way: in Arabic it is
-  /// `" و"`, because the waw is written attached to the word it joins —
-  /// "وفيها" is correct there and "و فيها" is not. "أو" is a separate word.
-  test('the "or" joiner is padded in every locale', () {
-    for (final String locale in locales) {
-      final Object? joiner = arb(locale)['ruleJoinOr'];
-
-      expect(
-        joiner,
-        isA<String>(),
-        reason: 'app_$locale.arb has no ruleJoinOr',
-      );
-      expect(
-        joiner as String,
-        startsWith(' '),
-        reason:
-            'ruleJoinOr in app_$locale.arb fuses onto the condition before it',
-      );
-      expect(
-        joiner,
-        endsWith(' '),
-        reason:
-            'ruleJoinOr in app_$locale.arb fuses onto the condition after it '
-            '— the exact Arabic bug, now in $locale',
-      );
-    }
   });
 }

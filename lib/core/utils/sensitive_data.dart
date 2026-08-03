@@ -7,10 +7,8 @@ import 'package:shoto/core/localization/l10n.dart';
 /// review list is shown in — the card number has to be the first thing the
 /// user sees, not the last.
 ///
-/// **The `name` of each constant is stored.** A filing rule saves its
-/// `containsSensitive` condition as this enum's name string (see
-/// `filing_rules.dart`). Adding constants is free and reordering them is
-/// free; renaming one silently breaks every rule a user has already written.
+/// Adding constants is free and so is reordering them — nothing persists
+/// these, so a rename costs only the code that reads it.
 enum SensitiveKind {
   card,
   iban,
@@ -203,8 +201,8 @@ abstract class SensitiveData {
 
   /// Every kind found in [text]. A single line can carry more than one.
   ///
-  /// Kept as the shape filing rules ask for — a rule wants to know *whether*
-  /// a screenshot holds a card number, never where.
+  /// Answers *whether* a screenshot holds a card number, never where — the
+  /// question worth asking when the positions are not going to be used.
   static Set<SensitiveKind> kindsIn(String text) =>
       findIn(text).map((SensitiveMatch m) => m.kind).toSet();
 

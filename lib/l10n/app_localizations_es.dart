@@ -198,211 +198,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get permissionOpenSettings => 'Abrir ajustes';
 
   @override
-  String get rulesTitle => 'Reglas';
-
-  @override
-  String get rulesSubtitle => 'Archivado que ocurre sin ti';
-
-  @override
-  String get rulesTeachHeadline => 'Deja de ordenar capturas a mano';
-
-  @override
-  String get rulesTeachIntro =>
-      'Una regla es una frase: cuando una captura sea así, archívala en esa carpeta. Escríbela una vez y cada captura que coincida irá sola allí, en cuanto llegue.';
-
-  @override
-  String get rulesTeachExample =>
-      'Por ejemplo: cuando una captura contenga un número de tarjeta → archívala en Recibos.';
-
-  @override
-  String get rulesTeachStep1Title => '1. Describe la captura';
-
-  @override
-  String get rulesTeachStep1Body =>
-      'Una palabra impresa en ella, algo que muestra o datos privados dentro.';
-
-  @override
-  String get rulesTeachStep2Title => '2. Elige la carpeta';
-
-  @override
-  String get rulesTeachStep2Body =>
-      'Dónde deben acabar las capturas que coincidan.';
-
-  @override
-  String get rulesTeachStep3Title => '3. Ya está';
-
-  @override
-  String get rulesTeachStep3Body =>
-      'A partir de ahí SHOTO las archiva por ti. También puedes aplicar tus reglas a las capturas que ya estaban esperando.';
-
-  @override
-  String get rulesTeachShow => '¿Cómo funcionan las reglas?';
-
-  @override
-  String get rulesTeachHide => 'Entendido';
-
-  @override
-  String get rulesStartTemplates => 'O empieza con un ejemplo';
-
-  @override
-  String get rulesTemplateReceipts => 'Recibos y facturas';
-
-  @override
-  String get rulesTemplateReceiptsWhy =>
-      'Cualquier cosa con un número de tarjeta o un total';
-
-  @override
-  String get rulesTemplateTickets => 'Billetes y reservas';
-
-  @override
-  String get rulesTemplateTicketsWhy =>
-      'Tarjetas de embarque, reservas, confirmaciones de pedido';
-
-  @override
-  String get rulesTemplateCodes => 'Códigos y contraseñas';
-
-  @override
-  String get rulesTemplateCodesWhy =>
-      'Códigos de un solo uso y cualquier cosa que parezca una contraseña';
-
-  @override
-  String get rulesTemplateAnimals => 'Fotos de animales';
-
-  @override
-  String get rulesTemplateAnimalsWhy =>
-      'Se fija en lo que muestra la imagen, no en sus palabras';
-
-  @override
-  String get rulesTemplatePicked =>
-      'Elige una carpeta y estará lista para guardar.';
-
-  @override
-  String get rulesEmptyTitle => 'Aún no hay reglas';
-
-  @override
-  String get rulesNew => 'Nueva regla';
-
-  @override
-  String get rulesNeedFolderFirst =>
-      'Crea antes una carpeta: una regla necesita dónde archivar.';
-
-  @override
-  String get rulesDeleteTitle => '¿Eliminar esta regla?';
-
-  @override
-  String get rulesDeleteMessage =>
-      'Las capturas que ya archivó se quedan donde están.';
-
-  @override
-  String rulesWhenIt(String summary) {
-    return 'Cuando $summary';
-  }
-
-  @override
-  String get rulesBacklogTitle => 'Ponte al día';
-
-  @override
-  String get rulesBacklogIdle =>
-      'Aplica tus reglas a las capturas que aún no están en ninguna carpeta. Lo que archivaste a mano no se toca.';
-
-  @override
-  String rulesBacklogRunning(int done, int total) {
-    return 'Revisando $done de $total…';
-  }
-
-  @override
-  String get rulesBacklogNothing => 'No queda nada sin ordenar.';
-
-  @override
-  String rulesBacklogResult(int filed, int examined) {
-    return 'Archivadas $filed de $examined capturas sin ordenar.';
-  }
-
-  @override
-  String get rulesRunNow => 'Aplicar reglas ahora';
-
-  @override
-  String get ruleBuilderTitle => 'Nueva regla';
-
-  @override
-  String get ruleBuilderIntro => 'Dos preguntas: qué coincide y a dónde va.';
-
-  @override
-  String get ruleBuilderFolderLabel => '¿A dónde va?';
-
-  @override
-  String get ruleBuilderConditionLabel => '¿Qué debe coincidir?';
-
-  @override
-  String get ruleBuilderConditionsLabel => 'También coincide con';
-
-  @override
-  String get ruleBuilderAddCondition => 'Añadir otra';
-
-  @override
-  String get ruleBuilderMatchAll => 'Todas';
-
-  @override
-  String get ruleBuilderMatchAny => 'Cualquiera';
-
-  @override
-  String get ruleBuilderMatchAllHelp =>
-      'La captura tiene que cumplirlas todas.';
-
-  @override
-  String get ruleBuilderMatchAnyHelp => 'Basta con que se cumpla una.';
-
-  @override
-  String get ruleBuilderSave => 'Guardar regla';
-
-  @override
-  String get ruleBuilderIncomplete => 'Elige qué coincide y una carpeta';
-
-  @override
-  String ruleBuilderPreview(String folder, String summary) {
-    return 'Archivar en $folder cuando la captura $summary.';
-  }
-
-  @override
-  String get ruleBuilderPreviewTitle => 'TU REGLA, EN PALABRAS';
-
-  @override
-  String get conditionTextContains => 'dice una palabra';
-
-  @override
-  String get conditionTextContainsHelp =>
-      'Mira el texto que SHOTO lee dentro de la imagen y busca palabras completas: «code» no se activará con «barcode». Usa una palabra que de verdad aparecería impresa en ese tipo de captura.';
-
-  @override
-  String get conditionTextContainsHint =>
-      'una palabra impresa — «factura», «billete»';
-
-  @override
-  String get conditionShowsSubject => 'muestra algo';
-
-  @override
-  String get conditionShowsSubjectHelp =>
-      'Mira de qué es la imagen, no lo que dice. La palabra tiene que coincidir con la del modelo, así que toca una de tu biblioteca abajo en vez de adivinar.';
-
-  @override
-  String get conditionShowsSubjectHint =>
-      'qué muestra — «gato», «animal», «comida»';
-
-  @override
-  String get conditionContainsSensitive => 'contiene datos privados';
-
-  @override
-  String get conditionContainsSensitiveHelp =>
-      'Las mismas comprobaciones de Compartir seguro: los números de tarjeta pasan una suma de control real, así que un número de pedido no se confunde con uno.';
-
-  @override
-  String get conditionHasAnyText => 'tiene texto legible';
-
-  @override
-  String get conditionHasAnyTextHelp =>
-      'Cierto para cualquier imagen con palabras. Útil para separar capturas de fotos guardadas.';
-
-  @override
   String get settingsTitle => 'Ajustes';
 
   @override
@@ -448,19 +243,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsConfirmDeleteHint => 'Eliminar no se puede deshacer';
-
-  @override
-  String get settingsAutomation => 'Automatización';
-
-  @override
-  String get settingsAutomationCaption =>
-      'Escribe una regla una vez y SHOTO archiva las capturas que coincidan en cuanto llegan.';
-
-  @override
-  String get settingsRules => 'Reglas de archivado';
-
-  @override
-  String get settingsRulesHint => 'Deja que SHOTO ordene por ti';
 
   @override
   String get settingsFindDuplicates => 'Buscar duplicados';
@@ -631,13 +413,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String quickSaveFiled(String folder) {
     return 'Archivado en $folder.';
   }
-
-  @override
-  String get quickSaveFiledByRules => 'Archivado por tus reglas.';
-
-  @override
-  String get quickSaveNoRuleMatched =>
-      'Ninguna regla coincidió: queda sin ordenar en tu biblioteca.';
 
   @override
   String get quickSaveFailedTitle => 'No se pudo leer esa imagen';
@@ -1198,51 +973,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get ruleSummaryEmpty => 'Sin condiciones: no archiva nada';
-
-  @override
-  String get ruleJoinAnd => ' y ';
-
-  @override
-  String get ruleJoinOr => ' o ';
-
-  @override
-  String ruleSaysWord(String value) {
-    return 'dice «$value»';
-  }
-
-  @override
-  String ruleNotSaysWord(String value) {
-    return 'no dice «$value»';
-  }
-
-  @override
-  String ruleShows(String value) {
-    return 'muestra $value';
-  }
-
-  @override
-  String ruleNotShows(String value) {
-    return 'no muestra $value';
-  }
-
-  @override
-  String ruleContains(String value) {
-    return 'contiene $value';
-  }
-
-  @override
-  String ruleNotContains(String value) {
-    return 'no contiene $value';
-  }
-
-  @override
-  String get ruleHasText => 'tiene texto legible';
-
-  @override
-  String get ruleNoText => 'no tiene texto legible';
-
-  @override
   String get kindCard => 'un número de tarjeta';
 
   @override
@@ -1406,9 +1136,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get errorLoadFolders => 'No se pudieron cargar tus carpetas.';
 
   @override
-  String get errorLoadRules => 'No se pudieron cargar tus reglas.';
-
-  @override
   String get errorScanDuplicates => 'No se pudo buscar duplicados.';
 
   @override
@@ -1534,20 +1261,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sensitiveNumber => 'Número';
 
   @override
-  String get quickSaveByRules => 'Que lo archiven mis reglas';
-
-  @override
-  String get ruleSeenTitle => 'LO QUE SHOTO HA VISTO EN TU BIBLIOTECA';
-
-  @override
-  String get ruleSeenEmpty =>
-      'SHOTO aún no ha mirado dentro de tus capturas. Lee cada una al llegar, así que esto se irá llenando.';
-
-  @override
-  String get ruleSeenHint =>
-      'Toca una: son las palabras exactas que produce el modelo, así que una regla hecha con ellas sí funcionará.';
-
-  @override
   String get onbSkip => 'Omitir';
 
   @override
@@ -1629,146 +1342,5 @@ class AppLocalizationsEs extends AppLocalizations {
   String get importPickerUnavailable => 'No se pudo abrir el selector de fotos';
 
   @override
-  String rulePreviewMatches(int count, int indexed) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Se llevaría $count de las $indexed capturas que SHOTO ha leído',
-      one: 'Se llevaría 1 de las $indexed capturas que SHOTO ha leído',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rulePreviewNone =>
-      'Nada de lo que SHOTO ha leído hasta ahora coincide';
-
-  @override
-  String get rulePreviewNotIndexed =>
-      'SHOTO todavía no ha leído ninguna de tus capturas, así que no hay nada con lo que comprobarlo. Lee cada una según llega.';
-
-  @override
-  String rulePreviewTaken(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count de ellas se las lleva una regla por encima de esta.',
-      one: '1 de ellas se la lleva una regla por encima de esta.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rulePreviewAllTaken =>
-      'Todas las capturas que coinciden ya se las lleva una regla superior. Sube esta regla si quieres que gane.';
-
-  @override
-  String get rulePreviewFloor =>
-      'Cuenta solo lo que SHOTO ha leído hasta ahora. Las capturas nuevas se comprueban según llegan.';
-
-  @override
-  String get ruleBuilderEditTitle => 'Editar regla';
-
-  @override
-  String get ruleBuilderEditIntro =>
-      'Los cambios se aplican de ahora en adelante. Las capturas que ya archivó se quedan donde están.';
-
-  @override
-  String get ruleBuilderUpdate => 'Guardar cambios';
-
-  @override
-  String get rulesPriorityNote =>
-      'Una captura va a la primera regla que coincide. Usa las flechas para cambiar cuál es.';
-
-  @override
-  String get rulesCardNotIndexed =>
-      'Nada leído aún: nada con lo que comprobarlo';
-
-  @override
-  String rulesCardClaims(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Se lleva $count capturas',
-      one: 'Se lleva 1 captura',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rulesCardClaimsNone => 'Todavía no se lleva nada';
-
-  @override
-  String rulesCardOverruled(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count coincidencias van a una regla superior',
-      one: '1 coincidencia va a una regla superior',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rulesMoveUp => 'Subir';
-
-  @override
-  String get rulesMoveDown => 'Bajar';
-
-  @override
-  String rulesBacklogUnread(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other:
-          'Quedan $count capturas sin leer: ejecútalo otra vez para continuar.',
-      one: 'Queda 1 captura sin leer: ejecútalo otra vez para continuar.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String indexingProgress(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Aún leyendo tus capturas: quedan $count',
-      one: 'Aún leyendo tus capturas: queda 1',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get ruleBuilderMatches => 'Coincide';
-
-  @override
-  String get ruleBuilderMatchesNot => 'NO coincide';
-
-  @override
-  String get ruleBuilderMatchesNotHelp =>
-      'La regla se activa cuando esto no se cumple: úsalo para dejar fuera una excepción.';
-
-  @override
-  String rulePreviewAlreadyFiled(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other:
-          '$count de ellas ya están en carpetas, y una ejecución nunca mueve esas. Aquí solo se archivarán capturas nuevas.',
-      one:
-          '1 de ellas ya está en una carpeta, y una ejecución nunca mueve esas. Aquí solo se archivarán capturas nuevas.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String rulesCardAlreadyFiled(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Coincide con $count, pero ya están archivadas en otro sitio',
-      one: 'Coincide con 1, pero ya está archivada en otro sitio',
-    );
-    return '$_temp0';
-  }
+  String get searchWorking => 'Leyendo tus capturas…';
 }

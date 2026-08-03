@@ -198,208 +198,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get permissionOpenSettings => 'ترتیبات کھولیں';
 
   @override
-  String get rulesTitle => 'قواعد';
-
-  @override
-  String get rulesSubtitle => 'ترتیب جو آپ کے بغیر ہو جائے';
-
-  @override
-  String get rulesTeachHeadline => 'اسکرین شاٹس ہاتھ سے ترتیب دینا چھوڑیں';
-
-  @override
-  String get rulesTeachIntro =>
-      'قاعدہ ایک جملہ ہے: جب اسکرین شاٹ ایسا ہو، تو اسے اس فولڈر میں رکھو۔ ایک بار لکھیں، پھر ہر مماثل اسکرین شاٹ خود بخود وہیں چلا جائے گا — آتے ہی۔';
-
-  @override
-  String get rulesTeachExample =>
-      'مثال: جب اسکرین شاٹ میں کارڈ نمبر ہو ← اسے رسیدیں فولڈر میں رکھو۔';
-
-  @override
-  String get rulesTeachStep1Title => '1. اسکرین شاٹ بیان کریں';
-
-  @override
-  String get rulesTeachStep1Body =>
-      'اس پر لکھا کوئی لفظ، جو وہ دکھاتا ہے، یا اس میں موجود نجی معلومات۔';
-
-  @override
-  String get rulesTeachStep2Title => '2. فولڈر منتخب کریں';
-
-  @override
-  String get rulesTeachStep2Body => 'میل کھانے والے اسکرین شاٹس کہاں پہنچیں۔';
-
-  @override
-  String get rulesTeachStep3Title => '۳۔ بس اتنا ہی';
-
-  @override
-  String get rulesTeachStep3Body =>
-      'اس کے بعد SHOTO خود فائل کرتا رہے گا۔ پہلے سے موجود اسکرین شاٹس پر بھی قواعد چلا سکتے ہیں۔';
-
-  @override
-  String get rulesTeachShow => 'قواعد کیسے کام کرتے ہیں؟';
-
-  @override
-  String get rulesTeachHide => 'سمجھ گیا';
-
-  @override
-  String get rulesStartTemplates => 'یا کسی تیار مثال سے شروع کریں';
-
-  @override
-  String get rulesTemplateReceipts => 'رسیدیں اور بل';
-
-  @override
-  String get rulesTemplateReceiptsWhy =>
-      'ہر وہ چیز جس پر کارڈ نمبر یا کل رقم ہو';
-
-  @override
-  String get rulesTemplateTickets => 'ٹکٹ اور بکنگ';
-
-  @override
-  String get rulesTemplateTicketsWhy => 'بورڈنگ پاس، ریزرویشن، آرڈر کی تصدیق';
-
-  @override
-  String get rulesTemplateCodes => 'کوڈ اور پاس ورڈ';
-
-  @override
-  String get rulesTemplateCodesWhy => 'یک بار کوڈ اور ہر وہ چیز جو پاس ورڈ لگے';
-
-  @override
-  String get rulesTemplateAnimals => 'جانوروں کی تصویریں';
-
-  @override
-  String get rulesTemplateAnimalsWhy =>
-      'تصویر میں جو نظر آئے اس پر چلتا ہے، الفاظ پر نہیں';
-
-  @override
-  String get rulesTemplatePicked =>
-      'فولڈر منتخب کریں اور یہ محفوظ کرنے کے لیے تیار ہے۔';
-
-  @override
-  String get rulesEmptyTitle => 'ابھی کوئی قاعدہ نہیں';
-
-  @override
-  String get rulesNew => 'نیا قاعدہ';
-
-  @override
-  String get rulesNeedFolderFirst =>
-      'پہلے کوئی فولڈر بنائیں — قاعدے کو رکھنے کی جگہ چاہیے۔';
-
-  @override
-  String get rulesDeleteTitle => 'یہ قاعدہ حذف کریں؟';
-
-  @override
-  String get rulesDeleteMessage =>
-      'جو اسکرین شاٹس یہ پہلے فائل کر چکا ہے وہ اپنی جگہ رہیں گے۔';
-
-  @override
-  String rulesWhenIt(String summary) {
-    return 'جب یہ $summary';
-  }
-
-  @override
-  String get rulesBacklogTitle => 'پرانا ڈھیر نمٹائیں';
-
-  @override
-  String get rulesBacklogIdle =>
-      'ان اسکرین شاٹس پر قواعد چلاتا ہے جو ابھی کسی فولڈر میں نہیں۔ جو آپ نے خود ترتیب دیے وہ ہاتھ نہیں لگائے جاتے۔';
-
-  @override
-  String rulesBacklogRunning(int done, int total) {
-    return '$total میں سے $done جانچے جا رہے ہیں…';
-  }
-
-  @override
-  String get rulesBacklogNothing => 'کچھ بھی بغیر ترتیب نہیں بچا۔';
-
-  @override
-  String rulesBacklogResult(int filed, int examined) {
-    return '$examined غیر ترتیب شدہ میں سے $filed فائل ہو گئے۔';
-  }
-
-  @override
-  String get rulesRunNow => 'قواعد ابھی چلائیں';
-
-  @override
-  String get ruleBuilderTitle => 'نیا قاعدہ';
-
-  @override
-  String get ruleBuilderIntro => 'دو سوال: کس سے میل کھائے، اور کہاں جائے۔';
-
-  @override
-  String get ruleBuilderFolderLabel => 'کہاں جائے؟';
-
-  @override
-  String get ruleBuilderConditionLabel => 'کس چیز سے میل کھائے؟';
-
-  @override
-  String get ruleBuilderConditionsLabel => 'ان سے بھی میل کھاتا ہے';
-
-  @override
-  String get ruleBuilderAddCondition => 'ایک اور شامل کریں';
-
-  @override
-  String get ruleBuilderMatchAll => 'سب';
-
-  @override
-  String get ruleBuilderMatchAny => 'کوئی ایک';
-
-  @override
-  String get ruleBuilderMatchAllHelp =>
-      'اسکرین شاٹ کو ان میں سے ہر ایک پر پورا اترنا ہوگا۔';
-
-  @override
-  String get ruleBuilderMatchAnyHelp => 'ان میں سے ایک کا درست ہونا کافی ہے۔';
-
-  @override
-  String get ruleBuilderSave => 'قاعدہ محفوظ کریں';
-
-  @override
-  String get ruleBuilderIncomplete =>
-      'منتخب کریں کہ کس سے میل کھائے، اور ایک فولڈر';
-
-  @override
-  String ruleBuilderPreview(String folder, String summary) {
-    return 'جب اسکرین شاٹ $summary تو اسے $folder میں رکھیں۔';
-  }
-
-  @override
-  String get ruleBuilderPreviewTitle => 'آپ کا قاعدہ، الفاظ میں';
-
-  @override
-  String get conditionTextContains => 'کوئی لفظ کہے';
-
-  @override
-  String get conditionTextContainsHelp =>
-      'تصویر کے اندر SHOTO جو متن پڑھتا ہے اسے دیکھتا ہے، اور پورے الفاظ سے ملاتا ہے — \"code\" \"barcode\" پر نہیں چلے گا۔ ایسا لفظ استعمال کریں جو واقعی ایسے اسکرین شاٹ پر لکھا ہوتا ہو۔';
-
-  @override
-  String get conditionTextContainsHint => 'اس میں لکھا لفظ — «انوائس»، «ٹکٹ»';
-
-  @override
-  String get conditionShowsSubject => 'کچھ دکھائے';
-
-  @override
-  String get conditionShowsSubjectHelp =>
-      'دیکھتا ہے کہ تصویر کس چیز کی ہے، نہ کہ اس پر کیا لکھا ہے۔ لفظ ماڈل کے اپنے لفظ سے میل کھانا چاہیے، اس لیے اندازہ لگانے کے بجائے نیچے اپنی لائبریری سے کوئی ایک منتخب کریں۔';
-
-  @override
-  String get conditionShowsSubjectHint =>
-      'کیا دکھائی دے — «بلی»، «جانور»، «کھانا»';
-
-  @override
-  String get conditionContainsSensitive => 'نجی معلومات رکھتا ہو';
-
-  @override
-  String get conditionContainsSensitiveHelp =>
-      'وہی جانچ جو محفوظ اشتراک کرتا ہے — کارڈ نمبر اصل چیک سم سے گزرتے ہیں، اس لیے آرڈر نمبر غلطی سے کارڈ نہیں سمجھا جاتا۔';
-
-  @override
-  String get conditionHasAnyText => 'پڑھنے کے قابل متن ہو';
-
-  @override
-  String get conditionHasAnyTextHelp =>
-      'ہر اس تصویر پر درست جس میں کچھ بھی لکھا ہو۔ اسکرین شاٹس کو محفوظ تصویروں سے الگ کرنے میں مددگار۔';
-
-  @override
   String get settingsTitle => 'ترتیبات';
 
   @override
@@ -445,19 +243,6 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get settingsConfirmDeleteHint => 'حذف واپس نہیں ہو سکتا';
-
-  @override
-  String get settingsAutomation => 'خودکاری';
-
-  @override
-  String get settingsAutomationCaption =>
-      'ایک بار قاعدہ لکھیں اور SHOTO مماثل اسکرین شاٹس آتے ہی فائل کر دے گا۔';
-
-  @override
-  String get settingsRules => 'فائل کرنے کے قواعد';
-
-  @override
-  String get settingsRulesHint => 'ترتیب SHOTO پر چھوڑ دیں';
 
   @override
   String get settingsFindDuplicates => 'نقول تلاش کریں';
@@ -628,13 +413,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String quickSaveFiled(String folder) {
     return '$folder میں فائل ہو گیا۔';
   }
-
-  @override
-  String get quickSaveFiledByRules => 'آپ کے قواعد کے مطابق فائل ہو گیا۔';
-
-  @override
-  String get quickSaveNoRuleMatched =>
-      'کوئی قاعدہ نہیں ملا — لائبریری میں بغیر ترتیب رہ گیا۔';
 
   @override
   String get quickSaveFailedTitle => 'یہ تصویر پڑھی نہیں جا سکی';
@@ -1194,51 +972,6 @@ class AppLocalizationsUr extends AppLocalizations {
   }
 
   @override
-  String get ruleSummaryEmpty => 'ابھی کوئی شرط نہیں — کچھ فائل نہیں کرے گا';
-
-  @override
-  String get ruleJoinAnd => ' اور ';
-
-  @override
-  String get ruleJoinOr => ' یا ';
-
-  @override
-  String ruleSaysWord(String value) {
-    return '«$value» کہے';
-  }
-
-  @override
-  String ruleNotSaysWord(String value) {
-    return '«$value» نہ کہے';
-  }
-
-  @override
-  String ruleShows(String value) {
-    return '$value دکھائے';
-  }
-
-  @override
-  String ruleNotShows(String value) {
-    return '$value نہ دکھائے';
-  }
-
-  @override
-  String ruleContains(String value) {
-    return '$value رکھتا ہو';
-  }
-
-  @override
-  String ruleNotContains(String value) {
-    return '$value نہ رکھتا ہو';
-  }
-
-  @override
-  String get ruleHasText => 'پڑھنے کے قابل متن ہو';
-
-  @override
-  String get ruleNoText => 'پڑھنے کے قابل متن نہ ہو';
-
-  @override
   String get kindCard => 'کارڈ نمبر';
 
   @override
@@ -1402,9 +1135,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get errorLoadFolders => 'آپ کے فولڈر لوڈ نہیں ہو سکے۔';
 
   @override
-  String get errorLoadRules => 'آپ کے قواعد لوڈ نہیں ہو سکے۔';
-
-  @override
   String get errorScanDuplicates => 'نقول کے لیے اسکین نہیں ہو سکا۔';
 
   @override
@@ -1528,20 +1258,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get sensitiveNumber => 'نمبر';
 
   @override
-  String get quickSaveByRules => 'میرے قواعد اسے فائل کریں';
-
-  @override
-  String get ruleSeenTitle => 'SHOTO نے آپ کی لائبریری میں کیا دیکھا';
-
-  @override
-  String get ruleSeenEmpty =>
-      'SHOTO نے ابھی آپ کے اسکرین شاٹس کے اندر نہیں دیکھا۔ ہر نیا آتے ہی پڑھا جاتا ہے، تو یہ بھرتی جائے گی۔';
-
-  @override
-  String get ruleSeenHint =>
-      'کسی ایک کو دبائیں — یہ بالکل وہی الفاظ ہیں جو ماڈل دیتا ہے، تو ان پر بنا قاعدہ واقعی چلے گا۔';
-
-  @override
   String get onbSkip => 'چھوڑیں';
 
   @override
@@ -1622,147 +1338,5 @@ class AppLocalizationsUr extends AppLocalizations {
   String get importPickerUnavailable => 'تصویر چننے والا نہیں کھل سکا';
 
   @override
-  String rulePreviewMatches(int count, int indexed) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other:
-          'SHOTO نے جو $indexed اسکرین شاٹس پڑھے ہیں ان میں سے $count یہ لے گا',
-      one: 'SHOTO نے جو $indexed اسکرین شاٹس پڑھے ہیں ان میں سے 1 یہ لے گا',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rulePreviewNone =>
-      'SHOTO نے اب تک جو پڑھا ہے اس میں سے کچھ بھی اس سے میل نہیں کھاتا';
-
-  @override
-  String get rulePreviewNotIndexed =>
-      'SHOTO نے ابھی تک آپ کا کوئی اسکرین شاٹ نہیں پڑھا، اس لیے جانچنے کو کچھ نہیں۔ ہر ایک کو آتے ہی پڑھ لیا جاتا ہے۔';
-
-  @override
-  String rulePreviewTaken(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'ان میں سے $count اس سے اوپر والے اصول کو چلے جاتے ہیں۔',
-      one: 'ان میں سے 1 اس سے اوپر والے اصول کو چلا جاتا ہے۔',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rulePreviewAllTaken =>
-      'جو کچھ بھی میل کھاتا ہے وہ پہلے ہی اوپر والا اصول لے لیتا ہے۔ اگر یہ اصول جیتنا چاہیے تو اسے اوپر لے جائیں۔';
-
-  @override
-  String get rulePreviewFloor =>
-      'صرف وہی گنتا ہے جو SHOTO اب تک پڑھ چکا ہے۔ نئے اسکرین شاٹس آتے ہی جانچے جاتے ہیں۔';
-
-  @override
-  String get ruleBuilderEditTitle => 'اصول میں ترمیم';
-
-  @override
-  String get ruleBuilderEditIntro =>
-      'تبدیلیاں اب سے لاگو ہوں گی۔ جو اسکرین شاٹس یہ اصول پہلے ہی رکھ چکا ہے وہ وہیں رہیں گے۔';
-
-  @override
-  String get ruleBuilderUpdate => 'تبدیلیاں محفوظ کریں';
-
-  @override
-  String get rulesPriorityNote =>
-      'اسکرین شاٹ اسی پہلے اصول کو جاتا ہے جو اس سے میل کھائے۔ کون سا پہلے ہو، یہ تیروں سے بدلیں۔';
-
-  @override
-  String get rulesCardNotIndexed =>
-      'ابھی کچھ نہیں پڑھا گیا — جانچنے کو کچھ نہیں';
-
-  @override
-  String rulesCardClaims(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count اسکرین شاٹس لیتا ہے',
-      one: '1 اسکرین شاٹ لیتا ہے',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rulesCardClaimsNone => 'ابھی کچھ نہیں لیتا';
-
-  @override
-  String rulesCardOverruled(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count میل اوپر والے اصول کو جاتے ہیں',
-      one: '1 میل اوپر والے اصول کو جاتا ہے',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rulesMoveUp => 'اوپر لے جائیں';
-
-  @override
-  String get rulesMoveDown => 'نیچے لے جائیں';
-
-  @override
-  String rulesBacklogUnread(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other:
-          '$count اسکرین شاٹس ابھی نہیں پڑھے گئے — جاری رکھنے کے لیے دوبارہ چلائیں۔',
-      one: '1 اسکرین شاٹ ابھی نہیں پڑھا گیا — جاری رکھنے کے لیے دوبارہ چلائیں۔',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String indexingProgress(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'آپ کے اسکرین شاٹس ابھی پڑھے جا رہے ہیں — $count باقی',
-      one: 'آپ کے اسکرین شاٹس ابھی پڑھے جا رہے ہیں — 1 باقی',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get ruleBuilderMatches => 'میل کھاتا ہے';
-
-  @override
-  String get ruleBuilderMatchesNot => 'میل نہیں کھاتا';
-
-  @override
-  String get ruleBuilderMatchesNotHelp =>
-      'جب یہ درست نہ ہو تب اصول چلتا ہے — کسی استثنا کو باہر رکھنے کے لیے مفید۔';
-
-  @override
-  String rulePreviewAlreadyFiled(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other:
-          'ان میں سے $count پہلے ہی فولڈروں میں ہیں، اور چلانے پر وہ کبھی نہیں ہٹتیں۔ یہاں صرف نئے اسکرین شاٹس آئیں گے۔',
-      one:
-          'ان میں سے 1 پہلے ہی کسی فولڈر میں ہے، اور چلانے پر وہ کبھی نہیں ہٹتیں۔ یہاں صرف نئے اسکرین شاٹس آئیں گے۔',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String rulesCardAlreadyFiled(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count سے میل کھاتا ہے، مگر وہ پہلے ہی کہیں اور رکھی ہیں',
-      one: '1 سے میل کھاتا ہے، مگر وہ پہلے ہی کہیں اور رکھی ہے',
-    );
-    return '$_temp0';
-  }
+  String get searchWorking => 'آپ کے اسکرین شاٹس پڑھے جا رہے ہیں…';
 }

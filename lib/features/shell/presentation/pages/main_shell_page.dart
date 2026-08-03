@@ -1,11 +1,8 @@
-import 'dart:async';
-
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
-import 'package:shoto/core/services/library_indexer.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/widgets/app_bottom_nav_bar.dart';
 import 'package:shoto/core/widgets/lazy_indexed_stack.dart';
@@ -79,17 +76,6 @@ class _MainShellPageState extends State<MainShellPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
-    // Started here rather than from the screens that need it, because the
-    // screens that need it are exactly the ones that must not wait: search
-    // and filing rules can only answer questions about screenshots SHOTO has
-    // already read, and reading them the moment somebody opens those pages is
-    // what made both of them feel broken on a large library. Beginning at the
-    // shell means the reading has been happening for as long as the app has
-    // been open.
-    //
-    // Not awaited, and safe to call again — see [LibraryIndexer.start].
-    unawaited(sl<LibraryIndexer>().start());
   }
 
   void _onTabSelected(int index) {
@@ -135,26 +121,9 @@ class _MainShellPageState extends State<MainShellPage>
   /// the whole gallery, [RefreshScreenshotsEvent] replaces the loaded state
   /// without passing through a loading state (so no spinner flashes), and
   /// thumbnails come back from the image cache rather than being re-decoded.
-  ///
-  /// The indexer is stopped and started from the same place. It reads the
-  /// library through OCR and a vision model, which is exactly the work that
-  /// must not continue while the user is in another app — and equally must
-  /// pick up again by itself, since nobody is going to come back to SHOTO in
-  /// order to restart it.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final LibraryIndexer indexer = sl<LibraryIndexer>();
-    if (state != AppLifecycleState.resumed) {
-      indexer.pause();
-      return;
-    }
-
-    indexer.resume();
-    // Also re-scans: screenshots shared in while SHOTO was in the background
-    // arrive from a separate engine, exactly as the comment above describes,
-    // so the sweep that finished before we left knows nothing about them.
-    unawaited(indexer.start());
-
+    if (state != AppLifecycleState.resumed) return;
     _screenshotsBloc.add(RefreshScreenshotsEvent());
     _foldersBloc.add(LoadFoldersEvent());
   }

@@ -199,208 +199,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get permissionOpenSettings => 'सेटिंग्स खोलें';
 
   @override
-  String get rulesTitle => 'नियम';
-
-  @override
-  String get rulesSubtitle => 'छँटाई जो आपके बिना हो जाए';
-
-  @override
-  String get rulesTeachHeadline => 'स्क्रीनशॉट हाथ से छाँटना बंद करें';
-
-  @override
-  String get rulesTeachIntro =>
-      'नियम एक वाक्य है: जब स्क्रीनशॉट ऐसा हो, तो उसे उस फ़ोल्डर में रखो। एक बार लिखिए, फिर हर मिलता-जुलता स्क्रीनशॉट अपने आप वहीं चला जाएगा — आते ही।';
-
-  @override
-  String get rulesTeachExample =>
-      'उदाहरण: जब स्क्रीनशॉट में कार्ड नंबर हो → उसे रसीदें फ़ोल्डर में रखो।';
-
-  @override
-  String get rulesTeachStep1Title => '1. स्क्रीनशॉट बताएँ';
-
-  @override
-  String get rulesTeachStep1Body =>
-      'उस पर लिखा कोई शब्द, वह जो दिखाता है, या उसमें मौजूद निजी जानकारी।';
-
-  @override
-  String get rulesTeachStep2Title => '2. फ़ोल्डर चुनें';
-
-  @override
-  String get rulesTeachStep2Body => 'मेल खाने वाले स्क्रीनशॉट कहाँ पहुँचें।';
-
-  @override
-  String get rulesTeachStep3Title => '3. बस इतना ही';
-
-  @override
-  String get rulesTeachStep3Body =>
-      'इसके बाद SHOTO खुद फ़ाइल करता रहेगा। पहले से रुके स्क्रीनशॉट पर भी नियम चला सकते हैं।';
-
-  @override
-  String get rulesTeachShow => 'नियम कैसे काम करते हैं?';
-
-  @override
-  String get rulesTeachHide => 'समझ गया';
-
-  @override
-  String get rulesStartTemplates => 'या किसी तैयार उदाहरण से शुरू करें';
-
-  @override
-  String get rulesTemplateReceipts => 'रसीदें और बिल';
-
-  @override
-  String get rulesTemplateReceiptsWhy =>
-      'हर वह चीज़ जिस पर कार्ड नंबर या कुल राशि हो';
-
-  @override
-  String get rulesTemplateTickets => 'टिकट और बुकिंग';
-
-  @override
-  String get rulesTemplateTicketsWhy => 'बोर्डिंग पास, आरक्षण, ऑर्डर की पुष्टि';
-
-  @override
-  String get rulesTemplateCodes => 'कोड और पासवर्ड';
-
-  @override
-  String get rulesTemplateCodesWhy =>
-      'वन-टाइम कोड और हर वह चीज़ जो पासवर्ड लगे';
-
-  @override
-  String get rulesTemplateAnimals => 'जानवरों की तस्वीरें';
-
-  @override
-  String get rulesTemplateAnimalsWhy =>
-      'तस्वीर में जो दिखे उस पर चलता है, शब्दों पर नहीं';
-
-  @override
-  String get rulesTemplatePicked =>
-      'फ़ोल्डर चुनें और यह सहेजने के लिए तैयार है।';
-
-  @override
-  String get rulesEmptyTitle => 'अभी कोई नियम नहीं';
-
-  @override
-  String get rulesNew => 'नया नियम';
-
-  @override
-  String get rulesNeedFolderFirst =>
-      'पहले कोई फ़ोल्डर बनाएँ — नियम को रखने की जगह चाहिए।';
-
-  @override
-  String get rulesDeleteTitle => 'यह नियम हटाएँ?';
-
-  @override
-  String get rulesDeleteMessage =>
-      'जो स्क्रीनशॉट यह पहले फ़ाइल कर चुका है वे अपनी जगह रहेंगे।';
-
-  @override
-  String rulesWhenIt(String summary) {
-    return 'जब यह $summary';
-  }
-
-  @override
-  String get rulesBacklogTitle => 'पुराना ढेर निपटाएँ';
-
-  @override
-  String get rulesBacklogIdle =>
-      'उन स्क्रीनशॉट पर नियम चलाता है जो अभी किसी फ़ोल्डर में नहीं हैं। जो आपने खुद फ़ाइल किए उन्हें छुआ नहीं जाता।';
-
-  @override
-  String rulesBacklogRunning(int done, int total) {
-    return '$total में से $done जाँचे जा रहे हैं…';
-  }
-
-  @override
-  String get rulesBacklogNothing => 'बिना छँटाई कुछ नहीं बचा।';
-
-  @override
-  String rulesBacklogResult(int filed, int examined) {
-    return '$examined बिना छँटे में से $filed फ़ाइल हो गए।';
-  }
-
-  @override
-  String get rulesRunNow => 'नियम अभी चलाएँ';
-
-  @override
-  String get ruleBuilderTitle => 'नया नियम';
-
-  @override
-  String get ruleBuilderIntro => 'दो सवाल: किससे मेल खाए, और कहाँ जाए।';
-
-  @override
-  String get ruleBuilderFolderLabel => 'कहाँ जाए?';
-
-  @override
-  String get ruleBuilderConditionLabel => 'किससे मेल खाना चाहिए?';
-
-  @override
-  String get ruleBuilderConditionsLabel => 'इनसे भी मेल खाता है';
-
-  @override
-  String get ruleBuilderAddCondition => 'एक और जोड़ें';
-
-  @override
-  String get ruleBuilderMatchAll => 'सभी';
-
-  @override
-  String get ruleBuilderMatchAny => 'कोई एक';
-
-  @override
-  String get ruleBuilderMatchAllHelp =>
-      'स्क्रीनशॉट को इनमें से हर एक पर खरा उतरना होगा।';
-
-  @override
-  String get ruleBuilderMatchAnyHelp => 'इनमें से एक का सच होना काफ़ी है।';
-
-  @override
-  String get ruleBuilderSave => 'नियम सहेजें';
-
-  @override
-  String get ruleBuilderIncomplete => 'चुनें कि किससे मेल खाए, और एक फ़ोल्डर';
-
-  @override
-  String ruleBuilderPreview(String folder, String summary) {
-    return 'जब स्क्रीनशॉट $summary तो उसे $folder में रखें।';
-  }
-
-  @override
-  String get ruleBuilderPreviewTitle => 'आपका नियम, शब्दों में';
-
-  @override
-  String get conditionTextContains => 'कोई शब्द कहे';
-
-  @override
-  String get conditionTextContainsHelp =>
-      'तस्वीर के अंदर SHOTO जो पाठ पढ़ता है उसे देखता है, और पूरे शब्द से मिलाता है — \"code\" \"barcode\" पर नहीं चलेगा। ऐसा शब्द चुनें जो सचमुच ऐसे स्क्रीनशॉट पर लिखा होता हो।';
-
-  @override
-  String get conditionTextContainsHint => 'उसमें लिखा शब्द — «इनवॉइस», «टिकट»';
-
-  @override
-  String get conditionShowsSubject => 'कुछ दिखाए';
-
-  @override
-  String get conditionShowsSubjectHelp =>
-      'देखता है कि तस्वीर किस चीज़ की है, न कि उस पर क्या लिखा है। शब्द मॉडल के अपने शब्द से मेल खाना चाहिए, इसलिए अंदाज़ा लगाने के बजाय नीचे अपनी लाइब्रेरी से कोई एक चुनें।';
-
-  @override
-  String get conditionShowsSubjectHint =>
-      'क्या दिखता है — «बिल्ली», «जानवर», «खाना»';
-
-  @override
-  String get conditionContainsSensitive => 'निजी जानकारी हो';
-
-  @override
-  String get conditionContainsSensitiveHelp =>
-      'वही जाँच जो सुरक्षित साझा करता है — कार्ड नंबर असली चेकसम से गुज़रते हैं, इसलिए ऑर्डर नंबर गलती से कार्ड नहीं समझा जाता।';
-
-  @override
-  String get conditionHasAnyText => 'पढ़ने योग्य पाठ हो';
-
-  @override
-  String get conditionHasAnyTextHelp =>
-      'हर उस तस्वीर पर सही जिसमें कुछ भी लिखा हो। स्क्रीनशॉट को सहेजी तस्वीरों से अलग करने में मददगार।';
-
-  @override
   String get settingsTitle => 'सेटिंग्स';
 
   @override
@@ -446,19 +244,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsConfirmDeleteHint => 'हटाया हुआ वापस नहीं आता';
-
-  @override
-  String get settingsAutomation => 'स्वचालन';
-
-  @override
-  String get settingsAutomationCaption =>
-      'एक बार नियम लिखें और SHOTO मिलते-जुलते स्क्रीनशॉट आते ही फ़ाइल कर देगा।';
-
-  @override
-  String get settingsRules => 'फ़ाइलिंग नियम';
-
-  @override
-  String get settingsRulesHint => 'छँटाई SHOTO पर छोड़ दें';
 
   @override
   String get settingsFindDuplicates => 'डुप्लिकेट खोजें';
@@ -628,13 +413,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String quickSaveFiled(String folder) {
     return '$folder में फ़ाइल हो गया।';
   }
-
-  @override
-  String get quickSaveFiledByRules => 'आपके नियमों के अनुसार फ़ाइल हो गया।';
-
-  @override
-  String get quickSaveNoRuleMatched =>
-      'कोई नियम नहीं मिला — लाइब्रेरी में बिना छँटाई रह गया।';
 
   @override
   String get quickSaveFailedTitle => 'वह तस्वीर पढ़ी नहीं जा सकी';
@@ -1195,51 +973,6 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get ruleSummaryEmpty => 'अभी कोई शर्त नहीं — कुछ फ़ाइल नहीं करेगा';
-
-  @override
-  String get ruleJoinAnd => ' और ';
-
-  @override
-  String get ruleJoinOr => ' या ';
-
-  @override
-  String ruleSaysWord(String value) {
-    return '«$value» कहे';
-  }
-
-  @override
-  String ruleNotSaysWord(String value) {
-    return '«$value» न कहे';
-  }
-
-  @override
-  String ruleShows(String value) {
-    return '$value दिखाए';
-  }
-
-  @override
-  String ruleNotShows(String value) {
-    return '$value न दिखाए';
-  }
-
-  @override
-  String ruleContains(String value) {
-    return '$value रखता हो';
-  }
-
-  @override
-  String ruleNotContains(String value) {
-    return '$value न रखता हो';
-  }
-
-  @override
-  String get ruleHasText => 'पढ़ने योग्य पाठ हो';
-
-  @override
-  String get ruleNoText => 'पढ़ने योग्य पाठ न हो';
-
-  @override
   String get kindCard => 'कार्ड नंबर';
 
   @override
@@ -1403,9 +1136,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get errorLoadFolders => 'आपके फ़ोल्डर लोड नहीं हो सके।';
 
   @override
-  String get errorLoadRules => 'आपके नियम लोड नहीं हो सके।';
-
-  @override
   String get errorScanDuplicates => 'डुप्लिकेट स्कैन नहीं हो सका।';
 
   @override
@@ -1530,20 +1260,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get sensitiveNumber => 'नंबर';
 
   @override
-  String get quickSaveByRules => 'मेरे नियम इसे फ़ाइल करें';
-
-  @override
-  String get ruleSeenTitle => 'SHOTO ने आपकी लाइब्रेरी में क्या देखा';
-
-  @override
-  String get ruleSeenEmpty =>
-      'SHOTO ने अभी आपके स्क्रीनशॉट के अंदर नहीं देखा। हर नया आते ही पढ़ा जाता है, तो यह भरता जाएगा।';
-
-  @override
-  String get ruleSeenHint =>
-      'किसी एक को दबाएँ — ये ठीक वही शब्द हैं जो मॉडल देता है, तो इन पर बना नियम सचमुच चलेगा।';
-
-  @override
   String get onbSkip => 'छोड़ें';
 
   @override
@@ -1624,145 +1340,5 @@ class AppLocalizationsHi extends AppLocalizations {
   String get importPickerUnavailable => 'फ़ोटो पिकर नहीं खुल सका';
 
   @override
-  String rulePreviewMatches(int count, int indexed) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'SHOTO ने जो $indexed स्क्रीनशॉट पढ़े हैं उनमें से $count यह लेगा',
-      one: 'SHOTO ने जो $indexed स्क्रीनशॉट पढ़े हैं उनमें से 1 यह लेगा',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rulePreviewNone =>
-      'SHOTO ने अब तक जो पढ़ा है उसमें से कुछ भी इससे मेल नहीं खाता';
-
-  @override
-  String get rulePreviewNotIndexed =>
-      'SHOTO ने अभी तक आपका कोई स्क्रीनशॉट नहीं पढ़ा, इसलिए जाँचने को कुछ नहीं है। हर एक को आते ही पढ़ लिया जाता है।';
-
-  @override
-  String rulePreviewTaken(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'इनमें से $count इससे ऊपर वाले नियम को चले जाते हैं।',
-      one: 'इनमें से 1 इससे ऊपर वाले नियम को चला जाता है।',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rulePreviewAllTaken =>
-      'जो भी मेल खाता है वह पहले ही ऊपर वाला नियम ले लेता है। यह नियम जीतना चाहिए तो इसे ऊपर ले जाएँ।';
-
-  @override
-  String get rulePreviewFloor =>
-      'सिर्फ़ वही गिनता है जो SHOTO अब तक पढ़ चुका है। नए स्क्रीनशॉट आते ही जाँचे जाते हैं।';
-
-  @override
-  String get ruleBuilderEditTitle => 'नियम बदलें';
-
-  @override
-  String get ruleBuilderEditIntro =>
-      'बदलाव अब से लागू होंगे। जो स्क्रीनशॉट यह नियम पहले ही रख चुका है वे वहीं रहेंगे।';
-
-  @override
-  String get ruleBuilderUpdate => 'बदलाव सहेजें';
-
-  @override
-  String get rulesPriorityNote =>
-      'स्क्रीनशॉट उसी पहले नियम को जाता है जो उससे मेल खाए। कौन-सा पहले हो, यह तीरों से बदलें।';
-
-  @override
-  String get rulesCardNotIndexed =>
-      'अभी कुछ पढ़ा नहीं गया — जाँचने को कुछ नहीं';
-
-  @override
-  String rulesCardClaims(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count स्क्रीनशॉट लेता है',
-      one: '1 स्क्रीनशॉट लेता है',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rulesCardClaimsNone => 'अभी कुछ नहीं लेता';
-
-  @override
-  String rulesCardOverruled(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count मेल ऊपर वाले नियम को जाते हैं',
-      one: '1 मेल ऊपर वाले नियम को जाता है',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get rulesMoveUp => 'ऊपर ले जाएँ';
-
-  @override
-  String get rulesMoveDown => 'नीचे ले जाएँ';
-
-  @override
-  String rulesBacklogUnread(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count स्क्रीनशॉट अभी पढ़े नहीं गए — जारी रखने के लिए फिर चलाएँ।',
-      one: '1 स्क्रीनशॉट अभी पढ़ा नहीं गया — जारी रखने के लिए फिर चलाएँ।',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String indexingProgress(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'आपके स्क्रीनशॉट अभी पढ़े जा रहे हैं — $count बाकी',
-      one: 'आपके स्क्रीनशॉट अभी पढ़े जा रहे हैं — 1 बाकी',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get ruleBuilderMatches => 'मेल खाता है';
-
-  @override
-  String get ruleBuilderMatchesNot => 'मेल नहीं खाता';
-
-  @override
-  String get ruleBuilderMatchesNotHelp =>
-      'यह सच न हो तब नियम चलता है — किसी अपवाद को बाहर रखने के लिए उपयोगी।';
-
-  @override
-  String rulePreviewAlreadyFiled(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other:
-          'इनमें से $count पहले से फ़ोल्डरों में हैं, और चलाने पर वे कभी नहीं हटतीं। यहाँ केवल नए स्क्रीनशॉट आएँगे।',
-      one:
-          'इनमें से 1 पहले से किसी फ़ोल्डर में है, और चलाने पर वे कभी नहीं हटतीं। यहाँ केवल नए स्क्रीनशॉट आएँगे।',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String rulesCardAlreadyFiled(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count से मेल खाता है, पर वे पहले से कहीं और रखी हैं',
-      one: '1 से मेल खाता है, पर वह पहले से कहीं और रखी है',
-    );
-    return '$_temp0';
-  }
+  String get searchWorking => 'आपके स्क्रीनशॉट पढ़े जा रहे हैं…';
 }

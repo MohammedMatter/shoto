@@ -28,10 +28,11 @@ class AppDatabase {
   /// predate [libraryAssets] have been attributed to somebody yet.
   static const String appFlags = 'app_flags';
 
-  /// Filing rules the user wrote: "anything with a card number goes in
-  /// Receipts". Conditions are stored as JSON on the row rather than in a
-  /// child table, because a rule is only ever read, saved and deleted whole
-  /// — a join would buy nothing and cost a second table to keep in step.
+  /// User-authored filing rules, removed in v13.
+  ///
+  /// The name outlives the feature because the v13 migration has to be able
+  /// to say what it is dropping, and because databases created between v11
+  /// and v12 still carry the table until they are upgraded.
   static const String filingRules = 'filing_rules';
 
   /// Set to '1' once the images that were already in SHOTO's album before
@@ -53,7 +54,7 @@ class AppDatabase {
     final String path = join(await getDatabasesPath(), 'shoto.db');
     return openDatabase(
       path,
-      version: 12,
+      version: 13,
       onCreate: (db, version) => _createTables(db),
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
@@ -127,29 +128,18 @@ class AppDatabase {
           await db.delete(libraryAssets);
           await _seedLibraryOwnership(db);
         }
-        if (oldVersion < 11) {
-          // User-authored filing rules.
-          await _createFilingRules(db);
-        }
-        if (oldVersion < 12) {
-          // Explicit rule priority. Two rules can both want the same
-          // screenshot and it can only live in one folder, so one of them has
-          // to win — until now that was silently whichever was written first,
-          // with nothing on screen saying so. This column makes the order the
-          // user's to set, and the rules list shows it.
-          await db.execute(
-            'ALTER TABLE $filingRules ADD COLUMN sort_order INTEGER NOT NULL DEFAULT 0',
-          );
-          // Seeded with the ranking the app was already using, so nobody's
-          // existing rules change behaviour on upgrade — they just become
-          // visible and movable.
-          await db.execute('''
-            UPDATE $filingRules SET sort_order = (
-              SELECT COUNT(*) FROM $filingRules AS earlier
-              WHERE earlier.user_id = $filingRules.user_id
-                AND earlier.created_at < $filingRules.created_at
-            )
-          ''');
+        // v11 created the filing_rules table and v12 added a sort_order
+        // column to it. Both steps are gone rather than preserved: the
+        // feature was removed in v13, so creating the table only to drop it
+        // again three lines later is work with no observable effect. The
+        // version numbers are *not* reused — a device that already ran v11
+        // or v12 has the table, and v13 below is what removes it there.
+        if (oldVersion < 13) {
+          // Filing rules, removed. A user who wrote rules keeps every
+          // screenshot those rules filed — the folder assignments live in
+          // `screenshot_meta` and are untouched. Only the rules themselves
+          // go, because nothing can read them any more.
+          await db.execute('DROP TABLE IF EXISTS $filingRules');
         }
       },
       onConfigure: (db) async => db.execute('PRAGMA foreign_keys = ON'),
@@ -187,31 +177,6 @@ class AppDatabase {
     // Deliberately left empty on a fresh install: a brand-new database has no
     // pre-ownership images, so the adoption step must never run for it.
     await _createAppFlags(db);
-    await _createFilingRules(db);
-  }
-
-  Future<void> _createFilingRules(Database db) async {
-    // ON DELETE CASCADE, unlike screenshot_meta's SET NULL: a rule whose
-    // destination folder is gone has nowhere to file anything, so it is not
-    // a rule any more. Leaving it enabled and pointing at nothing would mean
-    // screenshots silently stopped being filed with no visible cause.
-    await db.execute('''
-      CREATE TABLE $filingRules (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id TEXT NOT NULL,
-        name TEXT NOT NULL,
-        folder_id INTEGER NOT NULL,
-        conditions TEXT NOT NULL,
-        match_all INTEGER NOT NULL DEFAULT 1,
-        is_enabled INTEGER NOT NULL DEFAULT 1,
-        -- Which rule wins when several claim the same screenshot. Lowest
-        -- first; see the v12 migration for why it is stored rather than
-        -- inferred from created_at.
-        sort_order INTEGER NOT NULL DEFAULT 0,
-        created_at INTEGER NOT NULL,
-        FOREIGN KEY (folder_id) REFERENCES $folders (id) ON DELETE CASCADE
-      )
-    ''');
   }
 
   Future<void> _createLibraryAssets(Database db) async {

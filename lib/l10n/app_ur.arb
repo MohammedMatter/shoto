@@ -71,102 +71,6 @@
   "permissionPartialTitle": "مکمل رسائی درکار ہے",
   "permissionPartialMessage": "اس وقت SHOTO صرف چند منتخب تصویریں دیکھ سکتا ہے، اس لیے اپنے البم تک نہیں پہنچ پاتا۔ جاری رکھنے کے لیے «سب کی اجازت» منتخب کریں۔",
   "permissionOpenSettings": "ترتیبات کھولیں",
-  "rulesTitle": "قواعد",
-  "rulesSubtitle": "ترتیب جو آپ کے بغیر ہو جائے",
-  "rulesTeachHeadline": "اسکرین شاٹس ہاتھ سے ترتیب دینا چھوڑیں",
-  "rulesTeachIntro": "قاعدہ ایک جملہ ہے: جب اسکرین شاٹ ایسا ہو، تو اسے اس فولڈر میں رکھو۔ ایک بار لکھیں، پھر ہر مماثل اسکرین شاٹ خود بخود وہیں چلا جائے گا — آتے ہی۔",
-  "rulesTeachExample": "مثال: جب اسکرین شاٹ میں کارڈ نمبر ہو ← اسے رسیدیں فولڈر میں رکھو۔",
-  "rulesTeachStep1Title": "1. اسکرین شاٹ بیان کریں",
-  "rulesTeachStep1Body": "اس پر لکھا کوئی لفظ، جو وہ دکھاتا ہے، یا اس میں موجود نجی معلومات۔",
-  "rulesTeachStep2Title": "2. فولڈر منتخب کریں",
-  "rulesTeachStep2Body": "میل کھانے والے اسکرین شاٹس کہاں پہنچیں۔",
-  "rulesTeachStep3Title": "۳۔ بس اتنا ہی",
-  "rulesTeachStep3Body": "اس کے بعد SHOTO خود فائل کرتا رہے گا۔ پہلے سے موجود اسکرین شاٹس پر بھی قواعد چلا سکتے ہیں۔",
-  "rulesTeachShow": "قواعد کیسے کام کرتے ہیں؟",
-  "rulesTeachHide": "سمجھ گیا",
-  "rulesStartTemplates": "یا کسی تیار مثال سے شروع کریں",
-  "rulesTemplateReceipts": "رسیدیں اور بل",
-  "rulesTemplateReceiptsWhy": "ہر وہ چیز جس پر کارڈ نمبر یا کل رقم ہو",
-  "rulesTemplateTickets": "ٹکٹ اور بکنگ",
-  "rulesTemplateTicketsWhy": "بورڈنگ پاس، ریزرویشن، آرڈر کی تصدیق",
-  "rulesTemplateCodes": "کوڈ اور پاس ورڈ",
-  "rulesTemplateCodesWhy": "یک بار کوڈ اور ہر وہ چیز جو پاس ورڈ لگے",
-  "rulesTemplateAnimals": "جانوروں کی تصویریں",
-  "rulesTemplateAnimalsWhy": "تصویر میں جو نظر آئے اس پر چلتا ہے، الفاظ پر نہیں",
-  "rulesTemplatePicked": "فولڈر منتخب کریں اور یہ محفوظ کرنے کے لیے تیار ہے۔",
-  "rulesEmptyTitle": "ابھی کوئی قاعدہ نہیں",
-  "rulesNew": "نیا قاعدہ",
-  "rulesNeedFolderFirst": "پہلے کوئی فولڈر بنائیں — قاعدے کو رکھنے کی جگہ چاہیے۔",
-  "rulesDeleteTitle": "یہ قاعدہ حذف کریں؟",
-  "rulesDeleteMessage": "جو اسکرین شاٹس یہ پہلے فائل کر چکا ہے وہ اپنی جگہ رہیں گے۔",
-  "rulesWhenIt": "جب یہ {summary}",
-  "@rulesWhenIt": {
-    "placeholders": {
-      "summary": {
-        "type": "String"
-      }
-    }
-  },
-  "rulesBacklogTitle": "پرانا ڈھیر نمٹائیں",
-  "rulesBacklogIdle": "ان اسکرین شاٹس پر قواعد چلاتا ہے جو ابھی کسی فولڈر میں نہیں۔ جو آپ نے خود ترتیب دیے وہ ہاتھ نہیں لگائے جاتے۔",
-  "rulesBacklogRunning": "{total} میں سے {done} جانچے جا رہے ہیں…",
-  "@rulesBacklogRunning": {
-    "placeholders": {
-      "done": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesBacklogNothing": "کچھ بھی بغیر ترتیب نہیں بچا۔",
-  "rulesBacklogResult": "{examined} غیر ترتیب شدہ میں سے {filed} فائل ہو گئے۔",
-  "@rulesBacklogResult": {
-    "placeholders": {
-      "filed": {
-        "type": "int"
-      },
-      "examined": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesRunNow": "قواعد ابھی چلائیں",
-  "ruleBuilderTitle": "نیا قاعدہ",
-  "ruleBuilderIntro": "دو سوال: کس سے میل کھائے، اور کہاں جائے۔",
-  "ruleBuilderFolderLabel": "کہاں جائے؟",
-  "ruleBuilderConditionLabel": "کس چیز سے میل کھائے؟",
-  "ruleBuilderConditionsLabel": "ان سے بھی میل کھاتا ہے",
-  "ruleBuilderAddCondition": "ایک اور شامل کریں",
-  "ruleBuilderMatchAll": "سب",
-  "ruleBuilderMatchAny": "کوئی ایک",
-  "ruleBuilderMatchAllHelp": "اسکرین شاٹ کو ان میں سے ہر ایک پر پورا اترنا ہوگا۔",
-  "ruleBuilderMatchAnyHelp": "ان میں سے ایک کا درست ہونا کافی ہے۔",
-  "ruleBuilderSave": "قاعدہ محفوظ کریں",
-  "ruleBuilderIncomplete": "منتخب کریں کہ کس سے میل کھائے، اور ایک فولڈر",
-  "ruleBuilderPreview": "جب اسکرین شاٹ {summary} تو اسے {folder} میں رکھیں۔",
-  "@ruleBuilderPreview": {
-    "placeholders": {
-      "folder": {
-        "type": "String"
-      },
-      "summary": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleBuilderPreviewTitle": "آپ کا قاعدہ، الفاظ میں",
-  "conditionTextContains": "کوئی لفظ کہے",
-  "conditionTextContainsHelp": "تصویر کے اندر SHOTO جو متن پڑھتا ہے اسے دیکھتا ہے، اور پورے الفاظ سے ملاتا ہے — \"code\" \"barcode\" پر نہیں چلے گا۔ ایسا لفظ استعمال کریں جو واقعی ایسے اسکرین شاٹ پر لکھا ہوتا ہو۔",
-  "conditionTextContainsHint": "اس میں لکھا لفظ — «انوائس»، «ٹکٹ»",
-  "conditionShowsSubject": "کچھ دکھائے",
-  "conditionShowsSubjectHelp": "دیکھتا ہے کہ تصویر کس چیز کی ہے، نہ کہ اس پر کیا لکھا ہے۔ لفظ ماڈل کے اپنے لفظ سے میل کھانا چاہیے، اس لیے اندازہ لگانے کے بجائے نیچے اپنی لائبریری سے کوئی ایک منتخب کریں۔",
-  "conditionShowsSubjectHint": "کیا دکھائی دے — «بلی»، «جانور»، «کھانا»",
-  "conditionContainsSensitive": "نجی معلومات رکھتا ہو",
-  "conditionContainsSensitiveHelp": "وہی جانچ جو محفوظ اشتراک کرتا ہے — کارڈ نمبر اصل چیک سم سے گزرتے ہیں، اس لیے آرڈر نمبر غلطی سے کارڈ نہیں سمجھا جاتا۔",
-  "conditionHasAnyText": "پڑھنے کے قابل متن ہو",
-  "conditionHasAnyTextHelp": "ہر اس تصویر پر درست جس میں کچھ بھی لکھا ہو۔ اسکرین شاٹس کو محفوظ تصویروں سے الگ کرنے میں مددگار۔",
   "settingsTitle": "ترتیبات",
   "settingsAppearance": "ظاہری شکل",
   "settingsTheme": "تھیم",
@@ -189,10 +93,6 @@
   "settingsHapticsHint": "دبانے پر ہلکی سی تھپکی",
   "settingsConfirmDelete": "حذف سے پہلے پوچھیں",
   "settingsConfirmDeleteHint": "حذف واپس نہیں ہو سکتا",
-  "settingsAutomation": "خودکاری",
-  "settingsAutomationCaption": "ایک بار قاعدہ لکھیں اور SHOTO مماثل اسکرین شاٹس آتے ہی فائل کر دے گا۔",
-  "settingsRules": "فائل کرنے کے قواعد",
-  "settingsRulesHint": "ترتیب SHOTO پر چھوڑ دیں",
   "settingsFindDuplicates": "نقول تلاش کریں",
   "settingsClearCache": "تصویری کیش صاف کریں",
   "settingsShare": "SHOTO شیئر کریں",
@@ -285,8 +185,6 @@
       }
     }
   },
-  "quickSaveFiledByRules": "آپ کے قواعد کے مطابق فائل ہو گیا۔",
-  "quickSaveNoRuleMatched": "کوئی قاعدہ نہیں ملا — لائبریری میں بغیر ترتیب رہ گیا۔",
   "quickSaveFailedTitle": "یہ تصویر پڑھی نہیں جا سکی",
   "quickSaveFailedBody": "دوبارہ شیئر کر کے دیکھیں۔",
   "quickSaveSignedOutTitle": "پہلے SHOTO میں سائن ان کریں",
@@ -561,59 +459,6 @@
       }
     }
   },
-  "ruleSummaryEmpty": "ابھی کوئی شرط نہیں — کچھ فائل نہیں کرے گا",
-  "ruleJoinAnd": " اور ",
-  "ruleJoinOr": " یا ",
-  "ruleSaysWord": "«{value}» کہے",
-  "@ruleSaysWord": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotSaysWord": "«{value}» نہ کہے",
-  "@ruleNotSaysWord": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleShows": "{value} دکھائے",
-  "@ruleShows": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotShows": "{value} نہ دکھائے",
-  "@ruleNotShows": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleContains": "{value} رکھتا ہو",
-  "@ruleContains": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotContains": "{value} نہ رکھتا ہو",
-  "@ruleNotContains": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleHasText": "پڑھنے کے قابل متن ہو",
-  "ruleNoText": "پڑھنے کے قابل متن نہ ہو",
   "kindCard": "کارڈ نمبر",
   "kindIban": "بینک اکاؤنٹ",
   "kindCode": "تصدیقی کوڈ",
@@ -741,7 +586,6 @@
   },
   "errorLoadScreenshots": "آپ کے اسکرین شاٹس لوڈ نہیں ہو سکے۔",
   "errorLoadFolders": "آپ کے فولڈر لوڈ نہیں ہو سکے۔",
-  "errorLoadRules": "آپ کے قواعد لوڈ نہیں ہو سکے۔",
   "errorScanDuplicates": "نقول کے لیے اسکین نہیں ہو سکا۔",
   "errorDeleteSelected": "منتخب اسکرین شاٹس حذف نہیں ہو سکے۔",
   "errorStitchFailed": "یہ اسکرین شاٹس جوڑے نہیں جا سکے۔",
@@ -792,10 +636,6 @@
   "sensitiveName": "نام",
   "sensitiveOrderNumber": "آرڈر نمبر",
   "sensitiveNumber": "نمبر",
-  "quickSaveByRules": "میرے قواعد اسے فائل کریں",
-  "ruleSeenTitle": "SHOTO نے آپ کی لائبریری میں کیا دیکھا",
-  "ruleSeenEmpty": "SHOTO نے ابھی آپ کے اسکرین شاٹس کے اندر نہیں دیکھا۔ ہر نیا آتے ہی پڑھا جاتا ہے، تو یہ بھرتی جائے گی۔",
-  "ruleSeenHint": "کسی ایک کو دبائیں — یہ بالکل وہی الفاظ ہیں جو ماڈل دیتا ہے، تو ان پر بنا قاعدہ واقعی چلے گا۔",
   "onbSkip": "چھوڑیں",
   "onbNext": "آگے",
   "onbPileTitle": "ہزار سکرین شاٹ، ایک ڈھیر",
@@ -841,86 +681,5 @@
   "importFailed": "یہ اسکرین شاٹ محفوظ نہیں ہو سکے",
   "homeToolImportSubtitle": "اپنے فون سے منتخب کریں — آپ کی گیلری نہیں پڑھی جاتی",
   "importPickerUnavailable": "تصویر چننے والا نہیں کھل سکا",
-  "rulePreviewMatches": "{count, plural, =1{SHOTO نے جو {indexed} اسکرین شاٹس پڑھے ہیں ان میں سے 1 یہ لے گا} other{SHOTO نے جو {indexed} اسکرین شاٹس پڑھے ہیں ان میں سے {count} یہ لے گا}}",
-  "@rulePreviewMatches": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "indexed": {
-        "type": "int"
-      }
-    }
-  },
-  "rulePreviewNone": "SHOTO نے اب تک جو پڑھا ہے اس میں سے کچھ بھی اس سے میل نہیں کھاتا",
-  "rulePreviewNotIndexed": "SHOTO نے ابھی تک آپ کا کوئی اسکرین شاٹ نہیں پڑھا، اس لیے جانچنے کو کچھ نہیں۔ ہر ایک کو آتے ہی پڑھ لیا جاتا ہے۔",
-  "rulePreviewTaken": "{count, plural, =1{ان میں سے 1 اس سے اوپر والے اصول کو چلا جاتا ہے۔} other{ان میں سے {count} اس سے اوپر والے اصول کو چلے جاتے ہیں۔}}",
-  "@rulePreviewTaken": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulePreviewAllTaken": "جو کچھ بھی میل کھاتا ہے وہ پہلے ہی اوپر والا اصول لے لیتا ہے۔ اگر یہ اصول جیتنا چاہیے تو اسے اوپر لے جائیں۔",
-  "rulePreviewFloor": "صرف وہی گنتا ہے جو SHOTO اب تک پڑھ چکا ہے۔ نئے اسکرین شاٹس آتے ہی جانچے جاتے ہیں۔",
-  "ruleBuilderEditTitle": "اصول میں ترمیم",
-  "ruleBuilderEditIntro": "تبدیلیاں اب سے لاگو ہوں گی۔ جو اسکرین شاٹس یہ اصول پہلے ہی رکھ چکا ہے وہ وہیں رہیں گے۔",
-  "ruleBuilderUpdate": "تبدیلیاں محفوظ کریں",
-  "rulesPriorityNote": "اسکرین شاٹ اسی پہلے اصول کو جاتا ہے جو اس سے میل کھائے۔ کون سا پہلے ہو، یہ تیروں سے بدلیں۔",
-  "rulesCardNotIndexed": "ابھی کچھ نہیں پڑھا گیا — جانچنے کو کچھ نہیں",
-  "rulesCardClaims": "{count, plural, =1{1 اسکرین شاٹ لیتا ہے} other{{count} اسکرین شاٹس لیتا ہے}}",
-  "@rulesCardClaims": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesCardClaimsNone": "ابھی کچھ نہیں لیتا",
-  "rulesCardOverruled": "{count, plural, =1{1 میل اوپر والے اصول کو جاتا ہے} other{{count} میل اوپر والے اصول کو جاتے ہیں}}",
-  "@rulesCardOverruled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesMoveUp": "اوپر لے جائیں",
-  "rulesMoveDown": "نیچے لے جائیں",
-  "rulesBacklogUnread": "{count, plural, =1{1 اسکرین شاٹ ابھی نہیں پڑھا گیا — جاری رکھنے کے لیے دوبارہ چلائیں۔} other{{count} اسکرین شاٹس ابھی نہیں پڑھے گئے — جاری رکھنے کے لیے دوبارہ چلائیں۔}}",
-  "@rulesBacklogUnread": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "indexingProgress": "{count, plural, =1{آپ کے اسکرین شاٹس ابھی پڑھے جا رہے ہیں — 1 باقی} other{آپ کے اسکرین شاٹس ابھی پڑھے جا رہے ہیں — {count} باقی}}",
-  "@indexingProgress": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "ruleBuilderMatches": "میل کھاتا ہے",
-  "ruleBuilderMatchesNot": "میل نہیں کھاتا",
-  "ruleBuilderMatchesNotHelp": "جب یہ درست نہ ہو تب اصول چلتا ہے — کسی استثنا کو باہر رکھنے کے لیے مفید۔",
-  "rulePreviewAlreadyFiled": "{count, plural, =1{ان میں سے 1 پہلے ہی کسی فولڈر میں ہے، اور چلانے پر وہ کبھی نہیں ہٹتیں۔ یہاں صرف نئے اسکرین شاٹس آئیں گے۔} other{ان میں سے {count} پہلے ہی فولڈروں میں ہیں، اور چلانے پر وہ کبھی نہیں ہٹتیں۔ یہاں صرف نئے اسکرین شاٹس آئیں گے۔}}",
-  "@rulePreviewAlreadyFiled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesCardAlreadyFiled": "{count, plural, =1{1 سے میل کھاتا ہے، مگر وہ پہلے ہی کہیں اور رکھی ہے} other{{count} سے میل کھاتا ہے، مگر وہ پہلے ہی کہیں اور رکھی ہیں}}",
-  "@rulesCardAlreadyFiled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  }
+  "searchWorking": "آپ کے اسکرین شاٹس پڑھے جا رہے ہیں…"
 }

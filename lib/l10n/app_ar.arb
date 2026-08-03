@@ -71,102 +71,6 @@
   "permissionPartialTitle": "بدنا إذن كامل للصور",
   "permissionPartialMessage": "حالياً SHOTO بيشوف بس صور قليلة اخترتها بإيدك، فما بيقدر يوصل لألبومه. اختر «السماح للكل» لتكمل.",
   "permissionOpenSettings": "افتح الإعدادات",
-  "rulesTitle": "القواعد",
-  "rulesSubtitle": "ترتيب بيصير من دونك",
-  "rulesTeachHeadline": "بطّل ترتّب لقطاتك بإيدك",
-  "rulesTeachIntro": "القاعدة جملة وحدة: لما تكون اللقطة بهالشكل، حطّها بهالمجلد. اكتبها مرة، وكل لقطة بتطابقها بتروح لهناك لحالها — لحظة ما توصل.",
-  "rulesTeachExample": "مثال: لما تحتوي اللقطة على رقم بطاقة ← حطّها في مجلد الفواتير.",
-  "rulesTeachStep1Title": "١. وصّف اللقطة",
-  "rulesTeachStep1Body": "كلمة مكتوبة فيها، أو شي ظاهر بالصورة، أو بيانات خاصة جوّاها.",
-  "rulesTeachStep2Title": "٢. اختر المجلد",
-  "rulesTeachStep2Body": "وين بدك اللقطات المطابقة تروح.",
-  "rulesTeachStep3Title": "٣. وخلص",
-  "rulesTeachStep3Body": "من هون ورايح SHOTO بيرتّبها عنك. وتقدر كمان تشغّل قواعدك على اللقطات المنتظرة من قبل.",
-  "rulesTeachShow": "كيف بتشتغل القواعد؟",
-  "rulesTeachHide": "فهمت",
-  "rulesStartTemplates": "أو ابدأ من مثال جاهز",
-  "rulesTemplateReceipts": "فواتير وإيصالات",
-  "rulesTemplateReceiptsWhy": "أي لقطة فيها رقم بطاقة أو مبلغ إجمالي",
-  "rulesTemplateTickets": "تذاكر وحجوزات",
-  "rulesTemplateTicketsWhy": "بطاقات صعود، حجوزات، تأكيدات طلبات",
-  "rulesTemplateCodes": "رموز وكلمات سر",
-  "rulesTemplateCodesWhy": "رموز التحقق وأي شي شكله كلمة سر",
-  "rulesTemplateAnimals": "صور حيوانات",
-  "rulesTemplateAnimalsWhy": "بتعتمد على اللي ظاهر بالصورة، مش على الكلام فيها",
-  "rulesTemplatePicked": "اختر مجلد وبتكون جاهزة للحفظ.",
-  "rulesEmptyTitle": "ما في قواعد بعد",
-  "rulesNew": "قاعدة جديدة",
-  "rulesNeedFolderFirst": "اعمل مجلد أول — القاعدة بحاجة لمكان تحطّ فيه.",
-  "rulesDeleteTitle": "حذف هالقاعدة؟",
-  "rulesDeleteMessage": "اللقطات اللي رتّبتها من قبل بتضل مكانها.",
-  "rulesWhenIt": "لما {summary}",
-  "@rulesWhenIt": {
-    "placeholders": {
-      "summary": {
-        "type": "String"
-      }
-    }
-  },
-  "rulesBacklogTitle": "رتّب المتراكم",
-  "rulesBacklogIdle": "بيشغّل قواعدك على اللقطات اللي لسه مش داخل أي مجلد. وأي شي رتّبته بإيدك بيضل زي ما هو.",
-  "rulesBacklogRunning": "بنفحص {done} من {total}…",
-  "@rulesBacklogRunning": {
-    "placeholders": {
-      "done": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesBacklogNothing": "ما ضل شي غير مرتّب.",
-  "rulesBacklogResult": "رتّبنا {filed} من أصل {examined} لقطة غير مرتّبة.",
-  "@rulesBacklogResult": {
-    "placeholders": {
-      "filed": {
-        "type": "int"
-      },
-      "examined": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesRunNow": "شغّل القواعد هلق",
-  "ruleBuilderTitle": "قاعدة جديدة",
-  "ruleBuilderIntro": "سؤالين: شو بترتّب، ووين بتروح.",
-  "ruleBuilderFolderLabel": "وين يروح؟",
-  "ruleBuilderConditionLabel": "شو بدك يرتّب؟",
-  "ruleBuilderConditionsLabel": "كمان بتطابق",
-  "ruleBuilderAddCondition": "شرط تاني",
-  "ruleBuilderMatchAll": "لازم كلهم",
-  "ruleBuilderMatchAny": "واحد بكفي",
-  "ruleBuilderMatchAllHelp": "لازم اللقطة تحقق كل وحدة فيهم.",
-  "ruleBuilderMatchAnyHelp": "يكفي وحدة منهم تتحقق.",
-  "ruleBuilderSave": "احفظ القاعدة",
-  "ruleBuilderIncomplete": "اختر شو يرتّب، ووين يروح",
-  "ruleBuilderPreview": "حطّها في {folder} لما اللقطة {summary}.",
-  "@ruleBuilderPreview": {
-    "placeholders": {
-      "folder": {
-        "type": "String"
-      },
-      "summary": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleBuilderPreviewTitle": "قاعدتك بالكلمات",
-  "conditionTextContains": "تحتوي كلمة",
-  "conditionTextContainsHelp": "بيفحص النص اللي SHOTO بيقرأه جوّا الصورة، وبيطابق كلمات كاملة — \"كود\" ما رح تشتغل على \"باركود\". استخدم كلمة فعلاً بتكون مكتوبة على هيك نوع لقطات.",
-  "conditionTextContainsHint": "كلمة مكتوبة فيها — «فاتورة»، «تذكرة»",
-  "conditionShowsSubject": "بتُظهر شي",
-  "conditionShowsSubjectHelp": "بيفحص شو *في* الصورة، مش شو مكتوب فيها. الكلمة لازم تطابق كلمة الموديل نفسها، فاضغط وحدة من مكتبتك تحت بدل ما تخمّن.",
-  "conditionShowsSubjectHint": "شو ظاهر فيها — «قطة»، «حيوان»، «أكل»",
-  "conditionContainsSensitive": "فيها بيانات خاصة",
-  "conditionContainsSensitiveHelp": "نفس الفحوصات اللي بتستخدمها المشاركة الآمنة — أرقام البطاقات بتمرّ على تحقّق حقيقي، فرقم طلب ما بينحسب بطاقة.",
-  "conditionHasAnyText": "فيها نص مقروء",
-  "conditionHasAnyTextHelp": "بتتحقق لأي صورة فيها كلام أصلاً. مفيدة لفصل اللقطات عن الصور المحفوظة.",
   "settingsTitle": "الإعدادات",
   "settingsAppearance": "المظهر",
   "settingsTheme": "الثيم",
@@ -189,10 +93,6 @@
   "settingsHapticsHint": "نبضة خفيفة لما تضغط",
   "settingsConfirmDelete": "اسأل قبل الحذف",
   "settingsConfirmDeleteHint": "الحذف ما بينرجع",
-  "settingsAutomation": "الأتمتة",
-  "settingsAutomationCaption": "اكتب قاعدة مرة وحدة وSHOTO بيرتّب اللقطات المطابقة لحظة ما توصل.",
-  "settingsRules": "قواعد الترتيب",
-  "settingsRulesHint": "خلّي SHOTO يرتّب عنك",
   "settingsFindDuplicates": "كشف المكرر",
   "settingsClearCache": "مسح ذاكرة الصور المؤقتة",
   "settingsShare": "شارك SHOTO",
@@ -285,8 +185,6 @@
       }
     }
   },
-  "quickSaveFiledByRules": "انرتّبت حسب قواعدك.",
-  "quickSaveNoRuleMatched": "ما في قاعدة طابقت — انحفظت بمكتبتك بدون ترتيب.",
   "quickSaveFailedTitle": "ما قدرنا نقرأ الصورة",
   "quickSaveFailedBody": "جرّب تشاركها مرة ثانية.",
   "quickSaveSignedOutTitle": "سجّل دخولك أولاً",
@@ -561,59 +459,6 @@
       }
     }
   },
-  "ruleSummaryEmpty": "ما في شروط بعد — ما بترتّب إشي",
-  "ruleJoinAnd": " و",
-  "ruleJoinOr": " أو ",
-  "ruleSaysWord": "فيها «{value}»",
-  "@ruleSaysWord": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotSaysWord": "ما فيها «{value}»",
-  "@ruleNotSaysWord": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleShows": "بتُظهر {value}",
-  "@ruleShows": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotShows": "ما بتُظهر {value}",
-  "@ruleNotShows": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleContains": "فيها {value}",
-  "@ruleContains": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotContains": "ما فيها {value}",
-  "@ruleNotContains": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleHasText": "فيها نص مقروء",
-  "ruleNoText": "ما فيها نص مقروء",
   "kindCard": "رقم بطاقة",
   "kindIban": "رقم حساب بنكي",
   "kindCode": "رمز تحقق",
@@ -741,7 +586,6 @@
   },
   "errorLoadScreenshots": "ما قدرنا نحمّل لقطاتك.",
   "errorLoadFolders": "ما قدرنا نحمّل مجلداتك.",
-  "errorLoadRules": "ما قدرنا نحمّل قواعدك.",
   "errorScanDuplicates": "ما قدرنا نفحص المكرر.",
   "errorDeleteSelected": "ما قدرنا نحذف اللقطات المحددة.",
   "errorStitchFailed": "ما قدرنا ندمج هاي اللقطات.",
@@ -792,10 +636,6 @@
   "sensitiveName": "الاسم",
   "sensitiveOrderNumber": "رقم الطلب",
   "sensitiveNumber": "رقم",
-  "quickSaveByRules": "خلّي قواعدي ترتّبها",
-  "ruleSeenTitle": "شو شاف SHOTO في مكتبتك",
-  "ruleSeenEmpty": "SHOTO لسا ما فحص جوّا لقطاتك. بيقرأ كل وحدة لحظة ما توصل، فهاي بتمتلي مع الحفظ.",
-  "ruleSeenHint": "اضغط على وحدة — هاي بالضبط الكلمات اللي بيطلعها النموذج، فالقاعدة المبنية عليها رح تشتغل فعلاً.",
   "onbSkip": "تخطّي",
   "onbNext": "التالي",
   "onbPileTitle": "ألف لقطة شاشة، كومة وحدة",
@@ -841,86 +681,5 @@
   "importFailed": "ما قدرت أحفظ هاي اللقطات",
   "homeToolImportSubtitle": "اختَر من تلفونك — معرض صورك ما بينقرأ",
   "importPickerUnavailable": "ما قدر يفتح معرض الاختيار",
-  "rulePreviewMatches": "{count, plural, =1{رح تاخد لقطة وحدة من {indexed} لقطة قرأها SHOTO} other{رح تاخد {count} لقطة من {indexed} لقطة قرأها SHOTO}}",
-  "@rulePreviewMatches": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "indexed": {
-        "type": "int"
-      }
-    }
-  },
-  "rulePreviewNone": "ما في شي من اللي قرأه SHOTO بيطابق هالقاعدة",
-  "rulePreviewNotIndexed": "SHOTO لسا ما قرأ ولا لقطة من لقطاتك، فما في شي نجرّب عليه. بيقرأ كل وحدة أول ما توصل.",
-  "rulePreviewTaken": "{count, plural, =1{وحدة منهن بتروح لقاعدة فوق هاي.} other{{count} منهن بيروحوا لقاعدة فوق هاي.}}",
-  "@rulePreviewTaken": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulePreviewAllTaken": "كل اللقطات اللي بتطابق هاي القاعدة مآخوذة أصلاً من قاعدة فوقها. ارفع هاي القاعدة لفوق إذا بدك ياها تكسب.",
-  "rulePreviewFloor": "بيحسب بس اللي قرأه SHOTO لهلق. اللقطات الجديدة بتنفحص أول ما توصل.",
-  "ruleBuilderEditTitle": "تعديل القاعدة",
-  "ruleBuilderEditIntro": "التعديلات بتشتغل من هلق ورايح. اللقطات اللي رتّبتها القاعدة من قبل بتضل بمكانها.",
-  "ruleBuilderUpdate": "حفظ التعديلات",
-  "rulesPriorityNote": "اللقطة بتروح لأول قاعدة بتطابقها. استخدم الأسهم لتغيّر مين الأول.",
-  "rulesCardNotIndexed": "لسا ما انقرأ إشي — ما في شي نفحص عليه",
-  "rulesCardClaims": "{count, plural, =1{بتاخد لقطة وحدة} other{بتاخد {count} لقطة}}",
-  "@rulesCardClaims": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesCardClaimsNone": "لسا ما بتاخد ولا لقطة",
-  "rulesCardOverruled": "{count, plural, =1{تطابق وحد بيروح لقاعدة فوقها} other{{count} تطابقات بيروحوا لقاعدة فوقها}}",
-  "@rulesCardOverruled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesMoveUp": "رفع لفوق",
-  "rulesMoveDown": "نزول لتحت",
-  "rulesBacklogUnread": "{count, plural, =1{في لقطة وحدة لسا ما انقرأت — شغّل مرة تانية لتكمّل.} other{في {count} لقطة لسا ما انقرأت — شغّل مرة تانية لتكمّل.}}",
-  "@rulesBacklogUnread": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "indexingProgress": "{count, plural, =1{لسا عم يقرأ لقطاتك — باقي وحدة} other{لسا عم يقرأ لقطاتك — باقي {count}}}",
-  "@indexingProgress": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "ruleBuilderMatches": "بتطابق",
-  "ruleBuilderMatchesNot": "ما بتطابق",
-  "ruleBuilderMatchesNotHelp": "القاعدة بتشتغل لما هالشي ما يكون موجود — مفيدة لاستثناء حالات معيّنة.",
-  "rulePreviewAlreadyFiled": "{count, plural, =1{وحدة منهن مرتّبة أصلاً بمجلد، والتشغيل ما بيحرّك المرتّبة أبداً. بس اللقطات الجديدة رح تنرتّب هون.} other{{count} منهن مرتّبين أصلاً بمجلدات، والتشغيل ما بيحرّك المرتّبة أبداً. بس اللقطات الجديدة رح تنرتّب هون.}}",
-  "@rulePreviewAlreadyFiled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesCardAlreadyFiled": "{count, plural, =1{بتطابق وحدة، بس هي مرتّبة أصلاً بمكان تاني} other{بتطابق {count}، بس هنّ مرتّبين أصلاً بمكان تاني}}",
-  "@rulesCardAlreadyFiled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  }
+  "searchWorking": "عم يقرأ لقطاتك…"
 }

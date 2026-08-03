@@ -718,45 +718,9 @@ class VisualVocabulary {
     ).any((term) => term.startsWith(needle) || needle.startsWith(term));
   }
 
-  /// Whether a screenshot carrying [labels] is *of* [subject] — the stricter
-  /// question a filing rule asks.
-  ///
-  /// [matches] is right for the search box and wrong here, and the difference
-  /// is who sees the result. A search matches by prefix in both directions so
-  /// that half-typed words find things; the cost is that `category` starts
-  /// with `cat`, so it also returns every cat in the library. In a search that
-  /// is a stray row you scroll past. In a rule it is a photo moved into the
-  /// wrong folder, weeks later, with nothing on screen explaining why.
-  ///
-  /// So this asks for equality, with the one difference that genuinely leaves
-  /// the word the same word — an English plural, folded on both sides, so a
-  /// rule written `cats` still matches the model's `Cat`. Everything else the
-  /// user does not have to guess at: the builder offers the exact labels their
-  /// own library produced.
-  static bool describes(Iterable<String> labels, String subject) {
-    final String needle = normalize(subject);
-    if (needle.length < minimumQueryLength) return false;
-
-    final String folded = _foldPlural(needle);
-    return searchTermsFor(labels).any((term) => _foldPlural(term) == folded);
-  }
-
-  /// Drops an English plural ending, and only when enough word is left for
-  /// the result to still be a word — `es` off `bus` would leave `b`.
-  static String _foldPlural(String term) {
-    if (term.length > 4 && term.endsWith('es')) {
-      return term.substring(0, term.length - 2);
-    }
-    if (term.length > 3 && term.endsWith('s')) {
-      return term.substring(0, term.length - 1);
-    }
-    return term;
-  }
-
   /// The labels on a screenshot that actually caused [query] to match, so the
   /// UI can show *why* a picture came back. A visual match is a guess, and a
-  /// guess the user can see is one they can judge — which is the whole
-  /// difference between this and the auto-filing that got deleted.
+  /// guess the user can see is one they can judge.
   static List<String> matchingLabels(Iterable<String> labels, String query) {
     final String needle = normalize(query);
     if (needle.length < minimumQueryLength) return const [];

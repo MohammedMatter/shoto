@@ -71,102 +71,6 @@
   "permissionPartialTitle": "Accès complet requis",
   "permissionPartialMessage": "SHOTO ne voit actuellement que quelques photos choisies à la main et ne peut donc pas atteindre son propre album. Choisissez « Autoriser tout » pour continuer.",
   "permissionOpenSettings": "Ouvrir les réglages",
-  "rulesTitle": "Règles",
-  "rulesSubtitle": "Le classement qui se fait sans vous",
-  "rulesTeachHeadline": "Arrêtez de trier vos captures à la main",
-  "rulesTeachIntro": "Une règle tient en une phrase : quand une capture ressemble à ceci, range-la dans ce dossier. Écrivez-la une fois et chaque capture correspondante y atterrit toute seule — dès son arrivée.",
-  "rulesTeachExample": "Par exemple : quand une capture contient un numéro de carte → range-la dans Reçus.",
-  "rulesTeachStep1Title": "1. Décrivez la capture",
-  "rulesTeachStep1Body": "Un mot imprimé dessus, ce qu'elle montre, ou des données privées dedans.",
-  "rulesTeachStep2Title": "2. Choisissez le dossier",
-  "rulesTeachStep2Body": "Où les captures correspondantes doivent arriver.",
-  "rulesTeachStep3Title": "3. C'est tout",
-  "rulesTeachStep3Body": "SHOTO les classe pour vous à partir de là. Vous pouvez aussi appliquer vos règles aux captures déjà en attente.",
-  "rulesTeachShow": "Comment marchent les règles ?",
-  "rulesTeachHide": "Compris",
-  "rulesStartTemplates": "Ou partez d'un exemple",
-  "rulesTemplateReceipts": "Reçus et factures",
-  "rulesTemplateReceiptsWhy": "Tout ce qui porte un numéro de carte ou un total",
-  "rulesTemplateTickets": "Billets et réservations",
-  "rulesTemplateTicketsWhy": "Cartes d'embarquement, réservations, confirmations de commande",
-  "rulesTemplateCodes": "Codes et mots de passe",
-  "rulesTemplateCodesWhy": "Codes à usage unique et tout ce qui ressemble à un mot de passe",
-  "rulesTemplateAnimals": "Photos d'animaux",
-  "rulesTemplateAnimalsWhy": "Se base sur ce que montre l'image, pas sur ses mots",
-  "rulesTemplatePicked": "Choisissez un dossier et elle est prête à enregistrer.",
-  "rulesEmptyTitle": "Aucune règle",
-  "rulesNew": "Nouvelle règle",
-  "rulesNeedFolderFirst": "Créez d'abord un dossier — une règle a besoin d'un endroit où classer.",
-  "rulesDeleteTitle": "Supprimer cette règle ?",
-  "rulesDeleteMessage": "Les captures déjà classées restent où elles sont.",
-  "rulesWhenIt": "Quand elle {summary}",
-  "@rulesWhenIt": {
-    "placeholders": {
-      "summary": {
-        "type": "String"
-      }
-    }
-  },
-  "rulesBacklogTitle": "Rattraper le retard",
-  "rulesBacklogIdle": "Applique vos règles aux captures qui ne sont dans aucun dossier. Ce que vous avez classé à la main n'est pas touché.",
-  "rulesBacklogRunning": "Vérification de {done} sur {total}…",
-  "@rulesBacklogRunning": {
-    "placeholders": {
-      "done": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesBacklogNothing": "Plus rien à trier.",
-  "rulesBacklogResult": "{filed} captures classées sur {examined} non triées.",
-  "@rulesBacklogResult": {
-    "placeholders": {
-      "filed": {
-        "type": "int"
-      },
-      "examined": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesRunNow": "Appliquer les règles",
-  "ruleBuilderTitle": "Nouvelle règle",
-  "ruleBuilderIntro": "Deux questions : ce qu'elle repère, et où ça va.",
-  "ruleBuilderFolderLabel": "Où va-t-elle ?",
-  "ruleBuilderConditionLabel": "Que doit-elle repérer ?",
-  "ruleBuilderConditionsLabel": "Repère aussi",
-  "ruleBuilderAddCondition": "En ajouter une",
-  "ruleBuilderMatchAll": "Toutes",
-  "ruleBuilderMatchAny": "N'importe laquelle",
-  "ruleBuilderMatchAllHelp": "La capture doit toutes les satisfaire.",
-  "ruleBuilderMatchAnyHelp": "Il suffit qu'une seule soit vraie.",
-  "ruleBuilderSave": "Enregistrer la règle",
-  "ruleBuilderIncomplete": "Choisissez quoi repérer, et un dossier",
-  "ruleBuilderPreview": "Classer dans {folder} quand la capture {summary}.",
-  "@ruleBuilderPreview": {
-    "placeholders": {
-      "folder": {
-        "type": "String"
-      },
-      "summary": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleBuilderPreviewTitle": "VOTRE RÈGLE, EN MOTS",
-  "conditionTextContains": "contient un mot",
-  "conditionTextContainsHelp": "Regarde le texte que SHOTO lit dans l'image et cherche des mots entiers : « code » ne se déclenchera pas sur « barcode ». Utilisez un mot qui serait réellement imprimé sur ce type de capture.",
-  "conditionTextContainsHint": "un mot écrit dessus — « facture », « billet »",
-  "conditionShowsSubject": "montre quelque chose",
-  "conditionShowsSubjectHelp": "Regarde ce que l'image représente, pas ce qu'elle dit. Le mot doit correspondre à celui du modèle : touchez-en un dans votre bibliothèque ci-dessous plutôt que de deviner.",
-  "conditionShowsSubjectHint": "ce qu'elle montre — « chat », « animal », « nourriture »",
-  "conditionContainsSensitive": "contient des données privées",
-  "conditionContainsSensitiveHelp": "Les mêmes contrôles que Partage protégé — les numéros de carte passent une vraie somme de contrôle, donc un numéro de commande n'est pas pris pour une carte.",
-  "conditionHasAnyText": "contient du texte lisible",
-  "conditionHasAnyTextHelp": "Vrai pour toute image contenant des mots. Pratique pour séparer les captures des photos enregistrées.",
   "settingsTitle": "Réglages",
   "settingsAppearance": "Apparence",
   "settingsTheme": "Thème",
@@ -189,10 +93,6 @@
   "settingsHapticsHint": "Une petite vibration quand vous appuyez",
   "settingsConfirmDelete": "Demander avant de supprimer",
   "settingsConfirmDeleteHint": "Une suppression est définitive",
-  "settingsAutomation": "Automatisation",
-  "settingsAutomationCaption": "Écrivez une règle une fois et SHOTO classe les captures correspondantes dès leur arrivée.",
-  "settingsRules": "Règles de classement",
-  "settingsRulesHint": "Laissez SHOTO trier pour vous",
   "settingsFindDuplicates": "Trouver les doublons",
   "settingsClearCache": "Vider le cache d'images",
   "settingsShare": "Partager SHOTO",
@@ -285,8 +185,6 @@
       }
     }
   },
-  "quickSaveFiledByRules": "Classé par vos règles.",
-  "quickSaveNoRuleMatched": "Aucune règle ne correspond — laissée non triée dans votre bibliothèque.",
   "quickSaveFailedTitle": "Impossible de lire cette image",
   "quickSaveFailedBody": "Essayez de la partager à nouveau.",
   "quickSaveSignedOutTitle": "Connectez-vous d’abord à SHOTO",
@@ -561,59 +459,6 @@
       }
     }
   },
-  "ruleSummaryEmpty": "Aucune condition — ne classe rien",
-  "ruleJoinAnd": " et ",
-  "ruleJoinOr": " ou ",
-  "ruleSaysWord": "contient « {value} »",
-  "@ruleSaysWord": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotSaysWord": "ne contient pas « {value} »",
-  "@ruleNotSaysWord": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleShows": "montre {value}",
-  "@ruleShows": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotShows": "ne montre pas {value}",
-  "@ruleNotShows": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleContains": "contient {value}",
-  "@ruleContains": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotContains": "ne contient pas {value}",
-  "@ruleNotContains": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleHasText": "contient du texte lisible",
-  "ruleNoText": "ne contient pas de texte lisible",
   "kindCard": "un numéro de carte",
   "kindIban": "un compte bancaire",
   "kindCode": "un code de vérification",
@@ -741,7 +586,6 @@
   },
   "errorLoadScreenshots": "Impossible de charger vos captures.",
   "errorLoadFolders": "Impossible de charger vos dossiers.",
-  "errorLoadRules": "Impossible de charger vos règles.",
   "errorScanDuplicates": "Impossible de rechercher les doublons.",
   "errorDeleteSelected": "Impossible de supprimer les captures sélectionnées.",
   "errorStitchFailed": "Ces captures n’ont pas pu être assemblées.",
@@ -792,10 +636,6 @@
   "sensitiveName": "Nom",
   "sensitiveOrderNumber": "Numéro de commande",
   "sensitiveNumber": "Numéro",
-  "quickSaveByRules": "Laisser mes règles la classer",
-  "ruleSeenTitle": "CE QUE SHOTO A VU DANS VOTRE BIBLIOTHÈQUE",
-  "ruleSeenEmpty": "SHOTO n’a pas encore regardé dans vos captures. Il lit chacune à son arrivée, donc ceci se remplira.",
-  "ruleSeenHint": "Touchez-en un : ce sont les mots exacts produits par le modèle, donc une règle bâtie dessus se déclenchera vraiment.",
   "onbSkip": "Passer",
   "onbNext": "Suivant",
   "onbPileTitle": "Mille captures, un seul tas",
@@ -841,86 +681,5 @@
   "importFailed": "Impossible d'enregistrer ces captures",
   "homeToolImportSubtitle": "Choisissez sur votre téléphone ; votre galerie n'est jamais lue",
   "importPickerUnavailable": "Le sélecteur de photos n'a pas pu s'ouvrir",
-  "rulePreviewMatches": "{count, plural, =1{Prendrait 1 des {indexed} captures que SHOTO a lues} other{Prendrait {count} des {indexed} captures que SHOTO a lues}}",
-  "@rulePreviewMatches": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "indexed": {
-        "type": "int"
-      }
-    }
-  },
-  "rulePreviewNone": "Rien de ce que SHOTO a lu jusqu'ici ne correspond",
-  "rulePreviewNotIndexed": "SHOTO n'a encore lu aucune de vos captures, il n'y a donc rien à vérifier. Il lit chacune dès son arrivée.",
-  "rulePreviewTaken": "{count, plural, =1{1 d'entre elles revient à une règle placée au-dessus.} other{{count} d'entre elles reviennent à une règle placée au-dessus.}}",
-  "@rulePreviewTaken": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulePreviewAllTaken": "Toutes les captures correspondantes sont déjà prises par une règle au-dessus. Remontez cette règle si elle doit l'emporter.",
-  "rulePreviewFloor": "Ne compte que ce que SHOTO a déjà lu. Les nouvelles captures sont vérifiées dès leur arrivée.",
-  "ruleBuilderEditTitle": "Modifier la règle",
-  "ruleBuilderEditIntro": "Les modifications s'appliquent à partir de maintenant. Les captures déjà classées restent où elles sont.",
-  "ruleBuilderUpdate": "Enregistrer les modifications",
-  "rulesPriorityNote": "Une capture va à la première règle qui correspond. Utilisez les flèches pour changer laquelle.",
-  "rulesCardNotIndexed": "Rien de lu pour l'instant — rien à vérifier",
-  "rulesCardClaims": "{count, plural, =1{Prend 1 capture} other{Prend {count} captures}}",
-  "@rulesCardClaims": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesCardClaimsNone": "Ne prend encore rien",
-  "rulesCardOverruled": "{count, plural, =1{1 correspondance va à une règle au-dessus} other{{count} correspondances vont à une règle au-dessus}}",
-  "@rulesCardOverruled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesMoveUp": "Monter",
-  "rulesMoveDown": "Descendre",
-  "rulesBacklogUnread": "{count, plural, =1{1 capture n'a pas encore été lue — relancez pour continuer.} other{{count} captures n'ont pas encore été lues — relancez pour continuer.}}",
-  "@rulesBacklogUnread": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "indexingProgress": "{count, plural, =1{Lecture de vos captures en cours — 1 restante} other{Lecture de vos captures en cours — {count} restantes}}",
-  "@indexingProgress": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "ruleBuilderMatches": "Correspond",
-  "ruleBuilderMatchesNot": "NE correspond PAS",
-  "ruleBuilderMatchesNotHelp": "La règle s'applique quand ce n'est pas le cas — pratique pour écarter une exception.",
-  "rulePreviewAlreadyFiled": "{count, plural, =1{1 d'entre elles est déjà dans un dossier, et une exécution ne déplace jamais celles-là. Seules les nouvelles captures arriveront ici.} other{{count} d'entre elles sont déjà dans des dossiers, et une exécution ne déplace jamais celles-là. Seules les nouvelles captures arriveront ici.}}",
-  "@rulePreviewAlreadyFiled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesCardAlreadyFiled": "{count, plural, =1{Correspond à 1, mais elle est déjà classée ailleurs} other{Correspond à {count}, mais elles sont déjà classées ailleurs}}",
-  "@rulesCardAlreadyFiled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  }
+  "searchWorking": "Lecture de vos captures…"
 }

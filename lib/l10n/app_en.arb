@@ -71,102 +71,6 @@
   "permissionPartialTitle": "Full photo access needed",
   "permissionPartialMessage": "SHOTO can currently only see a few photos you picked manually, so it cannot reach its own album. Choose \"Allow all\" in the photo permission to continue.",
   "permissionOpenSettings": "Open Settings",
-  "rulesTitle": "Rules",
-  "rulesSubtitle": "Filing that happens without you",
-  "rulesTeachHeadline": "Stop sorting screenshots by hand",
-  "rulesTeachIntro": "A rule is one sentence: when a screenshot looks like this, file it in that folder. Write it once and every screenshot that matches lands there by itself — the moment it arrives.",
-  "rulesTeachExample": "For example: when a screenshot contains a card number → file it in Receipts.",
-  "rulesTeachStep1Title": "1. Describe the screenshot",
-  "rulesTeachStep1Body": "A word printed in it, something it shows, or private data inside it.",
-  "rulesTeachStep2Title": "2. Choose the folder",
-  "rulesTeachStep2Body": "Where matching screenshots should end up.",
-  "rulesTeachStep3Title": "3. That is all",
-  "rulesTeachStep3Body": "From then on SHOTO files them for you. You can also run your rules over the screenshots already waiting.",
-  "rulesTeachShow": "How do rules work?",
-  "rulesTeachHide": "Got it",
-  "rulesStartTemplates": "Or start from an example",
-  "rulesTemplateReceipts": "Receipts & bills",
-  "rulesTemplateReceiptsWhy": "Anything with a card number or a total on it",
-  "rulesTemplateTickets": "Tickets & bookings",
-  "rulesTemplateTicketsWhy": "Boarding passes, reservations, order confirmations",
-  "rulesTemplateCodes": "Codes & passwords",
-  "rulesTemplateCodesWhy": "One-time codes and anything that looks like a password",
-  "rulesTemplateAnimals": "Photos of animals",
-  "rulesTemplateAnimalsWhy": "Uses what the picture shows, not the words in it",
-  "rulesTemplatePicked": "Pick a folder and it is ready to save.",
-  "rulesEmptyTitle": "No rules yet",
-  "rulesNew": "New rule",
-  "rulesNeedFolderFirst": "Make a folder first — a rule needs somewhere to file things.",
-  "rulesDeleteTitle": "Delete this rule?",
-  "rulesDeleteMessage": "Screenshots it already filed stay where they are.",
-  "rulesWhenIt": "When it {summary}",
-  "@rulesWhenIt": {
-    "placeholders": {
-      "summary": {
-        "type": "String"
-      }
-    }
-  },
-  "rulesBacklogTitle": "Catch up on the backlog",
-  "rulesBacklogIdle": "Runs your rules over screenshots that are not in a folder yet. Anything you filed by hand is left alone.",
-  "rulesBacklogRunning": "Checking {done} of {total}…",
-  "@rulesBacklogRunning": {
-    "placeholders": {
-      "done": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesBacklogNothing": "Nothing left unsorted.",
-  "rulesBacklogResult": "Filed {filed} of {examined} unsorted screenshots.",
-  "@rulesBacklogResult": {
-    "placeholders": {
-      "filed": {
-        "type": "int"
-      },
-      "examined": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesRunNow": "Run rules now",
-  "ruleBuilderTitle": "New rule",
-  "ruleBuilderIntro": "Two questions: what it matches, and where it goes.",
-  "ruleBuilderFolderLabel": "Where does it go?",
-  "ruleBuilderConditionLabel": "What should it match?",
-  "ruleBuilderConditionsLabel": "Also matching",
-  "ruleBuilderAddCondition": "Add another",
-  "ruleBuilderMatchAll": "All of them",
-  "ruleBuilderMatchAny": "Any one",
-  "ruleBuilderMatchAllHelp": "The screenshot has to satisfy every one of these.",
-  "ruleBuilderMatchAnyHelp": "One of these being true is enough.",
-  "ruleBuilderSave": "Save rule",
-  "ruleBuilderIncomplete": "Pick what to match, and a folder",
-  "ruleBuilderPreview": "File into {folder} when the screenshot {summary}.",
-  "@ruleBuilderPreview": {
-    "placeholders": {
-      "folder": {
-        "type": "String"
-      },
-      "summary": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleBuilderPreviewTitle": "YOUR RULE, IN WORDS",
-  "conditionTextContains": "says a word",
-  "conditionTextContainsHelp": "Looks at the text SHOTO reads inside the picture, and matches whole words — \"code\" will not fire on \"barcode\". Use a word that would actually be printed on that kind of screenshot.",
-  "conditionTextContainsHint": "a word printed in it — \"invoice\", \"ticket\"",
-  "conditionShowsSubject": "shows something",
-  "conditionShowsSubjectHelp": "Looks at what the picture is of, not what it says. The word has to match the model's own, so tap one from your library below rather than guessing.",
-  "conditionShowsSubjectHint": "what it shows — \"cat\", \"animal\", \"food\"",
-  "conditionContainsSensitive": "contains private data",
-  "conditionContainsSensitiveHelp": "The same checks Safe share uses — card numbers pass a real checksum, so an order number will not be mistaken for one.",
-  "conditionHasAnyText": "has readable text",
-  "conditionHasAnyTextHelp": "True for anything with words in it at all. Handy for separating screenshots from saved photos.",
   "settingsTitle": "Settings",
   "settingsAppearance": "Appearance",
   "settingsTheme": "Theme",
@@ -189,10 +93,6 @@
   "settingsHapticsHint": "A small tap when you press things",
   "settingsConfirmDelete": "Ask before deleting",
   "settingsConfirmDeleteHint": "Deleting cannot be undone",
-  "settingsAutomation": "Automation",
-  "settingsAutomationCaption": "Write a rule once and SHOTO files matching screenshots the moment they arrive.",
-  "settingsRules": "Filing rules",
-  "settingsRulesHint": "Let SHOTO do the sorting",
   "settingsFindDuplicates": "Find duplicates",
   "settingsClearCache": "Clear image cache",
   "settingsShare": "Share SHOTO",
@@ -285,8 +185,6 @@
       }
     }
   },
-  "quickSaveFiledByRules": "Filed by your rules.",
-  "quickSaveNoRuleMatched": "No rule matched — left unsorted in your library.",
   "quickSaveFailedTitle": "Could not read that image",
   "quickSaveFailedBody": "Try sharing it again.",
   "quickSaveSignedOutTitle": "Sign in to SHOTO first",
@@ -561,59 +459,6 @@
       }
     }
   },
-  "ruleSummaryEmpty": "No conditions yet — files nothing",
-  "ruleJoinAnd": " and ",
-  "ruleJoinOr": " or ",
-  "ruleSaysWord": "says \"{value}\"",
-  "@ruleSaysWord": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotSaysWord": "does not say \"{value}\"",
-  "@ruleNotSaysWord": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleShows": "shows {value}",
-  "@ruleShows": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotShows": "does not show {value}",
-  "@ruleNotShows": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleContains": "contains {value}",
-  "@ruleContains": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotContains": "does not contain {value}",
-  "@ruleNotContains": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleHasText": "has readable text",
-  "ruleNoText": "has no readable text",
   "kindCard": "a card number",
   "kindIban": "a bank account",
   "kindCode": "a verification code",
@@ -741,7 +586,6 @@
   },
   "errorLoadScreenshots": "Could not load your screenshots.",
   "errorLoadFolders": "Could not load your folders.",
-  "errorLoadRules": "Could not load your rules.",
   "errorScanDuplicates": "Could not scan for duplicates.",
   "errorDeleteSelected": "Could not delete the selected screenshots.",
   "errorStitchFailed": "These screenshots could not be merged.",
@@ -792,10 +636,6 @@
   "sensitiveName": "Name",
   "sensitiveOrderNumber": "Order number",
   "sensitiveNumber": "Number",
-  "quickSaveByRules": "Let my rules file it",
-  "ruleSeenTitle": "WHAT SHOTO HAS SEEN IN YOUR LIBRARY",
-  "ruleSeenEmpty": "SHOTO has not looked inside your screenshots yet. It reads each one as it arrives, so this fills up as you save.",
-  "ruleSeenHint": "Tap one — these are the exact words the model produces, so a rule built from them will actually fire.",
   "onbSkip": "Skip",
   "onbNext": "Next",
   "onbPileTitle": "A thousand screenshots, one pile",
@@ -841,86 +681,5 @@
   "importFailed": "Could not save those screenshots",
   "homeToolImportSubtitle": "Pick from your phone — your gallery is never read",
   "importPickerUnavailable": "The photo picker could not open",
-  "rulePreviewMatches": "{count, plural, =1{Would take 1 of the {indexed} screenshots SHOTO has read} other{Would take {count} of the {indexed} screenshots SHOTO has read}}",
-  "@rulePreviewMatches": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "indexed": {
-        "type": "int"
-      }
-    }
-  },
-  "rulePreviewNone": "Nothing SHOTO has read so far matches this",
-  "rulePreviewNotIndexed": "SHOTO has not read any of your screenshots yet, so there is nothing to preview against. It reads each one as it arrives.",
-  "rulePreviewTaken": "{count, plural, =1{1 of these goes to a rule above this one instead.} other{{count} of these go to a rule above this one instead.}}",
-  "@rulePreviewTaken": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulePreviewAllTaken": "Every screenshot this matches is already taken by a rule above it. Move this rule up if it should win.",
-  "rulePreviewFloor": "Counts only what SHOTO has read so far. New screenshots are checked as they arrive.",
-  "ruleBuilderEditTitle": "Edit rule",
-  "ruleBuilderEditIntro": "Changes apply from now on. Screenshots this rule already filed stay where they are.",
-  "ruleBuilderUpdate": "Save changes",
-  "rulesPriorityNote": "A screenshot goes to the first rule that matches it. Use the arrows to change which one that is.",
-  "rulesCardNotIndexed": "Nothing read yet — nothing to check this against",
-  "rulesCardClaims": "{count, plural, =1{Claims 1 screenshot} other{Claims {count} screenshots}}",
-  "@rulesCardClaims": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesCardClaimsNone": "Claims nothing yet",
-  "rulesCardOverruled": "{count, plural, =1{1 match goes to a rule above this one} other{{count} matches go to a rule above this one}}",
-  "@rulesCardOverruled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesMoveUp": "Move up",
-  "rulesMoveDown": "Move down",
-  "rulesBacklogUnread": "{count, plural, =1{1 screenshot has not been read yet — run again to continue.} other{{count} screenshots have not been read yet — run again to continue.}}",
-  "@rulesBacklogUnread": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "indexingProgress": "{count, plural, =1{Still reading your screenshots — 1 to go} other{Still reading your screenshots — {count} to go}}",
-  "@indexingProgress": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "ruleBuilderMatches": "Matches",
-  "ruleBuilderMatchesNot": "Does NOT match",
-  "ruleBuilderMatchesNotHelp": "The rule fires when this is false — use it to carve out an exception.",
-  "rulePreviewAlreadyFiled": "{count, plural, =1{1 of these is already in a folder, and a run never moves those. Only new screenshots will be filed here.} other{{count} of these are already in folders, and a run never moves those. Only new screenshots will be filed here.}}",
-  "@rulePreviewAlreadyFiled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesCardAlreadyFiled": "{count, plural, =1{Matches 1, but it is already filed elsewhere} other{Matches {count}, but they are already filed elsewhere}}",
-  "@rulesCardAlreadyFiled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  }
+  "searchWorking": "Reading your screenshots…"
 }

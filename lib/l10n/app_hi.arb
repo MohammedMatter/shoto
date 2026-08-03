@@ -71,102 +71,6 @@
   "permissionPartialTitle": "पूरी एक्सेस चाहिए",
   "permissionPartialMessage": "अभी SHOTO सिर्फ़ चुनी हुई कुछ तस्वीरें देख पाता है, इसलिए अपने एल्बम तक नहीं पहुँच सकता। जारी रखने के लिए «सभी को अनुमति दें» चुनें।",
   "permissionOpenSettings": "सेटिंग्स खोलें",
-  "rulesTitle": "नियम",
-  "rulesSubtitle": "छँटाई जो आपके बिना हो जाए",
-  "rulesTeachHeadline": "स्क्रीनशॉट हाथ से छाँटना बंद करें",
-  "rulesTeachIntro": "नियम एक वाक्य है: जब स्क्रीनशॉट ऐसा हो, तो उसे उस फ़ोल्डर में रखो। एक बार लिखिए, फिर हर मिलता-जुलता स्क्रीनशॉट अपने आप वहीं चला जाएगा — आते ही।",
-  "rulesTeachExample": "उदाहरण: जब स्क्रीनशॉट में कार्ड नंबर हो → उसे रसीदें फ़ोल्डर में रखो।",
-  "rulesTeachStep1Title": "1. स्क्रीनशॉट बताएँ",
-  "rulesTeachStep1Body": "उस पर लिखा कोई शब्द, वह जो दिखाता है, या उसमें मौजूद निजी जानकारी।",
-  "rulesTeachStep2Title": "2. फ़ोल्डर चुनें",
-  "rulesTeachStep2Body": "मेल खाने वाले स्क्रीनशॉट कहाँ पहुँचें।",
-  "rulesTeachStep3Title": "3. बस इतना ही",
-  "rulesTeachStep3Body": "इसके बाद SHOTO खुद फ़ाइल करता रहेगा। पहले से रुके स्क्रीनशॉट पर भी नियम चला सकते हैं।",
-  "rulesTeachShow": "नियम कैसे काम करते हैं?",
-  "rulesTeachHide": "समझ गया",
-  "rulesStartTemplates": "या किसी तैयार उदाहरण से शुरू करें",
-  "rulesTemplateReceipts": "रसीदें और बिल",
-  "rulesTemplateReceiptsWhy": "हर वह चीज़ जिस पर कार्ड नंबर या कुल राशि हो",
-  "rulesTemplateTickets": "टिकट और बुकिंग",
-  "rulesTemplateTicketsWhy": "बोर्डिंग पास, आरक्षण, ऑर्डर की पुष्टि",
-  "rulesTemplateCodes": "कोड और पासवर्ड",
-  "rulesTemplateCodesWhy": "वन-टाइम कोड और हर वह चीज़ जो पासवर्ड लगे",
-  "rulesTemplateAnimals": "जानवरों की तस्वीरें",
-  "rulesTemplateAnimalsWhy": "तस्वीर में जो दिखे उस पर चलता है, शब्दों पर नहीं",
-  "rulesTemplatePicked": "फ़ोल्डर चुनें और यह सहेजने के लिए तैयार है।",
-  "rulesEmptyTitle": "अभी कोई नियम नहीं",
-  "rulesNew": "नया नियम",
-  "rulesNeedFolderFirst": "पहले कोई फ़ोल्डर बनाएँ — नियम को रखने की जगह चाहिए।",
-  "rulesDeleteTitle": "यह नियम हटाएँ?",
-  "rulesDeleteMessage": "जो स्क्रीनशॉट यह पहले फ़ाइल कर चुका है वे अपनी जगह रहेंगे।",
-  "rulesWhenIt": "जब यह {summary}",
-  "@rulesWhenIt": {
-    "placeholders": {
-      "summary": {
-        "type": "String"
-      }
-    }
-  },
-  "rulesBacklogTitle": "पुराना ढेर निपटाएँ",
-  "rulesBacklogIdle": "उन स्क्रीनशॉट पर नियम चलाता है जो अभी किसी फ़ोल्डर में नहीं हैं। जो आपने खुद फ़ाइल किए उन्हें छुआ नहीं जाता।",
-  "rulesBacklogRunning": "{total} में से {done} जाँचे जा रहे हैं…",
-  "@rulesBacklogRunning": {
-    "placeholders": {
-      "done": {
-        "type": "int"
-      },
-      "total": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesBacklogNothing": "बिना छँटाई कुछ नहीं बचा।",
-  "rulesBacklogResult": "{examined} बिना छँटे में से {filed} फ़ाइल हो गए।",
-  "@rulesBacklogResult": {
-    "placeholders": {
-      "filed": {
-        "type": "int"
-      },
-      "examined": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesRunNow": "नियम अभी चलाएँ",
-  "ruleBuilderTitle": "नया नियम",
-  "ruleBuilderIntro": "दो सवाल: किससे मेल खाए, और कहाँ जाए।",
-  "ruleBuilderFolderLabel": "कहाँ जाए?",
-  "ruleBuilderConditionLabel": "किससे मेल खाना चाहिए?",
-  "ruleBuilderConditionsLabel": "इनसे भी मेल खाता है",
-  "ruleBuilderAddCondition": "एक और जोड़ें",
-  "ruleBuilderMatchAll": "सभी",
-  "ruleBuilderMatchAny": "कोई एक",
-  "ruleBuilderMatchAllHelp": "स्क्रीनशॉट को इनमें से हर एक पर खरा उतरना होगा।",
-  "ruleBuilderMatchAnyHelp": "इनमें से एक का सच होना काफ़ी है।",
-  "ruleBuilderSave": "नियम सहेजें",
-  "ruleBuilderIncomplete": "चुनें कि किससे मेल खाए, और एक फ़ोल्डर",
-  "ruleBuilderPreview": "जब स्क्रीनशॉट {summary} तो उसे {folder} में रखें।",
-  "@ruleBuilderPreview": {
-    "placeholders": {
-      "folder": {
-        "type": "String"
-      },
-      "summary": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleBuilderPreviewTitle": "आपका नियम, शब्दों में",
-  "conditionTextContains": "कोई शब्द कहे",
-  "conditionTextContainsHelp": "तस्वीर के अंदर SHOTO जो पाठ पढ़ता है उसे देखता है, और पूरे शब्द से मिलाता है — \"code\" \"barcode\" पर नहीं चलेगा। ऐसा शब्द चुनें जो सचमुच ऐसे स्क्रीनशॉट पर लिखा होता हो।",
-  "conditionTextContainsHint": "उसमें लिखा शब्द — «इनवॉइस», «टिकट»",
-  "conditionShowsSubject": "कुछ दिखाए",
-  "conditionShowsSubjectHelp": "देखता है कि तस्वीर किस चीज़ की है, न कि उस पर क्या लिखा है। शब्द मॉडल के अपने शब्द से मेल खाना चाहिए, इसलिए अंदाज़ा लगाने के बजाय नीचे अपनी लाइब्रेरी से कोई एक चुनें।",
-  "conditionShowsSubjectHint": "क्या दिखता है — «बिल्ली», «जानवर», «खाना»",
-  "conditionContainsSensitive": "निजी जानकारी हो",
-  "conditionContainsSensitiveHelp": "वही जाँच जो सुरक्षित साझा करता है — कार्ड नंबर असली चेकसम से गुज़रते हैं, इसलिए ऑर्डर नंबर गलती से कार्ड नहीं समझा जाता।",
-  "conditionHasAnyText": "पढ़ने योग्य पाठ हो",
-  "conditionHasAnyTextHelp": "हर उस तस्वीर पर सही जिसमें कुछ भी लिखा हो। स्क्रीनशॉट को सहेजी तस्वीरों से अलग करने में मददगार।",
   "settingsTitle": "सेटिंग्स",
   "settingsAppearance": "दिखावट",
   "settingsTheme": "थीम",
@@ -189,10 +93,6 @@
   "settingsHapticsHint": "दबाने पर हल्की सी थपकी",
   "settingsConfirmDelete": "हटाने से पहले पूछें",
   "settingsConfirmDeleteHint": "हटाया हुआ वापस नहीं आता",
-  "settingsAutomation": "स्वचालन",
-  "settingsAutomationCaption": "एक बार नियम लिखें और SHOTO मिलते-जुलते स्क्रीनशॉट आते ही फ़ाइल कर देगा।",
-  "settingsRules": "फ़ाइलिंग नियम",
-  "settingsRulesHint": "छँटाई SHOTO पर छोड़ दें",
   "settingsFindDuplicates": "डुप्लिकेट खोजें",
   "settingsClearCache": "इमेज कैश साफ़ करें",
   "settingsShare": "SHOTO साझा करें",
@@ -285,8 +185,6 @@
       }
     }
   },
-  "quickSaveFiledByRules": "आपके नियमों के अनुसार फ़ाइल हो गया।",
-  "quickSaveNoRuleMatched": "कोई नियम नहीं मिला — लाइब्रेरी में बिना छँटाई रह गया।",
   "quickSaveFailedTitle": "वह तस्वीर पढ़ी नहीं जा सकी",
   "quickSaveFailedBody": "इसे दोबारा साझा करके देखें।",
   "quickSaveSignedOutTitle": "पहले SHOTO में साइन इन करें",
@@ -561,59 +459,6 @@
       }
     }
   },
-  "ruleSummaryEmpty": "अभी कोई शर्त नहीं — कुछ फ़ाइल नहीं करेगा",
-  "ruleJoinAnd": " और ",
-  "ruleJoinOr": " या ",
-  "ruleSaysWord": "«{value}» कहे",
-  "@ruleSaysWord": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotSaysWord": "«{value}» न कहे",
-  "@ruleNotSaysWord": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleShows": "{value} दिखाए",
-  "@ruleShows": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotShows": "{value} न दिखाए",
-  "@ruleNotShows": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleContains": "{value} रखता हो",
-  "@ruleContains": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleNotContains": "{value} न रखता हो",
-  "@ruleNotContains": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "ruleHasText": "पढ़ने योग्य पाठ हो",
-  "ruleNoText": "पढ़ने योग्य पाठ न हो",
   "kindCard": "कार्ड नंबर",
   "kindIban": "बैंक खाता",
   "kindCode": "सत्यापन कोड",
@@ -741,7 +586,6 @@
   },
   "errorLoadScreenshots": "आपके स्क्रीनशॉट लोड नहीं हो सके।",
   "errorLoadFolders": "आपके फ़ोल्डर लोड नहीं हो सके।",
-  "errorLoadRules": "आपके नियम लोड नहीं हो सके।",
   "errorScanDuplicates": "डुप्लिकेट स्कैन नहीं हो सका।",
   "errorDeleteSelected": "चयनित स्क्रीनशॉट हटाए नहीं जा सके।",
   "errorStitchFailed": "ये स्क्रीनशॉट जोड़े नहीं जा सके।",
@@ -792,10 +636,6 @@
   "sensitiveName": "नाम",
   "sensitiveOrderNumber": "ऑर्डर नंबर",
   "sensitiveNumber": "नंबर",
-  "quickSaveByRules": "मेरे नियम इसे फ़ाइल करें",
-  "ruleSeenTitle": "SHOTO ने आपकी लाइब्रेरी में क्या देखा",
-  "ruleSeenEmpty": "SHOTO ने अभी आपके स्क्रीनशॉट के अंदर नहीं देखा। हर नया आते ही पढ़ा जाता है, तो यह भरता जाएगा।",
-  "ruleSeenHint": "किसी एक को दबाएँ — ये ठीक वही शब्द हैं जो मॉडल देता है, तो इन पर बना नियम सचमुच चलेगा।",
   "onbSkip": "छोड़ें",
   "onbNext": "आगे",
   "onbPileTitle": "हज़ार स्क्रीनशॉट, एक ढेर",
@@ -841,86 +681,5 @@
   "importFailed": "ये स्क्रीनशॉट सेव नहीं हो सके",
   "homeToolImportSubtitle": "अपने फ़ोन से चुनें — आपकी गैलरी नहीं पढ़ी जाती",
   "importPickerUnavailable": "फ़ोटो पिकर नहीं खुल सका",
-  "rulePreviewMatches": "{count, plural, =1{SHOTO ने जो {indexed} स्क्रीनशॉट पढ़े हैं उनमें से 1 यह लेगा} other{SHOTO ने जो {indexed} स्क्रीनशॉट पढ़े हैं उनमें से {count} यह लेगा}}",
-  "@rulePreviewMatches": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "indexed": {
-        "type": "int"
-      }
-    }
-  },
-  "rulePreviewNone": "SHOTO ने अब तक जो पढ़ा है उसमें से कुछ भी इससे मेल नहीं खाता",
-  "rulePreviewNotIndexed": "SHOTO ने अभी तक आपका कोई स्क्रीनशॉट नहीं पढ़ा, इसलिए जाँचने को कुछ नहीं है। हर एक को आते ही पढ़ लिया जाता है।",
-  "rulePreviewTaken": "{count, plural, =1{इनमें से 1 इससे ऊपर वाले नियम को चला जाता है।} other{इनमें से {count} इससे ऊपर वाले नियम को चले जाते हैं।}}",
-  "@rulePreviewTaken": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulePreviewAllTaken": "जो भी मेल खाता है वह पहले ही ऊपर वाला नियम ले लेता है। यह नियम जीतना चाहिए तो इसे ऊपर ले जाएँ।",
-  "rulePreviewFloor": "सिर्फ़ वही गिनता है जो SHOTO अब तक पढ़ चुका है। नए स्क्रीनशॉट आते ही जाँचे जाते हैं।",
-  "ruleBuilderEditTitle": "नियम बदलें",
-  "ruleBuilderEditIntro": "बदलाव अब से लागू होंगे। जो स्क्रीनशॉट यह नियम पहले ही रख चुका है वे वहीं रहेंगे।",
-  "ruleBuilderUpdate": "बदलाव सहेजें",
-  "rulesPriorityNote": "स्क्रीनशॉट उसी पहले नियम को जाता है जो उससे मेल खाए। कौन-सा पहले हो, यह तीरों से बदलें।",
-  "rulesCardNotIndexed": "अभी कुछ पढ़ा नहीं गया — जाँचने को कुछ नहीं",
-  "rulesCardClaims": "{count, plural, =1{1 स्क्रीनशॉट लेता है} other{{count} स्क्रीनशॉट लेता है}}",
-  "@rulesCardClaims": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesCardClaimsNone": "अभी कुछ नहीं लेता",
-  "rulesCardOverruled": "{count, plural, =1{1 मेल ऊपर वाले नियम को जाता है} other{{count} मेल ऊपर वाले नियम को जाते हैं}}",
-  "@rulesCardOverruled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesMoveUp": "ऊपर ले जाएँ",
-  "rulesMoveDown": "नीचे ले जाएँ",
-  "rulesBacklogUnread": "{count, plural, =1{1 स्क्रीनशॉट अभी पढ़ा नहीं गया — जारी रखने के लिए फिर चलाएँ।} other{{count} स्क्रीनशॉट अभी पढ़े नहीं गए — जारी रखने के लिए फिर चलाएँ।}}",
-  "@rulesBacklogUnread": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "indexingProgress": "{count, plural, =1{आपके स्क्रीनशॉट अभी पढ़े जा रहे हैं — 1 बाकी} other{आपके स्क्रीनशॉट अभी पढ़े जा रहे हैं — {count} बाकी}}",
-  "@indexingProgress": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "ruleBuilderMatches": "मेल खाता है",
-  "ruleBuilderMatchesNot": "मेल नहीं खाता",
-  "ruleBuilderMatchesNotHelp": "यह सच न हो तब नियम चलता है — किसी अपवाद को बाहर रखने के लिए उपयोगी।",
-  "rulePreviewAlreadyFiled": "{count, plural, =1{इनमें से 1 पहले से किसी फ़ोल्डर में है, और चलाने पर वे कभी नहीं हटतीं। यहाँ केवल नए स्क्रीनशॉट आएँगे।} other{इनमें से {count} पहले से फ़ोल्डरों में हैं, और चलाने पर वे कभी नहीं हटतीं। यहाँ केवल नए स्क्रीनशॉट आएँगे।}}",
-  "@rulePreviewAlreadyFiled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "rulesCardAlreadyFiled": "{count, plural, =1{1 से मेल खाता है, पर वह पहले से कहीं और रखी है} other{{count} से मेल खाता है, पर वे पहले से कहीं और रखी हैं}}",
-  "@rulesCardAlreadyFiled": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  }
+  "searchWorking": "आपके स्क्रीनशॉट पढ़े जा रहे हैं…"
 }

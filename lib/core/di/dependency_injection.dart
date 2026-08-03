@@ -18,20 +18,7 @@ import 'package:shoto/features/smart_actions/domain/use_cases/get_screenshot_act
 import 'package:shoto/core/services/biometric_auth_service.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
-import 'package:shoto/core/services/library_indexer.dart';
 import 'package:shoto/core/services/pro_status.dart';
-import 'package:shoto/features/rules/data/data_sources/rules_local_data_source.dart';
-import 'package:shoto/features/rules/data/repositories_impl/rules_repository_impl.dart';
-import 'package:shoto/features/rules/domain/repositories/rules_repository.dart';
-import 'package:shoto/features/rules/domain/use_cases/apply_rules_to_screenshot_use_case.dart';
-import 'package:shoto/features/rules/domain/use_cases/create_rule_use_case.dart';
-import 'package:shoto/features/rules/domain/use_cases/delete_rule_use_case.dart';
-import 'package:shoto/features/rules/domain/use_cases/get_rules_use_case.dart';
-import 'package:shoto/features/rules/domain/use_cases/reorder_rules_use_case.dart';
-import 'package:shoto/features/rules/domain/use_cases/run_rules_on_library_use_case.dart';
-import 'package:shoto/features/rules/domain/use_cases/set_rule_enabled_use_case.dart';
-import 'package:shoto/features/rules/domain/use_cases/update_rule_use_case.dart';
-import 'package:shoto/features/rules/presentation/bloc/rules_bloc.dart';
 import 'package:shoto/features/safe_share/data/services/redaction_service.dart';
 import 'package:shoto/core/services/cache_service.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
@@ -176,11 +163,6 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => GetSubscriptionStatusUseCase(sl()));
   sl.registerLazySingleton(() => PurchasePackageUseCase(sl()));
   sl.registerLazySingleton(() => RestorePurchasesUseCase(sl()));
-  // Registered after the subscription use case it gates itself on, and as a
-  // singleton because it must be one sweep for the whole app — the point of
-  // it is that search, filing rules and Smart Actions stop each doing their
-  // own capped version of the same reading.
-  sl.registerLazySingleton(() => LibraryIndexer(sl(), sl()));
   sl.registerFactory(
     () => SubscriptionBloc(
       getOfferingsUseCase: sl(),
@@ -208,29 +190,6 @@ void setupServiceLocator() {
   );
   sl.registerLazySingleton(() => GetScreenshotActionsUseCase(sl()));
 
-  sl.registerLazySingleton(() => RulesLocalDataSource(sl(), sl()));
-  sl.registerLazySingleton<RulesRepository>(
-    () => RulesRepositoryImpl(sl(), sl()),
-  );
-  sl.registerLazySingleton(() => GetRulesUseCase(sl()));
-  sl.registerLazySingleton(() => CreateRuleUseCase(sl()));
-  sl.registerLazySingleton(() => UpdateRuleUseCase(sl()));
-  sl.registerLazySingleton(() => ReorderRulesUseCase(sl()));
-  sl.registerLazySingleton(() => DeleteRuleUseCase(sl()));
-  sl.registerLazySingleton(() => SetRuleEnabledUseCase(sl()));
-  sl.registerLazySingleton(() => ApplyRulesToScreenshotUseCase(sl()));
-  sl.registerLazySingleton(() => RunRulesOnLibraryUseCase(sl()));
-  sl.registerFactory(
-    () => RulesBloc(
-      getRulesUseCase: sl(),
-      createRuleUseCase: sl(),
-      updateRuleUseCase: sl(),
-      reorderRulesUseCase: sl(),
-      deleteRuleUseCase: sl(),
-      setRuleEnabledUseCase: sl(),
-      runRulesOnLibraryUseCase: sl(),
-    ),
-  );
 
   sl.registerLazySingleton(() => RedactionService(sl(), sl()));
 

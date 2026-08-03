@@ -15,8 +15,6 @@ import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 import 'package:shoto/features/folders/domain/use_cases/create_folder_use_case.dart';
 import 'package:shoto/features/folders/domain/use_cases/get_folders_use_case.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_colors.dart';
-import 'package:shoto/features/rules/domain/use_cases/apply_rules_to_screenshot_use_case.dart';
-import 'package:shoto/features/rules/domain/use_cases/get_rules_use_case.dart';
 import 'package:shoto/features/screenshots/domain/repositories/screenshot_repository.dart';
 
 /// The sheet that rises when an image is shared into SHOTO.
@@ -94,14 +92,6 @@ class _QuickSavePageState extends State<QuickSavePage>
   List<FolderEntity> _folders = const [];
   FolderEntity? _selected;
 
-  /// Whether any enabled rule exists. Without one, a folder is the only way
-  /// this sheet can file anything, so the button waits for a choice.
-  bool _hasRules = false;
-
-  /// How many the rules actually claimed, for the confirmation line — "saved"
-  /// when nothing matched would be quietly untrue.
-  int _ruleFiledCount = 0;
-
   int get _alreadyInLibraryCount =>
       _images.where((image) => image.isAlreadyInLibrary).length;
 
@@ -111,10 +101,7 @@ class _QuickSavePageState extends State<QuickSavePage>
   /// A folder is the point. Saving to the library and stopping there just
   /// makes another pile to sort later, which is the problem SHOTO exists to
   /// solve — so the button waits until somewhere has been chosen.
-  ///
-  /// Unless rules can choose for you, which is the entire promise of having
-  /// written them.
-  bool get _inert => _selected == null && !_hasRules;
+  bool get _inert => _selected == null;
 
   /// How far the user has dragged the sheet down, in logical pixels. Kept
   /// separate from the controller so a drag can be abandoned and spring back
@@ -202,9 +189,6 @@ class _QuickSavePageState extends State<QuickSavePage>
       }
 
       final List<FolderEntity> folders = await sl<GetFoldersUseCase>()();
-      final bool hasRules = (await sl<GetRulesUseCase>()()).any(
-        (rule) => rule.isEnabled,
-      );
 
       await _entered.future;
       // `_closing` as well as `mounted`: the entrance can be released by a
@@ -216,7 +200,6 @@ class _QuickSavePageState extends State<QuickSavePage>
         _images = images;
         _skipped = (shared?['skipped'] as int?) ?? 0;
         _folders = folders;
-        _hasRules = hasRules;
         _stage = _Stage.ready;
       });
     } catch (_) {
@@ -226,7 +209,7 @@ class _QuickSavePageState extends State<QuickSavePage>
 
   Future<void> _save() async {
     final FolderEntity? folder = _selected;
-    if (folder == null && !_hasRules) return;
+    if (folder == null) return;
 
     // Resolved here, synchronously, before a single `await` runs.
     //
@@ -283,23 +266,10 @@ class _QuickSavePageState extends State<QuickSavePage>
         );
       }
 
-      if (folder != null) {
-        // One call for the whole batch rather than one per image — filing is
-        // the single thing the user asked for, so it either happened or it
-        // didn't.
-        await repository.assignFolder(assetIds, folder.id);
-      } else {
-        // No folder chosen, but rules exist — this is the path the whole
-        // feature is for. Each screenshot is read and filed by whichever
-        // rule claims it; anything no rule wants stays unsorted, which the
-        // Home hero already surfaces.
-        for (final String assetId in assetIds) {
-          _ruleFiledCount +=
-              await sl<ApplyRulesToScreenshotUseCase>()(assetId) == null
-              ? 0
-              : 1;
-        }
-      }
+      // One call for the whole batch rather than one per image — filing is
+      // the single thing the user asked for, so it either happened or it
+      // didn't.
+      await repository.assignFolder(assetIds, folder.id);
 
       if (!mounted) return;
       Haptics.confirm();
@@ -789,11 +759,7 @@ class _QuickSavePageState extends State<QuickSavePage>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        // The rules path has no folder to open yet, so the
-                        // icon says "something decides this" instead.
-                        _selected == null
-                            ? Icons.auto_awesome_rounded
-                            : Icons.folder_open_rounded,
+                        Icons.folder_open_rounded,
                         color: _inert
                             ? AppColors.textDisabled
                             : AppColors.onPrimary,
@@ -801,23 +767,13 @@ class _QuickSavePageState extends State<QuickSavePage>
                       ),
                       SizedBox(width: 9.w),
                       Text(
-                        // Three states, not two.
-                        //
-                        // This used to read `_inert ? pick : fileIn(_selected!)`,
-                        // which was safe only while `_inert` meant exactly
-                        // "no folder chosen". Rules broke that: with a rule
-                        // enabled the button is live *without* a folder, so
-                        // `_inert` went false while `_selected` was still
-                        // null and the `!` threw "Null check operator used on
-                        // a null value" the moment the sheet rendered.
-                        //
-                        // The label now branches on the thing it actually
-                        // describes — where this screenshot is going — rather
-                        // than on whether the button is tappable.
+                        // Branches on where the screenshot is going rather
+                        // than on whether the button is tappable — the two
+                        // are the same thing again now that a folder is the
+                        // only way to file, but writing it this way is what
+                        // keeps `_selected!` provably safe.
                         _selected != null
                             ? context.l10n.quickSaveFileIn(_selected!.name)
-                            : _hasRules
-                            ? context.l10n.quickSaveByRules
                             : context.l10n.quickSavePickFolder,
                         style: AppTextStyles.button.copyWith(
                           color: _inert
@@ -833,14 +789,13 @@ class _QuickSavePageState extends State<QuickSavePage>
     );
   }
 
-  /// What actually happened, rather than what was asked for — a rule that
-  /// claimed nothing must not be reported as having filed something.
-  String _savedSubtitle(BuildContext context) {
-    final FolderEntity? folder = _selected;
-    if (folder != null) return context.l10n.quickSaveFiled(folder.name);
-    if (_ruleFiledCount == 0) return context.l10n.quickSaveNoRuleMatched;
-    return context.l10n.quickSaveFiledByRules;
-  }
+  /// Where it went.
+  ///
+  /// `_selected` is non-null by construction here: [_save] returns early
+  /// without a folder, so the sheet can only reach [_Stage.saved] with one
+  /// chosen.
+  String _savedSubtitle(BuildContext context) =>
+      context.l10n.quickSaveFiled(_selected!.name);
 
   /// Says how many, and whether this is an import or only a filing job.
   String _title(BuildContext context) {

@@ -27,7 +27,6 @@ import 'package:shoto/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:shoto/features/auth/presentation/bloc/auth_event.dart';
 import 'package:shoto/features/auth/presentation/bloc/auth_state.dart';
 import 'package:shoto/features/duplicates/presentation/pages/duplicates_page.dart';
-import 'package:shoto/features/rules/presentation/pages/rules_page.dart';
 import 'package:shoto/features/settings/presentation/widgets/app_version_block.dart';
 import 'package:shoto/features/settings/presentation/widgets/language_sheet.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_group.dart';
@@ -176,20 +175,6 @@ class SettingsPage extends StatelessWidget {
                           ],
                         );
                       },
-                    ),
-
-                    SettingsGroup(
-                      title: context.l10n.settingsAutomation,
-                      caption: context.l10n.settingsAutomationCaption,
-                      children: [
-                        SettingsNavTile(
-                          icon: Icons.rule_folder_rounded,
-                          label: context.l10n.settingsRules,
-                          description: context.l10n.settingsRulesHint,
-                          showProBadge: showProBadge,
-                          onTap: () => openRulesPage(context),
-                        ),
-                      ],
                     ),
 
                     // "Find duplicates" used to sit alone under a heading

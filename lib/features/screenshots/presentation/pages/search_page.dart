@@ -7,13 +7,14 @@ import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/core/routes/photo_viewer_route.dart';
-import 'package:shoto/core/services/library_indexer.dart';
 import 'package:shoto/core/utils/visual_vocabulary.dart';
 import 'package:shoto/core/widgets/premium_gate.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/widgets/empty_state.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/extract_and_cache_labels_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/extract_and_cache_text_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_cached_ocr_text_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_cached_visual_labels_use_case.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
@@ -54,20 +55,13 @@ Future<void> openSearchPage(
 /// words somebody would type, in Arabic or English, including the general
 /// ones like "حيوان" that no single label answers.
 ///
-/// Both are cached permanently in `screenshot_meta`, and this page only ever
-/// *reads* that cache — [LibraryIndexer] fills it, continuously, for as long
-/// as the app is open.
-///
-/// It did not always. Search used to index forty screenshots per visit, the
-/// filing rules another forty per tap, and Smart Actions one at a time: three
-/// capped indexers, each doing work the others had already done, each alive
-/// only while its own page was. The caps were the only thing keeping the page
-/// from blocking on hundreds of model calls, and the cost landed hardest on
-/// rules, where a correct rule matched nothing simply because nothing had
-/// been read yet. One indexer, started at the shell, removes both the caps
-/// and the duplication.
+/// Both are indexed lazily on first open and capped per visit so the page
+/// never blocks on hundreds of model calls, then cached permanently in
+/// `screenshot_meta` — every later visit is instant.
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
+
+  static const int _indexBatchCap = 40;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -78,9 +72,8 @@ class _SearchPageState extends State<SearchPage> {
   final Map<String, String> _ocrByAssetId = {};
   final Map<String, List<String>> _labelsByAssetId = {};
   String _query = '';
-
-  late final LibraryIndexer _indexer = sl<LibraryIndexer>();
-  Timer? _reloadTimer;
+  bool _isIndexing = true;
+  Timer? _publishTimer;
 
   @override
   void initState() {
@@ -88,56 +81,77 @@ class _SearchPageState extends State<SearchPage> {
     _controller.addListener(() {
       setState(() => _query = _controller.text.trim().toLowerCase());
     });
-
-    _indexer.addListener(_onIndexerChanged);
-    // Nudged rather than started: the shell has been running it since launch,
-    // so on most visits this finds the work already done. It matters for the
-    // visit right after somebody subscribes, when the last sweep stopped at
-    // the premium check.
-    unawaited(_indexer.start());
-    unawaited(_loadCaches());
+    _loadAndIndex();
   }
 
   @override
   void dispose() {
-    _indexer.removeListener(_onIndexerChanged);
-    _reloadTimer?.cancel();
+    _publishTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
 
-  /// Picks up what the indexer has read, at most once a second.
-  ///
-  /// The indexer notifies after every screenshot, and reacting to each one
-  /// would mean two full-table reads and a rebuild of a page holding a grid,
-  /// interleaved with the heaviest work the app does. Results still stream in
-  /// while the model runs, which is the point of updating at all; they simply
-  /// arrive in batches nobody can perceive as batches.
-  void _onIndexerChanged() {
-    if (!mounted) return;
-    // The phase line at the top has to move immediately even when the
-    // expensive reload is still on its timer.
-    setState(() {});
-    if (_reloadTimer?.isActive ?? false) return;
-    _reloadTimer = Timer(
-      const Duration(seconds: 1),
-      () => unawaited(_loadCaches()),
-    );
-  }
-
-  Future<void> _loadCaches() async {
+  Future<void> _loadAndIndex() async {
     final Map<String, String> cachedText =
         await sl<GetCachedOcrTextUseCase>()();
     final Map<String, List<String>> cachedLabels =
         await sl<GetCachedVisualLabelsUseCase>()();
     if (!mounted) return;
     setState(() {
-      _ocrByAssetId
-        ..clear()
-        ..addAll(cachedText);
-      _labelsByAssetId
-        ..clear()
-        ..addAll(cachedLabels);
+      _ocrByAssetId.addAll(cachedText);
+      _labelsByAssetId.addAll(cachedLabels);
+    });
+
+    final ScreenshotsState state = context.read<ScreenshotsBloc>().state;
+    if (state is! ScreenshotsLoadedState) {
+      setState(() => _isIndexing = false);
+      return;
+    }
+
+    // The two indexes are filled independently: a screenshot whose text was
+    // read before this feature existed still needs looking at, and pairing
+    // them would mean re-running OCR on the entire library to get labels.
+    final List<ScreenshotEntity> needsText = state.screenshots
+        .where((s) => !_ocrByAssetId.containsKey(s.id))
+        .take(SearchPage._indexBatchCap)
+        .toList();
+    final List<ScreenshotEntity> needsLabels = state.screenshots
+        .where((s) => !_labelsByAssetId.containsKey(s.id))
+        .take(SearchPage._indexBatchCap)
+        .toList();
+
+    for (final ScreenshotEntity screenshot in needsText) {
+      final String text = await sl<ExtractAndCacheTextUseCase>()(screenshot);
+      if (!mounted) return;
+      _ocrByAssetId[screenshot.id] = text;
+      _publish();
+    }
+
+    for (final ScreenshotEntity screenshot in needsLabels) {
+      final List<String> labels = await sl<ExtractAndCacheLabelsUseCase>()(
+        screenshot,
+      );
+      if (!mounted) return;
+      _labelsByAssetId[screenshot.id] = labels;
+      _publish();
+    }
+
+    _publishTimer?.cancel();
+    if (mounted) setState(() => _isIndexing = false);
+  }
+
+  /// Shows what has been read so far, at most a few times a second.
+  ///
+  /// Indexing walks up to eighty screenshots through OCR and a vision model,
+  /// and it used to `setState` after every single one — eighty full rebuilds
+  /// of a page holding a grid, interleaved with the heaviest work the app
+  /// does. Results still stream in while the model runs, which is the point of
+  /// updating at all; they simply arrive in batches nobody can perceive as
+  /// batches.
+  void _publish() {
+    if (_publishTimer?.isActive ?? false) return;
+    _publishTimer = Timer(const Duration(milliseconds: 250), () {
+      if (mounted) setState(() {});
     });
   }
 
@@ -219,12 +233,7 @@ class _SearchPageState extends State<SearchPage> {
                 ],
               ),
             ),
-            // Now says *how much* is left rather than only that something is
-            // happening. Search over a partly-read library gives incomplete
-            // answers, and "still reading, 340 to go" is the difference
-            // between an empty result somebody waits out and one they read as
-            // "SHOTO cannot find my screenshot".
-            if (_indexer.isWorking)
+            if (_isIndexing)
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(20.w, 10.h, 20.w, 0),
                 child: Row(
@@ -234,16 +243,13 @@ class _SearchPageState extends State<SearchPage> {
                       height: 14.w,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        value: _indexer.fraction,
                         color: AppColors.secondary,
                       ),
                     ),
                     SizedBox(width: 10.w),
-                    Expanded(
-                      child: Text(
-                        context.l10n.indexingProgress(_indexer.remaining),
-                        style: AppTextStyles.caption,
-                      ),
+                    Text(
+                      context.l10n.searchWorking,
+                      style: AppTextStyles.caption,
                     ),
                   ],
                 ),

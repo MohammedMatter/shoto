@@ -48,7 +48,6 @@ class AppMessage {
 
   static const AppMessage loadScreenshots = AppMessage._(_loadScreenshots);
   static const AppMessage loadFolders = AppMessage._(_loadFolders);
-  static const AppMessage loadRules = AppMessage._(_loadRules);
   static const AppMessage scanDuplicates = AppMessage._(_scanDuplicates);
   static const AppMessage deleteSelected = AppMessage._(_deleteSelected);
   static const AppMessage onboarding = AppMessage._(_onboarding);
@@ -107,7 +106,6 @@ class AppMessage {
 
 String _loadScreenshots(AppLocalizations l) => l.errorLoadScreenshots;
 String _loadFolders(AppLocalizations l) => l.errorLoadFolders;
-String _loadRules(AppLocalizations l) => l.errorLoadRules;
 String _scanDuplicates(AppLocalizations l) => l.errorScanDuplicates;
 String _deleteSelected(AppLocalizations l) => l.errorDeleteSelected;
 String _onboarding(AppLocalizations l) => l.errorOnboarding;
