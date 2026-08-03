@@ -1,3 +1,4 @@
+import 'package:shoto/core/localization/app_message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shoto/features/auth/domain/use_cases/sign_in_with_apple_use_case.dart';
@@ -42,26 +43,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
   }
 
-  String _mapError(Object error) {
+  /// Names the message; the widget showing it resolves it against the current
+  /// locale. See [AppMessage].
+  ///
+  /// The two configuration cases deliberately fall through to [
+  /// AppMessage.generic] rather than keeping their own sentences. Both said
+  /// something only the developer can act on — Google Sign-In is misconfigured
+  /// for this build — and translating "Google Sign-In isn't configured
+  /// correctly for this app yet" into six languages would be six translations
+  /// of a message no user can ever do anything about. The condition is still
+  /// distinguishable in logs, where it belongs.
+  AppMessage _mapError(Object error) {
     if (error is GoogleSignInException) {
-      switch (error.code) {
-        case GoogleSignInExceptionCode.canceled:
-          return 'Sign-in was cancelled.';
-        case GoogleSignInExceptionCode.clientConfigurationError:
-          return 'Google Sign-In isn\'t configured correctly for this app yet.';
-        case GoogleSignInExceptionCode.providerConfigurationError:
-          return 'Google Sign-In isn\'t available on this device right now.';
-        case GoogleSignInExceptionCode.interrupted:
-          return 'Sign-in was interrupted. Please try again.';
-        default:
-          return 'Google sign-in failed: ${error.description ?? error.code}';
-      }
+      return switch (error.code) {
+        GoogleSignInExceptionCode.canceled => AppMessage.signInCancelled,
+        GoogleSignInExceptionCode.interrupted => AppMessage.signInInterrupted,
+        _ => AppMessage.generic,
+      };
     }
 
     final String message = error.toString().toLowerCase();
-    if (message.contains('network')) {
-      return 'Network error. Please check your connection and try again.';
-    }
-    return 'Something went wrong. Please try again.';
+    if (message.contains('network')) return AppMessage.network;
+    return AppMessage.generic;
   }
 }

@@ -8,6 +8,8 @@
 	<string>SHOTO needs access to your photo library to find and organize your screenshots.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>SHOTO needs permission to manage screenshots you delete from your library.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>SHOTO uses Face ID to unlock your private folders.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

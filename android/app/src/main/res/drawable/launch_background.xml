@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Modify this file to customize your launch splash screen -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@android:color/white" />
+<!--
+    The window Android paints while the process starts, before Flutter has
+    drawn anything. Removed automatically on the first Flutter frame.
 
-    <!-- You can insert your own image assets here -->
-    <!-- <item>
+    Two layers: the app's own background colour, and the mark centred on it.
+
+    **The mark here is an empty tray — no cards in it — and that is on
+    purpose.** This window is painted by the OS, so nothing on it can move.
+    SplashPage draws the identical empty tray at the identical 96dp in the
+    identical place, so the handover from the OS to the app is invisible, and
+    then files the three cards into it. Anything the launch window had already
+    shown is never re-introduced; the only thing that arrives is the thing that
+    was never here.
+
+    `splash_logo` is a real raster now (generated per density by
+    `tool/generate_brand_assets.dart`), so wrapping it in <bitmap> is both
+    legal and the right form — it is what pins the gravity. It used to be a
+    vector, and <bitmap> around a vector fails to inflate; because this
+    drawable is the activity's starting window, that failure took the whole app
+    down before Flutter ever started.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/splash_background" />
+    <item>
         <bitmap
-            android:gravity="center"
-            android:src="@mipmap/launch_image" />
-    </item> -->
+            android:src="@drawable/splash_logo"
+            android:gravity="center" />
+    </item>
 </layer-list>

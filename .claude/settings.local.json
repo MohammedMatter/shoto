@@ -14,7 +14,10 @@
       "Bash(cat \"C:/Users/moham/AppData/Local/Pub/Cache/hosted/pub.dev/receive_sharing_intent-1.8.1/lib/src/data/shared_media_file.dart\" 2>/dev/null)",
       "Bash(PM_DIR=\"C:/Users/moham/AppData/Local/Pub/Cache/hosted/pub.dev/photo_manager-3.10.0\" *)",
       "Bash(dart format *)",
-      "Bash(rm -f /tmp/logcat_full.txt)"
+      "Bash(rm -f /tmp/logcat_full.txt)",
+      "Bash(adb devices *)",
+      "Bash(grep -rn \"///\" lib/features/safe_share/presentation/pages/*.dart)",
+      "Bash(python -)"
     ]
   }
 }

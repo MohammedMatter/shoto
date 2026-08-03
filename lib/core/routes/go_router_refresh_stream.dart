@@ -1,21 +1,20 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-/// Bridges a [Stream] (Firebase's auth-state stream) into a [Listenable]
-/// so GoRouter can re-evaluate its `redirect` callback whenever auth state
-/// changes, e.g. after sign-in or sign-out.
 class GoRouterRefreshStream extends ChangeNotifier {
-  GoRouterRefreshStream(Stream<dynamic> stream) {
+  GoRouterRefreshStream({required Stream<dynamic> stream}) {
     notifyListeners();
-    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
+    _streamSubscription = stream.asBroadcastStream().listen(
+      (event) => notifyListeners(),
+    );
   }
-
-  late final StreamSubscription<dynamic> _subscription;
+  late final StreamSubscription _streamSubscription;
 
   @override
   void dispose() {
-    _subscription.cancel();
+    // TODO: implement dispose
+    _streamSubscription.cancel();
     super.dispose();
   }
 }

@@ -10,8 +10,11 @@ class FoldersRepositoryImpl implements FoldersRepository {
   Future<List<FolderEntity>> getFolders() => _localDataSource.getFolders();
 
   @override
-  Future<FolderEntity> createFolder(String name, int color) =>
-      _localDataSource.createFolder(name, color);
+  Future<FolderEntity> createFolder(
+    String name,
+    int color, {
+    bool isPrivate = false,
+  }) => _localDataSource.createFolder(name, color, isPrivate: isPrivate);
 
   @override
   Future<void> renameFolder(int folderId, String name) =>

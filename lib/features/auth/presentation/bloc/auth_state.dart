@@ -1,3 +1,4 @@
+import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/features/auth/domain/entities/user_entity.dart';
 
 enum AuthMethod { google, apple }
@@ -17,7 +18,7 @@ class AuthSuccessState extends AuthState {
 }
 
 class AuthErrorState extends AuthState {
-  final String message;
+  final AppMessage message;
   AuthErrorState(this.message);
 }
 

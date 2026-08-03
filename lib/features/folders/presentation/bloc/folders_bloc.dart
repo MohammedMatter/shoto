@@ -1,3 +1,4 @@
+import 'package:shoto/core/localization/app_message.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoto/features/folders/domain/use_cases/create_folder_use_case.dart';
 import 'package:shoto/features/folders/domain/use_cases/delete_folder_use_case.dart';
@@ -24,13 +25,16 @@ class FoldersBloc extends Bloc<FoldersEvent, FoldersState> {
     on<DeleteFolderEvent>(_onDelete);
   }
 
-  Future<void> _onLoad(LoadFoldersEvent event, Emitter<FoldersState> emit) async {
+  Future<void> _onLoad(
+    LoadFoldersEvent event,
+    Emitter<FoldersState> emit,
+  ) async {
     emit(FoldersLoadingState());
     try {
       final folders = await getFoldersUseCase();
       emit(FoldersLoadedState(folders));
     } catch (error) {
-      emit(FoldersErrorState('Could not load your folders.'));
+      emit(FoldersErrorState(AppMessage.loadFolders));
     }
   }
 
@@ -38,7 +42,11 @@ class FoldersBloc extends Bloc<FoldersEvent, FoldersState> {
     CreateFolderEvent event,
     Emitter<FoldersState> emit,
   ) async {
-    await createFolderUseCase(event.name, event.color);
+    await createFolderUseCase(
+      event.name,
+      event.color,
+      isPrivate: event.isPrivate,
+    );
     await _onLoad(LoadFoldersEvent(), emit);
   }
 

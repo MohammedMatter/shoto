@@ -1,5 +1,14 @@
 package com.example.shoto
 
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
+import io.flutter.embedding.engine.FlutterEngine
 
-class MainActivity : FlutterActivity()
+// local_auth's Android implementation needs a FragmentActivity host to show
+// the BiometricPrompt dialog for private-folder unlock.
+class MainActivity : FlutterFragmentActivity() {
+
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        HapticsChannel.register(this, flutterEngine)
+    }
+}

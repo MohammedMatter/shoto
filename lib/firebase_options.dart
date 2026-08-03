@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '562378341342',
     projectId: 'shoto-8ec52',
     storageBucket: 'shoto-8ec52.firebasestorage.app',
-    iosClientId: '562378341342-vd39a7bas870u9vf4a2no4jlj7m9r8qa.apps.googleusercontent.com',
+    iosClientId:
+        '562378341342-vd39a7bas870u9vf4a2no4jlj7m9r8qa.apps.googleusercontent.com',
     iosBundleId: 'com.example.shoto',
   );
 }

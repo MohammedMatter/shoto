@@ -5,7 +5,8 @@ class LoadFoldersEvent extends FoldersEvent {}
 class CreateFolderEvent extends FoldersEvent {
   final String name;
   final int color;
-  CreateFolderEvent(this.name, this.color);
+  final bool isPrivate;
+  CreateFolderEvent(this.name, this.color, {this.isPrivate = false});
 }
 
 class RenameFolderEvent extends FoldersEvent {

@@ -16,7 +16,8 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> signOut() => _remoteDataSource.signOut();
 
   @override
-  Stream<UserEntity?> get authStateChanges => _remoteDataSource.authStateChanges;
+  Stream<UserEntity?> get authStateChanges =>
+      _remoteDataSource.authStateChanges;
 
   @override
   UserEntity? get currentUser => _remoteDataSource.currentUser;

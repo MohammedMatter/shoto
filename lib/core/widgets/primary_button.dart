@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/theme/app_colors.dart';
+import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 
+/// The app's one filled button.
+///
+/// It used to be an [InkWell], which is the wrong feedback twice over: the
+/// ripple is invisible on a saturated gradient, and it starts on *release*,
+/// so the button gave no answer at all during the part of the tap the user is
+/// actually watching. Every other pressable surface in SHOTO shrinks on press
+/// down; the most prominent control in the app was the one that didn't.
 class PrimaryButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -19,41 +27,60 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 56.h,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: AppColors.primaryGradient,
-          borderRadius: BorderRadius.circular(18.r),
-        ),
-        child: Material(
-          type: MaterialType.transparency,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(18.r),
-            onTap: isLoading ? null : onPressed,
-            child: Center(
+    return PressableScale(
+      // Shallower than a card's 0.97. This button is full-width, so the same
+      // ratio moves far more pixels and starts to read as the whole bar
+      // flexing rather than as a button acknowledging a press.
+      scale: 0.985,
+      onTap: isLoading ? null : onPressed,
+      child: SizedBox(
+        width: double.infinity,
+        height: 35.h,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: AppColors.primaryGradient,
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Center(
+            // Label to spinner is a state change on a control the user is
+            // waiting on, so it gets a bridge rather than a cut. Swapping
+            // them instantly makes the button look like it was replaced by a
+            // different button.
+            child: AnimatedSwitcher(
+              duration: AppMotion.duration(context, AppMotion.press),
+              switchInCurve: AppMotion.standard,
+              switchOutCurve: AppMotion.standard,
+              transitionBuilder: (child, animation) => FadeTransition(
+                opacity: animation,
+                child: ScaleTransition(
+                  scale: Tween<double>(begin: 0.85, end: 1).animate(animation),
+                  child: child,
+                ),
+              ),
               child: isLoading
                   ? SizedBox(
+                      key: const ValueKey<bool>(true),
                       width: 22.w,
                       height: 22.w,
-                      child: const CircularProgressIndicator(
+                      child: CircularProgressIndicator(
                         strokeWidth: 2.4,
-                        color: Colors.white,
+                        color: AppColors.onPrimary,
                       ),
                     )
                   : Row(
+                      key: const ValueKey<bool>(false),
                       mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
                           label,
                           style: AppTextStyles.button.copyWith(
-                            color: Colors.white,
+                            color: AppColors.onPrimary,
                           ),
                         ),
                         if (icon != null) ...[
                           SizedBox(width: 8.w),
-                          Icon(icon, color: Colors.white, size: 18.sp),
+                          Icon(icon, color: AppColors.onPrimary, size: 18.sp),
                         ],
                       ],
                     ),

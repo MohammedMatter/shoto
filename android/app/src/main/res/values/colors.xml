@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mirrors AppColors.background (light). The native splash must match
+         the app's first painted frame exactly, or launching shows a flash of
+         a different colour before Flutter takes over. -->
+    <color name="splash_background">#FAFAFA</color>
+</resources>

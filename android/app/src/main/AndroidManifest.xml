@@ -1,6 +1,28 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+    <!--
+      READ_MEDIA_VISUAL_USER_SELECTED is deliberately NOT declared.
+
+      Declaring it makes Android 14+ offer "Select photos…" (partial access)
+      in the permission dialog. Partial access is structurally useless here:
+      it exposes only the handful of images the user hand-picked, so the
+      "Screenshots" album SHOTO is built around simply isn't visible and the
+      library comes back empty. Leaving it out gives the plain
+      Allow / Don't allow choice, which is the only one this app can work
+      with.
+    -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <!--
+      Needed to drive the vibrator directly (see HapticsChannel.kt). Flutter's
+      built-in haptics need no permission, but they route through
+      HapticFeedbackConstants, which many Android skins map to nothing at all —
+      so the app appeared to have no haptics whatsoever on a device whose
+      system haptics were on and at full strength.
+
+      This is a normal (non-dangerous) permission: it is granted at install
+      time and never prompts the user.
+    -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:label="shoto"
         android:name="${applicationName}"
@@ -25,20 +47,42 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 
-            <!-- 👈 الجزء المضاف لاستقبال الصور عند المشاركة (Share) -->
+        </activity>
+
+        <!--
+            Sharing an image into SHOTO lands here, not in MainActivity.
+
+            Its own task (taskAffinity="") and excludeFromRecents are what
+            make it behave like a sheet rather than a second copy of the app:
+            it appears over whatever the user was doing, saves, and is gone
+            without ever leaving a SHOTO entry in the recents switcher.
+        -->
+        <activity
+            android:name=".ShareActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:theme="@style/ShareTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+              android:name="io.flutter.embedding.android.NormalTheme"
+              android:resource="@style/ShareTheme" />
+            <!--
+                SEND and SEND_MULTIPLE both, so picking several screenshots
+                in the gallery and sharing them lands here as one sheet.
+                Android sends the two as different actions, and an app that
+                only declares SEND simply does not appear in the share sheet
+                once more than one image is selected.
+            -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/*" />
-            </intent-filter>
-
-            <!-- 👈 الجزء المضاف إذا حدد المستخدم عدة صور مع بعض بنفس الوقت -->
-            <intent-filter>
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/*" />
             </intent-filter>
-
         </activity>
 
         <meta-data
@@ -46,10 +90,27 @@
             android:value="2" />
     </application>
 
+    <!--
+      Android 11+ hides other installed apps unless they are declared here.
+      Without these, canLaunchUrl() reports false for perfectly working
+      intents and the actionable-screenshot buttons all appear broken.
+    -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.DIAL"/>
+            <data android:scheme="tel"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SENDTO"/>
+            <data android:scheme="mailto"/>
         </intent>
     </queries>
 </manifest>

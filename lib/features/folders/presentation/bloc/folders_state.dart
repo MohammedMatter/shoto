@@ -1,3 +1,4 @@
+import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 
 class FoldersState {}
@@ -12,6 +13,6 @@ class FoldersLoadedState extends FoldersState {
 }
 
 class FoldersErrorState extends FoldersState {
-  final String message;
+  final AppMessage message;
   FoldersErrorState(this.message);
 }

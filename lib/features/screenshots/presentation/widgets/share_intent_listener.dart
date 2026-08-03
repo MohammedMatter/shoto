@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/features/folders/presentation/widgets/move_to_folder_sheet.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/assign_folder_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/import_shared_screenshot_use_case.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/screenshot_limit_gate.dart';
 
 /// Wraps the app shell and listens for images shared into SHOTO from other
 /// apps (via the OS share sheet). Each image is saved into the device
@@ -65,12 +67,20 @@ class _ShareIntentListenerState extends State<ShareIntentListener> {
     });
   }
 
-  void _promptForFolder(List<String> assetIds, {required int count}) {
+  Future<void> _promptForFolder(
+    List<String> assetIds, {
+    required int count,
+  }) async {
+    // Freshly imported assets have no meta row yet, so filing any of them
+    // (even "don't add to a folder") creates one — all of them count as new.
+    final bool allowed = await ensureUnderScreenshotLimit(
+      context,
+      additionalNewItems: assetIds.length,
+    );
+    if (!allowed || !mounted) return;
     showMoveToFolderSheet(
       context,
-      title: count == 1
-          ? 'Screenshot saved! Add it to a folder?'
-          : 'Screenshots saved! Add them to a folder?',
+      title: context.l10n.shareSavedPrompt(count),
       noFolderLabel: "Don't add to a folder",
       onSelected: (folderId) async {
         await sl<AssignFolderUseCase>()(assetIds, folderId);
@@ -79,9 +89,7 @@ class _ShareIntentListenerState extends State<ShareIntentListener> {
           ..hideCurrentSnackBar()
           ..showSnackBar(
             SnackBar(
-              content: Text(
-                count == 1 ? 'Screenshot saved' : '$count screenshots saved',
-              ),
+              content: Text(context.l10n.shareSavedCount(count)),
               backgroundColor: AppColors.surfaceVariant,
             ),
           );

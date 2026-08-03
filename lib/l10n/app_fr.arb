@@ -1,0 +1,926 @@
+{
+  "@@locale": "fr",
+  "commonCancel": "Annuler",
+  "commonDelete": "Supprimer",
+  "commonRetry": "Réessayer",
+  "commonSomethingWentWrong": "Une erreur est survenue",
+  "commonPro": "PRO",
+  "navHome": "Accueil",
+  "navLibrary": "Bibliothèque",
+  "navFolders": "Dossiers",
+  "navSettings": "Réglages",
+  "tagline": "Vos captures, rangées",
+  "homeGreetingMorning": "Bonjour",
+  "homeGreetingAfternoon": "Bon après-midi",
+  "homeGreetingEvening": "Bonsoir",
+  "homeInboxEmpty": "Rien d'enregistré",
+  "homeInboxEmptySubtitle": "Partagez une capture vers SHOTO pour commencer",
+  "homeInboxClear": "Tout est rangé",
+  "homeInboxClearSubtitle": "Plus rien à trier",
+  "homeInboxCountSubtitle": "Captures que vous n'avez pas encore classées",
+  "homeStatScreenshots": "Captures",
+  "homeStatFavorites": "Favoris",
+  "homeStatFolders": "Dossiers",
+  "homeToolsTitle": "Ce que SHOTO sait faire",
+  "homeToolSafeShare": "Partage protégé",
+  "homeToolSafeShareSubtitle": "Masquez d'abord les infos privées",
+  "homeToolDuplicates": "Trouver les doublons",
+  "homeToolDuplicatesSubtitle": "Libérez de l'espace",
+  "homeToolSearch": "Chercher dedans",
+  "homeToolSearchSubtitle": "Trouvez du texte dans vos images",
+  "homeToolStitch": "Assembler les captures longues",
+  "homeToolStitchSubtitle": "Réunissez une capture défilante",
+  "homeRecent": "Récentes",
+  "libraryPickForMerge": "Choisissez deux captures ou plus de la même page",
+  "libraryPickForProtect": "Choisissez la capture à protéger",
+  "libraryActionProtect": "Protéger",
+  "homeToolsTitleShort": "Faire quelque chose",
+  "homeSeeAll": "Tout voir",
+  "libraryEmptyTitle": "Rien d'enregistré pour l'instant",
+  "libraryEmptyMessage": "Partagez une capture vers SHOTO, ou ajoutez-en une avec le bouton +. Votre galerie n'est jamais lue : seul ce que vous confiez est conservé.",
+  "libraryNoFavoritesTitle": "Aucun favori",
+  "libraryNoFavoritesMessage": "Touchez le cœur d'une capture pour l'enregistrer ici.",
+  "libraryFilterAll": "Toutes",
+  "libraryFilterFavorites": "Favoris",
+  "libraryFilterUnsorted": "Non classées",
+  "libraryNoUnsortedTitle": "Tout est classé",
+  "libraryNoUnsortedMessage": "Rien ne vous attend. Les nouvelles captures arrivent ici jusqu'à ce que vous les classiez ou les mettiez en favori.",
+  "librarySelectedCount": "{count} sélectionnées",
+  "@librarySelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "librarySelectAll": "Tout sélectionner",
+  "libraryActionMerge": "Assembler",
+  "libraryActionMove": "Déplacer",
+  "libraryActionDelete": "Supprimer",
+  "libraryDeleteTitle": "Supprimer ces captures ?",
+  "libraryDeleteMessage": "{count, plural, =1{1 capture sera définitivement supprimée de votre appareil.} other{{count} captures seront définitivement supprimées de votre appareil.}}",
+  "@libraryDeleteMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "permissionNeededTitle": "Accès aux photos requis",
+  "permissionNeededMessage": "SHOTO garde les captures que vous lui partagez dans son propre album. Il a besoin de l'accès aux photos pour y écrire et les relire — il ne parcourt jamais le reste de votre galerie.",
+  "permissionPartialTitle": "Accès complet requis",
+  "permissionPartialMessage": "SHOTO ne voit actuellement que quelques photos choisies à la main et ne peut donc pas atteindre son propre album. Choisissez « Autoriser tout » pour continuer.",
+  "permissionOpenSettings": "Ouvrir les réglages",
+  "rulesTitle": "Règles",
+  "rulesSubtitle": "Le classement qui se fait sans vous",
+  "rulesTeachHeadline": "Arrêtez de trier vos captures à la main",
+  "rulesTeachIntro": "Une règle tient en une phrase : quand une capture ressemble à ceci, range-la dans ce dossier. Écrivez-la une fois et chaque capture correspondante y atterrit toute seule — dès son arrivée.",
+  "rulesTeachExample": "Par exemple : quand une capture contient un numéro de carte → range-la dans Reçus.",
+  "rulesTeachStep1Title": "1. Décrivez la capture",
+  "rulesTeachStep1Body": "Un mot imprimé dessus, ce qu'elle montre, ou des données privées dedans.",
+  "rulesTeachStep2Title": "2. Choisissez le dossier",
+  "rulesTeachStep2Body": "Où les captures correspondantes doivent arriver.",
+  "rulesTeachStep3Title": "3. C'est tout",
+  "rulesTeachStep3Body": "SHOTO les classe pour vous à partir de là. Vous pouvez aussi appliquer vos règles aux captures déjà en attente.",
+  "rulesTeachShow": "Comment marchent les règles ?",
+  "rulesTeachHide": "Compris",
+  "rulesStartTemplates": "Ou partez d'un exemple",
+  "rulesTemplateReceipts": "Reçus et factures",
+  "rulesTemplateReceiptsWhy": "Tout ce qui porte un numéro de carte ou un total",
+  "rulesTemplateTickets": "Billets et réservations",
+  "rulesTemplateTicketsWhy": "Cartes d'embarquement, réservations, confirmations de commande",
+  "rulesTemplateCodes": "Codes et mots de passe",
+  "rulesTemplateCodesWhy": "Codes à usage unique et tout ce qui ressemble à un mot de passe",
+  "rulesTemplateAnimals": "Photos d'animaux",
+  "rulesTemplateAnimalsWhy": "Se base sur ce que montre l'image, pas sur ses mots",
+  "rulesTemplatePicked": "Choisissez un dossier et elle est prête à enregistrer.",
+  "rulesEmptyTitle": "Aucune règle",
+  "rulesNew": "Nouvelle règle",
+  "rulesNeedFolderFirst": "Créez d'abord un dossier — une règle a besoin d'un endroit où classer.",
+  "rulesDeleteTitle": "Supprimer cette règle ?",
+  "rulesDeleteMessage": "Les captures déjà classées restent où elles sont.",
+  "rulesWhenIt": "Quand elle {summary}",
+  "@rulesWhenIt": {
+    "placeholders": {
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesBacklogTitle": "Rattraper le retard",
+  "rulesBacklogIdle": "Applique vos règles aux captures qui ne sont dans aucun dossier. Ce que vous avez classé à la main n'est pas touché.",
+  "rulesBacklogRunning": "Vérification de {done} sur {total}…",
+  "@rulesBacklogRunning": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesBacklogNothing": "Plus rien à trier.",
+  "rulesBacklogResult": "{filed} captures classées sur {examined} non triées.",
+  "@rulesBacklogResult": {
+    "placeholders": {
+      "filed": {
+        "type": "int"
+      },
+      "examined": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesRunNow": "Appliquer les règles",
+  "ruleBuilderTitle": "Nouvelle règle",
+  "ruleBuilderIntro": "Deux questions : ce qu'elle repère, et où ça va.",
+  "ruleBuilderFolderLabel": "Où va-t-elle ?",
+  "ruleBuilderConditionLabel": "Que doit-elle repérer ?",
+  "ruleBuilderConditionsLabel": "Repère aussi",
+  "ruleBuilderAddCondition": "En ajouter une",
+  "ruleBuilderMatchAll": "Toutes",
+  "ruleBuilderMatchAny": "N'importe laquelle",
+  "ruleBuilderMatchAllHelp": "La capture doit toutes les satisfaire.",
+  "ruleBuilderMatchAnyHelp": "Il suffit qu'une seule soit vraie.",
+  "ruleBuilderSave": "Enregistrer la règle",
+  "ruleBuilderIncomplete": "Choisissez quoi repérer, et un dossier",
+  "ruleBuilderPreview": "Classer dans {folder} quand la capture {summary}.",
+  "@ruleBuilderPreview": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      },
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleBuilderPreviewTitle": "VOTRE RÈGLE, EN MOTS",
+  "conditionTextContains": "contient un mot",
+  "conditionTextContainsHelp": "Regarde le texte que SHOTO lit dans l'image et cherche des mots entiers : « code » ne se déclenchera pas sur « barcode ». Utilisez un mot qui serait réellement imprimé sur ce type de capture.",
+  "conditionTextContainsHint": "un mot écrit dessus — « facture », « billet »",
+  "conditionShowsSubject": "montre quelque chose",
+  "conditionShowsSubjectHelp": "Regarde ce que l'image représente, pas ce qu'elle dit. Le mot doit correspondre à celui du modèle : touchez-en un dans votre bibliothèque ci-dessous plutôt que de deviner.",
+  "conditionShowsSubjectHint": "ce qu'elle montre — « chat », « animal », « nourriture »",
+  "conditionContainsSensitive": "contient des données privées",
+  "conditionContainsSensitiveHelp": "Les mêmes contrôles que Partage protégé — les numéros de carte passent une vraie somme de contrôle, donc un numéro de commande n'est pas pris pour une carte.",
+  "conditionHasAnyText": "contient du texte lisible",
+  "conditionHasAnyTextHelp": "Vrai pour toute image contenant des mots. Pratique pour séparer les captures des photos enregistrées.",
+  "settingsTitle": "Réglages",
+  "settingsAppearance": "Apparence",
+  "settingsTheme": "Thème",
+  "settingsThemeSystem": "Système",
+  "settingsThemeLight": "Clair",
+  "settingsThemeDark": "Sombre",
+  "settingsGridDensity": "Densité de la grille",
+  "settingsLanguage": "Langue",
+  "settingsLanguageSystem": "Suivre mon téléphone",
+  "settingsLanguageSystemHint": "Actuellement {language}",
+  "@settingsLanguageSystemHint": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsBehaviour": "Comportement",
+  "settingsHaptics": "Retour haptique",
+  "settingsHapticsHint": "Une petite vibration quand vous appuyez",
+  "settingsConfirmDelete": "Demander avant de supprimer",
+  "settingsConfirmDeleteHint": "Une suppression est définitive",
+  "settingsAutomation": "Automatisation",
+  "settingsAutomationCaption": "Écrivez une règle une fois et SHOTO classe les captures correspondantes dès leur arrivée.",
+  "settingsRules": "Règles de classement",
+  "settingsRulesHint": "Laissez SHOTO trier pour vous",
+  "settingsFindDuplicates": "Trouver les doublons",
+  "settingsClearCache": "Vider le cache d'images",
+  "settingsShare": "Partager SHOTO",
+  "settingsSignOut": "Se déconnecter",
+  "settingsSignOutTitle": "Se déconnecter ?",
+  "settingsPrivacyNote": "SHOTO ne lit jamais votre galerie. Il ne garde que les captures que vous lui partagez, et tout ce qu'il en fait — lire le texte, chercher les doublons — se passe sur cet appareil. Rien n'est jamais envoyé ailleurs.",
+  "commonSave": "Enregistrer",
+  "commonConfirm": "Confirmer",
+  "commonRename": "Renommer",
+  "commonShare": "Partager",
+  "commonUnlock": "Déverrouiller",
+  "foldersEmptyTitle": "Aucun dossier",
+  "foldersEmptyMessage": "Les dossiers sont ce qui vous permet de retrouver les choses. Créez-en un pour les reçus, un pour les recettes — ce que vous cherchez vraiment.",
+  "foldersNew": "Nouveau dossier",
+  "foldersCreate": "Créer le dossier",
+  "foldersNameLabel": "Nom du dossier",
+  "foldersNameHint": "Reçus, Recettes, Travail…",
+  "foldersPrivate": "Privé (verrouillage visage ou empreinte)",
+  "foldersOptions": "Options du dossier",
+  "foldersDelete": "Supprimer le dossier",
+  "foldersDeleteKept": "Les captures à l’intérieur sont conservées",
+  "foldersDeleteTitle": "Supprimer « {name} » ?",
+  "@foldersDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "foldersDeleteMessage": "Le dossier est supprimé mais les captures qu’il contenait restent dans votre bibliothèque.",
+  "foldersRenameTitle": "Renommer le dossier",
+  "foldersMoveTitle": "Déplacer vers un dossier",
+  "foldersMoveRemove": "Retirer du dossier",
+  "foldersMoveNone": "Aucun dossier. Créez-en un depuis l’onglet Dossiers.",
+  "folderLockedTitle": "Déverrouiller « {name} »",
+  "@folderLockedTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "folderLockedMessage": "Ce dossier est protégé. Authentifiez-vous pour l’ouvrir.",
+  "folderEmptyTitle": "Rien ici pour l’instant",
+  "folderEmptyMessage": "Déplacez des captures dans ce dossier depuis votre bibliothèque.",
+  "detailFavorite": "Favori",
+  "detailUnfavorite": "Retirer des favoris",
+  "detailAddFavorite": "Ajouter aux favoris",
+  "detailActions": "Actions",
+  "detailSafeShare": "Partage protégé",
+  "detailDeleteTitle": "Supprimer cette capture ?",
+  "detailDeleteMessage": "Elle sera définitivement supprimée de votre appareil.",
+  "quickSaveTitleOne": "Enregistrer dans SHOTO",
+  "quickSaveTitleMany": "Enregistrer {count} captures",
+  "@quickSaveTitleMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSaveFileOne": "Classer cette capture",
+  "quickSaveFileMany": "Classer {count} captures",
+  "@quickSaveFileMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSavePickFolder": "Choisissez un dossier",
+  "quickSaveNeedFolder": "Créez un dossier où les mettre",
+  "quickSaveFileIn": "Classer dans {folder}",
+  "@quickSaveFileIn": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveCreateFirstFolder": "Créez votre premier dossier",
+  "quickSaveCreateFirstFolderWhy": "Les dossiers sont ce qui vous permet de retrouver les choses",
+  "quickSaveNewChip": "Nouveau",
+  "quickSaveSaved": "Enregistré dans SHOTO",
+  "quickSaveFiled": "Classé dans {folder}.",
+  "@quickSaveFiled": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveFiledByRules": "Classé par vos règles.",
+  "quickSaveNoRuleMatched": "Aucune règle ne correspond — laissée non triée dans votre bibliothèque.",
+  "quickSaveFailedTitle": "Impossible de lire cette image",
+  "quickSaveFailedBody": "Essayez de la partager à nouveau.",
+  "quickSaveSignedOutTitle": "Connectez-vous d’abord à SHOTO",
+  "quickSaveSignedOutBody": "Votre bibliothèque appartient à votre compte. Ouvrez SHOTO, connectez-vous, puis partagez à nouveau.",
+  "quickSaveSkipped": "Seules les {count} premières ont été prises",
+  "@quickSaveSkipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupTitle": "Trouver les doublons",
+  "dupScanning": "Recherche des doublons",
+  "dupReading": "Lecture de votre bibliothèque…",
+  "dupProgress": "{done} captures vérifiées sur {total}",
+  "@dupProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dupNoneTitle": "Aucun doublon",
+  "dupNoneBody": "Votre bibliothèque est déjà propre.",
+  "dupScanAgain": "Analyser à nouveau",
+  "dupReclaimable": "Jusqu’à {size} peuvent être libérés",
+  "@dupReclaimable": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupNothingSelected": "Rien de sélectionné",
+  "dupDeleteButton": "Supprimer {count} · libérer {size}",
+  "@dupDeleteButton": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupDeleteTitle": "Supprimer {count} copies ?",
+  "@dupDeleteTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupDeleteMessage": "Elles seront définitivement supprimées de votre appareil. Les copies marquées à conserver ne sont pas touchées.",
+  "dupDeleted": "{count} supprimées · {size} libérés",
+  "@dupDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupSets": "{count} groupes",
+  "@dupSets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupBest": "MEILLEURE",
+  "dupKeepAll": "Tout garder",
+  "dupKeepingAll": "Tout est conservé — rien ne sera supprimé",
+  "dupUndo": "Annuler",
+  "dupFrees": "Libère {size}",
+  "@dupFrees": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "safeShareTitle": "Partage protégé",
+  "safeShareScanning": "Recherche de données privées",
+  "safeShareOnDevice": "La lecture se fait sur votre téléphone.",
+  "safeShareCleanTitle": "Rien de privé trouvé",
+  "safeShareCleanBody": "Aucun numéro de carte, compte, code ou contact détecté. Vous pouvez la partager telle quelle.",
+  "safeShareUnreadableTitle": "Impossible de lire cette capture",
+  "safeShareUnreadableBody": "Le texte n’a pas pu être reconnu.",
+  "safeShareShareUnchanged": "Partager telle quelle",
+  "safeShareShareAnyway": "Partager quand même",
+  "safeShareShareProtected": "Partager la copie protégée",
+  "safeShareFailed": "Impossible de créer la copie protégée.",
+  "safeShareFoundTitle": "{count, plural, =1{1 donnée privée trouvée} other{{count} données privées trouvées}}",
+  "@safeShareFoundTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFreeScan": "L'analyse est toujours gratuite.",
+  "safeShareCleanAction": "Nettoyer cette capture",
+  "safeShareShareAsIs": "Partager sans modification",
+  "safeShareHowTitle": "Masqué, définitivement",
+  "safeShareHowBody": "Chaque donnée privée est recouverte d'un bloc plein avant que la copie ne quitte votre téléphone. Aucun flou, rien à récupérer : la copie masquée est la seule qui existe.",
+  "safeShareTreatmentCover": "Masquer",
+  "safeShareTreatmentKeep": "Garder",
+  "safeShareBuilding": "Préparation de votre copie propre",
+  "safeShareNothingSelected": "Rien ne changera",
+  "safeShareLockedPreview": "Débloquez pour voir la version propre",
+  "safeShareReviewTitle": "Vérifiez chacune",
+  "safeShareFound": "{count} éléments masqués",
+  "@safeShareFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchTitle": "Assembler les captures",
+  "stitchWorking": "Recherche du recouvrement",
+  "stitchWorkingBody": "Recherche de l’endroit où chaque capture reprend la précédente.",
+  "stitchFailed": "Fusion impossible",
+  "stitchSave": "Enregistrer dans la galerie",
+  "stitchSaved": "Enregistrée dans votre galerie",
+  "stitchDiscard": "Abandonner",
+  "commonDone": "Terminé",
+  "commonBack": "Retour",
+  "commonClose": "Fermer",
+  "searchTitle": "Cherchez dans vos captures",
+  "searchHint": "Des mots ou ce que montre l’image",
+  "searchIntro": "N’importe quel mot écrit dans l’image, ou ce qu’elle montre — essayez « chat », « animal », « nourriture » ou « reçu ».",
+  "searchNoneTitle": "Aucun résultat",
+  "searchNoneBody": "Rien ici ne se lit ni ne ressemble à « {query} ».",
+  "@searchNoneBody": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallTitle": "Débloquez SHOTO Pro",
+  "paywallSubtitle": "Tout ce qui suit, avec un seul abonnement.",
+  "paywallMonthly": "Mensuel",
+  "paywallYearly": "Annuel",
+  "paywallSave": "Économisez {percent} %",
+  "@paywallSave": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallContinue": "Continuer",
+  "paywallUnavailable": "Pas encore disponible",
+  "paywallRestore": "Restaurer les achats",
+  "paywallLegal": "Renouvellement automatique jusqu’à annulation. Annulable à tout moment depuis votre compte App Store ou Google Play. En continuant, vous acceptez nos Conditions et notre Politique de confidentialité.",
+  "subPremiumBadge": "PRO",
+  "subPremiumTitle": "SHOTO Pro",
+  "subPremiumBody": "Toutes les fonctions débloquées.",
+  "subDevUnlock": "Accès de test",
+  "subDevUnlockBody": "Débloqué sur cet appareil uniquement — pas un vrai abonnement",
+  "subUnlockEverything": "Tout débloquer",
+  "proWelcomeTitle": "Vous êtes sur Pro",
+  "proWelcomeBody": "Toutes les fonctions sont débloquées. Il n'y a rien d'autre à configurer.",
+  "proWelcomeAction": "Commencer",
+  "featRules": "Des règles qui classent pour vous",
+  "featRulesBody": "Écrivez une règle une fois et chaque capture partagée se classe seule. Vous avez écrit la règle, vous savez donc toujours pourquoi.",
+  "featSearch": "Cherchez dans vos captures",
+  "featSearchBody": "Retrouvez n’importe quelle capture par les mots qu’elle contient, en arabe ou en anglais. Rien n’est envoyé — la lecture se fait sur votre téléphone.",
+  "featSafeShare": "Partage protégé",
+  "featSafeShareBody": "Remplace numéros de carte, adresses, noms et coordonnées par des équivalents crédibles : même longueur, même format, même endroit. La copie envoyée ne semble pas retouchée.",
+  "featActions": "Transformez vos captures en actions",
+  "featActionsBody": "Appelez un numéro, ouvrez un lien, copiez un code ou un IBAN — directement depuis l’image, sans rien retaper.",
+  "featDuplicates": "Trouver les doublons",
+  "featDuplicatesBody": "Repérez les captures presque identiques gardées en double et supprimez-les — toujours après relecture.",
+  "featStitch": "Assembler les captures longues",
+  "featStitchBody": "Réunissez une capture défilante en une seule image haute, le recouvrement étant détecté et retiré automatiquement.",
+  "featUnlimited": "Dossiers et captures illimités",
+  "featUnlimitedBody": "L'offre gratuite s'arrête à quelques dossiers et captures. Pro supprime les deux limites.",
+  "featRulesHow": "Une règle est une phrase que vous écrivez vous-même : quand une capture ressemble à ceci, range-la dans ce dossier. Chaque nouvelle capture est confrontée à vos règles dès son arrivée, si bien que le classement cesse d’être quelque chose à penser.",
+  "featRulesPoint1": "Correspondance sur les mots imprimés dans l’image, sur ce que la photo montre, ou sur la présence de données sensibles.",
+  "featRulesPoint2": "Exigez toutes vos conditions ou n’importe laquelle d’entre elles, et inversez la condition de votre choix.",
+  "featRulesPoint3": "Rien n’est deviné. C’est vous qui avez écrit la règle, vous savez donc toujours pourquoi une capture a atterri là.",
+  "featSearchHow": "SHOTO lit le texte imprimé dans chaque capture et le retient : un seul mot dont vous vous souvenez suffit à retrouver l’image — sans nom de fichier, sans dossier, sans faire défiler.",
+  "featSearchPoint1": "Lit l’arabe et l’anglais, et trouve encore le bon résultat quand l’orthographe diffère légèrement.",
+  "featSearchPoint2": "Cherche aussi d’après ce que montre l’image : essayez « reçu », « chat » ou « nourriture ».",
+  "featSearchPoint3": "La lecture se fait sur votre téléphone. Rien n’est envoyé, cela fonctionne donc aussi hors ligne.",
+  "featSafeShareHow": "Repérer ce qui est privé dans une capture est gratuit et illimité. Ce qui est payant, c'est d'en faire une copie propre : chaque donnée est redessinée dans les couleurs de la capture, sous la forme d'une autre valeur tout aussi banale.",
+  "featSafeSharePoint1": "Les cartes sont vérifiées par Luhn et les IBAN par mod-97 — et les remplaçants passent les mêmes contrôles, donc rien ne paraît inventé.",
+  "featSafeSharePoint2": "Repère aussi les noms, adresses, numéros de commande, codes de vérification, téléphones et e-mails.",
+  "featSafeSharePoint3": "Vous voyez chaque changement avant l'envoi et pouvez plutôt masquer ou garder chacun d'eux. La capture d'origine n'est jamais modifiée.",
+  "featActionsHow": "Tout ce qui est écrit dans une capture devient utilisable. SHOTO en extrait les éléments utiles et place un bouton sur chacun.",
+  "featActionsPoint1": "Numéros de téléphone, liens, adresses e-mail, IBAN et codes de vérification sont repérés pour vous.",
+  "featActionsPoint2": "Une seule touche pour appeler, ouvrir ou copier — sans relire des chiffres sur une image.",
+  "featActionsPoint3": "Fonctionne sur les captures que vous avez déjà, pas seulement sur les nouvelles.",
+  "featStitchHow": "Prenez plusieurs captures en parcourant une longue conversation ou page : SHOTO calcule où elles se recouvrent et les réassemble en une seule image haute.",
+  "featStitchPoint1": "La bande répétée entre deux captures est détectée et supprimée automatiquement.",
+  "featStitchPoint2": "Vous voyez le raccord avant tout enregistrement : la détection automatique est bonne, jamais certaine.",
+  "featStitchPoint3": "L’image assemblée est enregistrée dans votre galerie comme n’importe quelle photo.",
+  "featDuplicatesHow": "SHOTO compare les captures d’après leur apparence plutôt que leur nom ou leur taille : il repère donc aussi les quasi-identiques — un renvoi, un autre recadrage, la même chose capturée deux fois.",
+  "featDuplicatesPoint1": "Regroupe ce qui se ressemble et suggère la copie à conserver.",
+  "featDuplicatesPoint2": "Indique l’espace libéré par chaque groupe avant que vous ne décidiez quoi que ce soit.",
+  "featDuplicatesPoint3": "Rien n’est supprimé tant que vous n’avez pas revu le groupe et confirmé.",
+  "featUnlimitedHow": "L'offre gratuite est une vraie application utilisable, pas un essai — elle a simplement un plafond. Pro retire ce plafond, et tout ce que vous avez déjà organisé reste exactement où il est.",
+  "featUnlimitedPoint1": "Autant de dossiers que votre bibliothèque en a réellement besoin.",
+  "featUnlimitedPoint2": "Aucune limite au nombre de captures que vous classez et mettez en favori.",
+  "featUnlimitedPoint3": "L’enregistrement, les dossiers, les favoris et l’historique de recherche restent les vôtres dans tous les cas.",
+  "includedSubtitle": "Chaque fonction Pro, expliquée.",
+  "includedHint": "Touchez une fonctionnalité pour voir comment elle marche",
+  "includedHowLabel": "Comment ça marche",
+  "includedActiveTitle": "Votre abonnement est actif",
+  "includedActiveBody": "Tout ce qui suit est débloqué sur ce compte.",
+  "includedLockedTitle": "Pas encore débloqué",
+  "includedLockedBody": "Lisez ce que chacune fait vraiment, puis décidez.",
+  "includedFreeTitle": "Ce que la version gratuite vous donne",
+  "includedFreeBody": "{folders} dossiers et {count} captures organisées, plus l’enregistrement, les favoris et la galerie, gratuits pour toujours.",
+  "@includedFreeBody": {
+    "placeholders": {
+      "folders": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authWelcome": "Bienvenue sur SHOTO",
+  "authSubtitle": "Connectez-vous pour enregistrer, organiser et retrouver toutes vos captures au même endroit.",
+  "authGoogle": "Continuer avec Google",
+  "authApple": "Continuer avec Apple",
+  "authLegal": "En continuant, vous acceptez nos Conditions et notre Politique de confidentialité.",
+  "onboardingCta": "Commencer",
+  "onboardingPromise": "Tout reste sur votre téléphone.",
+  "actionsTitle": "Actions",
+  "actionsWorking": "Lecture de la capture",
+  "actionsWorkingBody": "Recherche de numéros, liens et codes.",
+  "actionsNoneTitle": "Rien à faire",
+  "actionsNoneBody": "Aucun numéro, lien, code ou compte trouvé dans cette capture.",
+  "actionsCopy": "Copier",
+  "actionsCopied": "Copié",
+  "actionsNoApp": "Aucune application de cet appareil ne peut faire cela.",
+  "devModeOn": "Mode développeur actif — tout est débloqué",
+  "devModeBadge": "MODE DÉVELOPPEUR",
+  "devModeOffTitle": "Désactiver le mode développeur ?",
+  "devModeOffBody": "SHOTO reviendra à la version gratuite sur cet appareil, pour retester le paywall et les limites.",
+  "devModeOffConfirm": "Désactiver",
+  "devAccessTitle": "Accès développeur",
+  "devAccessBody": "Saisissez le code à 4 chiffres pour débloquer toutes les fonctions Pro sur cet appareil.",
+  "devWrongCode": "Code incorrect",
+  "devTapToDisable": "Touchez {count}× pour désactiver",
+  "@devTapToDisable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appVersion": "Version {version}",
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleSummaryEmpty": "Aucune condition — ne classe rien",
+  "ruleJoinAnd": " et ",
+  "ruleJoinOr": " ou ",
+  "ruleSaysWord": "contient « {value} »",
+  "@ruleSaysWord": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleNotSaysWord": "ne contient pas « {value} »",
+  "@ruleNotSaysWord": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleShows": "montre {value}",
+  "@ruleShows": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleNotShows": "ne montre pas {value}",
+  "@ruleNotShows": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleContains": "contient {value}",
+  "@ruleContains": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleNotContains": "ne contient pas {value}",
+  "@ruleNotContains": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleHasText": "contient du texte lisible",
+  "ruleNoText": "ne contient pas de texte lisible",
+  "kindCard": "un numéro de carte",
+  "kindIban": "un compte bancaire",
+  "kindCode": "un code de vérification",
+  "kindNationalId": "un numéro d’identité",
+  "kindEmail": "une adresse e-mail",
+  "kindPhone": "un numéro de téléphone",
+  "kindLink": "un lien",
+  "actionCall": "Appeler",
+  "actionWhatsapp": "WhatsApp",
+  "actionSms": "Message",
+  "actionEmailAction": "Écrire",
+  "actionOpen": "Ouvrir",
+  "countScreenshots": "{count, plural, =0{Aucune capture} =1{1 capture} other{{count} captures}}",
+  "@countScreenshots": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countPosition": "{position} sur {total}",
+  "@countPosition": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "countChip": "{label} · {count}",
+  "@countChip": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSetsFound": "{count, plural, =1{1 groupe de doublons} other{{count} groupes de doublons}}",
+  "@dupSetsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSimilarCopies": "{count} copies similaires",
+  "@dupSimilarCopies": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFoundCount": "{count, plural, =1{1 élément trouvé} other{{count} éléments trouvés}}",
+  "@safeShareFoundCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsStorage": "Stockage",
+  "settingsDuplicatesHint": "Repérez les captures prises deux fois",
+  "settingsPremium": "Pro",
+  "settingsWhatsIncluded": "Ce qui est inclus",
+  "settingsFeatureCount": "{count} fonctions, un seul abonnement",
+  "@settingsFeatureCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsShareHint": "Parlez-en à quelqu’un qui en a besoin",
+  "settingsShareText": "SHOTO range mes captures tout seul — tout reste sur le téléphone.",
+  "settingsAccount": "Compte",
+  "settingsSignOutHint": "Vos captures restent sur cet appareil",
+  "settingsCacheMeasuring": "Mesure…",
+  "settingsCacheSize": "{size} de miniatures",
+  "@settingsCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSafeShareHint": "Ouvrez une capture, puis touchez Partage protégé.",
+  "homeStitchHint": "Appuyez longuement sur deux captures ou plus, puis touchez Assembler.",
+  "stitchLimit": "Vous pouvez assembler jusqu’à {count} captures à la fois.",
+  "@stitchLimit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareSavedPrompt": "{count, plural, =1{Capture enregistrée. L’ajouter à un dossier ?} other{Captures enregistrées. Les ajouter à un dossier ?}}",
+  "@shareSavedPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultMerged": "{count} captures assemblées",
+  "@stitchResultMerged": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultTrimmed": "{count} px de contenu répété supprimés",
+  "@stitchResultTrimmed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorLoadScreenshots": "Impossible de charger vos captures.",
+  "errorLoadFolders": "Impossible de charger vos dossiers.",
+  "errorLoadRules": "Impossible de charger vos règles.",
+  "errorScanDuplicates": "Impossible de rechercher les doublons.",
+  "errorDeleteSelected": "Impossible de supprimer les captures sélectionnées.",
+  "errorStitchFailed": "Ces captures n’ont pas pu être assemblées.",
+  "errorStitchSave": "L’image assemblée n’a pas pu être enregistrée.",
+  "errorOnboarding": "Chargement impossible. Rouvrez l’application.",
+  "errorSignInCancelled": "La connexion a été annulée.",
+  "errorSignInInterrupted": "La connexion a été interrompue. Réessayez.",
+  "errorNetwork": "Erreur réseau. Vérifiez votre connexion.",
+  "errorGeneric": "Une erreur est survenue. Réessayez.",
+  "errorPlans": "Impossible de charger les abonnements.",
+  "errorPurchase": "Achat échoué. Réessayez.",
+  "errorNoSubscription": "Aucun abonnement actif pour ce compte.",
+  "errorRestore": "Impossible de restaurer les achats.",
+  "errorStitchTooFew": "Choisissez au moins deux captures à fusionner.",
+  "errorStitchTooMany": "Jusqu'à {count} captures peuvent être fusionnées à la fois.",
+  "@errorStitchTooMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorStitchUnreadable": "L'une des captures n'a pas pu être lue.",
+  "errorStitchWidths": "Ces captures ont des largeurs différentes ; elles ne peuvent pas faire partie du même défilement.",
+  "errorStitchNoOverlap": "Ces captures ne se chevauchent pas. La fusion ne fonctionne qu'avec des captures de la même page prises en défilant.",
+  "errorStitchOverlap": "Le chevauchement entre ces captures n'a pas pu être déterminé.",
+  "errorStitchTooTall": "L'image fusionnée serait trop haute. Essayez d'en fusionner moins.",
+  "errorStitchEncode": "L'image fusionnée n'a pas pu être encodée.",
+  "errorRedactionSave": "La copie protégée n'a pas pu être enregistrée.",
+  "shareSavedCount": "{count, plural, =1{Capture enregistrée} other{{count} captures enregistrées}}",
+  "@shareSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "densityLarge": "Grand",
+  "densityMedium": "Moyen",
+  "densitySmall": "Petit",
+  "sensitiveCard": "Numéro de carte",
+  "sensitiveIban": "Compte bancaire",
+  "sensitiveCode": "Code de vérification",
+  "sensitiveNationalId": "Numéro d'identité",
+  "sensitiveEmail": "Adresse e-mail",
+  "sensitivePhone": "Numéro de téléphone",
+  "sensitiveAddress": "Adresse",
+  "sensitiveName": "Nom",
+  "sensitiveOrderNumber": "Numéro de commande",
+  "sensitiveNumber": "Numéro",
+  "quickSaveByRules": "Laisser mes règles la classer",
+  "ruleSeenTitle": "CE QUE SHOTO A VU DANS VOTRE BIBLIOTHÈQUE",
+  "ruleSeenEmpty": "SHOTO n’a pas encore regardé dans vos captures. Il lit chacune à son arrivée, donc ceci se remplira.",
+  "ruleSeenHint": "Touchez-en un : ce sont les mots exacts produits par le modèle, donc une règle bâtie dessus se déclenchera vraiment.",
+  "onbSkip": "Passer",
+  "onbNext": "Suivant",
+  "onbPileTitle": "Mille captures, un seul tas",
+  "onbPileBody": "Vous capturez pour vous souvenir. Une semaine plus tard, c’est enfoui sous quatre cents autres.",
+  "onbChooseTitle": "SHOTO ne lit jamais votre galerie",
+  "onbChooseBody": "Rien n’arrive tout seul. Vous partagez une capture vers l’app : c’est toute la règle.",
+  "onbFileTitle": "Classée dès que vous l’envoyez",
+  "onbFileBody": "Choisissez un dossier depuis le menu de partage. L’app ne s’ouvre même pas.",
+  "onbFindTitle": "Cherchez ce qu’il y a dedans",
+  "onbFindBody": "Les mots écrits dans la capture, et ce que l’image montre. Tapez « reçu » ou « chien ».",
+  "onbProTitle": "SHOTO Pro",
+  "onbProBody": "Les règles classent vos nouvelles captures à votre place, et tout ce qui suit est inclus.",
+  "onbProMore": "et {count} de plus",
+  "@onbProMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onbFolderExample": "Reçus",
+  "onbSearchExample": "reçu",
+  "importTitle": "Ajouter des captures",
+  "importDone": "{count, plural, =1{1 capture importée} other{{count} captures importées}}",
+  "@importDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importPartial": "{imported} sur {picked} importées",
+  "@importPartial": {
+    "placeholders": {
+      "imported": {
+        "type": "int"
+      },
+      "picked": {
+        "type": "int"
+      }
+    }
+  },
+  "importFailed": "Impossible d'enregistrer ces captures",
+  "homeToolImportSubtitle": "Choisissez sur votre téléphone ; votre galerie n'est jamais lue",
+  "importPickerUnavailable": "Le sélecteur de photos n'a pas pu s'ouvrir",
+  "rulePreviewMatches": "{count, plural, =1{Prendrait 1 des {indexed} captures que SHOTO a lues} other{Prendrait {count} des {indexed} captures que SHOTO a lues}}",
+  "@rulePreviewMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "indexed": {
+        "type": "int"
+      }
+    }
+  },
+  "rulePreviewNone": "Rien de ce que SHOTO a lu jusqu'ici ne correspond",
+  "rulePreviewNotIndexed": "SHOTO n'a encore lu aucune de vos captures, il n'y a donc rien à vérifier. Il lit chacune dès son arrivée.",
+  "rulePreviewTaken": "{count, plural, =1{1 d'entre elles revient à une règle placée au-dessus.} other{{count} d'entre elles reviennent à une règle placée au-dessus.}}",
+  "@rulePreviewTaken": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rulePreviewAllTaken": "Toutes les captures correspondantes sont déjà prises par une règle au-dessus. Remontez cette règle si elle doit l'emporter.",
+  "rulePreviewFloor": "Ne compte que ce que SHOTO a déjà lu. Les nouvelles captures sont vérifiées dès leur arrivée.",
+  "ruleBuilderEditTitle": "Modifier la règle",
+  "ruleBuilderEditIntro": "Les modifications s'appliquent à partir de maintenant. Les captures déjà classées restent où elles sont.",
+  "ruleBuilderUpdate": "Enregistrer les modifications",
+  "rulesPriorityNote": "Une capture va à la première règle qui correspond. Utilisez les flèches pour changer laquelle.",
+  "rulesCardNotIndexed": "Rien de lu pour l'instant — rien à vérifier",
+  "rulesCardClaims": "{count, plural, =1{Prend 1 capture} other{Prend {count} captures}}",
+  "@rulesCardClaims": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesCardClaimsNone": "Ne prend encore rien",
+  "rulesCardOverruled": "{count, plural, =1{1 correspondance va à une règle au-dessus} other{{count} correspondances vont à une règle au-dessus}}",
+  "@rulesCardOverruled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesMoveUp": "Monter",
+  "rulesMoveDown": "Descendre",
+  "rulesBacklogUnread": "{count, plural, =1{1 capture n'a pas encore été lue — relancez pour continuer.} other{{count} captures n'ont pas encore été lues — relancez pour continuer.}}",
+  "@rulesBacklogUnread": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "indexingProgress": "{count, plural, =1{Lecture de vos captures en cours — 1 restante} other{Lecture de vos captures en cours — {count} restantes}}",
+  "@indexingProgress": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleBuilderMatches": "Correspond",
+  "ruleBuilderMatchesNot": "NE correspond PAS",
+  "ruleBuilderMatchesNotHelp": "La règle s'applique quand ce n'est pas le cas — pratique pour écarter une exception.",
+  "rulePreviewAlreadyFiled": "{count, plural, =1{1 d'entre elles est déjà dans un dossier, et une exécution ne déplace jamais celles-là. Seules les nouvelles captures arriveront ici.} other{{count} d'entre elles sont déjà dans des dossiers, et une exécution ne déplace jamais celles-là. Seules les nouvelles captures arriveront ici.}}",
+  "@rulePreviewAlreadyFiled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesCardAlreadyFiled": "{count, plural, =1{Correspond à 1, mais elle est déjà classée ailleurs} other{Correspond à {count}, mais elles sont déjà classées ailleurs}}",
+  "@rulesCardAlreadyFiled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

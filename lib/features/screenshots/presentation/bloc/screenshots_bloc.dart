@@ -1,8 +1,13 @@
+import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
+import 'package:shoto/core/localization/app_message.dart';
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/assign_folder_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/check_photo_permission_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/delete_screenshots_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_by_folder_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_use_case.dart';
@@ -14,6 +19,7 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.d
 
 class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   final RequestPhotoPermissionUseCase requestPhotoPermissionUseCase;
+  final CheckPhotoPermissionUseCase checkPhotoPermissionUseCase;
   final GetScreenshotsUseCase getScreenshotsUseCase;
   final GetScreenshotsByFolderUseCase getScreenshotsByFolderUseCase;
   final SetFavoriteUseCase setFavoriteUseCase;
@@ -22,10 +28,28 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   final WatchLibraryChangesUseCase watchLibraryChangesUseCase;
 
   StreamSubscription<void>? _librarySubscription;
+  Timer? _refreshDebounce;
   int? _folderId;
+
+  /// How long a burst of gallery change notifications is allowed to settle
+  /// before the library is re-read.
+  ///
+  /// `PhotoManager` reports device media changes, not app actions, and one
+  /// app action is rarely one notification: saving a single screenshot fires
+  /// for the file appearing and again as the OS finishes writing it, and an
+  /// import of ten fires at least ten times. Every one of those used to run a
+  /// full [_loadAndEmit] — enumerate the whole album over the platform
+  /// channel, read every `screenshot_meta` row, rebuild every entity — so the
+  /// cheapest thing the user can do cost the most expensive read the app has,
+  /// several times over, back to back.
+  ///
+  /// Short enough that a real change still lands well inside the time it takes
+  /// to look back at the app, long enough that a burst collapses into one read.
+  static const Duration _refreshWindow = Duration(milliseconds: 400);
 
   ScreenshotsBloc({
     required this.requestPhotoPermissionUseCase,
+    required this.checkPhotoPermissionUseCase,
     required this.getScreenshotsUseCase,
     required this.getScreenshotsByFolderUseCase,
     required this.setFavoriteUseCase,
@@ -34,6 +58,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     required this.watchLibraryChangesUseCase,
   }) : super(ScreenshotsInitialState()) {
     on<LoadScreenshotsEvent>(_onLoad);
+    on<RecheckPermissionEvent>(_onRecheckPermission);
     on<RefreshScreenshotsEvent>(_onRefresh);
     on<ToggleFavoriteEvent>(_onToggleFavorite);
     on<DeleteSelectedEvent>(_onDeleteSelected);
@@ -42,7 +67,9 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     on<MoveScreenshotToFolderEvent>(_onMoveScreenshot);
     on<ToggleSelectItemEvent>(_onToggleSelectItem);
     on<ClearSelectionEvent>(_onClearSelection);
-    on<ToggleFavoritesFilterEvent>(_onToggleFavoritesFilter);
+    on<StartGuidedSelectionEvent>(_onStartGuidedSelection);
+    on<SelectAllEvent>(_onSelectAll);
+    on<SetLibraryFilterEvent>(_onSetLibraryFilter);
   }
 
   Future<void> _onLoad(
@@ -52,20 +79,68 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     _folderId = event.folderId;
     emit(ScreenshotsLoadingState());
     final PermissionState permission = await requestPhotoPermissionUseCase();
-    if (!permission.isAuth && !permission.hasAccess) {
-      emit(ScreenshotsPermissionDeniedState());
+    if (!permission.isAuth) {
+      emit(
+        ScreenshotsPermissionDeniedState(
+          isPartialAccess: permission == PermissionState.limited,
+        ),
+      );
       return;
     }
     await _loadAndEmit(emit);
+    _watchLibrary();
+  }
+
+  /// Re-evaluates photo access *without* prompting, for use when the app
+  /// comes back to the foreground (the user may have just granted access in
+  /// system settings).
+  ///
+  /// Must never call the requesting use case: putting up a permission
+  /// dialog is itself an app-lifecycle event, so a lifecycle listener that
+  /// prompts would retrigger itself endlessly — dialog, resume, dialog.
+  /// That exact loop shipped once and made Home flicker forever.
+  Future<void> _onRecheckPermission(
+    RecheckPermissionEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    if (state is! ScreenshotsPermissionDeniedState) return;
+
+    final PermissionState permission = await checkPhotoPermissionUseCase();
+    if (!permission.isAuth) {
+      // Still blocked — leave the existing screen exactly as it is rather
+      // than re-emitting, so nothing rebuilds and nothing flickers.
+      return;
+    }
+
+    emit(ScreenshotsLoadingState());
+    await _loadAndEmit(emit);
+    _watchLibrary();
+  }
+
+  void _watchLibrary() {
     _librarySubscription ??= watchLibraryChangesUseCase().listen(
-      (_) => add(RefreshScreenshotsEvent()),
+      (_) => _scheduleRefresh(),
     );
+  }
+
+  /// Collapses a burst of change notifications into a single refresh — see
+  /// [_refreshWindow]. Restarting the timer on every notification means the
+  /// read happens once the device has stopped changing, not once per change.
+  void _scheduleRefresh() {
+    _refreshDebounce?.cancel();
+    _refreshDebounce = Timer(_refreshWindow, () {
+      if (!isClosed) add(RefreshScreenshotsEvent());
+    });
   }
 
   Future<void> _onRefresh(
     RefreshScreenshotsEvent event,
     Emitter<ScreenshotsState> emit,
   ) async {
+    // Any pending burst is about to be satisfied by this read, whatever asked
+    // for it — the shell also refreshes on every resume, and without this a
+    // screenshot saved from the share sheet paid for both.
+    _refreshDebounce?.cancel();
     await _loadAndEmit(emit);
   }
 
@@ -75,22 +150,57 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
           ? await getScreenshotsUseCase()
           : await getScreenshotsByFolderUseCase(_folderId!);
       final ScreenshotsState previous = state;
-      final Set<String> selectedIds = previous is ScreenshotsLoadedState
-          ? previous.selectedIds
-          : <String>{};
-      final bool favoritesOnly = previous is ScreenshotsLoadedState
-          ? previous.favoritesOnly
-          : false;
+
+      if (previous is! ScreenshotsLoadedState) {
+        emit(ScreenshotsLoadedState(screenshots: screenshots));
+        return;
+      }
+
+      // Nothing on screen would differ, so nothing is emitted.
+      //
+      // A refresh re-reads the gallery, and every read hands back *new*
+      // `AssetEntity` instances even for pictures that never changed. The
+      // state has no value equality, so emitting one rebuilt Home, the
+      // Library grid and the open viewer — and the thumbnail widgets are
+      // keyed off the asset, so a resume with no changes at all still cost a
+      // full grid rebuild. See [_sameLibrary].
+      if (_sameLibrary(previous.screenshots, screenshots)) return;
+
       emit(
         ScreenshotsLoadedState(
           screenshots: screenshots,
-          selectedIds: selectedIds,
-          favoritesOnly: favoritesOnly,
+          selectedIds: previous.selectedIds,
+          filter: previous.filter,
         ),
       );
     } catch (error) {
-      emit(ScreenshotsErrorState('Could not load your screenshots.'));
+      emit(ScreenshotsErrorState(AppMessage.loadScreenshots));
     }
+  }
+
+  /// Whether two reads of the library would put the same thing on screen.
+  ///
+  /// Compared by id and by the two fields the UI actually draws from metadata,
+  /// in order — the gallery read is sorted by capture date, so a stable
+  /// library comes back in a stable order and a positional walk is enough.
+  /// Anything the app changes itself (favorite, folder, deletion) already
+  /// updates the state in place, so this only ever has to catch changes that
+  /// came from outside.
+  static bool _sameLibrary(
+    List<ScreenshotEntity> previous,
+    List<ScreenshotEntity> next,
+  ) {
+    if (previous.length != next.length) return false;
+    for (int i = 0; i < previous.length; i++) {
+      final ScreenshotEntity before = previous[i];
+      final ScreenshotEntity after = next[i];
+      if (before.id != after.id ||
+          before.isFavorite != after.isFavorite ||
+          before.folderId != after.folderId) {
+        return false;
+      }
+    }
+    return true;
   }
 
   Future<void> _onToggleFavorite(
@@ -100,12 +210,12 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     final ScreenshotsState current = state;
     if (current is! ScreenshotsLoadedState) return;
 
-    final target = current.screenshots.firstWhere(
-      (s) => s.id == event.assetId,
-    );
+    final target = current.screenshots.firstWhere((s) => s.id == event.assetId);
     final bool newValue = !target.isFavorite;
     final updated = current.screenshots
-        .map((s) => s.id == event.assetId ? s.copyWith(isFavorite: newValue) : s)
+        .map(
+          (s) => s.id == event.assetId ? s.copyWith(isFavorite: newValue) : s,
+        )
         .toList();
     emit(current.copyWith(screenshots: updated));
     await setFavoriteUseCase(event.assetId, newValue);
@@ -189,31 +299,100 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   ) {
     final ScreenshotsState current = state;
     if (current is! ScreenshotsLoadedState) return;
+
+    // **Safe share picks exactly one, so tapping a second one replaces the
+    // first rather than adding to it.**
+    //
+    // Letting it add was a real confusion and it was reported as one: the
+    // toolbar chose its actions purely from the count, so selecting a second
+    // screenshot while protecting one made the Protect button disappear and a
+    // Merge button take its place. The app silently swapped the job the user
+    // had asked for.
+    //
+    // Handling that by disabling the second tap, or by warning about it,
+    // would both be fixes to a state that should not be reachable. Single
+    // select makes it unreachable: there is no "2 selected" to be confused by,
+    // and tapping around simply moves the choice, which is what a radio
+    // control does everywhere else.
+    if (current.intent == LibraryIntent.protect) {
+      final bool sameOne =
+          current.selectedIds.length == 1 &&
+          current.selectedIds.first == event.assetId;
+      emit(
+        current.copyWith(
+          // Tapping the chosen one again clears it, so a mis-tap is
+          // undoable without leaving the mode.
+          selectedIds: sameOne ? <String>{} : <String>{event.assetId},
+        ),
+      );
+      return;
+    }
+
     final Set<String> selected = Set<String>.from(current.selectedIds);
     if (!selected.remove(event.assetId)) selected.add(event.assetId);
     emit(current.copyWith(selectedIds: selected));
   }
 
+  /// Leaving selection mode drops the guiding intent with it.
+  ///
+  /// Otherwise `isSelectionMode` would still be true — the intent alone keeps
+  /// it on — and cancelling would leave the Library in a mode with nothing
+  /// selected and no way out.
   void _onClearSelection(
     ClearSelectionEvent event,
     Emitter<ScreenshotsState> emit,
   ) {
     final ScreenshotsState current = state;
     if (current is! ScreenshotsLoadedState) return;
-    emit(current.copyWith(selectedIds: {}));
+    emit(current.copyWith(selectedIds: {}, intent: LibraryIntent.none));
   }
 
-  void _onToggleFavoritesFilter(
-    ToggleFavoritesFilterEvent event,
+  /// Selection mode, opened on somebody else's behalf and with nothing picked.
+  ///
+  /// The filter is reset to [LibraryFilter.all] at the same time: an intent
+  /// arrives from Home, where no filter is visible, and landing in selection
+  /// mode over a filtered grid would hide most of the library from a person
+  /// who has just been asked to choose from it.
+  void _onStartGuidedSelection(
+    StartGuidedSelectionEvent event,
     Emitter<ScreenshotsState> emit,
   ) {
     final ScreenshotsState current = state;
     if (current is! ScreenshotsLoadedState) return;
-    emit(current.copyWith(favoritesOnly: !current.favoritesOnly));
+    emit(
+      current.copyWith(
+        selectedIds: {},
+        intent: event.intent,
+        filter: LibraryFilter.all,
+      ),
+    );
+  }
+
+  void _onSelectAll(SelectAllEvent event, Emitter<ScreenshotsState> emit) {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+    final Set<String> allIds = current.visibleScreenshots
+        .map((s) => s.id)
+        .toSet();
+    emit(current.copyWith(selectedIds: allIds));
+  }
+
+  void _onSetLibraryFilter(
+    SetLibraryFilterEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+    if (current.filter == event.filter) return;
+    // Selection is cleared with the filter, because most of what was selected
+    // is about to stop being on screen — and a delete button reporting six
+    // when four of them are no longer visible is the worst kind of accurate.
+    emit(current.copyWith(filter: event.filter, selectedIds: {}));
   }
 
   @override
   Future<void> close() {
+    _refreshDebounce?.cancel();
     _librarySubscription?.cancel();
     return super.close();
   }

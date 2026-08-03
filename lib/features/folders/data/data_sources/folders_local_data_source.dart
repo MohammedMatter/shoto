@@ -1,21 +1,31 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:shoto/core/database/app_database.dart';
+import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 import 'package:shoto/features/folders/data/models/folder_model.dart';
 
+/// Folders are scoped to the current Firebase user id, same reasoning as
+/// [ScreenshotMetadataLocalDataSource] — different accounts on the same
+/// device never see each other's folders.
 class FoldersLocalDataSource {
   final AppDatabase _appDatabase;
-  FoldersLocalDataSource(this._appDatabase);
+  final AuthRepository _authRepository;
+  FoldersLocalDataSource(this._appDatabase, this._authRepository);
+
+  String get _userId => _authRepository.currentUser!.id;
 
   Future<List<FolderModel>> getFolders() async {
     final Database db = await _appDatabase.database;
     final List<Map<String, Object?>> folderRows = await db.query(
       AppDatabase.folders,
+      where: 'user_id = ?',
+      whereArgs: [_userId],
       orderBy: 'created_at DESC',
     );
 
     final List<Map<String, Object?>> countRows = await db.rawQuery(
       'SELECT folder_id, COUNT(*) as count FROM ${AppDatabase.screenshotMeta} '
-      'WHERE folder_id IS NOT NULL GROUP BY folder_id',
+      'WHERE user_id = ? AND folder_id IS NOT NULL GROUP BY folder_id',
+      [_userId],
     );
     final Map<int, int> counts = {
       for (final row in countRows) row['folder_id'] as int: row['count'] as int,
@@ -31,12 +41,18 @@ class FoldersLocalDataSource {
         .toList();
   }
 
-  Future<FolderModel> createFolder(String name, int color) async {
+  Future<FolderModel> createFolder(
+    String name,
+    int color, {
+    bool isPrivate = false,
+  }) async {
     final Database db = await _appDatabase.database;
     final int now = DateTime.now().millisecondsSinceEpoch;
     final int id = await db.insert(AppDatabase.folders, {
+      'user_id': _userId,
       'name': name,
       'color': color,
+      'is_private': isPrivate ? 1 : 0,
       'created_at': now,
     });
     return FolderModel(
@@ -44,6 +60,7 @@ class FoldersLocalDataSource {
       name: name,
       color: color,
       createdAt: DateTime.fromMillisecondsSinceEpoch(now),
+      isPrivate: isPrivate,
     );
   }
 
@@ -52,13 +69,17 @@ class FoldersLocalDataSource {
     await db.update(
       AppDatabase.folders,
       {'name': name},
-      where: 'id = ?',
-      whereArgs: [folderId],
+      where: 'user_id = ? AND id = ?',
+      whereArgs: [_userId, folderId],
     );
   }
 
   Future<void> deleteFolder(int folderId) async {
     final Database db = await _appDatabase.database;
-    await db.delete(AppDatabase.folders, where: 'id = ?', whereArgs: [folderId]);
+    await db.delete(
+      AppDatabase.folders,
+      where: 'user_id = ? AND id = ?',
+      whereArgs: [_userId, folderId],
+    );
   }
 }

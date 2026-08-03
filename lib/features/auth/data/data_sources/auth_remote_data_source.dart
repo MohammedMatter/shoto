@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -26,16 +24,40 @@ class AuthRemoteDataSource {
     _googleSignInInitialized = true;
   }
 
+  /// Signs in, preferring Google's own "Continue as…" sheet.
+  ///
+  /// [GoogleSignIn.attemptLightweightAuthentication] is what produces the
+  /// recognisable Google card — the one with the account's photo and address
+  /// on it — by asking Android's Credential Manager for a credential the
+  /// device already holds. It is also the only variant that can complete
+  /// without the user picking anything.
+  ///
+  /// It returns null rather than throwing when there is nothing to offer (no
+  /// saved credential, or the user dismissed it), and only then does the full
+  /// picker open. Calling [GoogleSignIn.authenticate] first, as this used to,
+  /// skipped the good sheet every single time.
   Future<UserModel> signInWithGoogle() async {
     await _ensureGoogleSignInInitialized();
 
-    final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
+    // Returns a *nullable Future* — null means the platform can't even try,
+    // which is not the same as trying and finding nothing.
+    final Future<GoogleSignInAccount?>? attempt = _googleSignIn
+        .attemptLightweightAuthentication();
+
+    GoogleSignInAccount? googleUser = attempt == null ? null : await attempt;
+
+    // Falls through to the full picker whenever the sheet had nothing to
+    // offer. Switching accounts still works because [signOut] clears the
+    // Google session as well as the Firebase one — without that, the
+    // lightweight path would silently hand back the previous account and
+    // there would be no way to sign in as anybody else.
+    googleUser ??= await _googleSignIn.authenticate();
+
     final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
     final fb.OAuthCredential credential = fb.GoogleAuthProvider.credential(
       idToken: googleAuth.idToken,
     );
-    log(googleAuth.idToken.toString());
     final fb.UserCredential userCredential = await _firebaseAuth
         .signInWithCredential(credential);
 

@@ -30,6 +30,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -39,7 +42,6 @@ dependencies:
   flutter_screenutil: ^5.9.3
   go_router: ^17.3.0
   flutter_staggered_grid_view: ^0.7.0
-  google_fonts: ^8.2.0
   firebase_core: ^4.12.1
   firebase_auth: ^6.5.6
   google_sign_in: ^7.2.0
@@ -50,7 +52,22 @@ dependencies:
   path: ^1.9.0
   share_plus: ^13.2.1
   receive_sharing_intent: 1.8.1
+  shared_preferences: ^2.5.5
+  purchases_flutter: ^10.4.3
+  google_mlkit_text_recognition: ^0.16.0
   font_awesome_flutter: ^11.0.0
+  path_provider: ^2.1.5
+  local_auth: ^2.3.0
+  url_launcher: ^6.3.2
+  google_mlkit_image_labeling: ^0.15.0
+  photo_manager_image_provider: ^2.2.0
+  image_picker: ^1.2.0
+  # Both are already pulled in by image_picker; they are named here only so
+  # the picker can be switched to Android's own Photo Picker — see
+  # SystemPhotoPickerDataSource. That opt-in lives on the Android
+  # implementation class, which the image_picker facade does not re-export.
+  image_picker_android: ^0.8.13
+  image_picker_platform_interface: ^2.10.0
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +85,10 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  # Turns the .arb files under lib/l10n into the generated AppLocalizations
+  # class on every build, so a new string is usable the moment it is written
+  # rather than after a codegen step somebody forgets to run.
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -75,10 +96,87 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-    - assets/images/icons/
-    - assets/images/onboarding/
-    - assets/cfg/onboarding_data.json
+  # The onboarding's stock photographs and its JSON of marketing copy are
+  # gone: the introduction now draws its own screenshots and takes its words
+  # from the ARB files with the rest of the app's language.
+
+  # Bundled, not fetched. google_fonts downloads a typeface at runtime, so a
+  # first launch without a network connection throws and the app renders no
+  # text at all — it simply never opens. Shipping the files removes that
+  # dependency and the first-run delay along with it.
+  fonts:
+    # Three faces, each with a job. One face at six sizes — which is what
+    # this app shipped with — gives every headline and every caption the same
+    # voice, and that sameness is a large part of why a UI reads as generic.
+    #
+    # Archivo, IBM Plex Sans and the three Noto faces below are all *variable*
+    # fonts, and each is registered here exactly once, at 400. That is not an
+    # oversight and the list must not grow a second entry per weight.
+    #
+    # A variable file holds every weight in one set of outlines, selected at
+    # draw time by the `wght` axis — which is a TextStyle property
+    # (fontVariations), not a pubspec one. What `weight:` declares here is
+    # only the label the engine matches `fontWeight` against when it picks a
+    # file. Declare one weight and ask for another and the engine matches this
+    # file anyway and then thickens the glyphs itself; that synthetic bold is
+    # a blur rather than a typeface, and it is what made the app's titles read
+    # as smeared and over-dark before the axis was set properly.
+    #
+    # So: one registration, one label, no ambiguity for the matcher, and
+    # app_text_styles.dart drives every real weight through the axis.
+    #
+    # Display: Archivo. A grotesque with genuinely wide cuts, and not one of
+    # the four faces every generated interface reaches for. Used for screen
+    # titles and nothing else. Note its variable *default* is 600, so anything
+    # drawing Archivo without setting the axis gets semibold whether it meant
+    # to or not.
+    - family: Archivo
+      fonts:
+        - asset: assets/fonts/Archivo.ttf
+          weight: 400
+    # Body: IBM Plex Sans. Quiet, humanist, slightly technical — it recedes
+    # under Archivo instead of competing with it.
+    - family: IBMPlexSans
+      fonts:
+        - asset: assets/fonts/IBMPlexSans.ttf
+          weight: 400
+    # Data: IBM Plex Mono, and this one is functional rather than decorative.
+    # SHOTO shows card numbers, IBANs, verification codes, pixel dimensions
+    # and byte counts — strings people read a character at a time. A
+    # proportional font makes that measurably harder.
+    - family: IBMPlexMono
+      fonts:
+        - asset: assets/fonts/IBMPlexMono-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/IBMPlexMono-SemiBold.ttf
+          weight: 600
+    # IBM Plex Sans carries Latin only. Without these, every Arabic, Urdu
+    # and Hindi string renders as empty boxes.
+    #
+    # They are declared as their own families and attached through
+    # fontFamilyFallback (see app_text_styles.dart) rather than merged into
+    # the family above, because a fallback supplies only the characters the
+    # primary font lacks — so Latin keeps IBM Plex's shapes in every
+    # language and the app still looks like one app.
+    #
+    # Being variable too, they follow the `wght` axis the text styles set, and
+    # each clamps it to its own range — so an Arabic screen gets the same
+    # weights as an English one instead of a synthesised approximation.
+    - family: NotoSansArabic
+      fonts:
+        - asset: assets/fonts/NotoSansArabic.ttf
+          weight: 400
+    # Urdu is written in Nastaliq, a sloping calligraphic style. Setting it in
+    # the same upright Naskh used for Arabic is legible but reads as foreign
+    # to Urdu speakers — roughly how all-caps Latin reads to everyone else.
+    - family: NotoNastaliqUrdu
+      fonts:
+        - asset: assets/fonts/NotoNastaliqUrdu.ttf
+          weight: 400
+    - family: NotoSansDevanagari
+      fonts:
+        - asset: assets/fonts/NotoSansDevanagari.ttf
+          weight: 400
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

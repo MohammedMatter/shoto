@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The launcher icon on Android 8 and up.
+
+    An adaptive icon is three separate layers rather than one picture, because
+    the launcher owns the shape: it masks them to whatever the device's icon
+    shape is (circle, squircle, teardrop, and the user can change it), and it
+    slides the foreground against the background as the home screen scrolls.
+    A single flat PNG cannot do either, which is why `mipmap-*/ic_launcher.png`
+    still exists but is only ever seen on API 24 and 25.
+
+    All three layers are generated from the same painter the app itself draws
+    (`lib/core/widgets/shoto_brand_mark.dart`, via
+    `tool/generate_brand_assets.dart`) — the background is the slab with its
+    corners left square for the launcher to cut, and the foreground is the tray
+    and cards alone, sized to sit inside the 66dp the platform guarantees will
+    survive any mask.
+
+    The monochrome layer is Android 13's themed icons: the launcher discards
+    every colour and tints the remaining alpha with the user's wallpaper
+    palette. Providing it is what stops SHOTO from being the one icon on a
+    themed home screen that is still in full colour. Older versions ignore the
+    tag.
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@mipmap/ic_launcher_background" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+    <monochrome android:drawable="@mipmap/ic_launcher_monochrome" />
+</adaptive-icon>

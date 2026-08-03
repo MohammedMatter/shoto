@@ -1,0 +1,926 @@
+{
+  "@@locale": "en",
+  "commonCancel": "Cancel",
+  "commonDelete": "Delete",
+  "commonRetry": "Try again",
+  "commonSomethingWentWrong": "Something went wrong",
+  "commonPro": "PRO",
+  "navHome": "Home",
+  "navLibrary": "Library",
+  "navFolders": "Folders",
+  "navSettings": "Settings",
+  "tagline": "Your screenshots, organized",
+  "homeGreetingMorning": "Good morning",
+  "homeGreetingAfternoon": "Good afternoon",
+  "homeGreetingEvening": "Good evening",
+  "homeInboxEmpty": "Nothing saved",
+  "homeInboxEmptySubtitle": "Share a screenshot into SHOTO to start",
+  "homeInboxClear": "All filed",
+  "homeInboxClearSubtitle": "Nothing waiting to be sorted",
+  "homeInboxCountSubtitle": "Screenshots you have not filed yet",
+  "homeStatScreenshots": "Screenshots",
+  "homeStatFavorites": "Favorites",
+  "homeStatFolders": "Folders",
+  "homeToolsTitle": "What SHOTO can do",
+  "homeToolSafeShare": "Safe share",
+  "homeToolSafeShareSubtitle": "Hide private details first",
+  "homeToolDuplicates": "Find duplicates",
+  "homeToolDuplicatesSubtitle": "Free up storage",
+  "homeToolSearch": "Search inside",
+  "homeToolSearchSubtitle": "Find text in your images",
+  "homeToolStitch": "Merge long shots",
+  "homeToolStitchSubtitle": "Join a scrolling capture",
+  "homeRecent": "Recent",
+  "libraryPickForMerge": "Pick two or more shots of the same page",
+  "libraryPickForProtect": "Pick the screenshot to protect",
+  "libraryActionProtect": "Protect",
+  "homeToolsTitleShort": "Do something",
+  "homeSeeAll": "See all",
+  "libraryEmptyTitle": "Nothing saved yet",
+  "libraryEmptyMessage": "Share a screenshot to SHOTO, or add one with the + button. Your gallery is never read — only what you hand over is kept.",
+  "libraryNoFavoritesTitle": "No favorites yet",
+  "libraryNoFavoritesMessage": "Tap the heart on a screenshot to save it here.",
+  "libraryFilterAll": "All",
+  "libraryFilterFavorites": "Favorites",
+  "libraryFilterUnsorted": "Unsorted",
+  "libraryNoUnsortedTitle": "Everything is filed",
+  "libraryNoUnsortedMessage": "Nothing is waiting on you. New screenshots land here until you file or star them.",
+  "librarySelectedCount": "{count} selected",
+  "@librarySelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "librarySelectAll": "Select all",
+  "libraryActionMerge": "Merge",
+  "libraryActionMove": "Move",
+  "libraryActionDelete": "Delete",
+  "libraryDeleteTitle": "Delete screenshots?",
+  "libraryDeleteMessage": "{count, plural, =1{This will permanently delete 1 screenshot from your device.} other{This will permanently delete {count} screenshots from your device.}}",
+  "@libraryDeleteMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "permissionNeededTitle": "Photo access needed",
+  "permissionNeededMessage": "SHOTO keeps the screenshots you share into it in their own album. It needs photo access to write there and read them back — it never lists the rest of your gallery.",
+  "permissionPartialTitle": "Full photo access needed",
+  "permissionPartialMessage": "SHOTO can currently only see a few photos you picked manually, so it cannot reach its own album. Choose \"Allow all\" in the photo permission to continue.",
+  "permissionOpenSettings": "Open Settings",
+  "rulesTitle": "Rules",
+  "rulesSubtitle": "Filing that happens without you",
+  "rulesTeachHeadline": "Stop sorting screenshots by hand",
+  "rulesTeachIntro": "A rule is one sentence: when a screenshot looks like this, file it in that folder. Write it once and every screenshot that matches lands there by itself — the moment it arrives.",
+  "rulesTeachExample": "For example: when a screenshot contains a card number → file it in Receipts.",
+  "rulesTeachStep1Title": "1. Describe the screenshot",
+  "rulesTeachStep1Body": "A word printed in it, something it shows, or private data inside it.",
+  "rulesTeachStep2Title": "2. Choose the folder",
+  "rulesTeachStep2Body": "Where matching screenshots should end up.",
+  "rulesTeachStep3Title": "3. That is all",
+  "rulesTeachStep3Body": "From then on SHOTO files them for you. You can also run your rules over the screenshots already waiting.",
+  "rulesTeachShow": "How do rules work?",
+  "rulesTeachHide": "Got it",
+  "rulesStartTemplates": "Or start from an example",
+  "rulesTemplateReceipts": "Receipts & bills",
+  "rulesTemplateReceiptsWhy": "Anything with a card number or a total on it",
+  "rulesTemplateTickets": "Tickets & bookings",
+  "rulesTemplateTicketsWhy": "Boarding passes, reservations, order confirmations",
+  "rulesTemplateCodes": "Codes & passwords",
+  "rulesTemplateCodesWhy": "One-time codes and anything that looks like a password",
+  "rulesTemplateAnimals": "Photos of animals",
+  "rulesTemplateAnimalsWhy": "Uses what the picture shows, not the words in it",
+  "rulesTemplatePicked": "Pick a folder and it is ready to save.",
+  "rulesEmptyTitle": "No rules yet",
+  "rulesNew": "New rule",
+  "rulesNeedFolderFirst": "Make a folder first — a rule needs somewhere to file things.",
+  "rulesDeleteTitle": "Delete this rule?",
+  "rulesDeleteMessage": "Screenshots it already filed stay where they are.",
+  "rulesWhenIt": "When it {summary}",
+  "@rulesWhenIt": {
+    "placeholders": {
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesBacklogTitle": "Catch up on the backlog",
+  "rulesBacklogIdle": "Runs your rules over screenshots that are not in a folder yet. Anything you filed by hand is left alone.",
+  "rulesBacklogRunning": "Checking {done} of {total}…",
+  "@rulesBacklogRunning": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesBacklogNothing": "Nothing left unsorted.",
+  "rulesBacklogResult": "Filed {filed} of {examined} unsorted screenshots.",
+  "@rulesBacklogResult": {
+    "placeholders": {
+      "filed": {
+        "type": "int"
+      },
+      "examined": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesRunNow": "Run rules now",
+  "ruleBuilderTitle": "New rule",
+  "ruleBuilderIntro": "Two questions: what it matches, and where it goes.",
+  "ruleBuilderFolderLabel": "Where does it go?",
+  "ruleBuilderConditionLabel": "What should it match?",
+  "ruleBuilderConditionsLabel": "Also matching",
+  "ruleBuilderAddCondition": "Add another",
+  "ruleBuilderMatchAll": "All of them",
+  "ruleBuilderMatchAny": "Any one",
+  "ruleBuilderMatchAllHelp": "The screenshot has to satisfy every one of these.",
+  "ruleBuilderMatchAnyHelp": "One of these being true is enough.",
+  "ruleBuilderSave": "Save rule",
+  "ruleBuilderIncomplete": "Pick what to match, and a folder",
+  "ruleBuilderPreview": "File into {folder} when the screenshot {summary}.",
+  "@ruleBuilderPreview": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      },
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleBuilderPreviewTitle": "YOUR RULE, IN WORDS",
+  "conditionTextContains": "says a word",
+  "conditionTextContainsHelp": "Looks at the text SHOTO reads inside the picture, and matches whole words — \"code\" will not fire on \"barcode\". Use a word that would actually be printed on that kind of screenshot.",
+  "conditionTextContainsHint": "a word printed in it — \"invoice\", \"ticket\"",
+  "conditionShowsSubject": "shows something",
+  "conditionShowsSubjectHelp": "Looks at what the picture is of, not what it says. The word has to match the model's own, so tap one from your library below rather than guessing.",
+  "conditionShowsSubjectHint": "what it shows — \"cat\", \"animal\", \"food\"",
+  "conditionContainsSensitive": "contains private data",
+  "conditionContainsSensitiveHelp": "The same checks Safe share uses — card numbers pass a real checksum, so an order number will not be mistaken for one.",
+  "conditionHasAnyText": "has readable text",
+  "conditionHasAnyTextHelp": "True for anything with words in it at all. Handy for separating screenshots from saved photos.",
+  "settingsTitle": "Settings",
+  "settingsAppearance": "Appearance",
+  "settingsTheme": "Theme",
+  "settingsThemeSystem": "System",
+  "settingsThemeLight": "Light",
+  "settingsThemeDark": "Dark",
+  "settingsGridDensity": "Grid density",
+  "settingsLanguage": "Language",
+  "settingsLanguageSystem": "Match my phone",
+  "settingsLanguageSystemHint": "Now showing {language}",
+  "@settingsLanguageSystemHint": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsBehaviour": "Behaviour",
+  "settingsHaptics": "Haptic feedback",
+  "settingsHapticsHint": "A small tap when you press things",
+  "settingsConfirmDelete": "Ask before deleting",
+  "settingsConfirmDeleteHint": "Deleting cannot be undone",
+  "settingsAutomation": "Automation",
+  "settingsAutomationCaption": "Write a rule once and SHOTO files matching screenshots the moment they arrive.",
+  "settingsRules": "Filing rules",
+  "settingsRulesHint": "Let SHOTO do the sorting",
+  "settingsFindDuplicates": "Find duplicates",
+  "settingsClearCache": "Clear image cache",
+  "settingsShare": "Share SHOTO",
+  "settingsSignOut": "Sign out",
+  "settingsSignOutTitle": "Sign out?",
+  "settingsPrivacyNote": "SHOTO never reads your gallery. It only holds the screenshots you share into it, and everything it does with them — reading text, finding duplicates — happens on this device. Nothing is ever uploaded.",
+  "commonSave": "Save",
+  "commonConfirm": "Confirm",
+  "commonRename": "Rename",
+  "commonShare": "Share",
+  "commonUnlock": "Unlock",
+  "foldersEmptyTitle": "No folders yet",
+  "foldersEmptyMessage": "Folders are how you find things later. Make one for receipts, one for recipes — whatever you actually go looking for.",
+  "foldersNew": "New folder",
+  "foldersCreate": "Create folder",
+  "foldersNameLabel": "Folder name",
+  "foldersNameHint": "Receipts, Recipes, Work…",
+  "foldersPrivate": "Private (face or fingerprint lock)",
+  "foldersOptions": "Folder options",
+  "foldersDelete": "Delete folder",
+  "foldersDeleteKept": "Screenshots inside are kept",
+  "foldersDeleteTitle": "Delete \"{name}\"?",
+  "@foldersDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "foldersDeleteMessage": "The folder is removed but the screenshots inside stay in your library.",
+  "foldersRenameTitle": "Rename folder",
+  "foldersMoveTitle": "Move to folder",
+  "foldersMoveRemove": "Remove from folder",
+  "foldersMoveNone": "No folders yet. Create one from the Folders tab.",
+  "folderLockedTitle": "Unlock \"{name}\"",
+  "@folderLockedTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "folderLockedMessage": "This folder is protected. Authenticate to view it.",
+  "folderEmptyTitle": "Nothing here yet",
+  "folderEmptyMessage": "Move screenshots into this folder from your library.",
+  "detailFavorite": "Favorite",
+  "detailUnfavorite": "Remove from favorites",
+  "detailAddFavorite": "Add to favorites",
+  "detailActions": "Actions",
+  "detailSafeShare": "Safe share",
+  "detailDeleteTitle": "Delete screenshot?",
+  "detailDeleteMessage": "This will permanently delete it from your device.",
+  "quickSaveTitleOne": "Save to SHOTO",
+  "quickSaveTitleMany": "Save {count} screenshots",
+  "@quickSaveTitleMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSaveFileOne": "File this screenshot",
+  "quickSaveFileMany": "File {count} screenshots",
+  "@quickSaveFileMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSavePickFolder": "Pick a folder",
+  "quickSaveNeedFolder": "Make a folder to put them in",
+  "quickSaveFileIn": "File in {folder}",
+  "@quickSaveFileIn": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveCreateFirstFolder": "Create your first folder",
+  "quickSaveCreateFirstFolderWhy": "Folders are how you find things later",
+  "quickSaveNewChip": "New",
+  "quickSaveSaved": "Saved to SHOTO",
+  "quickSaveFiled": "Filed in {folder}.",
+  "@quickSaveFiled": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveFiledByRules": "Filed by your rules.",
+  "quickSaveNoRuleMatched": "No rule matched — left unsorted in your library.",
+  "quickSaveFailedTitle": "Could not read that image",
+  "quickSaveFailedBody": "Try sharing it again.",
+  "quickSaveSignedOutTitle": "Sign in to SHOTO first",
+  "quickSaveSignedOutBody": "Your library belongs to your account. Open SHOTO, sign in, then share this again.",
+  "quickSaveSkipped": "Only the first {count} were taken",
+  "@quickSaveSkipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupTitle": "Find duplicates",
+  "dupScanning": "Looking for duplicates",
+  "dupReading": "Reading your library…",
+  "dupProgress": "Checked {done} of {total} screenshots",
+  "@dupProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dupNoneTitle": "No duplicates found",
+  "dupNoneBody": "Your screenshot library is already clean.",
+  "dupScanAgain": "Scan again",
+  "dupReclaimable": "Up to {size} can be freed",
+  "@dupReclaimable": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupNothingSelected": "Nothing selected",
+  "dupDeleteButton": "Delete {count} · free {size}",
+  "@dupDeleteButton": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupDeleteTitle": "Delete {count} copies?",
+  "@dupDeleteTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupDeleteMessage": "This permanently deletes them from your device. The copies marked to keep are not affected.",
+  "dupDeleted": "Deleted {count} · freed {size}",
+  "@dupDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupSets": "{count} sets",
+  "@dupSets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupBest": "BEST",
+  "dupKeepAll": "Keep all",
+  "dupKeepingAll": "Keeping all — nothing will be deleted",
+  "dupUndo": "Undo",
+  "dupFrees": "Frees {size}",
+  "@dupFrees": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "safeShareTitle": "Safe share",
+  "safeShareScanning": "Checking for private details",
+  "safeShareOnDevice": "Reading happens on your phone.",
+  "safeShareCleanTitle": "Nothing private found",
+  "safeShareCleanBody": "No card numbers, account numbers, codes or contact details were spotted in this screenshot. You can share it as it is.",
+  "safeShareUnreadableTitle": "Could not read this screenshot",
+  "safeShareUnreadableBody": "The text in it could not be recognised.",
+  "safeShareShareUnchanged": "Share unchanged",
+  "safeShareShareAnyway": "Share anyway",
+  "safeShareShareProtected": "Share protected copy",
+  "safeShareFailed": "Could not build the protected copy.",
+  "safeShareFoundTitle": "{count, plural, =1{1 private detail found} other{{count} private details found}}",
+  "@safeShareFoundTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFreeScan": "Checking is always free.",
+  "safeShareCleanAction": "Clean this screenshot",
+  "safeShareShareAsIs": "Share without changes",
+  "safeShareHowTitle": "Blocked out, for good",
+  "safeShareHowBody": "Every private detail is covered with a solid block before the copy leaves your phone. Nothing is blurred and nothing can be read back — the covered copy is the only version that exists.",
+  "safeShareTreatmentCover": "Cover",
+  "safeShareTreatmentKeep": "Keep",
+  "safeShareBuilding": "Building your clean copy",
+  "safeShareNothingSelected": "Nothing will change",
+  "safeShareLockedPreview": "Unlock to see the clean version",
+  "safeShareReviewTitle": "Check each one",
+  "safeShareFound": "{count} things covered",
+  "@safeShareFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchTitle": "Merge screenshots",
+  "stitchWorking": "Finding the overlap",
+  "stitchWorkingBody": "Matching where each screenshot continues from the last.",
+  "stitchFailed": "Could not merge",
+  "stitchSave": "Save to gallery",
+  "stitchSaved": "Saved to your gallery",
+  "stitchDiscard": "Discard",
+  "commonDone": "Done",
+  "commonBack": "Back",
+  "commonClose": "Close",
+  "searchTitle": "Search your screenshots",
+  "searchHint": "Search words or what a picture shows",
+  "searchIntro": "Any word printed inside an image, or what the picture shows — try \"cat\", \"animal\", \"food\" or \"receipt\".",
+  "searchNoneTitle": "No matches",
+  "searchNoneBody": "Nothing here reads or looks like \"{query}\".",
+  "@searchNoneBody": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallTitle": "Unlock SHOTO Pro",
+  "paywallSubtitle": "Everything below, on one subscription.",
+  "paywallMonthly": "Monthly",
+  "paywallYearly": "Yearly",
+  "paywallSave": "Save {percent}%",
+  "@paywallSave": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallContinue": "Continue",
+  "paywallUnavailable": "Not available yet",
+  "paywallRestore": "Restore purchases",
+  "paywallLegal": "Auto-renews until cancelled. Cancel anytime from your App Store or Google Play account settings. By continuing you agree to our Terms of Service and Privacy Policy.",
+  "subPremiumBadge": "PRO",
+  "subPremiumTitle": "SHOTO Pro",
+  "subPremiumBody": "Every feature unlocked for you.",
+  "subDevUnlock": "Tester access",
+  "subDevUnlockBody": "Unlocked on this device — not a real subscription",
+  "subUnlockEverything": "Unlock everything",
+  "proWelcomeTitle": "You are on Pro",
+  "proWelcomeBody": "Every feature is unlocked. There is nothing else to set up.",
+  "proWelcomeAction": "Start using it",
+  "featRules": "Rules that file for you",
+  "featRulesBody": "Write a rule once and every screenshot you share in files itself. You wrote the rule, so you always know why something landed where it did.",
+  "featSearch": "Search inside your screenshots",
+  "featSearchBody": "Find any screenshot by the words written in it, in Arabic or English. Nothing is uploaded — the reading happens on your phone.",
+  "featSafeShare": "Safe share",
+  "featSafeShareBody": "Swaps card numbers, addresses, names and contact details for realistic stand-ins — same length, same format, same place. The copy you send does not look edited.",
+  "featActions": "Turn screenshots into actions",
+  "featActionsBody": "Call a number, open a link, copy a verification code or an IBAN — straight from the picture, without retyping anything.",
+  "featDuplicates": "Find duplicates",
+  "featDuplicatesBody": "Spot near-identical shots you kept twice and clear them out — always with a review step first.",
+  "featStitch": "Merge long screenshots",
+  "featStitchBody": "Join a scrolling capture back into one tall image, with the overlap found and removed automatically.",
+  "featUnlimited": "Unlimited folders and screenshots",
+  "featUnlimitedBody": "The free tier stops at a few folders and screenshots. Pro removes both caps.",
+  "featRulesHow": "A rule is one sentence you write yourself: when a screenshot looks like this, put it in that folder. Every new screenshot is checked against your rules the moment it arrives, so filing stops being something you have to remember to do.",
+  "featRulesPoint1": "Match on words printed inside the image, on what the picture shows, or on whether it holds something sensitive.",
+  "featRulesPoint2": "Ask for all of your conditions or any of them, and turn any condition into its opposite.",
+  "featRulesPoint3": "Nothing is guessed. You wrote the rule, so you always know why a screenshot landed where it did.",
+  "featSearchHow": "SHOTO reads the text printed inside every screenshot and remembers it, so one word you remember seeing is enough to find the picture again — no file names, no folders, no scrolling.",
+  "featSearchPoint1": "Reads Arabic and English, and still matches when the spelling differs slightly.",
+  "featSearchPoint2": "Also finds by what the picture shows — try \"receipt\", \"cat\" or \"food\".",
+  "featSearchPoint3": "The reading happens on your phone. Nothing is uploaded, so it works offline too.",
+  "featSafeShareHow": "Finding what is private in a screenshot is free and unlimited. Paying is what turns those findings into a clean copy: each detail is redrawn in the screenshot's own colours as a different, equally ordinary value.",
+  "featSafeSharePoint1": "Card numbers are Luhn-checked and IBANs mod-97 checked — and the stand-ins pass the same checks, so nothing looks fabricated.",
+  "featSafeSharePoint2": "Also catches names, addresses, order numbers, verification codes, phone numbers and email addresses.",
+  "featSafeSharePoint3": "You see every change before you send, and can cover or keep any of them instead. The original screenshot is never touched.",
+  "featActionsHow": "Whatever is written inside a screenshot becomes something you can use. SHOTO picks out the useful parts and puts a button on each one.",
+  "featActionsPoint1": "Phone numbers, links, email addresses, IBANs and verification codes are found for you.",
+  "featActionsPoint2": "One tap to call, open or copy — no reading digits off a picture.",
+  "featActionsPoint3": "Works on the screenshots you already have, not only on new ones.",
+  "featStitchHow": "Take a few shots as you scroll through a long chat or page, and SHOTO works out where they overlap and joins them back into one tall image.",
+  "featStitchPoint1": "The repeated strip between two shots is found and removed automatically.",
+  "featStitchPoint2": "You see the join before anything is saved — automatic detection is good, but never certain.",
+  "featStitchPoint3": "The merged image saves to your gallery like any other picture.",
+  "featDuplicatesHow": "SHOTO compares screenshots by what they look like rather than by name or size, so it catches the near-identical ones too — a resend, a different crop, the same thing captured twice.",
+  "featDuplicatesPoint1": "Groups whatever looks the same and suggests the copy worth keeping.",
+  "featDuplicatesPoint2": "Shows how much space each group frees before you decide anything.",
+  "featDuplicatesPoint3": "Nothing is deleted until you have reviewed the group and confirmed it.",
+  "featUnlimitedHow": "The free tier is a real, usable app rather than a trial — it just has a ceiling. Pro takes the ceiling off, and everything you already organized stays exactly where it is.",
+  "featUnlimitedPoint1": "As many folders as your library actually needs.",
+  "featUnlimitedPoint2": "No cap on how many screenshots you file and favourite.",
+  "featUnlimitedPoint3": "Saving, folders, favourites and search history stay yours either way.",
+  "includedSubtitle": "Every Pro feature, explained.",
+  "includedHint": "Tap a feature to see how it works",
+  "includedHowLabel": "How it works",
+  "includedActiveTitle": "Your plan is active",
+  "includedActiveBody": "Everything below is unlocked on this account.",
+  "includedLockedTitle": "Not unlocked yet",
+  "includedLockedBody": "Read what each one actually does, then decide.",
+  "includedFreeTitle": "What the free tier gives you",
+  "includedFreeBody": "{folders} folders and {count} organized screenshots — plus saving, favourites and the gallery, free for good.",
+  "@includedFreeBody": {
+    "placeholders": {
+      "folders": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authWelcome": "Welcome to SHOTO",
+  "authSubtitle": "Sign in to save, organize and find every screenshot in one place.",
+  "authGoogle": "Continue with Google",
+  "authApple": "Continue with Apple",
+  "authLegal": "By continuing, you agree to our Terms of Service and Privacy Policy.",
+  "onboardingCta": "Get started",
+  "onboardingPromise": "Everything stays on your phone.",
+  "actionsTitle": "Actions",
+  "actionsWorking": "Reading the screenshot",
+  "actionsWorkingBody": "Looking for numbers, links and codes.",
+  "actionsNoneTitle": "Nothing to act on",
+  "actionsNoneBody": "No phone numbers, links, codes or account numbers were found in this screenshot.",
+  "actionsCopy": "Copy",
+  "actionsCopied": "Copied",
+  "actionsNoApp": "No app on this device can do that.",
+  "devModeOn": "Developer mode on — every feature unlocked",
+  "devModeBadge": "DEVELOPER MODE",
+  "devModeOffTitle": "Turn off developer mode?",
+  "devModeOffBody": "SHOTO will go back to the free tier on this device, so you can test the paywall and the limits again.",
+  "devModeOffConfirm": "Turn off",
+  "devAccessTitle": "Developer access",
+  "devAccessBody": "Enter the 4-digit code to unlock every Pro feature on this device.",
+  "devWrongCode": "Wrong code",
+  "devTapToDisable": "Tap {count}× to turn off",
+  "@devTapToDisable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appVersion": "Version {version}",
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleSummaryEmpty": "No conditions yet — files nothing",
+  "ruleJoinAnd": " and ",
+  "ruleJoinOr": " or ",
+  "ruleSaysWord": "says \"{value}\"",
+  "@ruleSaysWord": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleNotSaysWord": "does not say \"{value}\"",
+  "@ruleNotSaysWord": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleShows": "shows {value}",
+  "@ruleShows": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleNotShows": "does not show {value}",
+  "@ruleNotShows": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleContains": "contains {value}",
+  "@ruleContains": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleNotContains": "does not contain {value}",
+  "@ruleNotContains": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleHasText": "has readable text",
+  "ruleNoText": "has no readable text",
+  "kindCard": "a card number",
+  "kindIban": "a bank account",
+  "kindCode": "a verification code",
+  "kindNationalId": "an ID number",
+  "kindEmail": "an email address",
+  "kindPhone": "a phone number",
+  "kindLink": "a link",
+  "actionCall": "Call",
+  "actionWhatsapp": "WhatsApp",
+  "actionSms": "Message",
+  "actionEmailAction": "Write",
+  "actionOpen": "Open",
+  "countScreenshots": "{count, plural, =0{No screenshots} =1{1 screenshot} other{{count} screenshots}}",
+  "@countScreenshots": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countPosition": "{position} of {total}",
+  "@countPosition": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "countChip": "{label} · {count}",
+  "@countChip": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSetsFound": "{count, plural, =1{1 set of duplicates} other{{count} sets of duplicates}}",
+  "@dupSetsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSimilarCopies": "{count} similar copies",
+  "@dupSimilarCopies": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFoundCount": "{count, plural, =1{1 thing found} other{{count} things found}}",
+  "@safeShareFoundCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsStorage": "Storage",
+  "settingsDuplicatesHint": "Spot screenshots you took twice",
+  "settingsPremium": "Pro",
+  "settingsWhatsIncluded": "What is included",
+  "settingsFeatureCount": "{count} features, one plan",
+  "@settingsFeatureCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsShareHint": "Tell someone who needs it",
+  "settingsShareText": "SHOTO keeps my screenshots organized on their own — everything stays on the phone.",
+  "settingsAccount": "Account",
+  "settingsSignOutHint": "Your screenshots stay on this device",
+  "settingsCacheMeasuring": "Measuring…",
+  "settingsCacheSize": "{size} of thumbnails",
+  "@settingsCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSafeShareHint": "Open a screenshot, then tap Safe share.",
+  "homeStitchHint": "Long-press two or more screenshots in your library, then tap Merge.",
+  "stitchLimit": "Merge up to {count} screenshots at a time.",
+  "@stitchLimit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareSavedPrompt": "{count, plural, =1{Screenshot saved. Add it to a folder?} other{Screenshots saved. Add them to a folder?}}",
+  "@shareSavedPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultMerged": "{count} screenshots merged",
+  "@stitchResultMerged": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultTrimmed": "{count} px of repeated content removed",
+  "@stitchResultTrimmed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorLoadScreenshots": "Could not load your screenshots.",
+  "errorLoadFolders": "Could not load your folders.",
+  "errorLoadRules": "Could not load your rules.",
+  "errorScanDuplicates": "Could not scan for duplicates.",
+  "errorDeleteSelected": "Could not delete the selected screenshots.",
+  "errorStitchFailed": "These screenshots could not be merged.",
+  "errorStitchSave": "The merged image could not be saved.",
+  "errorOnboarding": "Could not load. Please reopen the app.",
+  "errorSignInCancelled": "Sign-in was cancelled.",
+  "errorSignInInterrupted": "Sign-in was interrupted. Please try again.",
+  "errorNetwork": "Network error. Please check your connection.",
+  "errorGeneric": "Something went wrong. Please try again.",
+  "errorPlans": "Could not load subscription plans.",
+  "errorPurchase": "Purchase failed. Please try again.",
+  "errorNoSubscription": "No active subscription found for this account.",
+  "errorRestore": "Could not restore purchases.",
+  "errorStitchTooFew": "Pick at least two screenshots to merge.",
+  "errorStitchTooMany": "Up to {count} screenshots can be merged at once.",
+  "@errorStitchTooMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorStitchUnreadable": "One of the screenshots could not be read.",
+  "errorStitchWidths": "These screenshots are different widths, so they cannot be part of the same scroll.",
+  "errorStitchNoOverlap": "These screenshots do not overlap. Merging only works on shots of the same page taken while scrolling.",
+  "errorStitchOverlap": "The overlap between these screenshots could not be resolved.",
+  "errorStitchTooTall": "The merged image would be too tall. Try merging fewer screenshots.",
+  "errorStitchEncode": "The merged image could not be encoded.",
+  "errorRedactionSave": "The protected copy could not be saved.",
+  "shareSavedCount": "{count, plural, =1{Screenshot saved} other{{count} screenshots saved}}",
+  "@shareSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "densityLarge": "Large",
+  "densityMedium": "Medium",
+  "densitySmall": "Small",
+  "sensitiveCard": "Card number",
+  "sensitiveIban": "Bank account",
+  "sensitiveCode": "Verification code",
+  "sensitiveNationalId": "ID number",
+  "sensitiveEmail": "Email address",
+  "sensitivePhone": "Phone number",
+  "sensitiveAddress": "Address",
+  "sensitiveName": "Name",
+  "sensitiveOrderNumber": "Order number",
+  "sensitiveNumber": "Number",
+  "quickSaveByRules": "Let my rules file it",
+  "ruleSeenTitle": "WHAT SHOTO HAS SEEN IN YOUR LIBRARY",
+  "ruleSeenEmpty": "SHOTO has not looked inside your screenshots yet. It reads each one as it arrives, so this fills up as you save.",
+  "ruleSeenHint": "Tap one — these are the exact words the model produces, so a rule built from them will actually fire.",
+  "onbSkip": "Skip",
+  "onbNext": "Next",
+  "onbPileTitle": "A thousand screenshots, one pile",
+  "onbPileBody": "You screenshot to remember. A week later it is buried under four hundred others.",
+  "onbChooseTitle": "SHOTO never reads your gallery",
+  "onbChooseBody": "Nothing arrives on its own. You share a screenshot in — that is the whole rule.",
+  "onbFileTitle": "Filed the moment you send it",
+  "onbFileBody": "Pick a folder right in the share sheet. The app does not even open.",
+  "onbFindTitle": "Search what is inside them",
+  "onbFindBody": "The words printed in a screenshot, and what the picture shows. Type “receipt”, or “dog”.",
+  "onbProTitle": "SHOTO Pro",
+  "onbProBody": "Rules file new screenshots for you, and everything below comes with them.",
+  "onbProMore": "and {count} more",
+  "@onbProMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onbFolderExample": "Receipts",
+  "onbSearchExample": "receipt",
+  "importTitle": "Add screenshots",
+  "importDone": "{count, plural, =1{1 screenshot imported} other{{count} screenshots imported}}",
+  "@importDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importPartial": "{imported} of {picked} imported",
+  "@importPartial": {
+    "placeholders": {
+      "imported": {
+        "type": "int"
+      },
+      "picked": {
+        "type": "int"
+      }
+    }
+  },
+  "importFailed": "Could not save those screenshots",
+  "homeToolImportSubtitle": "Pick from your phone — your gallery is never read",
+  "importPickerUnavailable": "The photo picker could not open",
+  "rulePreviewMatches": "{count, plural, =1{Would take 1 of the {indexed} screenshots SHOTO has read} other{Would take {count} of the {indexed} screenshots SHOTO has read}}",
+  "@rulePreviewMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "indexed": {
+        "type": "int"
+      }
+    }
+  },
+  "rulePreviewNone": "Nothing SHOTO has read so far matches this",
+  "rulePreviewNotIndexed": "SHOTO has not read any of your screenshots yet, so there is nothing to preview against. It reads each one as it arrives.",
+  "rulePreviewTaken": "{count, plural, =1{1 of these goes to a rule above this one instead.} other{{count} of these go to a rule above this one instead.}}",
+  "@rulePreviewTaken": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rulePreviewAllTaken": "Every screenshot this matches is already taken by a rule above it. Move this rule up if it should win.",
+  "rulePreviewFloor": "Counts only what SHOTO has read so far. New screenshots are checked as they arrive.",
+  "ruleBuilderEditTitle": "Edit rule",
+  "ruleBuilderEditIntro": "Changes apply from now on. Screenshots this rule already filed stay where they are.",
+  "ruleBuilderUpdate": "Save changes",
+  "rulesPriorityNote": "A screenshot goes to the first rule that matches it. Use the arrows to change which one that is.",
+  "rulesCardNotIndexed": "Nothing read yet — nothing to check this against",
+  "rulesCardClaims": "{count, plural, =1{Claims 1 screenshot} other{Claims {count} screenshots}}",
+  "@rulesCardClaims": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesCardClaimsNone": "Claims nothing yet",
+  "rulesCardOverruled": "{count, plural, =1{1 match goes to a rule above this one} other{{count} matches go to a rule above this one}}",
+  "@rulesCardOverruled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesMoveUp": "Move up",
+  "rulesMoveDown": "Move down",
+  "rulesBacklogUnread": "{count, plural, =1{1 screenshot has not been read yet — run again to continue.} other{{count} screenshots have not been read yet — run again to continue.}}",
+  "@rulesBacklogUnread": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "indexingProgress": "{count, plural, =1{Still reading your screenshots — 1 to go} other{Still reading your screenshots — {count} to go}}",
+  "@indexingProgress": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleBuilderMatches": "Matches",
+  "ruleBuilderMatchesNot": "Does NOT match",
+  "ruleBuilderMatchesNotHelp": "The rule fires when this is false — use it to carve out an exception.",
+  "rulePreviewAlreadyFiled": "{count, plural, =1{1 of these is already in a folder, and a run never moves those. Only new screenshots will be filed here.} other{{count} of these are already in folders, and a run never moves those. Only new screenshots will be filed here.}}",
+  "@rulePreviewAlreadyFiled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesCardAlreadyFiled": "{count, plural, =1{Matches 1, but it is already filed elsewhere} other{Matches {count}, but they are already filed elsewhere}}",
+  "@rulesCardAlreadyFiled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

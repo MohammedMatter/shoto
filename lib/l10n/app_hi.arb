@@ -1,0 +1,926 @@
+{
+  "@@locale": "hi",
+  "commonCancel": "रद्द करें",
+  "commonDelete": "हटाएँ",
+  "commonRetry": "फिर कोशिश करें",
+  "commonSomethingWentWrong": "कुछ गड़बड़ हो गई",
+  "commonPro": "PRO",
+  "navHome": "होम",
+  "navLibrary": "लाइब्रेरी",
+  "navFolders": "फ़ोल्डर",
+  "navSettings": "सेटिंग्स",
+  "tagline": "आपके स्क्रीनशॉट, व्यवस्थित",
+  "homeGreetingMorning": "सुप्रभात",
+  "homeGreetingAfternoon": "नमस्कार",
+  "homeGreetingEvening": "शुभ संध्या",
+  "homeInboxEmpty": "कुछ सहेजा नहीं गया",
+  "homeInboxEmptySubtitle": "शुरू करने के लिए कोई स्क्रीनशॉट SHOTO में साझा करें",
+  "homeInboxClear": "सब व्यवस्थित है",
+  "homeInboxClearSubtitle": "छाँटने के लिए कुछ बाकी नहीं",
+  "homeInboxCountSubtitle": "वे स्क्रीनशॉट जो आपने अभी फ़ाइल नहीं किए",
+  "homeStatScreenshots": "स्क्रीनशॉट",
+  "homeStatFavorites": "पसंदीदा",
+  "homeStatFolders": "फ़ोल्डर",
+  "homeToolsTitle": "SHOTO क्या कर सकता है",
+  "homeToolSafeShare": "सुरक्षित साझा",
+  "homeToolSafeShareSubtitle": "पहले निजी जानकारी छिपाएँ",
+  "homeToolDuplicates": "डुप्लिकेट खोजें",
+  "homeToolDuplicatesSubtitle": "जगह खाली करें",
+  "homeToolSearch": "तस्वीर के अंदर खोजें",
+  "homeToolSearchSubtitle": "अपनी तस्वीरों में लिखा पाठ ढूँढें",
+  "homeToolStitch": "लंबे स्क्रीनशॉट जोड़ें",
+  "homeToolStitchSubtitle": "स्क्रॉल की गई तस्वीरें एक में मिलाएँ",
+  "homeRecent": "हाल के",
+  "libraryPickForMerge": "एक ही पेज के दो या ज़्यादा स्क्रीनशॉट चुनें",
+  "libraryPickForProtect": "वह स्क्रीनशॉट चुनें जिसे सुरक्षित करना है",
+  "libraryActionProtect": "सुरक्षित करें",
+  "homeToolsTitleShort": "कुछ करें",
+  "homeSeeAll": "सभी देखें",
+  "libraryEmptyTitle": "अभी कुछ सहेजा नहीं गया",
+  "libraryEmptyMessage": "कोई स्क्रीनशॉट SHOTO को साझा करें, या + बटन से जोड़ें। आपकी गैलरी कभी नहीं पढ़ी जाती — सिर्फ़ वही रखा जाता है जो आप देते हैं।",
+  "libraryNoFavoritesTitle": "अभी कोई पसंदीदा नहीं",
+  "libraryNoFavoritesMessage": "किसी स्क्रीनशॉट पर दिल दबाएँ, वह यहाँ आ जाएगा।",
+  "libraryFilterAll": "सभी",
+  "libraryFilterFavorites": "पसंदीदा",
+  "libraryFilterUnsorted": "बिना क्रम के",
+  "libraryNoUnsortedTitle": "सब कुछ व्यवस्थित है",
+  "libraryNoUnsortedMessage": "आपका कुछ भी बाकी नहीं है। नए स्क्रीनशॉट यहाँ आते हैं जब तक आप उन्हें फ़ोल्डर में न रखें या पसंदीदा न बनाएँ।",
+  "librarySelectedCount": "{count} चुने गए",
+  "@librarySelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "librarySelectAll": "सभी चुनें",
+  "libraryActionMerge": "जोड़ें",
+  "libraryActionMove": "ले जाएँ",
+  "libraryActionDelete": "हटाएँ",
+  "libraryDeleteTitle": "स्क्रीनशॉट हटाएँ?",
+  "libraryDeleteMessage": "{count, plural, =1{यह आपके डिवाइस से 1 स्क्रीनशॉट हमेशा के लिए हटा देगा।} other{यह आपके डिवाइस से {count} स्क्रीनशॉट हमेशा के लिए हटा देगा।}}",
+  "@libraryDeleteMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "permissionNeededTitle": "फ़ोटो एक्सेस चाहिए",
+  "permissionNeededMessage": "SHOTO आपके साझा किए स्क्रीनशॉट अपने अलग एल्बम में रखता है। उसमें लिखने और पढ़ने के लिए अनुमति चाहिए — यह आपकी बाकी गैलरी कभी नहीं देखता।",
+  "permissionPartialTitle": "पूरी एक्सेस चाहिए",
+  "permissionPartialMessage": "अभी SHOTO सिर्फ़ चुनी हुई कुछ तस्वीरें देख पाता है, इसलिए अपने एल्बम तक नहीं पहुँच सकता। जारी रखने के लिए «सभी को अनुमति दें» चुनें।",
+  "permissionOpenSettings": "सेटिंग्स खोलें",
+  "rulesTitle": "नियम",
+  "rulesSubtitle": "छँटाई जो आपके बिना हो जाए",
+  "rulesTeachHeadline": "स्क्रीनशॉट हाथ से छाँटना बंद करें",
+  "rulesTeachIntro": "नियम एक वाक्य है: जब स्क्रीनशॉट ऐसा हो, तो उसे उस फ़ोल्डर में रखो। एक बार लिखिए, फिर हर मिलता-जुलता स्क्रीनशॉट अपने आप वहीं चला जाएगा — आते ही।",
+  "rulesTeachExample": "उदाहरण: जब स्क्रीनशॉट में कार्ड नंबर हो → उसे रसीदें फ़ोल्डर में रखो।",
+  "rulesTeachStep1Title": "1. स्क्रीनशॉट बताएँ",
+  "rulesTeachStep1Body": "उस पर लिखा कोई शब्द, वह जो दिखाता है, या उसमें मौजूद निजी जानकारी।",
+  "rulesTeachStep2Title": "2. फ़ोल्डर चुनें",
+  "rulesTeachStep2Body": "मेल खाने वाले स्क्रीनशॉट कहाँ पहुँचें।",
+  "rulesTeachStep3Title": "3. बस इतना ही",
+  "rulesTeachStep3Body": "इसके बाद SHOTO खुद फ़ाइल करता रहेगा। पहले से रुके स्क्रीनशॉट पर भी नियम चला सकते हैं।",
+  "rulesTeachShow": "नियम कैसे काम करते हैं?",
+  "rulesTeachHide": "समझ गया",
+  "rulesStartTemplates": "या किसी तैयार उदाहरण से शुरू करें",
+  "rulesTemplateReceipts": "रसीदें और बिल",
+  "rulesTemplateReceiptsWhy": "हर वह चीज़ जिस पर कार्ड नंबर या कुल राशि हो",
+  "rulesTemplateTickets": "टिकट और बुकिंग",
+  "rulesTemplateTicketsWhy": "बोर्डिंग पास, आरक्षण, ऑर्डर की पुष्टि",
+  "rulesTemplateCodes": "कोड और पासवर्ड",
+  "rulesTemplateCodesWhy": "वन-टाइम कोड और हर वह चीज़ जो पासवर्ड लगे",
+  "rulesTemplateAnimals": "जानवरों की तस्वीरें",
+  "rulesTemplateAnimalsWhy": "तस्वीर में जो दिखे उस पर चलता है, शब्दों पर नहीं",
+  "rulesTemplatePicked": "फ़ोल्डर चुनें और यह सहेजने के लिए तैयार है।",
+  "rulesEmptyTitle": "अभी कोई नियम नहीं",
+  "rulesNew": "नया नियम",
+  "rulesNeedFolderFirst": "पहले कोई फ़ोल्डर बनाएँ — नियम को रखने की जगह चाहिए।",
+  "rulesDeleteTitle": "यह नियम हटाएँ?",
+  "rulesDeleteMessage": "जो स्क्रीनशॉट यह पहले फ़ाइल कर चुका है वे अपनी जगह रहेंगे।",
+  "rulesWhenIt": "जब यह {summary}",
+  "@rulesWhenIt": {
+    "placeholders": {
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
+  "rulesBacklogTitle": "पुराना ढेर निपटाएँ",
+  "rulesBacklogIdle": "उन स्क्रीनशॉट पर नियम चलाता है जो अभी किसी फ़ोल्डर में नहीं हैं। जो आपने खुद फ़ाइल किए उन्हें छुआ नहीं जाता।",
+  "rulesBacklogRunning": "{total} में से {done} जाँचे जा रहे हैं…",
+  "@rulesBacklogRunning": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesBacklogNothing": "बिना छँटाई कुछ नहीं बचा।",
+  "rulesBacklogResult": "{examined} बिना छँटे में से {filed} फ़ाइल हो गए।",
+  "@rulesBacklogResult": {
+    "placeholders": {
+      "filed": {
+        "type": "int"
+      },
+      "examined": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesRunNow": "नियम अभी चलाएँ",
+  "ruleBuilderTitle": "नया नियम",
+  "ruleBuilderIntro": "दो सवाल: किससे मेल खाए, और कहाँ जाए।",
+  "ruleBuilderFolderLabel": "कहाँ जाए?",
+  "ruleBuilderConditionLabel": "किससे मेल खाना चाहिए?",
+  "ruleBuilderConditionsLabel": "इनसे भी मेल खाता है",
+  "ruleBuilderAddCondition": "एक और जोड़ें",
+  "ruleBuilderMatchAll": "सभी",
+  "ruleBuilderMatchAny": "कोई एक",
+  "ruleBuilderMatchAllHelp": "स्क्रीनशॉट को इनमें से हर एक पर खरा उतरना होगा।",
+  "ruleBuilderMatchAnyHelp": "इनमें से एक का सच होना काफ़ी है।",
+  "ruleBuilderSave": "नियम सहेजें",
+  "ruleBuilderIncomplete": "चुनें कि किससे मेल खाए, और एक फ़ोल्डर",
+  "ruleBuilderPreview": "जब स्क्रीनशॉट {summary} तो उसे {folder} में रखें।",
+  "@ruleBuilderPreview": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      },
+      "summary": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleBuilderPreviewTitle": "आपका नियम, शब्दों में",
+  "conditionTextContains": "कोई शब्द कहे",
+  "conditionTextContainsHelp": "तस्वीर के अंदर SHOTO जो पाठ पढ़ता है उसे देखता है, और पूरे शब्द से मिलाता है — \"code\" \"barcode\" पर नहीं चलेगा। ऐसा शब्द चुनें जो सचमुच ऐसे स्क्रीनशॉट पर लिखा होता हो।",
+  "conditionTextContainsHint": "उसमें लिखा शब्द — «इनवॉइस», «टिकट»",
+  "conditionShowsSubject": "कुछ दिखाए",
+  "conditionShowsSubjectHelp": "देखता है कि तस्वीर किस चीज़ की है, न कि उस पर क्या लिखा है। शब्द मॉडल के अपने शब्द से मेल खाना चाहिए, इसलिए अंदाज़ा लगाने के बजाय नीचे अपनी लाइब्रेरी से कोई एक चुनें।",
+  "conditionShowsSubjectHint": "क्या दिखता है — «बिल्ली», «जानवर», «खाना»",
+  "conditionContainsSensitive": "निजी जानकारी हो",
+  "conditionContainsSensitiveHelp": "वही जाँच जो सुरक्षित साझा करता है — कार्ड नंबर असली चेकसम से गुज़रते हैं, इसलिए ऑर्डर नंबर गलती से कार्ड नहीं समझा जाता।",
+  "conditionHasAnyText": "पढ़ने योग्य पाठ हो",
+  "conditionHasAnyTextHelp": "हर उस तस्वीर पर सही जिसमें कुछ भी लिखा हो। स्क्रीनशॉट को सहेजी तस्वीरों से अलग करने में मददगार।",
+  "settingsTitle": "सेटिंग्स",
+  "settingsAppearance": "दिखावट",
+  "settingsTheme": "थीम",
+  "settingsThemeSystem": "सिस्टम",
+  "settingsThemeLight": "हल्का",
+  "settingsThemeDark": "गहरा",
+  "settingsGridDensity": "ग्रिड घनत्व",
+  "settingsLanguage": "भाषा",
+  "settingsLanguageSystem": "मेरे फ़ोन के अनुसार",
+  "settingsLanguageSystemHint": "अभी {language}",
+  "@settingsLanguageSystemHint": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsBehaviour": "व्यवहार",
+  "settingsHaptics": "स्पर्श कंपन",
+  "settingsHapticsHint": "दबाने पर हल्की सी थपकी",
+  "settingsConfirmDelete": "हटाने से पहले पूछें",
+  "settingsConfirmDeleteHint": "हटाया हुआ वापस नहीं आता",
+  "settingsAutomation": "स्वचालन",
+  "settingsAutomationCaption": "एक बार नियम लिखें और SHOTO मिलते-जुलते स्क्रीनशॉट आते ही फ़ाइल कर देगा।",
+  "settingsRules": "फ़ाइलिंग नियम",
+  "settingsRulesHint": "छँटाई SHOTO पर छोड़ दें",
+  "settingsFindDuplicates": "डुप्लिकेट खोजें",
+  "settingsClearCache": "इमेज कैश साफ़ करें",
+  "settingsShare": "SHOTO साझा करें",
+  "settingsSignOut": "साइन आउट",
+  "settingsSignOutTitle": "साइन आउट करें?",
+  "settingsPrivacyNote": "SHOTO आपकी गैलरी कभी नहीं पढ़ता। यह सिर्फ़ वही स्क्रीनशॉट रखता है जो आप इसमें साझा करते हैं, और उनके साथ जो कुछ करता है — पाठ पढ़ना, डुप्लिकेट ढूँढना — सब इसी डिवाइस पर होता है। कुछ भी कहीं अपलोड नहीं होता।",
+  "commonSave": "सहेजें",
+  "commonConfirm": "पुष्टि करें",
+  "commonRename": "नाम बदलें",
+  "commonShare": "साझा करें",
+  "commonUnlock": "अनलॉक करें",
+  "foldersEmptyTitle": "अभी कोई फ़ोल्डर नहीं",
+  "foldersEmptyMessage": "फ़ोल्डर ही वह तरीका हैं जिससे आप बाद में चीज़ें ढूँढते हैं। एक रसीदों के लिए बनाएँ, एक व्यंजनों के लिए — जो भी आप सचमुच ढूँढते हैं।",
+  "foldersNew": "नया फ़ोल्डर",
+  "foldersCreate": "फ़ोल्डर बनाएँ",
+  "foldersNameLabel": "फ़ोल्डर का नाम",
+  "foldersNameHint": "रसीदें, व्यंजन, काम…",
+  "foldersPrivate": "निजी (चेहरा या फ़िंगरप्रिंट लॉक)",
+  "foldersOptions": "फ़ोल्डर विकल्प",
+  "foldersDelete": "फ़ोल्डर हटाएँ",
+  "foldersDeleteKept": "अंदर के स्क्रीनशॉट सुरक्षित रहेंगे",
+  "foldersDeleteTitle": "«{name}» हटाएँ?",
+  "@foldersDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "foldersDeleteMessage": "फ़ोल्डर हट जाएगा लेकिन अंदर के स्क्रीनशॉट आपकी लाइब्रेरी में रहेंगे।",
+  "foldersRenameTitle": "फ़ोल्डर का नाम बदलें",
+  "foldersMoveTitle": "फ़ोल्डर में ले जाएँ",
+  "foldersMoveRemove": "फ़ोल्डर से हटाएँ",
+  "foldersMoveNone": "अभी कोई फ़ोल्डर नहीं। फ़ोल्डर टैब से एक बनाएँ।",
+  "folderLockedTitle": "«{name}» अनलॉक करें",
+  "@folderLockedTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "folderLockedMessage": "यह फ़ोल्डर सुरक्षित है। देखने के लिए प्रमाणित करें।",
+  "folderEmptyTitle": "यहाँ अभी कुछ नहीं",
+  "folderEmptyMessage": "अपनी लाइब्रेरी से स्क्रीनशॉट इस फ़ोल्डर में ले जाएँ।",
+  "detailFavorite": "पसंदीदा",
+  "detailUnfavorite": "पसंदीदा से हटाएँ",
+  "detailAddFavorite": "पसंदीदा में जोड़ें",
+  "detailActions": "क्रियाएँ",
+  "detailSafeShare": "सुरक्षित साझा",
+  "detailDeleteTitle": "स्क्रीनशॉट हटाएँ?",
+  "detailDeleteMessage": "यह आपके डिवाइस से हमेशा के लिए हट जाएगा।",
+  "quickSaveTitleOne": "SHOTO में सहेजें",
+  "quickSaveTitleMany": "{count} स्क्रीनशॉट सहेजें",
+  "@quickSaveTitleMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSaveFileOne": "यह स्क्रीनशॉट फ़ाइल करें",
+  "quickSaveFileMany": "{count} स्क्रीनशॉट फ़ाइल करें",
+  "@quickSaveFileMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSavePickFolder": "फ़ोल्डर चुनें",
+  "quickSaveNeedFolder": "इन्हें रखने के लिए फ़ोल्डर बनाएँ",
+  "quickSaveFileIn": "{folder} में फ़ाइल करें",
+  "@quickSaveFileIn": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveCreateFirstFolder": "अपना पहला फ़ोल्डर बनाएँ",
+  "quickSaveCreateFirstFolderWhy": "फ़ोल्डर ही वह तरीका हैं जिससे आप बाद में चीज़ें ढूँढते हैं",
+  "quickSaveNewChip": "नया",
+  "quickSaveSaved": "SHOTO में सहेजा गया",
+  "quickSaveFiled": "{folder} में फ़ाइल हो गया।",
+  "@quickSaveFiled": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveFiledByRules": "आपके नियमों के अनुसार फ़ाइल हो गया।",
+  "quickSaveNoRuleMatched": "कोई नियम नहीं मिला — लाइब्रेरी में बिना छँटाई रह गया।",
+  "quickSaveFailedTitle": "वह तस्वीर पढ़ी नहीं जा सकी",
+  "quickSaveFailedBody": "इसे दोबारा साझा करके देखें।",
+  "quickSaveSignedOutTitle": "पहले SHOTO में साइन इन करें",
+  "quickSaveSignedOutBody": "आपकी लाइब्रेरी आपके खाते से जुड़ी है। SHOTO खोलें, साइन इन करें, फिर दोबारा साझा करें।",
+  "quickSaveSkipped": "सिर्फ़ पहले {count} लिए गए",
+  "@quickSaveSkipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupTitle": "डुप्लिकेट खोजें",
+  "dupScanning": "डुप्लिकेट खोजे जा रहे हैं",
+  "dupReading": "आपकी लाइब्रेरी पढ़ी जा रही है…",
+  "dupProgress": "{total} में से {done} जाँचे गए",
+  "@dupProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dupNoneTitle": "कोई डुप्लिकेट नहीं मिला",
+  "dupNoneBody": "आपकी लाइब्रेरी पहले से साफ़ है।",
+  "dupScanAgain": "फिर से स्कैन करें",
+  "dupReclaimable": "{size} तक जगह खाली हो सकती है",
+  "@dupReclaimable": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupNothingSelected": "कुछ चयनित नहीं",
+  "dupDeleteButton": "{count} हटाएँ · {size} खाली",
+  "@dupDeleteButton": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupDeleteTitle": "{count} प्रतियाँ हटाएँ?",
+  "@dupDeleteTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupDeleteMessage": "ये आपके डिवाइस से हमेशा के लिए हट जाएँगी। रखी जाने वाली प्रतियाँ प्रभावित नहीं होंगी।",
+  "dupDeleted": "{count} हटाए · {size} खाली",
+  "@dupDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupSets": "{count} सेट",
+  "@dupSets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupBest": "सर्वोत्तम",
+  "dupKeepAll": "सब रखें",
+  "dupKeepingAll": "सब रखे जा रहे हैं — कुछ नहीं हटेगा",
+  "dupUndo": "पूर्ववत",
+  "dupFrees": "{size} खाली करेगा",
+  "@dupFrees": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "safeShareTitle": "सुरक्षित साझा",
+  "safeShareScanning": "निजी जानकारी जाँची जा रही है",
+  "safeShareOnDevice": "पढ़ना आपके फ़ोन पर ही होता है।",
+  "safeShareCleanTitle": "कुछ निजी नहीं मिला",
+  "safeShareCleanBody": "इस स्क्रीनशॉट में कोई कार्ड नंबर, खाता नंबर, कोड या संपर्क विवरण नहीं मिला। आप इसे वैसे ही साझा कर सकते हैं।",
+  "safeShareUnreadableTitle": "यह स्क्रीनशॉट पढ़ा नहीं जा सका",
+  "safeShareUnreadableBody": "इसमें मौजूद पाठ पहचाना नहीं जा सका।",
+  "safeShareShareUnchanged": "वैसे ही साझा करें",
+  "safeShareShareAnyway": "फिर भी साझा करें",
+  "safeShareShareProtected": "सुरक्षित प्रति साझा करें",
+  "safeShareFailed": "सुरक्षित प्रति नहीं बन सकी।",
+  "safeShareFoundTitle": "{count, plural, =1{1 निजी जानकारी मिली} other{{count} निजी जानकारियाँ मिलीं}}",
+  "@safeShareFoundTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFreeScan": "जाँच हमेशा मुफ़्त है।",
+  "safeShareCleanAction": "यह स्क्रीनशॉट साफ़ करें",
+  "safeShareShareAsIs": "बिना बदलाव के साझा करें",
+  "safeShareHowTitle": "पक्के तौर पर ढका हुआ",
+  "safeShareHowBody": "कॉपी आपके फ़ोन से निकलने से पहले हर निजी जानकारी ठोस ब्लॉक से ढक दी जाती है। न धुंधलापन, न वापस पढ़ने का कोई तरीका — ढकी हुई कॉपी ही इकलौती कॉपी है।",
+  "safeShareTreatmentCover": "ढकें",
+  "safeShareTreatmentKeep": "रहने दें",
+  "safeShareBuilding": "आपकी साफ़ कॉपी तैयार हो रही है",
+  "safeShareNothingSelected": "कुछ नहीं बदलेगा",
+  "safeShareLockedPreview": "साफ़ संस्करण देखने के लिए अनलॉक करें",
+  "safeShareReviewTitle": "हर एक जाँचें",
+  "safeShareFound": "{count} चीज़ें ढकी गईं",
+  "@safeShareFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchTitle": "स्क्रीनशॉट जोड़ें",
+  "stitchWorking": "ओवरलैप ढूँढा जा रहा है",
+  "stitchWorkingBody": "मिलाया जा रहा है कि हर स्क्रीनशॉट पिछले से कहाँ जुड़ता है।",
+  "stitchFailed": "जोड़ा नहीं जा सका",
+  "stitchSave": "गैलरी में सहेजें",
+  "stitchSaved": "आपकी गैलरी में सहेजी गई",
+  "stitchDiscard": "छोड़ें",
+  "commonDone": "हो गया",
+  "commonBack": "वापस",
+  "commonClose": "बंद करें",
+  "searchTitle": "अपने स्क्रीनशॉट में खोजें",
+  "searchHint": "शब्द या तस्वीर में जो दिखे",
+  "searchIntro": "तस्वीर में लिखा कोई शब्द, या तस्वीर में जो दिखे — «बिल्ली», «जानवर», «खाना» या «रसीद» आज़माएँ।",
+  "searchNoneTitle": "कोई नतीजा नहीं",
+  "searchNoneBody": "यहाँ कुछ भी «{query}» जैसा नहीं पढ़ा या दिखा।",
+  "@searchNoneBody": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallTitle": "SHOTO Pro अनलॉक करें",
+  "paywallSubtitle": "नीचे सब कुछ, एक ही सदस्यता में।",
+  "paywallMonthly": "मासिक",
+  "paywallYearly": "वार्षिक",
+  "paywallSave": "{percent}% बचाएँ",
+  "@paywallSave": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallContinue": "जारी रखें",
+  "paywallUnavailable": "अभी उपलब्ध नहीं",
+  "paywallRestore": "खरीदारी बहाल करें",
+  "paywallLegal": "रद्द करने तक अपने आप नवीनीकृत होता रहेगा। आप कभी भी अपने App Store या Google Play खाते से रद्द कर सकते हैं। जारी रखने पर आप हमारी शर्तें और गोपनीयता नीति स्वीकार करते हैं।",
+  "subPremiumBadge": "PRO",
+  "subPremiumTitle": "SHOTO Pro",
+  "subPremiumBody": "हर सुविधा आपके लिए खुली है।",
+  "subDevUnlock": "टेस्टर ऐक्सेस",
+  "subDevUnlockBody": "सिर्फ़ इसी डिवाइस पर खुला — असली सदस्यता नहीं",
+  "subUnlockEverything": "सब कुछ खोलें",
+  "proWelcomeTitle": "आप Pro पर हैं",
+  "proWelcomeBody": "हर सुविधा खुल गई है। और कुछ सेट करने की ज़रूरत नहीं।",
+  "proWelcomeAction": "शुरू करें",
+  "featRules": "नियम जो आपके लिए फ़ाइल करें",
+  "featRulesBody": "एक बार नियम लिखें और हर साझा किया स्क्रीनशॉट खुद फ़ाइल हो जाए। नियम आपने लिखा है, इसलिए वजह हमेशा पता होती है।",
+  "featSearch": "स्क्रीनशॉट के अंदर खोजें",
+  "featSearchBody": "उसमें लिखे शब्दों से कोई भी स्क्रीनशॉट ढूँढें, अरबी या अंग्रेज़ी में। कुछ अपलोड नहीं होता — पढ़ना आपके फ़ोन पर होता है।",
+  "featSafeShare": "सुरक्षित साझा",
+  "featSafeShareBody": "कार्ड नंबर, पते, नाम और संपर्क जानकारी की जगह असली जैसे विकल्प रख देता है — वही लंबाई, वही रूप, वही जगह। आप जो कॉपी भेजते हैं वह संपादित नहीं लगती।",
+  "featActions": "स्क्रीनशॉट को क्रियाओं में बदलें",
+  "featActionsBody": "नंबर पर कॉल करें, लिंक खोलें, कोड या IBAN कॉपी करें — सीधे तस्वीर से, कुछ दोबारा टाइप किए बिना।",
+  "featDuplicates": "डुप्लिकेट खोजें",
+  "featDuplicatesBody": "लगभग एक जैसे स्क्रीनशॉट पहचानें जो दो बार रखे गए और उन्हें हटाएँ — हमेशा पहले समीक्षा के साथ।",
+  "featStitch": "लंबे स्क्रीनशॉट जोड़ें",
+  "featStitchBody": "स्क्रॉल की गई तस्वीरों को एक लंबी तस्वीर में जोड़ें, ओवरलैप अपने आप ढूँढकर हटा दिया जाता है।",
+  "featUnlimited": "असीमित फ़ोल्डर और स्क्रीनशॉट",
+  "featUnlimitedBody": "मुफ़्त संस्करण कुछ ही फ़ोल्डर और स्क्रीनशॉट पर रुक जाता है। Pro दोनों सीमाएँ हटा देता है।",
+  "featRulesHow": "नियम एक वाक्य है जो आप खुद लिखते हैं: जब स्क्रीनशॉट ऐसा दिखे, उसे उस फ़ोल्डर में रखो। हर नया स्क्रीनशॉट आते ही आपके नियमों से जाँचा जाता है, इसलिए फ़ाइल करना याद रखने वाला काम नहीं रह जाता।",
+  "featRulesPoint1": "तस्वीर के भीतर छपे शब्दों पर, तस्वीर में जो दिख रहा है उस पर, या उसमें कोई संवेदनशील जानकारी है या नहीं — इन पर मिलान करें।",
+  "featRulesPoint2": "अपनी सभी शर्तें माँगें या उनमें से कोई एक, और किसी भी शर्त को उलट सकते हैं।",
+  "featRulesPoint3": "कुछ भी अंदाज़े से नहीं होता। नियम आपने लिखा है, इसलिए आपको हमेशा पता रहता है कि स्क्रीनशॉट वहाँ क्यों गया।",
+  "featSearchHow": "SHOTO हर स्क्रीनशॉट के भीतर छपा पाठ पढ़कर याद रखता है, इसलिए याद आया एक शब्द ही तस्वीर दोबारा ढूँढने के लिए काफ़ी है — न फ़ाइल नाम, न फ़ोल्डर, न स्क्रॉल।",
+  "featSearchPoint1": "अरबी और अंग्रेज़ी पढ़ता है, और वर्तनी थोड़ी अलग हो तब भी मिलान कर लेता है।",
+  "featSearchPoint2": "तस्वीर में जो दिख रहा है उससे भी ढूँढता है — «रसीद», «बिल्ली» या «खाना» आज़माएँ।",
+  "featSearchPoint3": "पढ़ने का काम आपके फ़ोन पर होता है। कुछ भी अपलोड नहीं होता, इसलिए ऑफ़लाइन भी चलता है।",
+  "featSafeShareHow": "स्क्रीनशॉट में निजी जानकारी ढूँढना हमेशा मुफ़्त और असीमित है। भुगतान उन नतीजों को साफ़ कॉपी में बदलता है: हर जानकारी स्क्रीनशॉट के अपने रंगों में दूसरी, उतनी ही आम जानकारी बनकर फिर से लिखी जाती है।",
+  "featSafeSharePoint1": "कार्ड नंबर Luhn से और IBAN mod-97 से जाँचे जाते हैं — और विकल्प भी वही जाँच पास करते हैं, इसलिए कुछ भी बनावटी नहीं लगता।",
+  "featSafeSharePoint2": "नाम, पते, ऑर्डर नंबर, सत्यापन कोड, फ़ोन नंबर और ईमेल भी पकड़ता है।",
+  "featSafeSharePoint3": "भेजने से पहले हर बदलाव दिखता है, और आप उसकी जगह ढकना या रहने देना चुन सकते हैं। मूल स्क्रीनशॉट कभी नहीं बदलता।",
+  "featActionsHow": "स्क्रीनशॉट के भीतर जो कुछ लिखा है वह इस्तेमाल करने लायक बन जाता है। SHOTO काम की चीज़ें निकालकर हर एक पर एक बटन लगा देता है।",
+  "featActionsPoint1": "फ़ोन नंबर, लिंक, ईमेल पते, IBAN और सत्यापन कोड आपके लिए ढूँढ लिए जाते हैं।",
+  "featActionsPoint2": "कॉल करने, खोलने या कॉपी करने के लिए एक टैप — तस्वीर से अंक पढ़ने की ज़रूरत नहीं।",
+  "featActionsPoint3": "आपके पास पहले से मौजूद स्क्रीनशॉट पर भी चलता है, सिर्फ़ नए पर नहीं।",
+  "featStitchHow": "लंबी चैट या पेज स्क्रॉल करते हुए कुछ शॉट लें, और SHOTO पता लगाता है कि वे कहाँ ओवरलैप होते हैं और उन्हें एक लंबी तस्वीर में जोड़ देता है।",
+  "featStitchPoint1": "दो शॉट के बीच दोहराई गई पट्टी अपने आप पहचानी और हटाई जाती है।",
+  "featStitchPoint2": "कुछ भी सहेजने से पहले आप जोड़ देख लेते हैं — स्वचालित पहचान अच्छी है, पर कभी पूरी तरह पक्की नहीं।",
+  "featStitchPoint3": "जुड़ी हुई तस्वीर बाकी तस्वीरों की तरह आपकी गैलरी में सहेजी जाती है।",
+  "featDuplicatesHow": "SHOTO स्क्रीनशॉट की तुलना नाम या आकार से नहीं, दिखने से करता है — इसलिए लगभग एक जैसी प्रतियाँ भी पकड़ लेता है: दोबारा भेजी गई, अलग क्रॉप, या दो बार लिया गया वही दृश्य।",
+  "featDuplicatesPoint1": "जो एक जैसा दिखता है उसे समूह में रखता है और रखने लायक प्रति सुझाता है।",
+  "featDuplicatesPoint2": "आपके कुछ तय करने से पहले बताता है कि हर समूह कितनी जगह खाली करेगा।",
+  "featDuplicatesPoint3": "जब तक आप समूह देखकर पुष्टि न करें, कुछ भी नहीं मिटता।",
+  "featUnlimitedHow": "मुफ़्त संस्करण एक असली, काम लायक ऐप है, ट्रायल नहीं — बस उसकी एक सीमा है। Pro वह सीमा हटा देता है, और जो कुछ आपने पहले से व्यवस्थित किया है वह ठीक वहीं रहता है।",
+  "featUnlimitedPoint1": "आपकी लाइब्रेरी को जितने फ़ोल्डर सचमुच चाहिए, उतने।",
+  "featUnlimitedPoint2": "आप कितने स्क्रीनशॉट फ़ाइल और पसंदीदा करते हैं, इस पर कोई सीमा नहीं।",
+  "featUnlimitedPoint3": "सहेजना, फ़ोल्डर, पसंदीदा और खोज इतिहास दोनों ही स्थिति में आपके रहते हैं।",
+  "includedSubtitle": "हर Pro सुविधा, समझाई गई।",
+  "includedHint": "किसी सुविधा पर टैप करके देखें वह कैसे काम करती है",
+  "includedHowLabel": "यह कैसे काम करता है",
+  "includedActiveTitle": "आपकी योजना सक्रिय है",
+  "includedActiveBody": "नीचे दी गई हर चीज़ इस खाते पर खुली है।",
+  "includedLockedTitle": "अभी खुला नहीं है",
+  "includedLockedBody": "पढ़ें कि हर सुविधा असल में क्या करती है, फिर तय करें।",
+  "includedFreeTitle": "मुफ़्त स्तर आपको क्या देता है",
+  "includedFreeBody": "{folders} फ़ोल्डर और {count} व्यवस्थित स्क्रीनशॉट — साथ में सहेजना, पसंदीदा और गैलरी, हमेशा के लिए मुफ़्त।",
+  "@includedFreeBody": {
+    "placeholders": {
+      "folders": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authWelcome": "SHOTO में आपका स्वागत है",
+  "authSubtitle": "हर स्क्रीनशॉट एक जगह सहेजने, व्यवस्थित करने और ढूँढने के लिए साइन इन करें।",
+  "authGoogle": "Google से जारी रखें",
+  "authApple": "Apple से जारी रखें",
+  "authLegal": "जारी रखने पर आप हमारी शर्तें और गोपनीयता नीति स्वीकार करते हैं।",
+  "onboardingCta": "शुरू करें",
+  "onboardingPromise": "सब कुछ आपके फ़ोन पर ही रहता है।",
+  "actionsTitle": "क्रियाएँ",
+  "actionsWorking": "स्क्रीनशॉट पढ़ा जा रहा है",
+  "actionsWorkingBody": "नंबर, लिंक और कोड ढूँढे जा रहे हैं।",
+  "actionsNoneTitle": "करने को कुछ नहीं",
+  "actionsNoneBody": "इस स्क्रीनशॉट में कोई फ़ोन नंबर, लिंक, कोड या खाता नंबर नहीं मिला।",
+  "actionsCopy": "कॉपी करें",
+  "actionsCopied": "कॉपी हो गया",
+  "actionsNoApp": "इस डिवाइस पर कोई ऐप यह नहीं कर सकता।",
+  "devModeOn": "डेवलपर मोड चालू — हर सुविधा खुली",
+  "devModeBadge": "डेवलपर मोड",
+  "devModeOffTitle": "डेवलपर मोड बंद करें?",
+  "devModeOffBody": "इस डिवाइस पर SHOTO मुफ़्त स्तर पर लौट जाएगा, ताकि आप पेवॉल और सीमाएँ फिर से आज़मा सकें।",
+  "devModeOffConfirm": "बंद करें",
+  "devAccessTitle": "डेवलपर पहुँच",
+  "devAccessBody": "इस डिवाइस पर हर Pro सुविधा खोलने के लिए 4 अंकों का कोड डालें।",
+  "devWrongCode": "ग़लत कोड",
+  "devTapToDisable": "बंद करने के लिए {count}× दबाएँ",
+  "@devTapToDisable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appVersion": "संस्करण {version}",
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleSummaryEmpty": "अभी कोई शर्त नहीं — कुछ फ़ाइल नहीं करेगा",
+  "ruleJoinAnd": " और ",
+  "ruleJoinOr": " या ",
+  "ruleSaysWord": "«{value}» कहे",
+  "@ruleSaysWord": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleNotSaysWord": "«{value}» न कहे",
+  "@ruleNotSaysWord": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleShows": "{value} दिखाए",
+  "@ruleShows": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleNotShows": "{value} न दिखाए",
+  "@ruleNotShows": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleContains": "{value} रखता हो",
+  "@ruleContains": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleNotContains": "{value} न रखता हो",
+  "@ruleNotContains": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "ruleHasText": "पढ़ने योग्य पाठ हो",
+  "ruleNoText": "पढ़ने योग्य पाठ न हो",
+  "kindCard": "कार्ड नंबर",
+  "kindIban": "बैंक खाता",
+  "kindCode": "सत्यापन कोड",
+  "kindNationalId": "पहचान संख्या",
+  "kindEmail": "ईमेल पता",
+  "kindPhone": "फ़ोन नंबर",
+  "kindLink": "लिंक",
+  "actionCall": "कॉल करें",
+  "actionWhatsapp": "व्हाट्सएप",
+  "actionSms": "संदेश",
+  "actionEmailAction": "लिखें",
+  "actionOpen": "खोलें",
+  "countScreenshots": "{count, plural, =0{कोई स्क्रीनशॉट नहीं} =1{1 स्क्रीनशॉट} other{{count} स्क्रीनशॉट}}",
+  "@countScreenshots": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countPosition": "{total} में से {position}",
+  "@countPosition": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "countChip": "{label} · {count}",
+  "@countChip": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSetsFound": "{count, plural, =1{डुप्लिकेट का 1 सेट} other{डुप्लिकेट के {count} सेट}}",
+  "@dupSetsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSimilarCopies": "{count} मिलती-जुलती प्रतियाँ",
+  "@dupSimilarCopies": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFoundCount": "{count, plural, =1{1 चीज़ मिली} other{{count} चीज़ें मिलीं}}",
+  "@safeShareFoundCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsStorage": "स्टोरेज",
+  "settingsDuplicatesHint": "वे स्क्रीनशॉट पहचानें जो दो बार लिए",
+  "settingsPremium": "Pro",
+  "settingsWhatsIncluded": "इसमें क्या शामिल है",
+  "settingsFeatureCount": "{count} सुविधाएँ, एक प्लान",
+  "@settingsFeatureCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsShareHint": "किसी ज़रूरतमंद को बताएँ",
+  "settingsShareText": "SHOTO मेरे स्क्रीनशॉट खुद व्यवस्थित करता है — सब कुछ फ़ोन पर रहता है।",
+  "settingsAccount": "खाता",
+  "settingsSignOutHint": "आपके स्क्रीनशॉट इसी डिवाइस पर रहेंगे",
+  "settingsCacheMeasuring": "माप रहे हैं…",
+  "settingsCacheSize": "{size} थंबनेल",
+  "@settingsCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSafeShareHint": "कोई स्क्रीनशॉट खोलें, फिर सुरक्षित साझा दबाएँ।",
+  "homeStitchHint": "अपनी लाइब्रेरी में दो या ज़्यादा स्क्रीनशॉट दबाकर रखें, फिर जोड़ें दबाएँ।",
+  "stitchLimit": "एक बार में ज़्यादा से ज़्यादा {count} स्क्रीनशॉट जोड़ सकते हैं।",
+  "@stitchLimit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareSavedPrompt": "{count, plural, =1{स्क्रीनशॉट सहेजा गया। किसी फ़ोल्डर में डालें?} other{स्क्रीनशॉट सहेजे गए। किसी फ़ोल्डर में डालें?}}",
+  "@shareSavedPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultMerged": "{count} स्क्रीनशॉट जुड़ गए",
+  "@stitchResultMerged": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultTrimmed": "दोहराए गए {count} px हटा दिए गए",
+  "@stitchResultTrimmed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorLoadScreenshots": "आपके स्क्रीनशॉट लोड नहीं हो सके।",
+  "errorLoadFolders": "आपके फ़ोल्डर लोड नहीं हो सके।",
+  "errorLoadRules": "आपके नियम लोड नहीं हो सके।",
+  "errorScanDuplicates": "डुप्लिकेट स्कैन नहीं हो सका।",
+  "errorDeleteSelected": "चयनित स्क्रीनशॉट हटाए नहीं जा सके।",
+  "errorStitchFailed": "ये स्क्रीनशॉट जोड़े नहीं जा सके।",
+  "errorStitchSave": "जुड़ी हुई तस्वीर सहेजी नहीं जा सकी।",
+  "errorOnboarding": "लोड नहीं हो सका। ऐप दोबारा खोलें।",
+  "errorSignInCancelled": "साइन इन रद्द हो गया।",
+  "errorSignInInterrupted": "साइन इन में रुकावट आई। दोबारा कोशिश करें।",
+  "errorNetwork": "नेटवर्क त्रुटि। अपना कनेक्शन जाँचें।",
+  "errorGeneric": "कुछ गड़बड़ हो गई। दोबारा कोशिश करें।",
+  "errorPlans": "सदस्यता प्लान लोड नहीं हो सके।",
+  "errorPurchase": "खरीदारी विफल। दोबारा कोशिश करें।",
+  "errorNoSubscription": "इस खाते के लिए कोई सक्रिय सदस्यता नहीं मिली।",
+  "errorRestore": "खरीदारी बहाल नहीं हो सकी।",
+  "errorStitchTooFew": "जोड़ने के लिए कम से कम दो स्क्रीनशॉट चुनें।",
+  "errorStitchTooMany": "एक बार में {count} स्क्रीनशॉट तक जोड़े जा सकते हैं।",
+  "@errorStitchTooMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorStitchUnreadable": "एक स्क्रीनशॉट पढ़ा नहीं जा सका।",
+  "errorStitchWidths": "इन स्क्रीनशॉट की चौड़ाई अलग है, इसलिए ये एक ही स्क्रॉल का हिस्सा नहीं हो सकते।",
+  "errorStitchNoOverlap": "इन स्क्रीनशॉट में कोई ओवरलैप नहीं है। जोड़ना सिर्फ़ एक ही पेज के, स्क्रॉल करते हुए लिए गए स्क्रीनशॉट पर काम करता है।",
+  "errorStitchOverlap": "इन स्क्रीनशॉट के बीच का ओवरलैप तय नहीं किया जा सका।",
+  "errorStitchTooTall": "जुड़ी हुई छवि बहुत लंबी हो जाएगी। कम स्क्रीनशॉट जोड़कर देखें।",
+  "errorStitchEncode": "जुड़ी हुई छवि एन्कोड नहीं की जा सकी।",
+  "errorRedactionSave": "सुरक्षित प्रति सहेजी नहीं जा सकी।",
+  "shareSavedCount": "{count, plural, =1{स्क्रीनशॉट सहेजा गया} other{{count} स्क्रीनशॉट सहेजे गए}}",
+  "@shareSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "densityLarge": "बड़ा",
+  "densityMedium": "मध्यम",
+  "densitySmall": "छोटा",
+  "sensitiveCard": "कार्ड नंबर",
+  "sensitiveIban": "बैंक खाता",
+  "sensitiveCode": "सत्यापन कोड",
+  "sensitiveNationalId": "पहचान संख्या",
+  "sensitiveEmail": "ईमेल पता",
+  "sensitivePhone": "फ़ोन नंबर",
+  "sensitiveAddress": "पता",
+  "sensitiveName": "नाम",
+  "sensitiveOrderNumber": "ऑर्डर नंबर",
+  "sensitiveNumber": "नंबर",
+  "quickSaveByRules": "मेरे नियम इसे फ़ाइल करें",
+  "ruleSeenTitle": "SHOTO ने आपकी लाइब्रेरी में क्या देखा",
+  "ruleSeenEmpty": "SHOTO ने अभी आपके स्क्रीनशॉट के अंदर नहीं देखा। हर नया आते ही पढ़ा जाता है, तो यह भरता जाएगा।",
+  "ruleSeenHint": "किसी एक को दबाएँ — ये ठीक वही शब्द हैं जो मॉडल देता है, तो इन पर बना नियम सचमुच चलेगा।",
+  "onbSkip": "छोड़ें",
+  "onbNext": "आगे",
+  "onbPileTitle": "हज़ार स्क्रीनशॉट, एक ढेर",
+  "onbPileBody": "आप याद रखने के लिए स्क्रीनशॉट लेते हैं। हफ़्ते भर बाद वह चार सौ और के नीचे दब जाता है।",
+  "onbChooseTitle": "SHOTO आपकी गैलरी कभी नहीं पढ़ता",
+  "onbChooseBody": "कुछ अपने आप नहीं आता। आप स्क्रीनशॉट शेयर करते हैं — बस यही पूरा नियम है।",
+  "onbFileTitle": "भेजते ही सही जगह पर",
+  "onbFileBody": "शेयर शीट में ही फ़ोल्डर चुनें। ऐप खुलता तक नहीं।",
+  "onbFindTitle": "उनके अंदर जो है, वह खोजें",
+  "onbFindBody": "स्क्रीनशॉट में लिखे शब्द, और तस्वीर में जो दिख रहा है। लिखें “रसीद” या “कुत्ता”।",
+  "onbProTitle": "SHOTO Pro",
+  "onbProBody": "नियम आपके नए स्क्रीनशॉट खुद फ़ाइल करते हैं, और नीचे सब कुछ साथ आता है।",
+  "onbProMore": "और {count} अन्य",
+  "@onbProMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onbFolderExample": "रसीदें",
+  "onbSearchExample": "रसीद",
+  "importTitle": "स्क्रीनशॉट जोड़ें",
+  "importDone": "{count, plural, =1{1 स्क्रीनशॉट इंपोर्ट हुआ} other{{count} स्क्रीनशॉट इंपोर्ट हुए}}",
+  "@importDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importPartial": "{picked} में से {imported} इंपोर्ट हुए",
+  "@importPartial": {
+    "placeholders": {
+      "imported": {
+        "type": "int"
+      },
+      "picked": {
+        "type": "int"
+      }
+    }
+  },
+  "importFailed": "ये स्क्रीनशॉट सेव नहीं हो सके",
+  "homeToolImportSubtitle": "अपने फ़ोन से चुनें — आपकी गैलरी नहीं पढ़ी जाती",
+  "importPickerUnavailable": "फ़ोटो पिकर नहीं खुल सका",
+  "rulePreviewMatches": "{count, plural, =1{SHOTO ने जो {indexed} स्क्रीनशॉट पढ़े हैं उनमें से 1 यह लेगा} other{SHOTO ने जो {indexed} स्क्रीनशॉट पढ़े हैं उनमें से {count} यह लेगा}}",
+  "@rulePreviewMatches": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "indexed": {
+        "type": "int"
+      }
+    }
+  },
+  "rulePreviewNone": "SHOTO ने अब तक जो पढ़ा है उसमें से कुछ भी इससे मेल नहीं खाता",
+  "rulePreviewNotIndexed": "SHOTO ने अभी तक आपका कोई स्क्रीनशॉट नहीं पढ़ा, इसलिए जाँचने को कुछ नहीं है। हर एक को आते ही पढ़ लिया जाता है।",
+  "rulePreviewTaken": "{count, plural, =1{इनमें से 1 इससे ऊपर वाले नियम को चला जाता है।} other{इनमें से {count} इससे ऊपर वाले नियम को चले जाते हैं।}}",
+  "@rulePreviewTaken": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rulePreviewAllTaken": "जो भी मेल खाता है वह पहले ही ऊपर वाला नियम ले लेता है। यह नियम जीतना चाहिए तो इसे ऊपर ले जाएँ।",
+  "rulePreviewFloor": "सिर्फ़ वही गिनता है जो SHOTO अब तक पढ़ चुका है। नए स्क्रीनशॉट आते ही जाँचे जाते हैं।",
+  "ruleBuilderEditTitle": "नियम बदलें",
+  "ruleBuilderEditIntro": "बदलाव अब से लागू होंगे। जो स्क्रीनशॉट यह नियम पहले ही रख चुका है वे वहीं रहेंगे।",
+  "ruleBuilderUpdate": "बदलाव सहेजें",
+  "rulesPriorityNote": "स्क्रीनशॉट उसी पहले नियम को जाता है जो उससे मेल खाए। कौन-सा पहले हो, यह तीरों से बदलें।",
+  "rulesCardNotIndexed": "अभी कुछ पढ़ा नहीं गया — जाँचने को कुछ नहीं",
+  "rulesCardClaims": "{count, plural, =1{1 स्क्रीनशॉट लेता है} other{{count} स्क्रीनशॉट लेता है}}",
+  "@rulesCardClaims": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesCardClaimsNone": "अभी कुछ नहीं लेता",
+  "rulesCardOverruled": "{count, plural, =1{1 मेल ऊपर वाले नियम को जाता है} other{{count} मेल ऊपर वाले नियम को जाते हैं}}",
+  "@rulesCardOverruled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesMoveUp": "ऊपर ले जाएँ",
+  "rulesMoveDown": "नीचे ले जाएँ",
+  "rulesBacklogUnread": "{count, plural, =1{1 स्क्रीनशॉट अभी पढ़ा नहीं गया — जारी रखने के लिए फिर चलाएँ।} other{{count} स्क्रीनशॉट अभी पढ़े नहीं गए — जारी रखने के लिए फिर चलाएँ।}}",
+  "@rulesBacklogUnread": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "indexingProgress": "{count, plural, =1{आपके स्क्रीनशॉट अभी पढ़े जा रहे हैं — 1 बाकी} other{आपके स्क्रीनशॉट अभी पढ़े जा रहे हैं — {count} बाकी}}",
+  "@indexingProgress": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ruleBuilderMatches": "मेल खाता है",
+  "ruleBuilderMatchesNot": "मेल नहीं खाता",
+  "ruleBuilderMatchesNotHelp": "यह सच न हो तब नियम चलता है — किसी अपवाद को बाहर रखने के लिए उपयोगी।",
+  "rulePreviewAlreadyFiled": "{count, plural, =1{इनमें से 1 पहले से किसी फ़ोल्डर में है, और चलाने पर वे कभी नहीं हटतीं। यहाँ केवल नए स्क्रीनशॉट आएँगे।} other{इनमें से {count} पहले से फ़ोल्डरों में हैं, और चलाने पर वे कभी नहीं हटतीं। यहाँ केवल नए स्क्रीनशॉट आएँगे।}}",
+  "@rulePreviewAlreadyFiled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "rulesCardAlreadyFiled": "{count, plural, =1{1 से मेल खाता है, पर वह पहले से कहीं और रखी है} other{{count} से मेल खाता है, पर वे पहले से कहीं और रखी हैं}}",
+  "@rulesCardAlreadyFiled": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

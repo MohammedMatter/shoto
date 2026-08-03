@@ -1,0 +1,1771 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
+class AppLocalizationsEn extends AppLocalizations {
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get commonCancel => 'Cancel';
+
+  @override
+  String get commonDelete => 'Delete';
+
+  @override
+  String get commonRetry => 'Try again';
+
+  @override
+  String get commonSomethingWentWrong => 'Something went wrong';
+
+  @override
+  String get commonPro => 'PRO';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navLibrary => 'Library';
+
+  @override
+  String get navFolders => 'Folders';
+
+  @override
+  String get navSettings => 'Settings';
+
+  @override
+  String get tagline => 'Your screenshots, organized';
+
+  @override
+  String get homeGreetingMorning => 'Good morning';
+
+  @override
+  String get homeGreetingAfternoon => 'Good afternoon';
+
+  @override
+  String get homeGreetingEvening => 'Good evening';
+
+  @override
+  String get homeInboxEmpty => 'Nothing saved';
+
+  @override
+  String get homeInboxEmptySubtitle => 'Share a screenshot into SHOTO to start';
+
+  @override
+  String get homeInboxClear => 'All filed';
+
+  @override
+  String get homeInboxClearSubtitle => 'Nothing waiting to be sorted';
+
+  @override
+  String get homeInboxCountSubtitle => 'Screenshots you have not filed yet';
+
+  @override
+  String get homeStatScreenshots => 'Screenshots';
+
+  @override
+  String get homeStatFavorites => 'Favorites';
+
+  @override
+  String get homeStatFolders => 'Folders';
+
+  @override
+  String get homeToolsTitle => 'What SHOTO can do';
+
+  @override
+  String get homeToolSafeShare => 'Safe share';
+
+  @override
+  String get homeToolSafeShareSubtitle => 'Hide private details first';
+
+  @override
+  String get homeToolDuplicates => 'Find duplicates';
+
+  @override
+  String get homeToolDuplicatesSubtitle => 'Free up storage';
+
+  @override
+  String get homeToolSearch => 'Search inside';
+
+  @override
+  String get homeToolSearchSubtitle => 'Find text in your images';
+
+  @override
+  String get homeToolStitch => 'Merge long shots';
+
+  @override
+  String get homeToolStitchSubtitle => 'Join a scrolling capture';
+
+  @override
+  String get homeRecent => 'Recent';
+
+  @override
+  String get libraryPickForMerge => 'Pick two or more shots of the same page';
+
+  @override
+  String get libraryPickForProtect => 'Pick the screenshot to protect';
+
+  @override
+  String get libraryActionProtect => 'Protect';
+
+  @override
+  String get homeToolsTitleShort => 'Do something';
+
+  @override
+  String get homeSeeAll => 'See all';
+
+  @override
+  String get libraryEmptyTitle => 'Nothing saved yet';
+
+  @override
+  String get libraryEmptyMessage =>
+      'Share a screenshot to SHOTO, or add one with the + button. Your gallery is never read — only what you hand over is kept.';
+
+  @override
+  String get libraryNoFavoritesTitle => 'No favorites yet';
+
+  @override
+  String get libraryNoFavoritesMessage =>
+      'Tap the heart on a screenshot to save it here.';
+
+  @override
+  String get libraryFilterAll => 'All';
+
+  @override
+  String get libraryFilterFavorites => 'Favorites';
+
+  @override
+  String get libraryFilterUnsorted => 'Unsorted';
+
+  @override
+  String get libraryNoUnsortedTitle => 'Everything is filed';
+
+  @override
+  String get libraryNoUnsortedMessage =>
+      'Nothing is waiting on you. New screenshots land here until you file or star them.';
+
+  @override
+  String librarySelectedCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get librarySelectAll => 'Select all';
+
+  @override
+  String get libraryActionMerge => 'Merge';
+
+  @override
+  String get libraryActionMove => 'Move';
+
+  @override
+  String get libraryActionDelete => 'Delete';
+
+  @override
+  String get libraryDeleteTitle => 'Delete screenshots?';
+
+  @override
+  String libraryDeleteMessage(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'This will permanently delete $count screenshots from your device.',
+      one: 'This will permanently delete 1 screenshot from your device.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get permissionNeededTitle => 'Photo access needed';
+
+  @override
+  String get permissionNeededMessage =>
+      'SHOTO keeps the screenshots you share into it in their own album. It needs photo access to write there and read them back — it never lists the rest of your gallery.';
+
+  @override
+  String get permissionPartialTitle => 'Full photo access needed';
+
+  @override
+  String get permissionPartialMessage =>
+      'SHOTO can currently only see a few photos you picked manually, so it cannot reach its own album. Choose \"Allow all\" in the photo permission to continue.';
+
+  @override
+  String get permissionOpenSettings => 'Open Settings';
+
+  @override
+  String get rulesTitle => 'Rules';
+
+  @override
+  String get rulesSubtitle => 'Filing that happens without you';
+
+  @override
+  String get rulesTeachHeadline => 'Stop sorting screenshots by hand';
+
+  @override
+  String get rulesTeachIntro =>
+      'A rule is one sentence: when a screenshot looks like this, file it in that folder. Write it once and every screenshot that matches lands there by itself — the moment it arrives.';
+
+  @override
+  String get rulesTeachExample =>
+      'For example: when a screenshot contains a card number → file it in Receipts.';
+
+  @override
+  String get rulesTeachStep1Title => '1. Describe the screenshot';
+
+  @override
+  String get rulesTeachStep1Body =>
+      'A word printed in it, something it shows, or private data inside it.';
+
+  @override
+  String get rulesTeachStep2Title => '2. Choose the folder';
+
+  @override
+  String get rulesTeachStep2Body => 'Where matching screenshots should end up.';
+
+  @override
+  String get rulesTeachStep3Title => '3. That is all';
+
+  @override
+  String get rulesTeachStep3Body =>
+      'From then on SHOTO files them for you. You can also run your rules over the screenshots already waiting.';
+
+  @override
+  String get rulesTeachShow => 'How do rules work?';
+
+  @override
+  String get rulesTeachHide => 'Got it';
+
+  @override
+  String get rulesStartTemplates => 'Or start from an example';
+
+  @override
+  String get rulesTemplateReceipts => 'Receipts & bills';
+
+  @override
+  String get rulesTemplateReceiptsWhy =>
+      'Anything with a card number or a total on it';
+
+  @override
+  String get rulesTemplateTickets => 'Tickets & bookings';
+
+  @override
+  String get rulesTemplateTicketsWhy =>
+      'Boarding passes, reservations, order confirmations';
+
+  @override
+  String get rulesTemplateCodes => 'Codes & passwords';
+
+  @override
+  String get rulesTemplateCodesWhy =>
+      'One-time codes and anything that looks like a password';
+
+  @override
+  String get rulesTemplateAnimals => 'Photos of animals';
+
+  @override
+  String get rulesTemplateAnimalsWhy =>
+      'Uses what the picture shows, not the words in it';
+
+  @override
+  String get rulesTemplatePicked => 'Pick a folder and it is ready to save.';
+
+  @override
+  String get rulesEmptyTitle => 'No rules yet';
+
+  @override
+  String get rulesNew => 'New rule';
+
+  @override
+  String get rulesNeedFolderFirst =>
+      'Make a folder first — a rule needs somewhere to file things.';
+
+  @override
+  String get rulesDeleteTitle => 'Delete this rule?';
+
+  @override
+  String get rulesDeleteMessage =>
+      'Screenshots it already filed stay where they are.';
+
+  @override
+  String rulesWhenIt(String summary) {
+    return 'When it $summary';
+  }
+
+  @override
+  String get rulesBacklogTitle => 'Catch up on the backlog';
+
+  @override
+  String get rulesBacklogIdle =>
+      'Runs your rules over screenshots that are not in a folder yet. Anything you filed by hand is left alone.';
+
+  @override
+  String rulesBacklogRunning(int done, int total) {
+    return 'Checking $done of $total…';
+  }
+
+  @override
+  String get rulesBacklogNothing => 'Nothing left unsorted.';
+
+  @override
+  String rulesBacklogResult(int filed, int examined) {
+    return 'Filed $filed of $examined unsorted screenshots.';
+  }
+
+  @override
+  String get rulesRunNow => 'Run rules now';
+
+  @override
+  String get ruleBuilderTitle => 'New rule';
+
+  @override
+  String get ruleBuilderIntro =>
+      'Two questions: what it matches, and where it goes.';
+
+  @override
+  String get ruleBuilderFolderLabel => 'Where does it go?';
+
+  @override
+  String get ruleBuilderConditionLabel => 'What should it match?';
+
+  @override
+  String get ruleBuilderConditionsLabel => 'Also matching';
+
+  @override
+  String get ruleBuilderAddCondition => 'Add another';
+
+  @override
+  String get ruleBuilderMatchAll => 'All of them';
+
+  @override
+  String get ruleBuilderMatchAny => 'Any one';
+
+  @override
+  String get ruleBuilderMatchAllHelp =>
+      'The screenshot has to satisfy every one of these.';
+
+  @override
+  String get ruleBuilderMatchAnyHelp => 'One of these being true is enough.';
+
+  @override
+  String get ruleBuilderSave => 'Save rule';
+
+  @override
+  String get ruleBuilderIncomplete => 'Pick what to match, and a folder';
+
+  @override
+  String ruleBuilderPreview(String folder, String summary) {
+    return 'File into $folder when the screenshot $summary.';
+  }
+
+  @override
+  String get ruleBuilderPreviewTitle => 'YOUR RULE, IN WORDS';
+
+  @override
+  String get conditionTextContains => 'says a word';
+
+  @override
+  String get conditionTextContainsHelp =>
+      'Looks at the text SHOTO reads inside the picture, and matches whole words — \"code\" will not fire on \"barcode\". Use a word that would actually be printed on that kind of screenshot.';
+
+  @override
+  String get conditionTextContainsHint =>
+      'a word printed in it — \"invoice\", \"ticket\"';
+
+  @override
+  String get conditionShowsSubject => 'shows something';
+
+  @override
+  String get conditionShowsSubjectHelp =>
+      'Looks at what the picture is of, not what it says. The word has to match the model\'s own, so tap one from your library below rather than guessing.';
+
+  @override
+  String get conditionShowsSubjectHint =>
+      'what it shows — \"cat\", \"animal\", \"food\"';
+
+  @override
+  String get conditionContainsSensitive => 'contains private data';
+
+  @override
+  String get conditionContainsSensitiveHelp =>
+      'The same checks Safe share uses — card numbers pass a real checksum, so an order number will not be mistaken for one.';
+
+  @override
+  String get conditionHasAnyText => 'has readable text';
+
+  @override
+  String get conditionHasAnyTextHelp =>
+      'True for anything with words in it at all. Handy for separating screenshots from saved photos.';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsAppearance => 'Appearance';
+
+  @override
+  String get settingsTheme => 'Theme';
+
+  @override
+  String get settingsThemeSystem => 'System';
+
+  @override
+  String get settingsThemeLight => 'Light';
+
+  @override
+  String get settingsThemeDark => 'Dark';
+
+  @override
+  String get settingsGridDensity => 'Grid density';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsLanguageSystem => 'Match my phone';
+
+  @override
+  String settingsLanguageSystemHint(String language) {
+    return 'Now showing $language';
+  }
+
+  @override
+  String get settingsBehaviour => 'Behaviour';
+
+  @override
+  String get settingsHaptics => 'Haptic feedback';
+
+  @override
+  String get settingsHapticsHint => 'A small tap when you press things';
+
+  @override
+  String get settingsConfirmDelete => 'Ask before deleting';
+
+  @override
+  String get settingsConfirmDeleteHint => 'Deleting cannot be undone';
+
+  @override
+  String get settingsAutomation => 'Automation';
+
+  @override
+  String get settingsAutomationCaption =>
+      'Write a rule once and SHOTO files matching screenshots the moment they arrive.';
+
+  @override
+  String get settingsRules => 'Filing rules';
+
+  @override
+  String get settingsRulesHint => 'Let SHOTO do the sorting';
+
+  @override
+  String get settingsFindDuplicates => 'Find duplicates';
+
+  @override
+  String get settingsClearCache => 'Clear image cache';
+
+  @override
+  String get settingsShare => 'Share SHOTO';
+
+  @override
+  String get settingsSignOut => 'Sign out';
+
+  @override
+  String get settingsSignOutTitle => 'Sign out?';
+
+  @override
+  String get settingsPrivacyNote =>
+      'SHOTO never reads your gallery. It only holds the screenshots you share into it, and everything it does with them — reading text, finding duplicates — happens on this device. Nothing is ever uploaded.';
+
+  @override
+  String get commonSave => 'Save';
+
+  @override
+  String get commonConfirm => 'Confirm';
+
+  @override
+  String get commonRename => 'Rename';
+
+  @override
+  String get commonShare => 'Share';
+
+  @override
+  String get commonUnlock => 'Unlock';
+
+  @override
+  String get foldersEmptyTitle => 'No folders yet';
+
+  @override
+  String get foldersEmptyMessage =>
+      'Folders are how you find things later. Make one for receipts, one for recipes — whatever you actually go looking for.';
+
+  @override
+  String get foldersNew => 'New folder';
+
+  @override
+  String get foldersCreate => 'Create folder';
+
+  @override
+  String get foldersNameLabel => 'Folder name';
+
+  @override
+  String get foldersNameHint => 'Receipts, Recipes, Work…';
+
+  @override
+  String get foldersPrivate => 'Private (face or fingerprint lock)';
+
+  @override
+  String get foldersOptions => 'Folder options';
+
+  @override
+  String get foldersDelete => 'Delete folder';
+
+  @override
+  String get foldersDeleteKept => 'Screenshots inside are kept';
+
+  @override
+  String foldersDeleteTitle(String name) {
+    return 'Delete \"$name\"?';
+  }
+
+  @override
+  String get foldersDeleteMessage =>
+      'The folder is removed but the screenshots inside stay in your library.';
+
+  @override
+  String get foldersRenameTitle => 'Rename folder';
+
+  @override
+  String get foldersMoveTitle => 'Move to folder';
+
+  @override
+  String get foldersMoveRemove => 'Remove from folder';
+
+  @override
+  String get foldersMoveNone =>
+      'No folders yet. Create one from the Folders tab.';
+
+  @override
+  String folderLockedTitle(String name) {
+    return 'Unlock \"$name\"';
+  }
+
+  @override
+  String get folderLockedMessage =>
+      'This folder is protected. Authenticate to view it.';
+
+  @override
+  String get folderEmptyTitle => 'Nothing here yet';
+
+  @override
+  String get folderEmptyMessage =>
+      'Move screenshots into this folder from your library.';
+
+  @override
+  String get detailFavorite => 'Favorite';
+
+  @override
+  String get detailUnfavorite => 'Remove from favorites';
+
+  @override
+  String get detailAddFavorite => 'Add to favorites';
+
+  @override
+  String get detailActions => 'Actions';
+
+  @override
+  String get detailSafeShare => 'Safe share';
+
+  @override
+  String get detailDeleteTitle => 'Delete screenshot?';
+
+  @override
+  String get detailDeleteMessage =>
+      'This will permanently delete it from your device.';
+
+  @override
+  String get quickSaveTitleOne => 'Save to SHOTO';
+
+  @override
+  String quickSaveTitleMany(int count) {
+    return 'Save $count screenshots';
+  }
+
+  @override
+  String get quickSaveFileOne => 'File this screenshot';
+
+  @override
+  String quickSaveFileMany(int count) {
+    return 'File $count screenshots';
+  }
+
+  @override
+  String get quickSavePickFolder => 'Pick a folder';
+
+  @override
+  String get quickSaveNeedFolder => 'Make a folder to put them in';
+
+  @override
+  String quickSaveFileIn(String folder) {
+    return 'File in $folder';
+  }
+
+  @override
+  String get quickSaveCreateFirstFolder => 'Create your first folder';
+
+  @override
+  String get quickSaveCreateFirstFolderWhy =>
+      'Folders are how you find things later';
+
+  @override
+  String get quickSaveNewChip => 'New';
+
+  @override
+  String get quickSaveSaved => 'Saved to SHOTO';
+
+  @override
+  String quickSaveFiled(String folder) {
+    return 'Filed in $folder.';
+  }
+
+  @override
+  String get quickSaveFiledByRules => 'Filed by your rules.';
+
+  @override
+  String get quickSaveNoRuleMatched =>
+      'No rule matched — left unsorted in your library.';
+
+  @override
+  String get quickSaveFailedTitle => 'Could not read that image';
+
+  @override
+  String get quickSaveFailedBody => 'Try sharing it again.';
+
+  @override
+  String get quickSaveSignedOutTitle => 'Sign in to SHOTO first';
+
+  @override
+  String get quickSaveSignedOutBody =>
+      'Your library belongs to your account. Open SHOTO, sign in, then share this again.';
+
+  @override
+  String quickSaveSkipped(int count) {
+    return 'Only the first $count were taken';
+  }
+
+  @override
+  String get dupTitle => 'Find duplicates';
+
+  @override
+  String get dupScanning => 'Looking for duplicates';
+
+  @override
+  String get dupReading => 'Reading your library…';
+
+  @override
+  String dupProgress(int done, int total) {
+    return 'Checked $done of $total screenshots';
+  }
+
+  @override
+  String get dupNoneTitle => 'No duplicates found';
+
+  @override
+  String get dupNoneBody => 'Your screenshot library is already clean.';
+
+  @override
+  String get dupScanAgain => 'Scan again';
+
+  @override
+  String dupReclaimable(String size) {
+    return 'Up to $size can be freed';
+  }
+
+  @override
+  String get dupNothingSelected => 'Nothing selected';
+
+  @override
+  String dupDeleteButton(int count, String size) {
+    return 'Delete $count · free $size';
+  }
+
+  @override
+  String dupDeleteTitle(int count) {
+    return 'Delete $count copies?';
+  }
+
+  @override
+  String get dupDeleteMessage =>
+      'This permanently deletes them from your device. The copies marked to keep are not affected.';
+
+  @override
+  String dupDeleted(int count, String size) {
+    return 'Deleted $count · freed $size';
+  }
+
+  @override
+  String dupSets(int count) {
+    return '$count sets';
+  }
+
+  @override
+  String get dupBest => 'BEST';
+
+  @override
+  String get dupKeepAll => 'Keep all';
+
+  @override
+  String get dupKeepingAll => 'Keeping all — nothing will be deleted';
+
+  @override
+  String get dupUndo => 'Undo';
+
+  @override
+  String dupFrees(String size) {
+    return 'Frees $size';
+  }
+
+  @override
+  String get safeShareTitle => 'Safe share';
+
+  @override
+  String get safeShareScanning => 'Checking for private details';
+
+  @override
+  String get safeShareOnDevice => 'Reading happens on your phone.';
+
+  @override
+  String get safeShareCleanTitle => 'Nothing private found';
+
+  @override
+  String get safeShareCleanBody =>
+      'No card numbers, account numbers, codes or contact details were spotted in this screenshot. You can share it as it is.';
+
+  @override
+  String get safeShareUnreadableTitle => 'Could not read this screenshot';
+
+  @override
+  String get safeShareUnreadableBody =>
+      'The text in it could not be recognised.';
+
+  @override
+  String get safeShareShareUnchanged => 'Share unchanged';
+
+  @override
+  String get safeShareShareAnyway => 'Share anyway';
+
+  @override
+  String get safeShareShareProtected => 'Share protected copy';
+
+  @override
+  String get safeShareFailed => 'Could not build the protected copy.';
+
+  @override
+  String safeShareFoundTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count private details found',
+      one: '1 private detail found',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get safeShareFreeScan => 'Checking is always free.';
+
+  @override
+  String get safeShareCleanAction => 'Clean this screenshot';
+
+  @override
+  String get safeShareShareAsIs => 'Share without changes';
+
+  @override
+  String get safeShareHowTitle => 'Blocked out, for good';
+
+  @override
+  String get safeShareHowBody =>
+      'Every private detail is covered with a solid block before the copy leaves your phone. Nothing is blurred and nothing can be read back — the covered copy is the only version that exists.';
+
+  @override
+  String get safeShareTreatmentCover => 'Cover';
+
+  @override
+  String get safeShareTreatmentKeep => 'Keep';
+
+  @override
+  String get safeShareBuilding => 'Building your clean copy';
+
+  @override
+  String get safeShareNothingSelected => 'Nothing will change';
+
+  @override
+  String get safeShareLockedPreview => 'Unlock to see the clean version';
+
+  @override
+  String get safeShareReviewTitle => 'Check each one';
+
+  @override
+  String safeShareFound(int count) {
+    return '$count things covered';
+  }
+
+  @override
+  String get stitchTitle => 'Merge screenshots';
+
+  @override
+  String get stitchWorking => 'Finding the overlap';
+
+  @override
+  String get stitchWorkingBody =>
+      'Matching where each screenshot continues from the last.';
+
+  @override
+  String get stitchFailed => 'Could not merge';
+
+  @override
+  String get stitchSave => 'Save to gallery';
+
+  @override
+  String get stitchSaved => 'Saved to your gallery';
+
+  @override
+  String get stitchDiscard => 'Discard';
+
+  @override
+  String get commonDone => 'Done';
+
+  @override
+  String get commonBack => 'Back';
+
+  @override
+  String get commonClose => 'Close';
+
+  @override
+  String get searchTitle => 'Search your screenshots';
+
+  @override
+  String get searchHint => 'Search words or what a picture shows';
+
+  @override
+  String get searchIntro =>
+      'Any word printed inside an image, or what the picture shows — try \"cat\", \"animal\", \"food\" or \"receipt\".';
+
+  @override
+  String get searchNoneTitle => 'No matches';
+
+  @override
+  String searchNoneBody(String query) {
+    return 'Nothing here reads or looks like \"$query\".';
+  }
+
+  @override
+  String get paywallTitle => 'Unlock SHOTO Pro';
+
+  @override
+  String get paywallSubtitle => 'Everything below, on one subscription.';
+
+  @override
+  String get paywallMonthly => 'Monthly';
+
+  @override
+  String get paywallYearly => 'Yearly';
+
+  @override
+  String paywallSave(int percent) {
+    return 'Save $percent%';
+  }
+
+  @override
+  String get paywallContinue => 'Continue';
+
+  @override
+  String get paywallUnavailable => 'Not available yet';
+
+  @override
+  String get paywallRestore => 'Restore purchases';
+
+  @override
+  String get paywallLegal =>
+      'Auto-renews until cancelled. Cancel anytime from your App Store or Google Play account settings. By continuing you agree to our Terms of Service and Privacy Policy.';
+
+  @override
+  String get subPremiumBadge => 'PRO';
+
+  @override
+  String get subPremiumTitle => 'SHOTO Pro';
+
+  @override
+  String get subPremiumBody => 'Every feature unlocked for you.';
+
+  @override
+  String get subDevUnlock => 'Tester access';
+
+  @override
+  String get subDevUnlockBody =>
+      'Unlocked on this device — not a real subscription';
+
+  @override
+  String get subUnlockEverything => 'Unlock everything';
+
+  @override
+  String get proWelcomeTitle => 'You are on Pro';
+
+  @override
+  String get proWelcomeBody =>
+      'Every feature is unlocked. There is nothing else to set up.';
+
+  @override
+  String get proWelcomeAction => 'Start using it';
+
+  @override
+  String get featRules => 'Rules that file for you';
+
+  @override
+  String get featRulesBody =>
+      'Write a rule once and every screenshot you share in files itself. You wrote the rule, so you always know why something landed where it did.';
+
+  @override
+  String get featSearch => 'Search inside your screenshots';
+
+  @override
+  String get featSearchBody =>
+      'Find any screenshot by the words written in it, in Arabic or English. Nothing is uploaded — the reading happens on your phone.';
+
+  @override
+  String get featSafeShare => 'Safe share';
+
+  @override
+  String get featSafeShareBody =>
+      'Swaps card numbers, addresses, names and contact details for realistic stand-ins — same length, same format, same place. The copy you send does not look edited.';
+
+  @override
+  String get featActions => 'Turn screenshots into actions';
+
+  @override
+  String get featActionsBody =>
+      'Call a number, open a link, copy a verification code or an IBAN — straight from the picture, without retyping anything.';
+
+  @override
+  String get featDuplicates => 'Find duplicates';
+
+  @override
+  String get featDuplicatesBody =>
+      'Spot near-identical shots you kept twice and clear them out — always with a review step first.';
+
+  @override
+  String get featStitch => 'Merge long screenshots';
+
+  @override
+  String get featStitchBody =>
+      'Join a scrolling capture back into one tall image, with the overlap found and removed automatically.';
+
+  @override
+  String get featUnlimited => 'Unlimited folders and screenshots';
+
+  @override
+  String get featUnlimitedBody =>
+      'The free tier stops at a few folders and screenshots. Pro removes both caps.';
+
+  @override
+  String get featRulesHow =>
+      'A rule is one sentence you write yourself: when a screenshot looks like this, put it in that folder. Every new screenshot is checked against your rules the moment it arrives, so filing stops being something you have to remember to do.';
+
+  @override
+  String get featRulesPoint1 =>
+      'Match on words printed inside the image, on what the picture shows, or on whether it holds something sensitive.';
+
+  @override
+  String get featRulesPoint2 =>
+      'Ask for all of your conditions or any of them, and turn any condition into its opposite.';
+
+  @override
+  String get featRulesPoint3 =>
+      'Nothing is guessed. You wrote the rule, so you always know why a screenshot landed where it did.';
+
+  @override
+  String get featSearchHow =>
+      'SHOTO reads the text printed inside every screenshot and remembers it, so one word you remember seeing is enough to find the picture again — no file names, no folders, no scrolling.';
+
+  @override
+  String get featSearchPoint1 =>
+      'Reads Arabic and English, and still matches when the spelling differs slightly.';
+
+  @override
+  String get featSearchPoint2 =>
+      'Also finds by what the picture shows — try \"receipt\", \"cat\" or \"food\".';
+
+  @override
+  String get featSearchPoint3 =>
+      'The reading happens on your phone. Nothing is uploaded, so it works offline too.';
+
+  @override
+  String get featSafeShareHow =>
+      'Finding what is private in a screenshot is free and unlimited. Paying is what turns those findings into a clean copy: each detail is redrawn in the screenshot\'s own colours as a different, equally ordinary value.';
+
+  @override
+  String get featSafeSharePoint1 =>
+      'Card numbers are Luhn-checked and IBANs mod-97 checked — and the stand-ins pass the same checks, so nothing looks fabricated.';
+
+  @override
+  String get featSafeSharePoint2 =>
+      'Also catches names, addresses, order numbers, verification codes, phone numbers and email addresses.';
+
+  @override
+  String get featSafeSharePoint3 =>
+      'You see every change before you send, and can cover or keep any of them instead. The original screenshot is never touched.';
+
+  @override
+  String get featActionsHow =>
+      'Whatever is written inside a screenshot becomes something you can use. SHOTO picks out the useful parts and puts a button on each one.';
+
+  @override
+  String get featActionsPoint1 =>
+      'Phone numbers, links, email addresses, IBANs and verification codes are found for you.';
+
+  @override
+  String get featActionsPoint2 =>
+      'One tap to call, open or copy — no reading digits off a picture.';
+
+  @override
+  String get featActionsPoint3 =>
+      'Works on the screenshots you already have, not only on new ones.';
+
+  @override
+  String get featStitchHow =>
+      'Take a few shots as you scroll through a long chat or page, and SHOTO works out where they overlap and joins them back into one tall image.';
+
+  @override
+  String get featStitchPoint1 =>
+      'The repeated strip between two shots is found and removed automatically.';
+
+  @override
+  String get featStitchPoint2 =>
+      'You see the join before anything is saved — automatic detection is good, but never certain.';
+
+  @override
+  String get featStitchPoint3 =>
+      'The merged image saves to your gallery like any other picture.';
+
+  @override
+  String get featDuplicatesHow =>
+      'SHOTO compares screenshots by what they look like rather than by name or size, so it catches the near-identical ones too — a resend, a different crop, the same thing captured twice.';
+
+  @override
+  String get featDuplicatesPoint1 =>
+      'Groups whatever looks the same and suggests the copy worth keeping.';
+
+  @override
+  String get featDuplicatesPoint2 =>
+      'Shows how much space each group frees before you decide anything.';
+
+  @override
+  String get featDuplicatesPoint3 =>
+      'Nothing is deleted until you have reviewed the group and confirmed it.';
+
+  @override
+  String get featUnlimitedHow =>
+      'The free tier is a real, usable app rather than a trial — it just has a ceiling. Pro takes the ceiling off, and everything you already organized stays exactly where it is.';
+
+  @override
+  String get featUnlimitedPoint1 =>
+      'As many folders as your library actually needs.';
+
+  @override
+  String get featUnlimitedPoint2 =>
+      'No cap on how many screenshots you file and favourite.';
+
+  @override
+  String get featUnlimitedPoint3 =>
+      'Saving, folders, favourites and search history stay yours either way.';
+
+  @override
+  String get includedSubtitle => 'Every Pro feature, explained.';
+
+  @override
+  String get includedHint => 'Tap a feature to see how it works';
+
+  @override
+  String get includedHowLabel => 'How it works';
+
+  @override
+  String get includedActiveTitle => 'Your plan is active';
+
+  @override
+  String get includedActiveBody =>
+      'Everything below is unlocked on this account.';
+
+  @override
+  String get includedLockedTitle => 'Not unlocked yet';
+
+  @override
+  String get includedLockedBody =>
+      'Read what each one actually does, then decide.';
+
+  @override
+  String get includedFreeTitle => 'What the free tier gives you';
+
+  @override
+  String includedFreeBody(int folders, int count) {
+    return '$folders folders and $count organized screenshots — plus saving, favourites and the gallery, free for good.';
+  }
+
+  @override
+  String get authWelcome => 'Welcome to SHOTO';
+
+  @override
+  String get authSubtitle =>
+      'Sign in to save, organize and find every screenshot in one place.';
+
+  @override
+  String get authGoogle => 'Continue with Google';
+
+  @override
+  String get authApple => 'Continue with Apple';
+
+  @override
+  String get authLegal =>
+      'By continuing, you agree to our Terms of Service and Privacy Policy.';
+
+  @override
+  String get onboardingCta => 'Get started';
+
+  @override
+  String get onboardingPromise => 'Everything stays on your phone.';
+
+  @override
+  String get actionsTitle => 'Actions';
+
+  @override
+  String get actionsWorking => 'Reading the screenshot';
+
+  @override
+  String get actionsWorkingBody => 'Looking for numbers, links and codes.';
+
+  @override
+  String get actionsNoneTitle => 'Nothing to act on';
+
+  @override
+  String get actionsNoneBody =>
+      'No phone numbers, links, codes or account numbers were found in this screenshot.';
+
+  @override
+  String get actionsCopy => 'Copy';
+
+  @override
+  String get actionsCopied => 'Copied';
+
+  @override
+  String get actionsNoApp => 'No app on this device can do that.';
+
+  @override
+  String get devModeOn => 'Developer mode on — every feature unlocked';
+
+  @override
+  String get devModeBadge => 'DEVELOPER MODE';
+
+  @override
+  String get devModeOffTitle => 'Turn off developer mode?';
+
+  @override
+  String get devModeOffBody =>
+      'SHOTO will go back to the free tier on this device, so you can test the paywall and the limits again.';
+
+  @override
+  String get devModeOffConfirm => 'Turn off';
+
+  @override
+  String get devAccessTitle => 'Developer access';
+
+  @override
+  String get devAccessBody =>
+      'Enter the 4-digit code to unlock every Pro feature on this device.';
+
+  @override
+  String get devWrongCode => 'Wrong code';
+
+  @override
+  String devTapToDisable(int count) {
+    return 'Tap $count× to turn off';
+  }
+
+  @override
+  String appVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get ruleSummaryEmpty => 'No conditions yet — files nothing';
+
+  @override
+  String get ruleJoinAnd => ' and ';
+
+  @override
+  String get ruleJoinOr => ' or ';
+
+  @override
+  String ruleSaysWord(String value) {
+    return 'says \"$value\"';
+  }
+
+  @override
+  String ruleNotSaysWord(String value) {
+    return 'does not say \"$value\"';
+  }
+
+  @override
+  String ruleShows(String value) {
+    return 'shows $value';
+  }
+
+  @override
+  String ruleNotShows(String value) {
+    return 'does not show $value';
+  }
+
+  @override
+  String ruleContains(String value) {
+    return 'contains $value';
+  }
+
+  @override
+  String ruleNotContains(String value) {
+    return 'does not contain $value';
+  }
+
+  @override
+  String get ruleHasText => 'has readable text';
+
+  @override
+  String get ruleNoText => 'has no readable text';
+
+  @override
+  String get kindCard => 'a card number';
+
+  @override
+  String get kindIban => 'a bank account';
+
+  @override
+  String get kindCode => 'a verification code';
+
+  @override
+  String get kindNationalId => 'an ID number';
+
+  @override
+  String get kindEmail => 'an email address';
+
+  @override
+  String get kindPhone => 'a phone number';
+
+  @override
+  String get kindLink => 'a link';
+
+  @override
+  String get actionCall => 'Call';
+
+  @override
+  String get actionWhatsapp => 'WhatsApp';
+
+  @override
+  String get actionSms => 'Message';
+
+  @override
+  String get actionEmailAction => 'Write';
+
+  @override
+  String get actionOpen => 'Open';
+
+  @override
+  String countScreenshots(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count screenshots',
+      one: '1 screenshot',
+      zero: 'No screenshots',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String countPosition(int position, int total) {
+    return '$position of $total';
+  }
+
+  @override
+  String countChip(String label, int count) {
+    return '$label · $count';
+  }
+
+  @override
+  String dupSetsFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sets of duplicates',
+      one: '1 set of duplicates',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dupSimilarCopies(int count) {
+    return '$count similar copies';
+  }
+
+  @override
+  String safeShareFoundCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count things found',
+      one: '1 thing found',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get settingsStorage => 'Storage';
+
+  @override
+  String get settingsDuplicatesHint => 'Spot screenshots you took twice';
+
+  @override
+  String get settingsPremium => 'Pro';
+
+  @override
+  String get settingsWhatsIncluded => 'What is included';
+
+  @override
+  String settingsFeatureCount(int count) {
+    return '$count features, one plan';
+  }
+
+  @override
+  String get settingsShareHint => 'Tell someone who needs it';
+
+  @override
+  String get settingsShareText =>
+      'SHOTO keeps my screenshots organized on their own — everything stays on the phone.';
+
+  @override
+  String get settingsAccount => 'Account';
+
+  @override
+  String get settingsSignOutHint => 'Your screenshots stay on this device';
+
+  @override
+  String get settingsCacheMeasuring => 'Measuring…';
+
+  @override
+  String settingsCacheSize(String size) {
+    return '$size of thumbnails';
+  }
+
+  @override
+  String get homeSafeShareHint => 'Open a screenshot, then tap Safe share.';
+
+  @override
+  String get homeStitchHint =>
+      'Long-press two or more screenshots in your library, then tap Merge.';
+
+  @override
+  String stitchLimit(int count) {
+    return 'Merge up to $count screenshots at a time.';
+  }
+
+  @override
+  String shareSavedPrompt(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Screenshots saved. Add them to a folder?',
+      one: 'Screenshot saved. Add it to a folder?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String stitchResultMerged(int count) {
+    return '$count screenshots merged';
+  }
+
+  @override
+  String stitchResultTrimmed(int count) {
+    return '$count px of repeated content removed';
+  }
+
+  @override
+  String get errorLoadScreenshots => 'Could not load your screenshots.';
+
+  @override
+  String get errorLoadFolders => 'Could not load your folders.';
+
+  @override
+  String get errorLoadRules => 'Could not load your rules.';
+
+  @override
+  String get errorScanDuplicates => 'Could not scan for duplicates.';
+
+  @override
+  String get errorDeleteSelected =>
+      'Could not delete the selected screenshots.';
+
+  @override
+  String get errorStitchFailed => 'These screenshots could not be merged.';
+
+  @override
+  String get errorStitchSave => 'The merged image could not be saved.';
+
+  @override
+  String get errorOnboarding => 'Could not load. Please reopen the app.';
+
+  @override
+  String get errorSignInCancelled => 'Sign-in was cancelled.';
+
+  @override
+  String get errorSignInInterrupted =>
+      'Sign-in was interrupted. Please try again.';
+
+  @override
+  String get errorNetwork => 'Network error. Please check your connection.';
+
+  @override
+  String get errorGeneric => 'Something went wrong. Please try again.';
+
+  @override
+  String get errorPlans => 'Could not load subscription plans.';
+
+  @override
+  String get errorPurchase => 'Purchase failed. Please try again.';
+
+  @override
+  String get errorNoSubscription =>
+      'No active subscription found for this account.';
+
+  @override
+  String get errorRestore => 'Could not restore purchases.';
+
+  @override
+  String get errorStitchTooFew => 'Pick at least two screenshots to merge.';
+
+  @override
+  String errorStitchTooMany(int count) {
+    return 'Up to $count screenshots can be merged at once.';
+  }
+
+  @override
+  String get errorStitchUnreadable =>
+      'One of the screenshots could not be read.';
+
+  @override
+  String get errorStitchWidths =>
+      'These screenshots are different widths, so they cannot be part of the same scroll.';
+
+  @override
+  String get errorStitchNoOverlap =>
+      'These screenshots do not overlap. Merging only works on shots of the same page taken while scrolling.';
+
+  @override
+  String get errorStitchOverlap =>
+      'The overlap between these screenshots could not be resolved.';
+
+  @override
+  String get errorStitchTooTall =>
+      'The merged image would be too tall. Try merging fewer screenshots.';
+
+  @override
+  String get errorStitchEncode => 'The merged image could not be encoded.';
+
+  @override
+  String get errorRedactionSave => 'The protected copy could not be saved.';
+
+  @override
+  String shareSavedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count screenshots saved',
+      one: 'Screenshot saved',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get densityLarge => 'Large';
+
+  @override
+  String get densityMedium => 'Medium';
+
+  @override
+  String get densitySmall => 'Small';
+
+  @override
+  String get sensitiveCard => 'Card number';
+
+  @override
+  String get sensitiveIban => 'Bank account';
+
+  @override
+  String get sensitiveCode => 'Verification code';
+
+  @override
+  String get sensitiveNationalId => 'ID number';
+
+  @override
+  String get sensitiveEmail => 'Email address';
+
+  @override
+  String get sensitivePhone => 'Phone number';
+
+  @override
+  String get sensitiveAddress => 'Address';
+
+  @override
+  String get sensitiveName => 'Name';
+
+  @override
+  String get sensitiveOrderNumber => 'Order number';
+
+  @override
+  String get sensitiveNumber => 'Number';
+
+  @override
+  String get quickSaveByRules => 'Let my rules file it';
+
+  @override
+  String get ruleSeenTitle => 'WHAT SHOTO HAS SEEN IN YOUR LIBRARY';
+
+  @override
+  String get ruleSeenEmpty =>
+      'SHOTO has not looked inside your screenshots yet. It reads each one as it arrives, so this fills up as you save.';
+
+  @override
+  String get ruleSeenHint =>
+      'Tap one — these are the exact words the model produces, so a rule built from them will actually fire.';
+
+  @override
+  String get onbSkip => 'Skip';
+
+  @override
+  String get onbNext => 'Next';
+
+  @override
+  String get onbPileTitle => 'A thousand screenshots, one pile';
+
+  @override
+  String get onbPileBody =>
+      'You screenshot to remember. A week later it is buried under four hundred others.';
+
+  @override
+  String get onbChooseTitle => 'SHOTO never reads your gallery';
+
+  @override
+  String get onbChooseBody =>
+      'Nothing arrives on its own. You share a screenshot in — that is the whole rule.';
+
+  @override
+  String get onbFileTitle => 'Filed the moment you send it';
+
+  @override
+  String get onbFileBody =>
+      'Pick a folder right in the share sheet. The app does not even open.';
+
+  @override
+  String get onbFindTitle => 'Search what is inside them';
+
+  @override
+  String get onbFindBody =>
+      'The words printed in a screenshot, and what the picture shows. Type “receipt”, or “dog”.';
+
+  @override
+  String get onbProTitle => 'SHOTO Pro';
+
+  @override
+  String get onbProBody =>
+      'Rules file new screenshots for you, and everything below comes with them.';
+
+  @override
+  String onbProMore(int count) {
+    return 'and $count more';
+  }
+
+  @override
+  String get onbFolderExample => 'Receipts';
+
+  @override
+  String get onbSearchExample => 'receipt';
+
+  @override
+  String get importTitle => 'Add screenshots';
+
+  @override
+  String importDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count screenshots imported',
+      one: '1 screenshot imported',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importPartial(int imported, int picked) {
+    return '$imported of $picked imported';
+  }
+
+  @override
+  String get importFailed => 'Could not save those screenshots';
+
+  @override
+  String get homeToolImportSubtitle =>
+      'Pick from your phone — your gallery is never read';
+
+  @override
+  String get importPickerUnavailable => 'The photo picker could not open';
+
+  @override
+  String rulePreviewMatches(int count, int indexed) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Would take $count of the $indexed screenshots SHOTO has read',
+      one: 'Would take 1 of the $indexed screenshots SHOTO has read',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rulePreviewNone => 'Nothing SHOTO has read so far matches this';
+
+  @override
+  String get rulePreviewNotIndexed =>
+      'SHOTO has not read any of your screenshots yet, so there is nothing to preview against. It reads each one as it arrives.';
+
+  @override
+  String rulePreviewTaken(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count of these go to a rule above this one instead.',
+      one: '1 of these goes to a rule above this one instead.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rulePreviewAllTaken =>
+      'Every screenshot this matches is already taken by a rule above it. Move this rule up if it should win.';
+
+  @override
+  String get rulePreviewFloor =>
+      'Counts only what SHOTO has read so far. New screenshots are checked as they arrive.';
+
+  @override
+  String get ruleBuilderEditTitle => 'Edit rule';
+
+  @override
+  String get ruleBuilderEditIntro =>
+      'Changes apply from now on. Screenshots this rule already filed stay where they are.';
+
+  @override
+  String get ruleBuilderUpdate => 'Save changes';
+
+  @override
+  String get rulesPriorityNote =>
+      'A screenshot goes to the first rule that matches it. Use the arrows to change which one that is.';
+
+  @override
+  String get rulesCardNotIndexed =>
+      'Nothing read yet — nothing to check this against';
+
+  @override
+  String rulesCardClaims(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Claims $count screenshots',
+      one: 'Claims 1 screenshot',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rulesCardClaimsNone => 'Claims nothing yet';
+
+  @override
+  String rulesCardOverruled(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count matches go to a rule above this one',
+      one: '1 match goes to a rule above this one',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get rulesMoveUp => 'Move up';
+
+  @override
+  String get rulesMoveDown => 'Move down';
+
+  @override
+  String rulesBacklogUnread(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count screenshots have not been read yet — run again to continue.',
+      one: '1 screenshot has not been read yet — run again to continue.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String indexingProgress(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Still reading your screenshots — $count to go',
+      one: 'Still reading your screenshots — 1 to go',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ruleBuilderMatches => 'Matches';
+
+  @override
+  String get ruleBuilderMatchesNot => 'Does NOT match';
+
+  @override
+  String get ruleBuilderMatchesNotHelp =>
+      'The rule fires when this is false — use it to carve out an exception.';
+
+  @override
+  String rulePreviewAlreadyFiled(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          '$count of these are already in folders, and a run never moves those. Only new screenshots will be filed here.',
+      one:
+          '1 of these is already in a folder, and a run never moves those. Only new screenshots will be filed here.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String rulesCardAlreadyFiled(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Matches $count, but they are already filed elsewhere',
+      one: 'Matches 1, but it is already filed elsewhere',
+    );
+    return '$_temp0';
+  }
+}
