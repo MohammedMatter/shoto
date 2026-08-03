@@ -997,6 +997,36 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actionOpen => 'افتح';
 
   @override
+  String get kindEvent => 'موعد';
+
+  @override
+  String get kindPlace => 'مكان';
+
+  @override
+  String get kindWifi => 'شبكة واي فاي';
+
+  @override
+  String get kindTracking => 'شحنة';
+
+  @override
+  String get actionAddToCalendar => 'أضف للتقويم';
+
+  @override
+  String get actionOpenMaps => 'افتح بالخرائط';
+
+  @override
+  String get actionDirections => 'الاتجاهات';
+
+  @override
+  String get actionCopyNetwork => 'انسخ الاسم';
+
+  @override
+  String get actionTrack => 'تتبّع';
+
+  @override
+  String get actionEventUntitled => 'موعد';
+
+  @override
   String countScreenshots(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

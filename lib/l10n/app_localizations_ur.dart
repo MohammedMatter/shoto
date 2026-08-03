@@ -1008,6 +1008,36 @@ class AppLocalizationsUr extends AppLocalizations {
   String get actionOpen => 'کھولیں';
 
   @override
+  String get kindEvent => 'تقریب';
+
+  @override
+  String get kindPlace => 'مقام';
+
+  @override
+  String get kindWifi => 'وائی فائی نیٹ ورک';
+
+  @override
+  String get kindTracking => 'کھیپ';
+
+  @override
+  String get actionAddToCalendar => 'کیلنڈر میں شامل کریں';
+
+  @override
+  String get actionOpenMaps => 'میپس میں کھولیں';
+
+  @override
+  String get actionDirections => 'راستہ';
+
+  @override
+  String get actionCopyNetwork => 'نام کاپی کریں';
+
+  @override
+  String get actionTrack => 'ٹریک کریں';
+
+  @override
+  String get actionEventUntitled => 'تقریب';
+
+  @override
   String countScreenshots(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

@@ -471,6 +471,16 @@
   "actionSms": "संदेश",
   "actionEmailAction": "लिखें",
   "actionOpen": "खोलें",
+  "kindEvent": "कार्यक्रम",
+  "kindPlace": "स्थान",
+  "kindWifi": "वाई-फ़ाई नेटवर्क",
+  "kindTracking": "शिपमेंट",
+  "actionAddToCalendar": "कैलेंडर में जोड़ें",
+  "actionOpenMaps": "मैप्स में खोलें",
+  "actionDirections": "दिशा-निर्देश",
+  "actionCopyNetwork": "नाम कॉपी करें",
+  "actionTrack": "ट्रैक करें",
+  "actionEventUntitled": "कार्यक्रम",
   "countScreenshots": "{count, plural, =0{कोई स्क्रीनशॉट नहीं} =1{1 स्क्रीनशॉट} other{{count} स्क्रीनशॉट}}",
   "@countScreenshots": {
     "placeholders": {

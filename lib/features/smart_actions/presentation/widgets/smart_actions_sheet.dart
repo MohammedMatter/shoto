@@ -156,8 +156,15 @@ class _ActionRow extends StatelessWidget {
     navigator.pop();
   }
 
+  static bool _isMonospaced(DetectedActionKind kind) =>
+      kind == DetectedActionKind.iban ||
+      kind == DetectedActionKind.code ||
+      kind == DetectedActionKind.tracking ||
+      kind == DetectedActionKind.wifi;
+
   @override
   Widget build(BuildContext context) {
+    final String? subtitle = action.subtitle(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -170,15 +177,22 @@ class _ActionRow extends StatelessWidget {
         ),
         SizedBox(height: 6.h),
         SelectableText(
-          action.display,
-          // A code or an account number gets read digit by digit, and a
-          // proportional font makes that unnecessarily hard.
-          style:
-              action.kind == DetectedActionKind.iban ||
-                  action.kind == DetectedActionKind.code
+          action.displayText(context),
+          // A code, an account number or a tracking number gets read
+          // character by character, and a proportional font makes that
+          // unnecessarily hard.
+          style: _isMonospaced(action.kind)
               ? AppTextStyles.monoBody.asSemiBold
               : AppTextStyles.bodyLarge.asSemiBold,
         ),
+        // The second line only exists for the intent kinds, and it carries
+        // the part SHOTO worked out rather than the part it read: an event's
+        // date in the reader's own calendar conventions, the network a
+        // password belongs to, the carrier holding a parcel.
+        if (subtitle != null) ...[
+          SizedBox(height: 3.h),
+          Text(subtitle, style: AppTextStyles.bodySmall),
+        ],
         SizedBox(height: 12.h),
         Wrap(
           spacing: 8.w,

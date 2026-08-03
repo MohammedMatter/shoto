@@ -471,6 +471,16 @@
   "actionSms": "رسالة",
   "actionEmailAction": "اكتب",
   "actionOpen": "افتح",
+  "kindEvent": "موعد",
+  "kindPlace": "مكان",
+  "kindWifi": "شبكة واي فاي",
+  "kindTracking": "شحنة",
+  "actionAddToCalendar": "أضف للتقويم",
+  "actionOpenMaps": "افتح بالخرائط",
+  "actionDirections": "الاتجاهات",
+  "actionCopyNetwork": "انسخ الاسم",
+  "actionTrack": "تتبّع",
+  "actionEventUntitled": "موعد",
   "countScreenshots": "{count, plural, =0{ما في لقطات} =1{لقطة وحدة} =2{لقطتين} few{{count} لقطات} other{{count} لقطة}}",
   "@countScreenshots": {
     "placeholders": {

@@ -471,6 +471,16 @@
   "actionSms": "پیغام",
   "actionEmailAction": "لکھیں",
   "actionOpen": "کھولیں",
+  "kindEvent": "تقریب",
+  "kindPlace": "مقام",
+  "kindWifi": "وائی فائی نیٹ ورک",
+  "kindTracking": "کھیپ",
+  "actionAddToCalendar": "کیلنڈر میں شامل کریں",
+  "actionOpenMaps": "میپس میں کھولیں",
+  "actionDirections": "راستہ",
+  "actionCopyNetwork": "نام کاپی کریں",
+  "actionTrack": "ٹریک کریں",
+  "actionEventUntitled": "تقریب",
   "countScreenshots": "{count, plural, =0{کوئی اسکرین شاٹ نہیں} =1{1 اسکرین شاٹ} other{{count} اسکرین شاٹس}}",
   "@countScreenshots": {
     "placeholders": {

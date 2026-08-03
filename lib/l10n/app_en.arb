@@ -471,6 +471,16 @@
   "actionSms": "Message",
   "actionEmailAction": "Write",
   "actionOpen": "Open",
+  "kindEvent": "an event",
+  "kindPlace": "a place",
+  "kindWifi": "a Wi-Fi network",
+  "kindTracking": "a shipment",
+  "actionAddToCalendar": "Add to calendar",
+  "actionOpenMaps": "Open in Maps",
+  "actionDirections": "Directions",
+  "actionCopyNetwork": "Copy name",
+  "actionTrack": "Track",
+  "actionEventUntitled": "Event",
   "countScreenshots": "{count, plural, =0{No screenshots} =1{1 screenshot} other{{count} screenshots}}",
   "@countScreenshots": {
     "placeholders": {

@@ -1852,6 +1852,66 @@ abstract class AppLocalizations {
   /// **'Open'**
   String get actionOpen;
 
+  /// No description provided for @kindEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'an event'**
+  String get kindEvent;
+
+  /// No description provided for @kindPlace.
+  ///
+  /// In en, this message translates to:
+  /// **'a place'**
+  String get kindPlace;
+
+  /// No description provided for @kindWifi.
+  ///
+  /// In en, this message translates to:
+  /// **'a Wi-Fi network'**
+  String get kindWifi;
+
+  /// No description provided for @kindTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'a shipment'**
+  String get kindTracking;
+
+  /// No description provided for @actionAddToCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to calendar'**
+  String get actionAddToCalendar;
+
+  /// No description provided for @actionOpenMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Maps'**
+  String get actionOpenMaps;
+
+  /// No description provided for @actionDirections.
+  ///
+  /// In en, this message translates to:
+  /// **'Directions'**
+  String get actionDirections;
+
+  /// No description provided for @actionCopyNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy name'**
+  String get actionCopyNetwork;
+
+  /// No description provided for @actionTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Track'**
+  String get actionTrack;
+
+  /// No description provided for @actionEventUntitled.
+  ///
+  /// In en, this message translates to:
+  /// **'Event'**
+  String get actionEventUntitled;
+
   /// No description provided for @countScreenshots.
   ///
   /// In en, this message translates to:

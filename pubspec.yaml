@@ -68,6 +68,7 @@ dependencies:
   # implementation class, which the image_picker facade does not re-export.
   image_picker_android: ^0.8.13
   image_picker_platform_interface: ^2.10.0
+  hijri: ^3.0.1
 
 dev_dependencies:
   flutter_test:

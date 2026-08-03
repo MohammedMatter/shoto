@@ -1008,6 +1008,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionOpen => 'Open';
 
   @override
+  String get kindEvent => 'an event';
+
+  @override
+  String get kindPlace => 'a place';
+
+  @override
+  String get kindWifi => 'a Wi-Fi network';
+
+  @override
+  String get kindTracking => 'a shipment';
+
+  @override
+  String get actionAddToCalendar => 'Add to calendar';
+
+  @override
+  String get actionOpenMaps => 'Open in Maps';
+
+  @override
+  String get actionDirections => 'Directions';
+
+  @override
+  String get actionCopyNetwork => 'Copy name';
+
+  @override
+  String get actionTrack => 'Track';
+
+  @override
+  String get actionEventUntitled => 'Event';
+
+  @override
   String countScreenshots(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

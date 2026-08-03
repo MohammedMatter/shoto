@@ -1,7 +1,20 @@
+import 'package:shoto/features/smart_actions/data/services/event_extractor.dart';
+import 'package:shoto/features/smart_actions/data/services/extraction.dart';
+import 'package:shoto/features/smart_actions/data/services/place_extractor.dart';
+import 'package:shoto/features/smart_actions/data/services/tracking_extractor.dart';
+import 'package:shoto/features/smart_actions/data/services/wifi_extractor.dart';
 import 'package:shoto/features/smart_actions/domain/entities/detected_action.dart';
 
-/// Pulls actionable items — numbers to call, links to open, codes to copy —
-/// out of the text OCR already recovered from a screenshot.
+/// Pulls actionable items out of the text OCR already recovered from a
+/// screenshot — and, since the intent extractors were added, out of what that
+/// text *means*.
+///
+/// The original five detectors answer "what is on this screen": a number to
+/// call, a link to open, a code to copy. The four intent detectors answer the
+/// more useful question, "what is the user about to have to do": be somewhere
+/// at three on Thursday, get to an address, join a network, find out where a
+/// parcel is. Each of those replaces four taps and a retyped value, which is
+/// the only reason any of this is worth the recognition pass.
 ///
 /// Two ideas shape the whole design:
 ///
@@ -24,7 +37,13 @@ abstract class ActionExtractor {
   /// starts being another thing to read.
   static const int maxActions = 12;
 
-  static List<DetectedAction> extract(String rawText) {
+  /// [now] and [dayFirst] only exist so the event rules can be tested without
+  /// a clock or a device region; the app never passes them.
+  static List<DetectedAction> extract(
+    String rawText, {
+    DateTime? now,
+    bool? dayFirst,
+  }) {
     if (rawText.trim().length < 4) return const [];
 
     final String text = normalizeDigits(rawText);
@@ -33,6 +52,30 @@ abstract class ActionExtractor {
 
     // Order matters: each pass may only claim text the earlier, more
     // specific passes left alone.
+    //
+    // The intent passes go first, and every one of them is there because it
+    // reads a span some later pass would otherwise misread:
+    //
+    // - A Wi-Fi key is four to eight characters next to the word "password",
+    //   which is the verification-code rule's exact definition of a code.
+    // - An event's "12/05/2026 3:00" is thirteen digits with separators, and
+    //   the phone rule is happy to take it.
+    // - A ten-digit Aramex number and a ten-digit mobile number are the same
+    //   characters; only the label beside them tells them apart.
+    // - A street line contains a house number, and coordinates are two long
+    //   decimals that the phone pattern reads as one long number.
+    //
+    // In every case the intent reading is both more specific and more useful,
+    // so it claims the text first and the entity passes see what is left.
+    _adopt(WifiExtractor.findIn(text), claimed, found);
+    _adopt(
+      EventExtractor.findIn(text, now: now, dayFirst: dayFirst),
+      claimed,
+      found,
+    );
+    _adopt(TrackingExtractor.findIn(text), claimed, found);
+    _adopt(PlaceExtractor.findIn(text), claimed, found);
+
     _collect(text, _emailPattern, claimed, found, _buildEmail);
     _collect(text, _urlPattern, claimed, found, _buildLink);
     _collect(text, _ibanPattern, claimed, found, _buildIban);
@@ -269,6 +312,24 @@ abstract class ActionExtractor {
       if (action == null) continue;
       claimed.add(_Span(match.start, match.end));
       found.add(action);
+    }
+  }
+
+  /// Folds an intent extractor's results into the shared claim list.
+  ///
+  /// Skipping an already-claimed span matters between the intent passes too,
+  /// not just against the entity ones: a Wi-Fi card that prints its network
+  /// name as a street-like string, or an event whose venue line is also a
+  /// postal address, would otherwise be listed twice under two headings.
+  static void _adopt(
+    List<Extraction> results,
+    List<_Span> claimed,
+    List<DetectedAction> found,
+  ) {
+    for (final Extraction result in results) {
+      if (_overlaps(claimed, result.start, result.end)) continue;
+      claimed.add(_Span(result.start, result.end));
+      found.add(result.action);
     }
   }
 

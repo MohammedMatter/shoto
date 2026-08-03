@@ -471,6 +471,16 @@
   "actionSms": "Message",
   "actionEmailAction": "Écrire",
   "actionOpen": "Ouvrir",
+  "kindEvent": "un événement",
+  "kindPlace": "un lieu",
+  "kindWifi": "un réseau Wi-Fi",
+  "kindTracking": "un colis",
+  "actionAddToCalendar": "Ajouter au calendrier",
+  "actionOpenMaps": "Ouvrir dans Maps",
+  "actionDirections": "Itinéraire",
+  "actionCopyNetwork": "Copier le nom",
+  "actionTrack": "Suivre",
+  "actionEventUntitled": "Événement",
   "countScreenshots": "{count, plural, =0{Aucune capture} =1{1 capture} other{{count} captures}}",
   "@countScreenshots": {
     "placeholders": {

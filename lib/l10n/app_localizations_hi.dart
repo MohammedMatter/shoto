@@ -1009,6 +1009,36 @@ class AppLocalizationsHi extends AppLocalizations {
   String get actionOpen => 'खोलें';
 
   @override
+  String get kindEvent => 'कार्यक्रम';
+
+  @override
+  String get kindPlace => 'स्थान';
+
+  @override
+  String get kindWifi => 'वाई-फ़ाई नेटवर्क';
+
+  @override
+  String get kindTracking => 'शिपमेंट';
+
+  @override
+  String get actionAddToCalendar => 'कैलेंडर में जोड़ें';
+
+  @override
+  String get actionOpenMaps => 'मैप्स में खोलें';
+
+  @override
+  String get actionDirections => 'दिशा-निर्देश';
+
+  @override
+  String get actionCopyNetwork => 'नाम कॉपी करें';
+
+  @override
+  String get actionTrack => 'ट्रैक करें';
+
+  @override
+  String get actionEventUntitled => 'कार्यक्रम';
+
+  @override
   String countScreenshots(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
