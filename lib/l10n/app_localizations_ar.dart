@@ -1394,4 +1394,147 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get searchWorking => 'عم يقرأ لقطاتك…';
+
+  @override
+  String get settingsBackup => 'نسخة احتياطية واسترجاع';
+
+  @override
+  String get settingsBackupHint => 'خلّي نسخة من مكتبتك بملف';
+
+  @override
+  String get backupTitle => 'النسخة الاحتياطية';
+
+  @override
+  String get backupIntro =>
+      'مكتبتك موجودة بهالتلفون وبس. النسخة الاحتياطية هي النسخة يلي بتضل معك إذا ضاع.';
+
+  @override
+  String get backupCreateTitle => 'اعمل نسخة احتياطية';
+
+  @override
+  String get backupCreateBody =>
+      'بيجمع كل اللقطات والمجلدات والتسميات بملف واحد، وبعدين بتختار وين بتحفظه.';
+
+  @override
+  String get backupCreateAction => 'اعمل نسخة';
+
+  @override
+  String get backupWorking => 'عم يجمّع مكتبتك…';
+
+  @override
+  String backupDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots لقطة',
+      few: '$screenshots لقطات',
+      two: 'لقطتين',
+      one: 'لقطة وحدة',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders مجلد',
+      few: '$folders مجلدات',
+      two: 'مجلدين',
+      one: 'مجلد واحد',
+    );
+    return 'انحفظ $_temp0 و$_temp1';
+  }
+
+  @override
+  String backupDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots لقطة',
+      few: '$screenshots لقطات',
+      two: 'لقطتين',
+      one: 'لقطة وحدة',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped ما انقرأت',
+      few: '$skipped ما انقرأوا',
+      two: 'تنتين ما انقرأوا',
+      one: 'وحدة ما انقرأت',
+    );
+    return 'انحفظ $_temp0. في $_temp1.';
+  }
+
+  @override
+  String get backupFailed => 'ما قدر يكمّل النسخة الاحتياطية';
+
+  @override
+  String get backupPrivacyNote =>
+      'الملف بينعمل بهالتلفون وبيروح بس لوين ما تبعتو. ما في شي بينرفع.';
+
+  @override
+  String get restoreTitle => 'استرجاع نسخة';
+
+  @override
+  String get restoreBody =>
+      'بيضيف كل شي من ملف النسخة لمكتبتك. ما بينشال شي موجود.';
+
+  @override
+  String get restoreAction => 'استرجاع';
+
+  @override
+  String get restoreWorking => 'عم يرجّع مكتبتك…';
+
+  @override
+  String get restoreConfirmTitle => 'ترجّع هالنسخة؟';
+
+  @override
+  String get restoreConfirmMessage =>
+      'كل شي بالملف بينضاف لمكتبتك. لقطاتك الحالية بتضل متل ما هي بالظبط.';
+
+  @override
+  String restoreDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots لقطة',
+      few: '$screenshots لقطات',
+      two: 'لقطتين',
+      one: 'لقطة وحدة',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders مجلد',
+      few: '$folders مجلدات',
+      two: 'مجلدين',
+      one: 'مجلد واحد',
+    );
+    return 'انسترجع $_temp0 و$_temp1';
+  }
+
+  @override
+  String restoreDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots لقطة',
+      few: '$screenshots لقطات',
+      two: 'لقطتين',
+      one: 'لقطة وحدة',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped انتخطّت',
+      few: '$skipped انتخطّوا',
+      two: 'تنتين انتخطّوا',
+      one: 'وحدة انتخطّت',
+    );
+    return 'انسترجع $_temp0. في $_temp1.';
+  }
+
+  @override
+  String get restoreNotABackup => 'هالملف مش نسخة احتياطية من SHOTO';
+
+  @override
+  String get restoreFailed => 'ما قدر يكمّل الاسترجاع';
 }

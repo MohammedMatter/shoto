@@ -1410,4 +1410,132 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get searchWorking => 'Lecture de vos captures…';
+
+  @override
+  String get settingsBackup => 'Sauvegarde et restauration';
+
+  @override
+  String get settingsBackupHint =>
+      'Gardez une copie de votre bibliothèque dans un fichier';
+
+  @override
+  String get backupTitle => 'Sauvegarde';
+
+  @override
+  String get backupIntro =>
+      'Votre bibliothèque n\'existe que sur ce téléphone. La sauvegarde, c\'est la copie qui reste si vous le perdez.';
+
+  @override
+  String get backupCreateTitle => 'Créer une sauvegarde';
+
+  @override
+  String get backupCreateBody =>
+      'Rassemble chaque capture, dossier et libellé dans un fichier, puis vous choisissez où le garder.';
+
+  @override
+  String get backupCreateAction => 'Créer la sauvegarde';
+
+  @override
+  String get backupWorking => 'Assemblage de votre bibliothèque…';
+
+  @override
+  String backupDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots captures sauvegardées',
+      one: '1 capture sauvegardée',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders dossiers',
+      one: '1 dossier',
+    );
+    return '$_temp0 et $_temp1';
+  }
+
+  @override
+  String backupDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots captures sauvegardées',
+      one: '1 capture sauvegardée',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped n\'ont pas pu être lues',
+      one: '1 n\'a pas pu être lue',
+    );
+    return '$_temp0. $_temp1.';
+  }
+
+  @override
+  String get backupFailed => 'La sauvegarde n\'a pas pu aller au bout';
+
+  @override
+  String get backupPrivacyNote =>
+      'Le fichier est créé sur ce téléphone et ne part que là où vous l\'envoyez. Rien n\'est téléversé.';
+
+  @override
+  String get restoreTitle => 'Restaurer une sauvegarde';
+
+  @override
+  String get restoreBody =>
+      'Ajoute tout le contenu du fichier à cette bibliothèque. Rien de ce qui s\'y trouve n\'est retiré.';
+
+  @override
+  String get restoreAction => 'Restaurer';
+
+  @override
+  String get restoreWorking => 'Remise en place de votre bibliothèque…';
+
+  @override
+  String get restoreConfirmTitle => 'Restaurer cette sauvegarde ?';
+
+  @override
+  String get restoreConfirmMessage =>
+      'Tout le contenu du fichier est ajouté à votre bibliothèque. Vos captures actuelles restent exactement telles quelles.';
+
+  @override
+  String restoreDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots captures restaurées',
+      one: '1 capture restaurée',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders dossiers',
+      one: '1 dossier',
+    );
+    return '$_temp0 et $_temp1';
+  }
+
+  @override
+  String restoreDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots captures restaurées',
+      one: '1 capture restaurée',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped ont été ignorées',
+      one: '1 a été ignorée',
+    );
+    return '$_temp0. $_temp1.';
+  }
+
+  @override
+  String get restoreNotABackup => 'Ce fichier n\'est pas une sauvegarde SHOTO';
+
+  @override
+  String get restoreFailed => 'La restauration n\'a pas pu aller au bout';
 }

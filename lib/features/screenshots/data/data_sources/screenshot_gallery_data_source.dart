@@ -133,12 +133,17 @@ class ScreenshotGalleryDataSource {
   Future<AssetEntity> saveImageBytes(
     Uint8List bytes, {
     required String filename,
+    DateTime? creationDate,
   }) {
     return PhotoManager.editor.saveImage(
       bytes,
       filename: filename,
       title: filename,
       relativePath: 'Pictures/$importAlbumName',
+      // Null for anything genuinely new, so the gallery stamps it now. Set
+      // only by a restore, which is putting back a picture that already has a
+      // date and must not claim to have been taken today.
+      creationDate: creationDate,
     );
   }
 

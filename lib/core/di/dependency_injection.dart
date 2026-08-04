@@ -20,7 +20,12 @@ import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/features/safe_share/data/services/redaction_service.dart';
+import 'package:shoto/core/services/backup_file_service.dart';
 import 'package:shoto/core/services/cache_service.dart';
+import 'package:shoto/features/backup/data/repositories_impl/backup_repository_impl.dart';
+import 'package:shoto/features/backup/domain/repositories/backup_repository.dart';
+import 'package:shoto/features/backup/domain/use_cases/create_backup_use_case.dart';
+import 'package:shoto/features/backup/domain/use_cases/restore_backup_use_case.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
@@ -193,6 +198,16 @@ void setupServiceLocator() {
 
 
   sl.registerLazySingleton(() => RedactionService(sl(), sl()));
+
+  // Backup reads through the screenshot repository rather than the gallery
+  // directly, so an archive holds exactly the library the app shows — not
+  // every picture on the phone.
+  sl.registerLazySingleton(() => BackupFileService());
+  sl.registerLazySingleton<BackupRepository>(
+    () => BackupRepositoryImpl(sl(), sl(), sl()),
+  );
+  sl.registerLazySingleton(() => CreateBackupUseCase(sl()));
+  sl.registerLazySingleton(() => RestoreBackupUseCase(sl()));
 
   sl.registerLazySingleton(() => ImageStitchService());
   sl.registerLazySingleton<StitchRepository>(

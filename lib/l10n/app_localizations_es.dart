@@ -1402,4 +1402,131 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get searchWorking => 'Leyendo tus capturas…';
+
+  @override
+  String get settingsBackup => 'Copia y restauración';
+
+  @override
+  String get settingsBackupHint => 'Guarda tu biblioteca en un archivo';
+
+  @override
+  String get backupTitle => 'Copia de seguridad';
+
+  @override
+  String get backupIntro =>
+      'Tu biblioteca vive en este teléfono y en ningún otro sitio. La copia es lo que queda si lo pierdes.';
+
+  @override
+  String get backupCreateTitle => 'Crear una copia';
+
+  @override
+  String get backupCreateBody =>
+      'Reúne cada captura, carpeta y etiqueta en un archivo, y luego eliges dónde guardarlo.';
+
+  @override
+  String get backupCreateAction => 'Crear copia';
+
+  @override
+  String get backupWorking => 'Empaquetando tu biblioteca…';
+
+  @override
+  String backupDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: 'Se copiaron $screenshots capturas',
+      one: 'Se copió 1 captura',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders carpetas',
+      one: '1 carpeta',
+    );
+    return '$_temp0 y $_temp1';
+  }
+
+  @override
+  String backupDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: 'Se copiaron $screenshots capturas',
+      one: 'Se copió 1 captura',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: 'No se pudieron leer $skipped',
+      one: 'No se pudo leer 1',
+    );
+    return '$_temp0. $_temp1.';
+  }
+
+  @override
+  String get backupFailed => 'No se pudo terminar la copia';
+
+  @override
+  String get backupPrivacyNote =>
+      'El archivo se crea en este teléfono y solo va a donde tú lo envíes. No se sube nada.';
+
+  @override
+  String get restoreTitle => 'Restaurar una copia';
+
+  @override
+  String get restoreBody =>
+      'Añade todo lo del archivo a esta biblioteca. No se quita nada de lo que ya tienes.';
+
+  @override
+  String get restoreAction => 'Restaurar';
+
+  @override
+  String get restoreWorking => 'Devolviendo tu biblioteca…';
+
+  @override
+  String get restoreConfirmTitle => '¿Restaurar esta copia?';
+
+  @override
+  String get restoreConfirmMessage =>
+      'Todo lo del archivo se añade a tu biblioteca. Tus capturas actuales se quedan tal cual.';
+
+  @override
+  String restoreDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: 'Se restauraron $screenshots capturas',
+      one: 'Se restauró 1 captura',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders carpetas',
+      one: '1 carpeta',
+    );
+    return '$_temp0 y $_temp1';
+  }
+
+  @override
+  String restoreDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: 'Se restauraron $screenshots capturas',
+      one: 'Se restauró 1 captura',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: 'Se omitieron $skipped',
+      one: 'Se omitió 1',
+    );
+    return '$_temp0. $_temp1.';
+  }
+
+  @override
+  String get restoreNotABackup => 'Ese archivo no es una copia de SHOTO';
+
+  @override
+  String get restoreFailed => 'No se pudo terminar la restauración';
 }

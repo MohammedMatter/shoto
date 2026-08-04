@@ -1400,4 +1400,131 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get searchWorking => 'आपके स्क्रीनशॉट पढ़े जा रहे हैं…';
+
+  @override
+  String get settingsBackup => 'बैकअप और पुनर्स्थापना';
+
+  @override
+  String get settingsBackupHint => 'अपनी लाइब्रेरी की एक कॉपी फ़ाइल में रखें';
+
+  @override
+  String get backupTitle => 'बैकअप';
+
+  @override
+  String get backupIntro =>
+      'आपकी लाइब्रेरी सिर्फ़ इसी फ़ोन में है, और कहीं नहीं। फ़ोन खो जाए तो बैकअप ही बचता है।';
+
+  @override
+  String get backupCreateTitle => 'बैकअप बनाएँ';
+
+  @override
+  String get backupCreateBody =>
+      'हर स्क्रीनशॉट, फ़ोल्डर और लेबल को एक फ़ाइल में समेटता है, फिर आप तय करते हैं कि उसे कहाँ रखना है।';
+
+  @override
+  String get backupCreateAction => 'बैकअप बनाएँ';
+
+  @override
+  String get backupWorking => 'आपकी लाइब्रेरी समेटी जा रही है…';
+
+  @override
+  String backupDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots स्क्रीनशॉट',
+      one: '1 स्क्रीनशॉट',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders फ़ोल्डर',
+      one: '1 फ़ोल्डर',
+    );
+    return '$_temp0 और $_temp1 का बैकअप बना';
+  }
+
+  @override
+  String backupDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots स्क्रीनशॉट',
+      one: '1 स्क्रीनशॉट',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped पढ़े नहीं जा सके',
+      one: '1 पढ़ा नहीं जा सका',
+    );
+    return '$_temp0 का बैकअप बना। $_temp1।';
+  }
+
+  @override
+  String get backupFailed => 'बैकअप पूरा नहीं हो सका';
+
+  @override
+  String get backupPrivacyNote =>
+      'फ़ाइल इसी फ़ोन पर बनती है और सिर्फ़ वहीं जाती है जहाँ आप भेजते हैं। कुछ भी अपलोड नहीं होता।';
+
+  @override
+  String get restoreTitle => 'बैकअप से लौटाएँ';
+
+  @override
+  String get restoreBody =>
+      'बैकअप फ़ाइल की हर चीज़ इस लाइब्रेरी में जोड़ता है। जो पहले से है वह हटता नहीं।';
+
+  @override
+  String get restoreAction => 'पुनर्स्थापित करें';
+
+  @override
+  String get restoreWorking => 'आपकी लाइब्रेरी लौटाई जा रही है…';
+
+  @override
+  String get restoreConfirmTitle => 'यह बैकअप लौटाएँ?';
+
+  @override
+  String get restoreConfirmMessage =>
+      'फ़ाइल की हर चीज़ आपकी लाइब्रेरी में जुड़ जाएगी। आपके मौजूदा स्क्रीनशॉट जैसे हैं वैसे ही रहेंगे।';
+
+  @override
+  String restoreDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots स्क्रीनशॉट',
+      one: '1 स्क्रीनशॉट',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders फ़ोल्डर',
+      one: '1 फ़ोल्डर',
+    );
+    return '$_temp0 और $_temp1 लौटाए गए';
+  }
+
+  @override
+  String restoreDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots स्क्रीनशॉट',
+      one: '1 स्क्रीनशॉट',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped छोड़े गए',
+      one: '1 छोड़ा गया',
+    );
+    return '$_temp0 लौटाए गए। $_temp1।';
+  }
+
+  @override
+  String get restoreNotABackup => 'यह फ़ाइल SHOTO का बैकअप नहीं है';
+
+  @override
+  String get restoreFailed => 'पुनर्स्थापना पूरी नहीं हो सकी';
 }

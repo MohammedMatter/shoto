@@ -56,6 +56,9 @@ abstract class ScreenshotRepository {
   Future<String> saveGeneratedImage(
     Uint8List bytes, {
     required String filename,
+    /// When the picture was originally captured, for images that are being
+    /// put back rather than made. Omitted, the gallery dates it now.
+    DateTime? createdAt,
   });
 
   /// The id of the screenshot the *current account's* library already holds

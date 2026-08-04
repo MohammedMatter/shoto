@@ -168,10 +168,12 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
   Future<String> saveGeneratedImage(
     Uint8List bytes, {
     required String filename,
+    DateTime? createdAt,
   }) async {
     final AssetEntity asset = await _gallery.saveImageBytes(
       bytes,
       filename: filename,
+      creationDate: createdAt,
     );
     await _ownership.claim([asset.id]);
     return asset.id;

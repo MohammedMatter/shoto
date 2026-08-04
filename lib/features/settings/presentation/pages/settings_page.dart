@@ -26,6 +26,7 @@ import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 import 'package:shoto/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:shoto/features/auth/presentation/bloc/auth_event.dart';
 import 'package:shoto/features/auth/presentation/bloc/auth_state.dart';
+import 'package:shoto/features/backup/presentation/pages/backup_page.dart';
 import 'package:shoto/features/duplicates/presentation/pages/duplicates_page.dart';
 import 'package:shoto/features/settings/presentation/widgets/app_version_block.dart';
 import 'package:shoto/features/settings/presentation/widgets/language_sheet.dart';
@@ -180,10 +181,24 @@ class SettingsPage extends StatelessWidget {
                     // "Find duplicates" used to sit alone under a heading
                     // called Tools while "Clear cache" sat under Privacy. Both
                     // are really the same job — reclaiming space — so they now
-                    // share a group that says so.
+                    // share a group that says so. Backup joined them because
+                    // it is the other thing you do *to* the library as a whole,
+                    // and a group of one row would have buried it worse.
                     SettingsGroup(
                       title: context.l10n.settingsStorage,
                       children: [
+                        // First in the group, and ungated. This is the row that
+                        // matters most on the worst day somebody has with this
+                        // app, and a paywall in front of "don't lose
+                        // everything" is not a price, it is a hostage.
+                        SettingsNavTile(
+                          icon: Icons.backup_outlined,
+                          label: context.l10n.settingsBackup,
+                          description: context.l10n.settingsBackupHint,
+                          onTap: () => Navigator.of(context).push(
+                            FadeSlidePageRoute(builder: (_) => BackupPage()),
+                          ),
+                        ),
                         SettingsNavTile(
                           icon: Icons.content_copy_rounded,
                           label: context.l10n.settingsFindDuplicates,

@@ -724,5 +724,67 @@
   "importFailed": "Could not save those screenshots",
   "homeToolImportSubtitle": "Pick from your phone — your gallery is never read",
   "importPickerUnavailable": "The photo picker could not open",
-  "searchWorking": "Reading your screenshots…"
+  "searchWorking": "Reading your screenshots…",
+  "settingsBackup": "Back up & restore",
+  "settingsBackupHint": "Keep a copy of your library in a file",
+  "backupTitle": "Backup",
+  "backupIntro": "Your library lives on this phone and nowhere else. A backup is the copy that survives losing it.",
+  "backupCreateTitle": "Create a backup",
+  "backupCreateBody": "Packs every screenshot, folder and label into one file, then lets you choose where to keep it.",
+  "backupCreateAction": "Create backup",
+  "backupWorking": "Packing your library…",
+  "backupDone": "{screenshots, plural, =1{Backed up 1 screenshot} other{Backed up {screenshots} screenshots}} and {folders, plural, =1{1 folder} other{{folders} folders}}",
+  "@backupDone": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "folders": {
+        "type": "int"
+      }
+    }
+  },
+  "backupDoneWithSkips": "Backed up {screenshots, plural, =1{1 screenshot} other{{screenshots} screenshots}}. {skipped, plural, =1{1 could not be read} other{{skipped} could not be read}}.",
+  "@backupDoneWithSkips": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "backupFailed": "The backup could not be finished",
+  "backupPrivacyNote": "The file is built on this phone and goes only where you send it. Nothing is uploaded.",
+  "restoreTitle": "Restore a backup",
+  "restoreBody": "Adds everything from a backup file to this library. Nothing already here is removed.",
+  "restoreAction": "Restore",
+  "restoreWorking": "Putting your library back…",
+  "restoreConfirmTitle": "Restore this backup?",
+  "restoreConfirmMessage": "Everything in the file is added to your library. Your current screenshots stay exactly as they are.",
+  "restoreDone": "{screenshots, plural, =1{Restored 1 screenshot} other{Restored {screenshots} screenshots}} and {folders, plural, =1{1 folder} other{{folders} folders}}",
+  "@restoreDone": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "folders": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreDoneWithSkips": "Restored {screenshots, plural, =1{1 screenshot} other{{screenshots} screenshots}}. {skipped, plural, =1{1 was skipped} other{{skipped} were skipped}}.",
+  "@restoreDoneWithSkips": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreNotABackup": "That file is not a SHOTO backup",
+  "restoreFailed": "The restore could not be finished"
 }

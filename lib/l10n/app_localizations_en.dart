@@ -1401,4 +1401,131 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get searchWorking => 'Reading your screenshots…';
+
+  @override
+  String get settingsBackup => 'Back up & restore';
+
+  @override
+  String get settingsBackupHint => 'Keep a copy of your library in a file';
+
+  @override
+  String get backupTitle => 'Backup';
+
+  @override
+  String get backupIntro =>
+      'Your library lives on this phone and nowhere else. A backup is the copy that survives losing it.';
+
+  @override
+  String get backupCreateTitle => 'Create a backup';
+
+  @override
+  String get backupCreateBody =>
+      'Packs every screenshot, folder and label into one file, then lets you choose where to keep it.';
+
+  @override
+  String get backupCreateAction => 'Create backup';
+
+  @override
+  String get backupWorking => 'Packing your library…';
+
+  @override
+  String backupDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: 'Backed up $screenshots screenshots',
+      one: 'Backed up 1 screenshot',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders folders',
+      one: '1 folder',
+    );
+    return '$_temp0 and $_temp1';
+  }
+
+  @override
+  String backupDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots screenshots',
+      one: '1 screenshot',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped could not be read',
+      one: '1 could not be read',
+    );
+    return 'Backed up $_temp0. $_temp1.';
+  }
+
+  @override
+  String get backupFailed => 'The backup could not be finished';
+
+  @override
+  String get backupPrivacyNote =>
+      'The file is built on this phone and goes only where you send it. Nothing is uploaded.';
+
+  @override
+  String get restoreTitle => 'Restore a backup';
+
+  @override
+  String get restoreBody =>
+      'Adds everything from a backup file to this library. Nothing already here is removed.';
+
+  @override
+  String get restoreAction => 'Restore';
+
+  @override
+  String get restoreWorking => 'Putting your library back…';
+
+  @override
+  String get restoreConfirmTitle => 'Restore this backup?';
+
+  @override
+  String get restoreConfirmMessage =>
+      'Everything in the file is added to your library. Your current screenshots stay exactly as they are.';
+
+  @override
+  String restoreDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: 'Restored $screenshots screenshots',
+      one: 'Restored 1 screenshot',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders folders',
+      one: '1 folder',
+    );
+    return '$_temp0 and $_temp1';
+  }
+
+  @override
+  String restoreDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots screenshots',
+      one: '1 screenshot',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped were skipped',
+      one: '1 was skipped',
+    );
+    return 'Restored $_temp0. $_temp1.';
+  }
+
+  @override
+  String get restoreNotABackup => 'That file is not a SHOTO backup';
+
+  @override
+  String get restoreFailed => 'The restore could not be finished';
 }

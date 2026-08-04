@@ -2463,6 +2463,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reading your screenshots…'**
   String get searchWorking;
+
+  /// No description provided for @settingsBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up & restore'**
+  String get settingsBackup;
+
+  /// No description provided for @settingsBackupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep a copy of your library in a file'**
+  String get settingsBackupHint;
+
+  /// No description provided for @backupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get backupTitle;
+
+  /// No description provided for @backupIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Your library lives on this phone and nowhere else. A backup is the copy that survives losing it.'**
+  String get backupIntro;
+
+  /// No description provided for @backupCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a backup'**
+  String get backupCreateTitle;
+
+  /// No description provided for @backupCreateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Packs every screenshot, folder and label into one file, then lets you choose where to keep it.'**
+  String get backupCreateBody;
+
+  /// No description provided for @backupCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create backup'**
+  String get backupCreateAction;
+
+  /// No description provided for @backupWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Packing your library…'**
+  String get backupWorking;
+
+  /// No description provided for @backupDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{screenshots, plural, =1{Backed up 1 screenshot} other{Backed up {screenshots} screenshots}} and {folders, plural, =1{1 folder} other{{folders} folders}}'**
+  String backupDone(int screenshots, int folders);
+
+  /// No description provided for @backupDoneWithSkips.
+  ///
+  /// In en, this message translates to:
+  /// **'Backed up {screenshots, plural, =1{1 screenshot} other{{screenshots} screenshots}}. {skipped, plural, =1{1 could not be read} other{{skipped} could not be read}}.'**
+  String backupDoneWithSkips(int screenshots, int skipped);
+
+  /// No description provided for @backupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The backup could not be finished'**
+  String get backupFailed;
+
+  /// No description provided for @backupPrivacyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is built on this phone and goes only where you send it. Nothing is uploaded.'**
+  String get backupPrivacyNote;
+
+  /// No description provided for @restoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore a backup'**
+  String get restoreTitle;
+
+  /// No description provided for @restoreBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Adds everything from a backup file to this library. Nothing already here is removed.'**
+  String get restoreBody;
+
+  /// No description provided for @restoreAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restoreAction;
+
+  /// No description provided for @restoreWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Putting your library back…'**
+  String get restoreWorking;
+
+  /// No description provided for @restoreConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore this backup?'**
+  String get restoreConfirmTitle;
+
+  /// No description provided for @restoreConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything in the file is added to your library. Your current screenshots stay exactly as they are.'**
+  String get restoreConfirmMessage;
+
+  /// No description provided for @restoreDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{screenshots, plural, =1{Restored 1 screenshot} other{Restored {screenshots} screenshots}} and {folders, plural, =1{1 folder} other{{folders} folders}}'**
+  String restoreDone(int screenshots, int folders);
+
+  /// No description provided for @restoreDoneWithSkips.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored {screenshots, plural, =1{1 screenshot} other{{screenshots} screenshots}}. {skipped, plural, =1{1 was skipped} other{{skipped} were skipped}}.'**
+  String restoreDoneWithSkips(int screenshots, int skipped);
+
+  /// No description provided for @restoreNotABackup.
+  ///
+  /// In en, this message translates to:
+  /// **'That file is not a SHOTO backup'**
+  String get restoreNotABackup;
+
+  /// No description provided for @restoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The restore could not be finished'**
+  String get restoreFailed;
 }
 
 class _AppLocalizationsDelegate
