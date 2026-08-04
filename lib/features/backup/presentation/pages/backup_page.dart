@@ -12,6 +12,9 @@ import 'package:shoto/core/widgets/confirm_dialog.dart';
 import 'package:shoto/core/widgets/primary_button.dart';
 import 'package:shoto/features/backup/domain/entities/backup_outcome.dart';
 import 'package:shoto/features/backup/domain/use_cases/create_backup_use_case.dart';
+import 'package:shoto/features/backup/domain/entities/restore_plan.dart';
+import 'package:shoto/features/backup/presentation/widgets/restore_merge_sheet.dart';
+import 'package:shoto/features/backup/domain/use_cases/preview_backup_use_case.dart';
 import 'package:shoto/features/backup/domain/use_cases/restore_backup_use_case.dart';
 
 /// Making a copy of the library, and putting one back.
@@ -106,13 +109,53 @@ class _BackupPageState extends State<BackupPage> {
     // "ask before deleting" preference and returns true without asking when it
     // is off, which is right for a delete and wrong here. Restoring is not a
     // deletion, and it is never the thing that preference was turned off for.
-    final bool confirmed = await showConfirmDialog(
-      context,
-      title: context.l10n.restoreConfirmTitle,
-      message: context.l10n.restoreConfirmMessage,
-      confirmLabel: context.l10n.restoreAction,
-    );
-    if (!confirmed || !mounted) return;
+    // Read the index first. The one question worth asking is about folder
+    // names already in use, and it can only be asked usefully *before*
+    // anything is written — afterwards it would be asking about duplicates
+    // that already exist.
+    final BackupPreview preview;
+    try {
+      preview = await sl<PreviewBackupUseCase>()(path);
+    } on BackupFormatException {
+      if (!mounted) return;
+      showAppSnackBar(
+        context,
+        context.l10n.restoreNotABackup,
+        kind: SnackKind.error,
+      );
+      return;
+    } catch (_) {
+      if (!mounted) return;
+      showAppSnackBar(
+        context,
+        context.l10n.restoreFailed,
+        kind: SnackKind.error,
+      );
+      return;
+    }
+    if (!mounted) return;
+
+    FolderMergeChoice choice = FolderMergeChoice.keepSeparate;
+
+    if (preview.hasCollisions) {
+      // Asked once for the whole file rather than once per folder: three
+      // dialogs in a row to answer the same question is how somebody starts
+      // tapping the default without reading.
+      final FolderMergeChoice? answer = await showRestoreMergeSheet(
+        context,
+        names: preview.collidingFolderNames,
+      );
+      if (answer == null || !mounted) return;
+      choice = answer;
+    } else {
+      final bool confirmed = await showConfirmDialog(
+        context,
+        title: context.l10n.restoreConfirmTitle,
+        message: context.l10n.restoreConfirmMessage,
+        confirmLabel: context.l10n.restoreAction,
+      );
+      if (!confirmed || !mounted) return;
+    }
 
     setState(() {
       _job = _Job.restore;
@@ -122,6 +165,7 @@ class _BackupPageState extends State<BackupPage> {
     try {
       final RestoreResult result = await sl<RestoreBackupUseCase>()(
         path,
+        onNameClash: choice,
         onProgress: _setProgress,
       );
       if (!mounted) return;

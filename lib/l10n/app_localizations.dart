@@ -2679,6 +2679,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reading…'**
   String get libraryScanning;
+
+  /// No description provided for @restoreClashTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} folders already exist here'**
+  String restoreClashTitle(int count);
+
+  /// No description provided for @restoreClashBody.
+  ///
+  /// In en, this message translates to:
+  /// **'These names are in your library and in the backup. Same name does not always mean same folder, so this one is yours to decide.'**
+  String get restoreClashBody;
+
+  /// No description provided for @restoreClashMore.
+  ///
+  /// In en, this message translates to:
+  /// **'and {count} more'**
+  String restoreClashMore(int count);
+
+  /// No description provided for @restoreClashMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Put them together'**
+  String get restoreClashMerge;
+
+  /// No description provided for @restoreClashMergeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshots go into the folders you already have.'**
+  String get restoreClashMergeBody;
+
+  /// No description provided for @restoreClashSeparate.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep them apart'**
+  String get restoreClashSeparate;
+
+  /// No description provided for @restoreClashSeparateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Makes a second folder with the same name. Nothing existing is touched.'**
+  String get restoreClashSeparateBody;
 }
 
 class _AppLocalizationsDelegate

@@ -1,4 +1,5 @@
 import 'package:shoto/features/backup/domain/entities/backup_outcome.dart';
+import 'package:shoto/features/backup/domain/entities/restore_plan.dart';
 
 /// Writing the signed-in account's library to a file, and putting one back.
 ///
@@ -14,6 +15,10 @@ abstract class BackupRepository {
     void Function(int done, int total)? onProgress,
   });
 
+  /// Reads the file's index only, so the app can ask about folder-name
+  /// collisions before anything is written.
+  Future<BackupPreview> previewBackup(String filePath);
+
   /// Reads [filePath] and adds everything in it to the current library.
   ///
   /// **Adds — it never replaces.** Restoring onto a phone that already has
@@ -21,6 +26,7 @@ abstract class BackupRepository {
   /// case is destroying the library it was opened to protect.
   Future<RestoreResult> restoreBackup(
     String filePath, {
+    FolderMergeChoice onNameClash = FolderMergeChoice.keepSeparate,
     void Function(int done, int total)? onProgress,
   });
 }

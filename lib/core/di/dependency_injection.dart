@@ -25,6 +25,7 @@ import 'package:shoto/core/services/cache_service.dart';
 import 'package:shoto/features/backup/data/repositories_impl/backup_repository_impl.dart';
 import 'package:shoto/features/backup/domain/repositories/backup_repository.dart';
 import 'package:shoto/features/backup/domain/use_cases/create_backup_use_case.dart';
+import 'package:shoto/features/backup/domain/use_cases/preview_backup_use_case.dart';
 import 'package:shoto/features/backup/domain/use_cases/restore_backup_use_case.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
@@ -209,6 +210,7 @@ void setupServiceLocator() {
   );
   sl.registerLazySingleton(() => CreateBackupUseCase(sl()));
   sl.registerLazySingleton(() => RestoreBackupUseCase(sl()));
+  sl.registerLazySingleton(() => PreviewBackupUseCase(sl()));
 
   sl.registerLazySingleton(() => ImageStitchService());
   sl.registerLazySingleton<StitchRepository>(

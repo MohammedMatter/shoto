@@ -736,5 +736,12 @@
   "librarySortOldest": "پرانی پہلے",
   "librarySortLabel": "ترتیب",
   "libraryScanPrompt": "{count} اسکرین شاٹس پڑھیں",
-  "libraryScanning": "پڑھا جا رہا ہے…"
+  "libraryScanning": "پڑھا جا رہا ہے…",
+  "restoreClashTitle": "{count} فولڈرز یہاں پہلے سے موجود ہیں",
+  "restoreClashBody": "یہ نام آپ کی لائبریری میں بھی ہیں اور بیک اپ میں بھی۔ ایک ہی نام ہمیشہ ایک ہی فولڈر نہیں ہوتا، اس لیے یہ فیصلہ آپ کا ہے۔",
+  "restoreClashMore": "اور {count} مزید",
+  "restoreClashMerge": "انہیں ملا دیں",
+  "restoreClashMergeBody": "اسکرین شاٹس آپ کے موجودہ فولڈرز میں جائیں گے۔",
+  "restoreClashSeparate": "الگ رکھیں",
+  "restoreClashSeparateBody": "اسی نام کا دوسرا فولڈر بنتا ہے۔ موجودہ کچھ بھی نہیں بدلتا۔"
 }

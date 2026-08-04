@@ -736,5 +736,12 @@
   "librarySortOldest": "الأقدم أولاً",
   "librarySortLabel": "الترتيب",
   "libraryScanPrompt": "اقرأ {count} صورة",
-  "libraryScanning": "عم نقرأ…"
+  "libraryScanning": "عم نقرأ…",
+  "restoreClashTitle": "{count} مجلدات موجودة عندك أصلاً",
+  "restoreClashBody": "هاي الأسماء موجودة بمكتبتك وبالنسخة. نفس الاسم مش دايماً نفس المجلد، فالقرار إلك إنت.",
+  "restoreClashMore": "و {count} غيرها",
+  "restoreClashMerge": "اجمعهم مع بعض",
+  "restoreClashMergeBody": "الصور بتروح للمجلدات الموجودة عندك.",
+  "restoreClashSeparate": "خليهم منفصلين",
+  "restoreClashSeparateBody": "بيعمل مجلد تاني بنفس الاسم. ولا شي موجود بينمس."
 }

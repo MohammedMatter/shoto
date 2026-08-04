@@ -736,5 +736,12 @@
   "librarySortOldest": "पुरानी पहले",
   "librarySortLabel": "क्रम",
   "libraryScanPrompt": "{count} स्क्रीनशॉट पढ़ें",
-  "libraryScanning": "पढ़ा जा रहा है…"
+  "libraryScanning": "पढ़ा जा रहा है…",
+  "restoreClashTitle": "{count} फ़ोल्डर यहाँ पहले से हैं",
+  "restoreClashBody": "ये नाम आपकी लाइब्रेरी में और बैकअप में दोनों जगह हैं। एक ही नाम हमेशा एक ही फ़ोल्डर नहीं होता, इसलिए यह फ़ैसला आपका है।",
+  "restoreClashMore": "और {count} अन्य",
+  "restoreClashMerge": "इन्हें मिला दें",
+  "restoreClashMergeBody": "स्क्रीनशॉट आपके मौजूदा फ़ोल्डरों में जाएँगे।",
+  "restoreClashSeparate": "अलग रखें",
+  "restoreClashSeparateBody": "उसी नाम का दूसरा फ़ोल्डर बनता है। मौजूदा कुछ भी नहीं बदलता।"
 }

@@ -1570,4 +1570,32 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get libraryScanning => 'پڑھا جا رہا ہے…';
+
+  @override
+  String restoreClashTitle(int count) {
+    return '$count فولڈرز یہاں پہلے سے موجود ہیں';
+  }
+
+  @override
+  String get restoreClashBody =>
+      'یہ نام آپ کی لائبریری میں بھی ہیں اور بیک اپ میں بھی۔ ایک ہی نام ہمیشہ ایک ہی فولڈر نہیں ہوتا، اس لیے یہ فیصلہ آپ کا ہے۔';
+
+  @override
+  String restoreClashMore(int count) {
+    return 'اور $count مزید';
+  }
+
+  @override
+  String get restoreClashMerge => 'انہیں ملا دیں';
+
+  @override
+  String get restoreClashMergeBody =>
+      'اسکرین شاٹس آپ کے موجودہ فولڈرز میں جائیں گے۔';
+
+  @override
+  String get restoreClashSeparate => 'الگ رکھیں';
+
+  @override
+  String get restoreClashSeparateBody =>
+      'اسی نام کا دوسرا فولڈر بنتا ہے۔ موجودہ کچھ بھی نہیں بدلتا۔';
 }

@@ -1581,4 +1581,31 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get libraryScanning => 'عم نقرأ…';
+
+  @override
+  String restoreClashTitle(int count) {
+    return '$count مجلدات موجودة عندك أصلاً';
+  }
+
+  @override
+  String get restoreClashBody =>
+      'هاي الأسماء موجودة بمكتبتك وبالنسخة. نفس الاسم مش دايماً نفس المجلد، فالقرار إلك إنت.';
+
+  @override
+  String restoreClashMore(int count) {
+    return 'و $count غيرها';
+  }
+
+  @override
+  String get restoreClashMerge => 'اجمعهم مع بعض';
+
+  @override
+  String get restoreClashMergeBody => 'الصور بتروح للمجلدات الموجودة عندك.';
+
+  @override
+  String get restoreClashSeparate => 'خليهم منفصلين';
+
+  @override
+  String get restoreClashSeparateBody =>
+      'بيعمل مجلد تاني بنفس الاسم. ولا شي موجود بينمس.';
 }

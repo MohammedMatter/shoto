@@ -807,5 +807,26 @@
         "type": "int"
       }
     }
-  }
+  },
+  "restoreClashTitle": "{count} folders already exist here",
+  "@restoreClashTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashBody": "These names are in your library and in the backup. Same name does not always mean same folder, so this one is yours to decide.",
+  "restoreClashMore": "and {count} more",
+  "@restoreClashMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashMerge": "Put them together",
+  "restoreClashMergeBody": "Screenshots go into the folders you already have.",
+  "restoreClashSeparate": "Keep them apart",
+  "restoreClashSeparateBody": "Makes a second folder with the same name. Nothing existing is touched."
 }

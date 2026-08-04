@@ -736,5 +736,12 @@
   "librarySortOldest": "Más antiguas primero",
   "librarySortLabel": "Orden",
   "libraryScanPrompt": "Leer {count} capturas",
-  "libraryScanning": "Leyendo…"
+  "libraryScanning": "Leyendo…",
+  "restoreClashTitle": "{count} carpetas ya existen aquí",
+  "restoreClashBody": "Estos nombres están en tu biblioteca y en la copia. El mismo nombre no siempre es la misma carpeta, así que esto lo decides tú.",
+  "restoreClashMore": "y {count} más",
+  "restoreClashMerge": "Juntarlas",
+  "restoreClashMergeBody": "Las capturas van a las carpetas que ya tienes.",
+  "restoreClashSeparate": "Mantenerlas aparte",
+  "restoreClashSeparateBody": "Crea una segunda carpeta con el mismo nombre. No se toca nada existente."
 }

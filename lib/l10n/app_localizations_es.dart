@@ -1574,4 +1574,32 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get libraryScanning => 'Leyendo…';
+
+  @override
+  String restoreClashTitle(int count) {
+    return '$count carpetas ya existen aquí';
+  }
+
+  @override
+  String get restoreClashBody =>
+      'Estos nombres están en tu biblioteca y en la copia. El mismo nombre no siempre es la misma carpeta, así que esto lo decides tú.';
+
+  @override
+  String restoreClashMore(int count) {
+    return 'y $count más';
+  }
+
+  @override
+  String get restoreClashMerge => 'Juntarlas';
+
+  @override
+  String get restoreClashMergeBody =>
+      'Las capturas van a las carpetas que ya tienes.';
+
+  @override
+  String get restoreClashSeparate => 'Mantenerlas aparte';
+
+  @override
+  String get restoreClashSeparateBody =>
+      'Crea una segunda carpeta con el mismo nombre. No se toca nada existente.';
 }

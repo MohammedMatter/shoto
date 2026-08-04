@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shoto/core/utils/backup_archive.dart';
 import 'package:shoto/core/utils/backup_manifest.dart';
 import 'package:shoto/features/backup/domain/entities/backup_outcome.dart';
+import 'package:shoto/features/backup/domain/entities/restore_plan.dart';
 import 'package:shoto/features/backup/domain/repositories/backup_repository.dart';
 import 'package:shoto/features/folders/data/data_sources/folders_local_data_source.dart';
 import 'package:shoto/features/folders/data/models/folder_model.dart';
@@ -24,6 +25,8 @@ class BackupRepositoryImpl implements BackupRepository {
   Future<BackupResult> createBackup({
     void Function(int done, int total)? onProgress,
   }) async {
+    await _sweepOldArchives();
+
     final List<FolderModel> folders = await _folders.getFolders();
     final List<ScreenshotEntity> library = await _screenshots
         .getAllScreenshots();
@@ -119,8 +122,36 @@ class BackupRepositoryImpl implements BackupRepository {
   }
 
   @override
+  Future<BackupPreview> previewBackup(String filePath) async {
+    final BackupReader reader = BackupArchive.openReader(filePath);
+    try {
+      final List<String> names = reader.manifest.folders
+          .map((BackupFolder f) => f.name)
+          .toList();
+      final Set<String> existing = <String>{
+        for (final FolderModel f in await _folders.getFolders())
+          f.name.trim().toLowerCase(),
+      };
+      return BackupPreview(
+        folderNames: names,
+        screenshots: reader.manifest.items.length,
+        // Compared case- and space-insensitively, because "Work" and "work "
+        // are the same folder to the person who named them and asking about
+        // them separately would look like the app cannot read.
+        collidingFolderNames: <String>[
+          for (final String name in names)
+            if (existing.contains(name.trim().toLowerCase())) name,
+        ],
+      );
+    } finally {
+      reader.close();
+    }
+  }
+
+  @override
   Future<RestoreResult> restoreBackup(
     String filePath, {
+    FolderMergeChoice onNameClash = FolderMergeChoice.keepSeparate,
     void Function(int done, int total)? onProgress,
   }) async {
     // Opened, not read. `readAsBytes` on the archive cost the whole file in
@@ -133,8 +164,28 @@ class BackupRepositoryImpl implements BackupRepository {
     // same folder is a worse outcome than one duplicate the user can merge by
     // hand, and merging by name would silently pour a restored library into
     // folders that happen to share a word.
+    // Existing folders by normalised name, so a merge lands in the folder the
+    // user already has rather than beside it.
+    final Map<String, int> existingByName = <String, int>{
+      for (final FolderModel f in await _folders.getFolders())
+        f.name.trim().toLowerCase(): f.id,
+    };
+
     final List<int> newFolderIds = <int>[];
     for (final BackupFolder folder in reader.manifest.folders) {
+      // **Merging is never assumed.** Two people can genuinely keep two
+      // different folders called "Work", and pouring one into the other is a
+      // mistake nobody notices until the wrong screenshots are sitting
+      // together — so the caller has to have asked, and the default when
+      // nobody asked is to keep them apart.
+      final int? existing = onNameClash == FolderMergeChoice.merge
+          ? existingByName[folder.name.trim().toLowerCase()]
+          : null;
+      if (existing != null) {
+        newFolderIds.add(existing);
+        continue;
+      }
+
       final FolderModel created = await _folders.createFolder(
         folder.name,
         folder.color,
@@ -146,6 +197,10 @@ class BackupRepositoryImpl implements BackupRepository {
         createdAt: folder.createdAt,
       );
       newFolderIds.add(created.id);
+      // Registered so a backup holding the same name twice merges its own
+      // duplicates too, instead of producing exactly the pile this option
+      // exists to prevent.
+      existingByName[created.name.trim().toLowerCase()] = created.id;
     }
 
     int failed = 0;
@@ -219,6 +274,44 @@ class BackupRepositoryImpl implements BackupRepository {
       missing: reader.missingImages + reader.skippedItems,
       failed: failed,
     );
+  }
+
+  /// Deletes archives left behind by earlier runs.
+  ///
+  /// Both sides write into the cache directory — the backup builds its zip
+  /// there before handing it to the share sheet, and the picker copies the
+  /// chosen file there so Dart can read it — and neither used to clean up.
+  /// Fourteen files and thirty megabytes had accumulated on the test device in
+  /// one afternoon of trying the feature out.
+  ///
+  /// Run at the *start* of each operation rather than the end: the share sheet
+  /// hands the file to another app, and deleting it the moment the sheet
+  /// closes races whatever that app is still copying. Clearing last time's
+  /// files this time is late enough to be safe and early enough that they
+  /// never pile up.
+  ///
+  /// [keep] is the file about to be used, which must survive the sweep.
+  Future<void> _sweepOldArchives({String? keep}) async {
+    try {
+      final Directory cache = await getTemporaryDirectory();
+      if (!await cache.exists()) return;
+      await for (final FileSystemEntity entity in cache.list()) {
+        if (entity is! File) continue;
+        final String name = p.basename(entity.path);
+        final bool ours =
+            name.startsWith('shoto-backup-') || name.startsWith('restore-');
+        if (!ours || !name.endsWith('.zip')) continue;
+        if (keep != null && entity.path == keep) continue;
+        try {
+          await entity.delete();
+        } catch (_) {
+          // A file another app still holds open. Skipping it costs one stale
+          // archive; failing the backup over it costs the backup.
+        }
+      }
+    } catch (error) {
+      debugPrint('SHOTO cache sweep failed: $error');
+    }
   }
 
   /// Sortable and unambiguous: `shoto-backup-2026-08-04-1330.zip`.
