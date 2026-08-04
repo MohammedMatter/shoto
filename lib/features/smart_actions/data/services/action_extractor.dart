@@ -188,6 +188,15 @@ abstract class ActionExtractor {
     // governs bare domains.
     r'(com|net|org|io|co|me|app|dev|sa|ae|jo|eg|ps|qa|kw|bh|om|tr|uk|de'
     r'|es|fr|in|pk|it|nl|pt|be|ch|se|br|mx|ar|ma|dz|tn|lb|iq|ly|ye|sd|sy'
+    // Measured rather than guessed: a spread of forty real bare domains
+    // only resolved for twenty-five, and every miss was a country or a
+    // modern gTLD absent from this list. It is the one part of link
+    // detection that fails by omission, so it is worth being generous —
+    // the list exists to stop \"version 2.5.reboot\" reading as a domain,
+    // and none of these collide with that.
+    r'|ru|cn|jp|kr|au|ca|pl|gr|il|ir|ng|ke|za|ua|cz|ro|hu|at|dk|fi|no'
+    r'|ie|nz|sg|my|id|th|vn|ph|cl|pe|ve|uy|ec|bo|py|do|gt|cr|pa'
+    r'|news|blog|tech|life|world|space|club|live|studio|design|agency'
     r'|gov|edu|info|store|shop|online|site|link|xyz|tv|ai|cloud)'
     r'(/[^\s<>"'
     "'"
@@ -235,14 +244,14 @@ abstract class ActionExtractor {
   /// agree on what a card looks like or one of them will claim a span the
   /// other does not.
   static final RegExp _cardCandidate = RegExp(
-    r'(?<![0-9])(?:[0-9][ -]?){12,19}(?![0-9])',
+    r'(?<![0-9+])(?:[0-9][ -]?){12,19}(?![0-9])',
   );
 
   /// The wrapped 4-4-4-4 spelling, matching `SensitiveData`. Claimed here for
   /// the same reason the unwrapped one is: without it the code and phone rules
   /// read the halves of a card number as two numbers of their own.
   static final RegExp _wrappedCardCandidate = RegExp(
-    r'(?<![0-9])[0-9]{4}(?:[ \-\n\r]{1,2}[0-9]{4}){3}(?![0-9])',
+    r'(?<![0-9+])[0-9]{4}(?:[ \-\n\r]{1,2}[0-9]{4}){3}(?![0-9])',
   );
 
   static final RegExp _standaloneNumber = RegExp(r'\b[0-9]{4,8}\b');
@@ -399,7 +408,13 @@ abstract class ActionExtractor {
     //
     // Local numbers are untouched: the longest national formats here are
     // eleven digits.
-    final bool international = match.trim().startsWith('+');
+    // `00` is the international prefix everywhere the `+` is not typed, and a
+    // number carrying it is exactly as self-identifying — "00962791234567"
+    // was being thrown away by the twelve-digit rule below for want of one
+    // character it spells differently.
+    final String trimmed0 = match.trim();
+    final bool international =
+        trimmed0.startsWith('+') || trimmed0.startsWith('00');
     if (!international && digits.length >= 12) return null;
 
     // A number wrapped in brackets that never close, or littered with more

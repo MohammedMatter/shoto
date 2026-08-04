@@ -97,11 +97,20 @@ class ScreenshotsFilterRow extends StatelessWidget {
       if (trait == lens || (traitCounts[trait] ?? 0) > 0) trait,
   ];
 
+  /// Whether to offer the scan at all.
+  ///
+  /// Gated on [traitsReady] so it cannot appear while the first pass is still
+  /// counting and then disappear a moment later, and on there being something
+  /// left to read — at zero the control would be a button whose only outcome
+  /// is nothing happening.
+  bool get _showScan => traitsReady && unreadCount > 0;
+
   @override
   Widget build(BuildContext context) {
     final List<ContentTrait> offered = traitsReady
         ? _offered
         : const <ContentTrait>[];
+    final bool showScan = _showScan;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -151,35 +160,20 @@ class ScreenshotsFilterRow extends StatelessWidget {
           duration: AppMotion.duration(context, AppMotion.normal),
           curve: AppMotion.standard,
           alignment: Alignment.topCenter,
-          // **An empty row must explain itself, not vanish.**
+          // **The scan control belongs beside the chips, not instead of
+          // them.**
           //
-          // Hiding was the original behaviour and it was wrong in the way that
-          // matters most: the filters worked, the user saw them, the library
-          // changed, and the whole feature silently ceased to exist with no
-          // way to find out why or get it back. Every trait is read out of
-          // cached text, so a library nobody has read has nothing to show —
-          // that is a sentence, not an absence.
-          child: offered.isEmpty && traitsReady && unreadCount > 0
-              ? SizedBox(
-                  height: 40.h,
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(
-                      20.w,
-                      0,
-                      20.w,
-                      10.h,
-                    ),
-                    child: Align(
-                      alignment: AlignmentDirectional.centerStart,
-                      child: _ScanChip(
-                        count: unreadCount,
-                        isScanning: isScanning,
-                        onTap: onScan,
-                      ),
-                    ),
-                  ),
-                )
-              : offered.isEmpty
+          // It first existed only for the empty row — the case where the whole
+          // feature had silently ceased to exist. That fixed the worst version
+          // and left a quieter one: as soon as a single trait appeared the
+          // control vanished, so a library with three chips and five unread
+          // screenshots had no way to reach the five at all. The counts on
+          // screen were simply incomplete and nothing offered to complete
+          // them.
+          //
+          // So it now shows whenever anything is unread, in both cases, and
+          // sits last so the traits that already have answers come first.
+          child: offered.isEmpty && !showScan
               ? const SizedBox(width: double.infinity)
               : SizedBox(
                   height: 40.h,
@@ -192,6 +186,12 @@ class ScreenshotsFilterRow extends StatelessWidget {
                       10.h,
                     ),
                     children: [
+                      if (showScan && offered.isEmpty)
+                        _ScanChip(
+                          count: unreadCount,
+                          isScanning: isScanning,
+                          onTap: onScan,
+                        ),
                       for (final ContentTrait trait in offered) ...[
                         _TraitChip(
                           trait: trait,
@@ -206,6 +206,12 @@ class ScreenshotsFilterRow extends StatelessWidget {
                         ),
                         SizedBox(width: 8.w),
                       ],
+                      if (showScan && offered.isNotEmpty)
+                        _ScanChip(
+                          count: unreadCount,
+                          isScanning: isScanning,
+                          onTap: onScan,
+                        ),
                     ],
                   ),
                 ),

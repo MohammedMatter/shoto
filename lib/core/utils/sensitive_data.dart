@@ -332,8 +332,16 @@ abstract class SensitiveData {
   // Checksum-backed detections
   // -------------------------------------------------------------------
 
+  /// **A run following a `+` is a phone number, never a card.**
+  ///
+  /// Luhn passes about one run in ten by chance, and international numbers sit
+  /// squarely in the 13-19 digit band a card occupies — `+49 151 12345678` is
+  /// thirteen digits and does pass. It was being claimed as a card, which both
+  /// lost the phone number and put a false detection into the one trait whose
+  /// whole claim is that it is certain. No card is ever written with a leading
+  /// plus, so refusing that one character costs nothing and closes the hole.
   static final RegExp _cardCandidate = RegExp(
-    r'(?<![0-9])(?:[0-9][ -]?){12,19}(?![0-9])',
+    r'(?<![0-9+])(?:[0-9][ -]?){12,19}(?![0-9])',
   );
 
   /// A card printed as four groups of four, wrapped onto a second line.
@@ -350,7 +358,7 @@ abstract class SensitiveData {
   /// 4-4-4-4; the account numbers and reference runs that sit on adjacent
   /// lines in a real screenshot are not.
   static final RegExp _wrappedCardCandidate = RegExp(
-    r'(?<![0-9])[0-9]{4}(?:[ \-\n\r]{1,2}[0-9]{4}){3}(?![0-9])',
+    r'(?<![0-9+])[0-9]{4}(?:[ \-\n\r]{1,2}[0-9]{4}){3}(?![0-9])',
   );
 
   /// A 13-19 digit run that passes the Luhn checksum.
