@@ -9,6 +9,8 @@ import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/services/haptics.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/intent_picker_row.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
@@ -91,6 +93,13 @@ class _QuickSavePageState extends State<QuickSavePage>
 
   List<FolderEntity> _folders = const [];
   FolderEntity? _selected;
+
+  /// What the user says they will do with what they are saving.
+  ///
+  /// Never required. The button is enabled without it and always has been —
+  /// this is one optional tap taken at the only moment the answer is obvious,
+  /// not a second thing to fill in before a screenshot can be kept.
+  ScreenshotIntent? _intent;
 
   int get _alreadyInLibraryCount =>
       _images.where((image) => image.isAlreadyInLibrary).length;
@@ -270,6 +279,21 @@ class _QuickSavePageState extends State<QuickSavePage>
       // the single thing the user asked for, so it either happened or it
       // didn't.
       await repository.assignFolder(assetIds, folder.id);
+
+      // After the filing, and never allowed to fail the save. Filing is what
+      // the user pressed the button for; an intent is a note attached to it,
+      // and losing the screenshot because a note could not be written would be
+      // the wrong way round.
+      final ScreenshotIntent? intent = _intent;
+      if (intent != null) {
+        for (final String assetId in assetIds) {
+          try {
+            await repository.setIntent(assetId, intent);
+          } catch (error) {
+            debugPrint('SHOTO: intent not recorded for $assetId — $error');
+          }
+        }
+      }
 
       if (!mounted) return;
       Haptics.confirm();
@@ -732,6 +756,25 @@ class _QuickSavePageState extends State<QuickSavePage>
             ),
           ),
         ],
+        // **Asked here, and nowhere earlier, because here is where the answer
+        // is known.**
+        //
+        // The intent is the one thing about a screenshot the app can never
+        // work out for itself, and the moment of saving is the only moment the
+        // person holding the phone still remembers why they took it. A day
+        // later they are looking at a picture of a shoe with no idea whether
+        // they meant to buy it or laugh at it.
+        //
+        // Below the folders rather than above: filing is what the button does
+        // and what the sheet is for. This is an optional note taken on the way
+        // past, and putting it first would make it look like a second required
+        // field.
+        SizedBox(height: 18.h),
+        IntentPickerRow(
+          selected: _intent,
+          onChanged: (ScreenshotIntent? next) => setState(() => _intent = next),
+        ),
+
         SizedBox(height: 20.h),
         PressableScale(
           // Dimmed until a folder is picked. Filing is the whole action here,
