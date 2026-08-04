@@ -152,7 +152,13 @@ abstract class ActionExtractor {
     "'"
     r']+)'
     r'|([a-z0-9][a-z0-9\-]*(\.[a-z0-9\-]+)*\.'
+    // The country entries were Gulf-and-Levant plus tr/uk/de, which quietly
+    // meant a bare domain only resolved for two of the app's six languages —
+    // ejemplo.es, exemple.fr, udaharan.in and misal.pk all read as plain text.
+    // Anything carrying a scheme or www. was always fine; this list only
+    // governs bare domains.
     r'(com|net|org|io|co|me|app|dev|sa|ae|jo|eg|ps|qa|kw|bh|om|tr|uk|de'
+    r'|es|fr|in|pk|it|nl|pt|be|ch|se|br|mx|ar|ma|dz|tn|lb|iq|ly|ye|sd|sy'
     r'|gov|edu|info|store|shop|online|site|link|xyz|tv|ai|cloud)'
     r'(/[^\s<>"'
     "'"
@@ -231,6 +237,21 @@ abstract class ActionExtractor {
     'التحقق',
     'تحقق',
     'السري',
+    // The app ships in six languages and this list held only two of them, so
+    // a Spanish, Hindi or Urdu one-time password was never recognised as one.
+    // French needs no entry of its own: "code" is the same word.
+    'código',
+    'codigo',
+    'verificación',
+    'verificacion',
+    'contraseña',
+    'vérification',
+    'कोड',
+    'सत्यापन',
+    'ओटीपी',
+    'کوڈ',
+    'تصدیقی',
+    'پاس ورڈ',
   ];
 
   /// How far either side of a number the cue may sit.

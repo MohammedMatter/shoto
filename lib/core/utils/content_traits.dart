@@ -153,8 +153,18 @@ abstract class ContentTraits {
       }
     }
 
-    // Lowercased once rather than per phone match; scanning two dozen cue
-    // words is not free when this runs over a whole library.
+    // **Normalised, then lowercased — and the normalisation is not optional.**
+    //
+    // A [DetectedAction]'s `display` is cut from the text *after*
+    // [ActionExtractor] rewrites Arabic-Indic and Persian digits as ASCII, so
+    // looking it up in the raw string finds nothing whenever the screenshot
+    // was taken on an Arabic or Urdu UI: `٠٥٩٩١٢٣٤٥٦` and `0599123456` share
+    // no characters. Every such number was silently failing the cue test and
+    // being dropped — a whole-language blind spot that looked like the rule
+    // simply being strict.
+    //
+    // Safe because that rewrite is character-for-character, so an offset into
+    // the normalised string is an offset into the original.
     String? lowered;
 
     /// Whether a cue word sits within [_cueWindow] characters of this match.
@@ -165,8 +175,8 @@ abstract class ContentTraits {
     /// as corroborated — the trait's whole bias is that a miss beats a wrong
     /// claim.
     bool cuedNear(String display) {
-      lowered ??= text.toLowerCase();
-      final int at = text.indexOf(display);
+      lowered ??= ActionExtractor.normalizeDigits(text).toLowerCase();
+      final int at = lowered!.indexOf(display.toLowerCase());
       if (at < 0) return false;
       return TextCues.anyNear(
         lowered!,

@@ -188,5 +188,31 @@ void main() {
       ),
       'library_filter_6_light',
     );
+
+    // 7-10. The remaining shipped languages. Chip labels are translated, and
+    //       "Teléfono o correo" is more than twice the width of "Codes" — a
+    //       row that fits in English says nothing about whether it fits at
+    //       all. Rendered with a lens on so the provenance line, which is a
+    //       full sentence, is measured too.
+    AppColors.setBrightness(Brightness.dark);
+    for (final (String code, String name) in <(String, String)>[
+      ('es', '7_spanish'),
+      ('fr', '8_french'),
+      ('hi', '9_hindi'),
+      ('ur', '10_urdu'),
+    ]) {
+      await _shoot(
+        tester,
+        wrap(
+          _case(
+            locale: Locale(code),
+            filter: LibraryFilter.unsorted,
+            lens: ContentTrait.contact,
+            unreadCount: 87,
+          ),
+        ),
+        'library_filter_$name',
+      );
+    }
   }, skip: !autoUpdateGoldenFiles);
 }
