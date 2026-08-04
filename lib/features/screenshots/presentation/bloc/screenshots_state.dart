@@ -62,6 +62,13 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   /// has not finished counting is worse than no trait row.
   final bool traitsReady;
 
+  /// Whether recognition is running over the unread screenshots right now.
+  ///
+  /// Its own flag rather than a derived one: the scan is the only thing in
+  /// this screen the user starts and then waits on, and a control that gives
+  /// no sign it was pressed gets pressed again.
+  final bool isScanning;
+
   /// Which end of the library the grid starts from.
   final LibrarySort sort;
 
@@ -73,6 +80,7 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     this.traits = const {},
     this.lens,
     this.traitsReady = false,
+    this.isScanning = false,
     this.sort = LibrarySort.newest,
   });
 
@@ -174,6 +182,7 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     ContentTrait? lens,
     bool clearLens = false,
     bool? traitsReady,
+    bool? isScanning,
     LibrarySort? sort,
   }) {
     return ScreenshotsLoadedState(
@@ -187,6 +196,7 @@ class ScreenshotsLoadedState extends ScreenshotsState {
       // needs its own flag, same as `clearFolder` on ScreenshotEntity.
       lens: clearLens ? null : (lens ?? this.lens),
       traitsReady: traitsReady ?? this.traitsReady,
+      isScanning: isScanning ?? this.isScanning,
       sort: sort ?? this.sort,
     );
   }

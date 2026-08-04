@@ -734,5 +734,7 @@
   "dateThisMonth": "Este mes",
   "librarySortNewest": "Más recientes primero",
   "librarySortOldest": "Más antiguas primero",
-  "librarySortLabel": "Orden"
+  "librarySortLabel": "Orden",
+  "libraryScanPrompt": "Leer {count} capturas",
+  "libraryScanning": "Leyendo…"
 }

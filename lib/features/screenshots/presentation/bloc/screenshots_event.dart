@@ -91,6 +91,12 @@ class SetLibraryLensEvent extends ScreenshotsEvent {
   SetLibraryLensEvent(this.lens);
 }
 
+/// Runs text recognition over screenshots nobody has read yet, so the content
+/// filters have something to work from.
+///
+/// Budgeted rather than exhaustive — see [ScreenshotsBloc.scanBudget].
+class ScanUnreadForTraitsEvent extends ScreenshotsEvent {}
+
 /// Derives content traits for the loaded library from already-cached OCR text.
 ///
 /// Its own event rather than part of the load, because it is far too slow to

@@ -798,5 +798,14 @@
   "dateThisMonth": "Earlier this month",
   "librarySortNewest": "Newest first",
   "librarySortOldest": "Oldest first",
-  "librarySortLabel": "Order"
+  "librarySortLabel": "Order",
+  "libraryScanPrompt": "Read {count} screenshots",
+  "libraryScanning": "Reading…",
+  "@libraryScanPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

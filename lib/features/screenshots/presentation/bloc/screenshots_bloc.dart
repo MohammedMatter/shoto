@@ -2,6 +2,7 @@ import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/utils/content_traits.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/extract_and_cache_text_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_cached_ocr_text_use_case.dart';
 import 'dart:async';
 
@@ -29,6 +30,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   final DeleteScreenshotsUseCase deleteScreenshotsUseCase;
   final WatchLibraryChangesUseCase watchLibraryChangesUseCase;
   final GetCachedOcrTextUseCase getCachedOcrTextUseCase;
+  final ExtractAndCacheTextUseCase extractAndCacheTextUseCase;
 
   StreamSubscription<void>? _librarySubscription;
   Timer? _refreshDebounce;
@@ -71,6 +73,16 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   /// finishes in well under a second, and only ever once per library.
   static const int traitChunkSize = 25;
 
+  /// How many screenshots one tap of "read them" will recognise.
+  ///
+  /// Recognition is the expensive thing in this app — hundreds of milliseconds
+  /// per image, against microseconds for everything else — so an unbounded
+  /// pass over a large library is a progress bar the user watches for minutes
+  /// and cannot cancel. A budget turns it into a short, repeatable job: each
+  /// run picks up where the last stopped, and the control stays on screen with
+  /// a smaller number beside it until there is nothing left to read.
+  static const int scanBudget = 40;
+
   ScreenshotsBloc({
     required this.requestPhotoPermissionUseCase,
     required this.checkPhotoPermissionUseCase,
@@ -81,6 +93,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     required this.deleteScreenshotsUseCase,
     required this.watchLibraryChangesUseCase,
     required this.getCachedOcrTextUseCase,
+    required this.extractAndCacheTextUseCase,
   }) : super(ScreenshotsInitialState()) {
     on<LoadScreenshotsEvent>(_onLoad);
     on<RecheckPermissionEvent>(_onRecheckPermission);
@@ -98,6 +111,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     on<SetLibraryLensEvent>(_onSetLibraryLens);
     on<SetLibrarySortEvent>(_onSetLibrarySort);
     on<ComputeTraitsEvent>(_onComputeTraits);
+    on<ScanUnreadForTraitsEvent>(_onScanUnread);
   }
 
   Future<void> _onLoad(
@@ -465,6 +479,62 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
         selectedIds: {},
       ),
     );
+  }
+
+  /// Reads text out of screenshots nobody has read yet, so the content
+  /// filters stop being empty.
+  ///
+  /// **The filters cannot see anything until this has run.** Every trait is
+  /// derived from cached OCR text, and text is only cached when some feature
+  /// pays to extract it — so a library that has never been searched has no
+  /// traits at all, and used to answer that by hiding the whole row. The row
+  /// now asks for this instead.
+  ///
+  /// Failures are swallowed per screenshot on purpose: one image the
+  /// recogniser chokes on must not end a pass over thirty-nine others.
+  Future<void> _onScanUnread(
+    ScanUnreadForTraitsEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState || current.isScanning) return;
+
+    final Map<String, String> known = await getCachedOcrTextUseCase();
+    final List<ScreenshotEntity> unread = <ScreenshotEntity>[
+      for (final ScreenshotEntity shot in current.screenshots)
+        if (!known.containsKey(shot.id)) shot,
+    ];
+    if (unread.isEmpty) return;
+
+    emit(current.copyWith(isScanning: true));
+
+    final List<ScreenshotEntity> batch = unread.take(scanBudget).toList();
+    for (final ScreenshotEntity shot in batch) {
+      if (isClosed) return;
+      try {
+        final String text = await extractAndCacheTextUseCase(shot);
+        _traitCache[shot.id] = ContentTraits.of(text);
+      } catch (_) {
+        // Recorded as read-and-empty rather than left absent. Absent means
+        // "never looked", and a screenshot the recogniser cannot handle would
+        // otherwise be retried on every scan forever, holding the control on
+        // screen with a count that never reaches zero.
+        _traitCache[shot.id] = const <ContentTrait>{};
+      }
+
+      current = state;
+      if (current is! ScreenshotsLoadedState) return;
+      emit(
+        current.copyWith(
+          traits: Map<String, Set<ContentTrait>>.unmodifiable(_traitCache),
+          traitsReady: true,
+        ),
+      );
+    }
+
+    current = state;
+    if (current is! ScreenshotsLoadedState) return;
+    emit(current.copyWith(isScanning: false));
   }
 
   /// Derives content traits for anything not already in [_traitCache],

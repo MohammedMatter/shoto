@@ -734,5 +734,7 @@
   "dateThisMonth": "اس مہینے",
   "librarySortNewest": "نئی پہلے",
   "librarySortOldest": "پرانی پہلے",
-  "librarySortLabel": "ترتیب"
+  "librarySortLabel": "ترتیب",
+  "libraryScanPrompt": "{count} اسکرین شاٹس پڑھیں",
+  "libraryScanning": "پڑھا جا رہا ہے…"
 }

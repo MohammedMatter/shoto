@@ -33,6 +33,7 @@ Widget _case({
   ContentTrait? lens,
   bool traitsReady = true,
   int unreadCount = 0,
+  bool isScanning = false,
   Map<ContentTrait, int> counts = _counts,
 }) {
   return MaterialApp(
@@ -56,6 +57,9 @@ Widget _case({
               onSelectLens: (_) {},
               traitCounts: counts,
               traitsReady: traitsReady,
+              unreadCount: unreadCount,
+              isScanning: isScanning,
+              onScan: () {},
             ),
             LensProvenanceNote(lens: lens, unreadCount: unreadCount),
           ],
@@ -68,10 +72,20 @@ Widget _case({
 Future<void> _shoot(
   WidgetTester tester,
   Widget app,
-  String name,
-) async {
+  String name, {
+  /// False when the frame contains a never-ending animation.
+  ///
+  /// `pumpAndSettle` waits for the tree to stop changing, and a
+  /// [CircularProgressIndicator] never does — the scanning state hung the
+  /// whole file until this existed.
+  bool settle = true,
+}) async {
   await tester.pumpWidget(app);
-  await tester.pumpAndSettle();
+  if (settle) {
+    await tester.pumpAndSettle();
+  } else {
+    await tester.pump(const Duration(milliseconds: 400));
+  }
   await expectLater(
     find.byType(Column).first,
     matchesGoldenFile('goldens/$name.png'),
@@ -120,6 +134,37 @@ void main() {
         ),
       ),
       'library_filter_1_status_only',
+    );
+
+    // 1b. Nothing has been read yet, so no trait can have a count. This used
+    //     to render as nothing at all — the whole feature silently absent —
+    //     and the row now has to say what is missing and offer the fix.
+    await _shoot(
+      tester,
+      wrap(
+        _case(
+          locale: const Locale('en'),
+          filter: LibraryFilter.all,
+          unreadCount: 12,
+          counts: const <ContentTrait, int>{},
+        ),
+      ),
+      'library_filter_1b_nothing_read',
+    );
+
+    await _shoot(
+      tester,
+      wrap(
+        _case(
+          locale: const Locale('ar'),
+          filter: LibraryFilter.all,
+          unreadCount: 12,
+          isScanning: true,
+          counts: const <ContentTrait, int>{},
+        ),
+      ),
+      'library_filter_1c_scanning_arabic',
+      settle: false,
     );
 
     // 2. Both groups present, nothing narrowed — the separator has to make the

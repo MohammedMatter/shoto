@@ -734,5 +734,7 @@
   "dateThisMonth": "هالشهر",
   "librarySortNewest": "الأحدث أولاً",
   "librarySortOldest": "الأقدم أولاً",
-  "librarySortLabel": "الترتيب"
+  "librarySortLabel": "الترتيب",
+  "libraryScanPrompt": "اقرأ {count} صورة",
+  "libraryScanning": "عم نقرأ…"
 }

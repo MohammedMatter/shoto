@@ -1564,4 +1564,12 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get librarySortLabel => 'क्रम';
+
+  @override
+  String libraryScanPrompt(int count) {
+    return '$count स्क्रीनशॉट पढ़ें';
+  }
+
+  @override
+  String get libraryScanning => 'पढ़ा जा रहा है…';
 }

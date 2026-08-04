@@ -2667,6 +2667,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Order'**
   String get librarySortLabel;
+
+  /// No description provided for @libraryScanPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Read {count} screenshots'**
+  String libraryScanPrompt(int count);
+
+  /// No description provided for @libraryScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading…'**
+  String get libraryScanning;
 }
 
 class _AppLocalizationsDelegate

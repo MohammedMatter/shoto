@@ -1562,4 +1562,12 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get librarySortLabel => 'ترتیب';
+
+  @override
+  String libraryScanPrompt(int count) {
+    return '$count اسکرین شاٹس پڑھیں';
+  }
+
+  @override
+  String get libraryScanning => 'پڑھا جا رہا ہے…';
 }

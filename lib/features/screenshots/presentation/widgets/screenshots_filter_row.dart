@@ -58,6 +58,15 @@ class ScreenshotsFilterRow extends StatelessWidget {
   /// `ScreenshotsLoadedState.traitsReady`.
   final bool traitsReady;
 
+  /// Screenshots whose text has never been recognised.
+  final int unreadCount;
+
+  /// Whether recognition is running right now.
+  final bool isScanning;
+
+  /// Starts reading the unread screenshots.
+  final VoidCallback onScan;
+
   const ScreenshotsFilterRow({
     super.key,
     required this.totalCount,
@@ -69,6 +78,9 @@ class ScreenshotsFilterRow extends StatelessWidget {
     required this.onSelectLens,
     required this.traitCounts,
     required this.traitsReady,
+    required this.unreadCount,
+    required this.isScanning,
+    required this.onScan,
   });
 
   /// Traits worth offering: the active one always, plus any that would land on
@@ -139,7 +151,35 @@ class ScreenshotsFilterRow extends StatelessWidget {
           duration: AppMotion.duration(context, AppMotion.normal),
           curve: AppMotion.standard,
           alignment: Alignment.topCenter,
-          child: offered.isEmpty
+          // **An empty row must explain itself, not vanish.**
+          //
+          // Hiding was the original behaviour and it was wrong in the way that
+          // matters most: the filters worked, the user saw them, the library
+          // changed, and the whole feature silently ceased to exist with no
+          // way to find out why or get it back. Every trait is read out of
+          // cached text, so a library nobody has read has nothing to show —
+          // that is a sentence, not an absence.
+          child: offered.isEmpty && traitsReady && unreadCount > 0
+              ? SizedBox(
+                  height: 40.h,
+                  child: Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(
+                      20.w,
+                      0,
+                      20.w,
+                      10.h,
+                    ),
+                    child: Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: _ScanChip(
+                        count: unreadCount,
+                        isScanning: isScanning,
+                        onTap: onScan,
+                      ),
+                    ),
+                  ),
+                )
+              : offered.isEmpty
               ? const SizedBox(width: double.infinity)
               : SizedBox(
                   height: 40.h,
@@ -340,6 +380,89 @@ class _TraitChip extends StatelessWidget {
                     color: isActive
                         ? AppColors.onPrimary
                         : AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// The stand-in for an empty content row: what is missing, and the one tap
+/// that fixes it.
+///
+/// Deliberately shaped like the trait chips it will turn into, so the row does
+/// not appear to change into a different kind of control once it has something
+/// to show — it fills in rather than swaps.
+class _ScanChip extends StatelessWidget {
+  final int count;
+  final bool isScanning;
+  final VoidCallback onTap;
+
+  const _ScanChip({
+    required this.count,
+    required this.isScanning,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: sl<ThemeController>(),
+      builder: (context, child) => Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(18.r),
+          onTap: isScanning
+              ? null
+              : () {
+                  Haptics.tap();
+                  onTap();
+                },
+          child: AnimatedContainer(
+            duration: AppMotion.duration(context, AppMotion.normal),
+            curve: AppMotion.standard,
+            padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 6.h),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(18.r),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.35),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // A turning spinner rather than a static icon while it runs:
+                // recognition takes hundreds of milliseconds per screenshot,
+                // and a control that looks identical mid-job gets tapped again.
+                if (isScanning)
+                  SizedBox(
+                    width: 13.sp,
+                    height: 13.sp,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.primary,
+                      ),
+                    ),
+                  )
+                else
+                  Icon(
+                    Icons.auto_awesome_rounded,
+                    size: 13.sp,
+                    color: AppColors.primary,
+                  ),
+                SizedBox(width: 6.w),
+                Text(
+                  isScanning
+                      ? context.l10n.libraryScanning
+                      : context.l10n.libraryScanPrompt(count),
+                  style: AppTextStyles.caption.asMedium.copyWith(
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ],

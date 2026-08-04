@@ -17,6 +17,7 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/widgets/confirm_dialog.dart';
 import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/core/widgets/empty_state.dart';
+import 'package:shoto/core/widgets/premium_gate.dart';
 import 'package:shoto/core/widgets/primary_button.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/content_trait_visuals.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/date_section_header.dart';
@@ -204,6 +205,18 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                           trait: loaded.traitCount(trait),
                       },
                       traitsReady: loaded.traitsReady,
+                      unreadCount: loaded.unreadCount,
+                      isScanning: loaded.isScanning,
+                      onScan: () async {
+                        // Recognition is the paid feature behind every trait,
+                        // so the gate belongs on the thing that starts it, not
+                        // on the chips it eventually fills in.
+                        if (!await ensurePremium(context)) return;
+                        if (!context.mounted) return;
+                        context.read<ScreenshotsBloc>().add(
+                          ScanUnreadForTraitsEvent(),
+                        );
+                      },
                     )
                   : const SizedBox.shrink(key: ValueKey<String>('none')),
             ),
@@ -475,7 +488,6 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
     );
   }
 }
-
 
 class _SelectionToolbar extends StatelessWidget {
   final int count;

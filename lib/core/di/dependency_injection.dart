@@ -137,6 +137,7 @@ void setupServiceLocator() {
       deleteScreenshotsUseCase: sl(),
       watchLibraryChangesUseCase: sl(),
       getCachedOcrTextUseCase: sl(),
+      extractAndCacheTextUseCase: sl(),
     ),
   );
 
