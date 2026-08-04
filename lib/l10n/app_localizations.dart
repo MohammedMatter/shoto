@@ -358,6 +358,78 @@ abstract class AppLocalizations {
   /// **'Favorites'**
   String get libraryFilterFavorites;
 
+  /// No description provided for @libraryTraitSensitive.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitive'**
+  String get libraryTraitSensitive;
+
+  /// No description provided for @libraryTraitLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Links'**
+  String get libraryTraitLink;
+
+  /// No description provided for @libraryTraitContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts'**
+  String get libraryTraitContact;
+
+  /// No description provided for @libraryTraitCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Codes'**
+  String get libraryTraitCode;
+
+  /// No description provided for @libraryTraitEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Dates'**
+  String get libraryTraitEvent;
+
+  /// No description provided for @libraryCertaintyVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified by checksum'**
+  String get libraryCertaintyVerified;
+
+  /// No description provided for @libraryCertaintyRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read from the text in your screenshots'**
+  String get libraryCertaintyRead;
+
+  /// No description provided for @libraryLensNoteWithUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'{basis} · {count} not read yet'**
+  String libraryLensNoteWithUnread(String basis, int count);
+
+  /// No description provided for @libraryNoTraitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No screenshots with {trait}'**
+  String libraryNoTraitTitle(String trait);
+
+  /// No description provided for @libraryNoTraitMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Every screenshot that has been read carries none of these.'**
+  String get libraryNoTraitMessage;
+
+  /// No description provided for @libraryNoTraitUnreadMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing found in what has been read. {count} screenshots have never been read, so they can\'t be matched yet.'**
+  String libraryNoTraitUnreadMessage(int count);
+
+  /// No description provided for @libraryShowAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all'**
+  String get libraryShowAll;
+
   /// No description provided for @libraryFilterUnsorted.
   ///
   /// In en, this message translates to:
@@ -645,6 +717,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Private (face or fingerprint lock)'**
   String get foldersPrivate;
+
+  /// No description provided for @foldersPrivateFace.
+  ///
+  /// In en, this message translates to:
+  /// **'Private (face lock)'**
+  String get foldersPrivateFace;
+
+  /// No description provided for @foldersPrivateFingerprint.
+  ///
+  /// In en, this message translates to:
+  /// **'Private (fingerprint lock)'**
+  String get foldersPrivateFingerprint;
+
+  /// No description provided for @foldersPrivateGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Private (locked)'**
+  String get foldersPrivateGeneric;
 
   /// No description provided for @foldersOptions.
   ///

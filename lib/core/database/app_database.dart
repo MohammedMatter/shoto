@@ -54,7 +54,7 @@ class AppDatabase {
     final String path = join(await getDatabasesPath(), 'shoto.db');
     return openDatabase(
       path,
-      version: 13,
+      version: 14,
       onCreate: (db, version) => _createTables(db),
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
@@ -141,6 +141,19 @@ class AppDatabase {
           // go, because nothing can read them any more.
           await db.execute('DROP TABLE IF EXISTS $filingRules');
         }
+        if (oldVersion < 14) {
+          // Added for a lifecycle-review feature that was removed again
+          // before release. The step stays and the version is not reused,
+          // for the same reason v11 and v12 were left alone when filing
+          // rules went: devices that already ran v14 have the column, and a
+          // database opened at a *lower* version than it was written at is a
+          // downgrade — which sqflite refuses, taking the whole app with it.
+          //
+          // Nothing reads the column. It costs one nullable integer per row.
+          await db.execute(
+            'ALTER TABLE $screenshotMeta ADD COLUMN kept_at INTEGER',
+          );
+        }
       },
       onConfigure: (db) async => db.execute('PRAGMA foreign_keys = ON'),
     );
@@ -168,6 +181,7 @@ class AppDatabase {
         category TEXT,
         visual_labels TEXT,
         category_override TEXT,
+        kept_at INTEGER,
         updated_at INTEGER NOT NULL,
         PRIMARY KEY (user_id, asset_id),
         FOREIGN KEY (folder_id) REFERENCES $folders (id) ON DELETE SET NULL

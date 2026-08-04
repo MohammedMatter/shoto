@@ -141,6 +141,49 @@ class AppLocalizationsHi extends AppLocalizations {
   String get libraryFilterFavorites => 'पसंदीदा';
 
   @override
+  String get libraryTraitSensitive => 'संवेदनशील';
+
+  @override
+  String get libraryTraitLink => 'लिंक';
+
+  @override
+  String get libraryTraitContact => 'संपर्क';
+
+  @override
+  String get libraryTraitCode => 'कोड';
+
+  @override
+  String get libraryTraitEvent => 'तारीख़ें';
+
+  @override
+  String get libraryCertaintyVerified => 'चेकसम से सत्यापित';
+
+  @override
+  String get libraryCertaintyRead => 'आपके स्क्रीनशॉट के टेक्स्ट से पढ़ा गया';
+
+  @override
+  String libraryLensNoteWithUnread(String basis, int count) {
+    return '$basis · $count अभी तक नहीं पढ़े गए';
+  }
+
+  @override
+  String libraryNoTraitTitle(String trait) {
+    return '$trait वाला कोई स्क्रीनशॉट नहीं';
+  }
+
+  @override
+  String get libraryNoTraitMessage =>
+      'पढ़े गए किसी भी स्क्रीनशॉट में यह नहीं है।';
+
+  @override
+  String libraryNoTraitUnreadMessage(int count) {
+    return 'पढ़े गए में कुछ नहीं मिला। $count स्क्रीनशॉट कभी नहीं पढ़े गए, इसलिए वे अभी मैच नहीं हो सकते।';
+  }
+
+  @override
+  String get libraryShowAll => 'सभी दिखाएँ';
+
+  @override
   String get libraryFilterUnsorted => 'बिना क्रम के';
 
   @override
@@ -300,6 +343,15 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get foldersPrivate => 'निजी (चेहरा या फ़िंगरप्रिंट लॉक)';
+
+  @override
+  String get foldersPrivateFace => 'निजी (चेहरा लॉक)';
+
+  @override
+  String get foldersPrivateFingerprint => 'निजी (फ़िंगरप्रिंट लॉक)';
+
+  @override
+  String get foldersPrivateGeneric => 'निजी (लॉक)';
 
   @override
   String get foldersOptions => 'फ़ोल्डर विकल्प';

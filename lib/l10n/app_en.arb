@@ -42,6 +42,42 @@
   "libraryNoFavoritesMessage": "Tap the heart on a screenshot to save it here.",
   "libraryFilterAll": "All",
   "libraryFilterFavorites": "Favorites",
+  "libraryTraitSensitive": "Sensitive",
+  "libraryTraitLink": "Links",
+  "libraryTraitContact": "Contacts",
+  "libraryTraitCode": "Codes",
+  "libraryTraitEvent": "Dates",
+  "libraryCertaintyVerified": "Verified by checksum",
+  "libraryCertaintyRead": "Read from the text in your screenshots",
+  "libraryLensNoteWithUnread": "{basis} · {count} not read yet",
+  "@libraryLensNoteWithUnread": {
+    "placeholders": {
+      "basis": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryNoTraitTitle": "No screenshots with {trait}",
+  "@libraryNoTraitTitle": {
+    "placeholders": {
+      "trait": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryNoTraitMessage": "Every screenshot that has been read carries none of these.",
+  "libraryNoTraitUnreadMessage": "Nothing found in what has been read. {count} screenshots have never been read, so they can't be matched yet.",
+  "@libraryNoTraitUnreadMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryShowAll": "Show all",
   "libraryFilterUnsorted": "Unsorted",
   "libraryNoUnsortedTitle": "Everything is filed",
   "libraryNoUnsortedMessage": "Nothing is waiting on you. New screenshots land here until you file or star them.",
@@ -111,6 +147,9 @@
   "foldersNameLabel": "Folder name",
   "foldersNameHint": "Receipts, Recipes, Work…",
   "foldersPrivate": "Private (face or fingerprint lock)",
+  "foldersPrivateFace": "Private (face lock)",
+  "foldersPrivateFingerprint": "Private (fingerprint lock)",
+  "foldersPrivateGeneric": "Private (locked)",
   "foldersOptions": "Folder options",
   "foldersDelete": "Delete folder",
   "foldersDeleteKept": "Screenshots inside are kept",

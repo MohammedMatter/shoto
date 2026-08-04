@@ -14,8 +14,11 @@ import 'package:shoto/core/widgets/animated_id_grid.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/widgets/confirm_dialog.dart';
+import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/core/widgets/empty_state.dart';
 import 'package:shoto/core/widgets/primary_button.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/content_trait_visuals.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/lens_provenance_note.dart';
 import 'package:shoto/features/folders/presentation/widgets/move_to_folder_sheet.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
@@ -186,9 +189,26 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                       onSelect: (filter) => context.read<ScreenshotsBloc>().add(
                         SetLibraryFilterEvent(filter),
                       ),
+                      lens: loaded.lens,
+                      onSelectLens: (lens) => context
+                          .read<ScreenshotsBloc>()
+                          .add(SetLibraryLensEvent(lens)),
+                      traitCounts: <ContentTrait, int>{
+                        for (final ContentTrait trait in ContentTrait.values)
+                          trait: loaded.traitCount(trait),
+                      },
+                      traitsReady: loaded.traitsReady,
                     )
                   : const SizedBox.shrink(key: ValueKey<String>('none')),
             ),
+            // Outside the switcher above: selection mode replaces the filter
+            // strip, and a note explaining a lens has no business sitting
+            // under a delete button.
+            if (!loaded.isSelectionMode && showFavoritesFilter)
+              LensProvenanceNote(
+                lens: loaded.lens,
+                unreadCount: loaded.unreadCount,
+              ),
             Expanded(
               child: AnimatedSwitcher(
                 duration: AppMotion.normal,
@@ -208,35 +228,62 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                   ),
                 ),
                 child: KeyedSubtree(
-                  key: ValueKey<LibraryFilter>(loaded.filter),
+                  // Keyed on both axes, or narrowing by content would swap the
+                  // grid's contents with no transition at all while changing
+                  // status cross-fades — two ways of doing the same thing.
+                  key: ValueKey<String>('${loaded.filter}-${loaded.lens}'),
                   child: items.isEmpty
-                      ? EmptyState(
-                          // An empty filter is not an empty library, and the
-                          // three cases have nothing useful in common: an
-                          // empty inbox is the app's best possible outcome,
-                          // no favorites is a feature nobody has used yet,
-                          // and nothing at all is a first run. One shared
-                          // sentence for all three would be wrong twice.
-                          icon: switch (loaded.filter) {
-                            LibraryFilter.unsorted =>
-                              Icons.check_circle_outline_rounded,
-                            _ => Icons.image_search_rounded,
-                          },
-                          title: switch (loaded.filter) {
-                            LibraryFilter.unsorted =>
-                              context.l10n.libraryNoUnsortedTitle,
-                            LibraryFilter.favorites =>
-                              context.l10n.libraryNoFavoritesTitle,
-                            LibraryFilter.all => emptyTitle,
-                          },
-                          message: switch (loaded.filter) {
-                            LibraryFilter.unsorted =>
-                              context.l10n.libraryNoUnsortedMessage,
-                            LibraryFilter.favorites =>
-                              context.l10n.libraryNoFavoritesMessage,
-                            LibraryFilter.all => emptyMessage,
-                          },
-                        )
+                      ? loaded.lens != null
+                            // A lens that matched nothing is its own case, and
+                            // the honest wording depends on whether anything
+                            // is still unread: "you have none of these" and
+                            // "nothing that has been read has these" are
+                            // different claims, and only one of them is
+                            // usually true.
+                            ? EmptyState(
+                                icon: loaded.lens!.icon,
+                                title: context.l10n.libraryNoTraitTitle(
+                                  loaded.lens!.label(context),
+                                ),
+                                message: loaded.unreadCount > 0
+                                    ? context.l10n.libraryNoTraitUnreadMessage(
+                                        loaded.unreadCount,
+                                      )
+                                    : context.l10n.libraryNoTraitMessage,
+                                action: PrimaryButton(
+                                  label: context.l10n.libraryShowAll,
+                                  onPressed: () => context
+                                      .read<ScreenshotsBloc>()
+                                      .add(SetLibraryLensEvent(null)),
+                                ),
+                              )
+                            : EmptyState(
+                                // An empty filter is not an empty library, and the
+                                // three cases have nothing useful in common: an
+                                // empty inbox is the app's best possible outcome,
+                                // no favorites is a feature nobody has used yet,
+                                // and nothing at all is a first run. One shared
+                                // sentence for all three would be wrong twice.
+                                icon: switch (loaded.filter) {
+                                  LibraryFilter.unsorted =>
+                                    Icons.check_circle_outline_rounded,
+                                  _ => Icons.image_search_rounded,
+                                },
+                                title: switch (loaded.filter) {
+                                  LibraryFilter.unsorted =>
+                                    context.l10n.libraryNoUnsortedTitle,
+                                  LibraryFilter.favorites =>
+                                    context.l10n.libraryNoFavoritesTitle,
+                                  LibraryFilter.all => emptyTitle,
+                                },
+                                message: switch (loaded.filter) {
+                                  LibraryFilter.unsorted =>
+                                    context.l10n.libraryNoUnsortedMessage,
+                                  LibraryFilter.favorites =>
+                                    context.l10n.libraryNoFavoritesMessage,
+                                  LibraryFilter.all => emptyMessage,
+                                },
+                              )
                       : RefreshIndicator(
                           color: AppColors.primary,
                           backgroundColor: AppColors.surface,

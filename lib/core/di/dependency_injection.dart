@@ -131,6 +131,7 @@ void setupServiceLocator() {
       assignFolderUseCase: sl(),
       deleteScreenshotsUseCase: sl(),
       watchLibraryChangesUseCase: sl(),
+      getCachedOcrTextUseCase: sl(),
     ),
   );
 

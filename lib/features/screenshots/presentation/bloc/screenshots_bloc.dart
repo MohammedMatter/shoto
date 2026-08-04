@@ -1,6 +1,8 @@
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:shoto/core/localization/app_message.dart';
+import 'package:shoto/core/utils/content_traits.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_cached_ocr_text_use_case.dart';
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,10 +28,20 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   final AssignFolderUseCase assignFolderUseCase;
   final DeleteScreenshotsUseCase deleteScreenshotsUseCase;
   final WatchLibraryChangesUseCase watchLibraryChangesUseCase;
+  final GetCachedOcrTextUseCase getCachedOcrTextUseCase;
 
   StreamSubscription<void>? _librarySubscription;
   Timer? _refreshDebounce;
   int? _folderId;
+
+  /// Traits already derived, keyed by asset id.
+  ///
+  /// Survives refreshes, which is what makes the cost a one-off. A screenshot's
+  /// recognised text never changes once cached — OCR is run once and stored —
+  /// so a result computed for an id stays correct for as long as the bloc
+  /// lives, and every resume-triggered reload after the first is free.
+  final Map<String, Set<ContentTrait>> _traitCache =
+      <String, Set<ContentTrait>>{};
 
   /// How long a burst of gallery change notifications is allowed to settle
   /// before the library is re-read.
@@ -47,6 +59,18 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   /// to look back at the app, long enough that a burst collapses into one read.
   static const Duration _refreshWindow = Duration(milliseconds: 400);
 
+  /// How many screenshots the trait pass derives before yielding the isolate.
+  ///
+  /// Deriving traits costs ~700µs each (measured over realistic OCR text), so
+  /// a 300-screenshot library is a fifth of a second of solid work. Run in one
+  /// go that is a fifth of a second in which the grid cannot scroll and no
+  /// frame is produced — on the *first* screen the user sees.
+  ///
+  /// 25 keeps each burst near 17ms, close to a frame budget, and the `await`
+  /// between bursts lets pending frames and taps through. The whole pass still
+  /// finishes in well under a second, and only ever once per library.
+  static const int traitChunkSize = 25;
+
   ScreenshotsBloc({
     required this.requestPhotoPermissionUseCase,
     required this.checkPhotoPermissionUseCase,
@@ -56,6 +80,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     required this.assignFolderUseCase,
     required this.deleteScreenshotsUseCase,
     required this.watchLibraryChangesUseCase,
+    required this.getCachedOcrTextUseCase,
   }) : super(ScreenshotsInitialState()) {
     on<LoadScreenshotsEvent>(_onLoad);
     on<RecheckPermissionEvent>(_onRecheckPermission);
@@ -70,6 +95,8 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     on<StartGuidedSelectionEvent>(_onStartGuidedSelection);
     on<SelectAllEvent>(_onSelectAll);
     on<SetLibraryFilterEvent>(_onSetLibraryFilter);
+    on<SetLibraryLensEvent>(_onSetLibraryLens);
+    on<ComputeTraitsEvent>(_onComputeTraits);
   }
 
   Future<void> _onLoad(
@@ -153,6 +180,9 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
 
       if (previous is! ScreenshotsLoadedState) {
         emit(ScreenshotsLoadedState(screenshots: screenshots));
+        // Traits are derived after the grid is on screen, never before it —
+        // see [traitChunkSize].
+        add(ComputeTraitsEvent());
         return;
       }
 
@@ -171,8 +201,16 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
           screenshots: screenshots,
           selectedIds: previous.selectedIds,
           filter: previous.filter,
+          // Carried forward rather than recomputed. The cache is keyed by
+          // asset id, so what survives here is still correct for every
+          // screenshot that survived the reload; the pass below only has to
+          // catch up on ids that are new.
+          traits: previous.traits,
+          lens: previous.lens,
+          traitsReady: previous.traitsReady,
         ),
       );
+      add(ComputeTraitsEvent());
     } catch (error) {
       emit(ScreenshotsErrorState(AppMessage.loadScreenshots));
     }
@@ -388,6 +426,90 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     // is about to stop being on screen — and a delete button reporting six
     // when four of them are no longer visible is the worst kind of accurate.
     emit(current.copyWith(filter: event.filter, selectedIds: {}));
+  }
+
+  /// Same contract as the status filter: the visible set changes, so anything
+  /// picked is dropped rather than left selected off-screen.
+  void _onSetLibraryLens(
+    SetLibraryLensEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+    if (current.lens == event.lens) return;
+    emit(
+      current.copyWith(
+        lens: event.lens,
+        clearLens: event.lens == null,
+        selectedIds: {},
+      ),
+    );
+  }
+
+  /// Derives content traits for anything not already in [_traitCache],
+  /// emitting as it goes so counts fill in progressively.
+  ///
+  /// Reads the OCR cache and nothing else — it never *runs* recognition. That
+  /// is what keeps it safe to trigger on every load: for a library nobody has
+  /// searched there is simply no text to read, and the pass costs one query
+  /// and finishes. Screenshots with no cached text are deliberately left out
+  /// of the map entirely so [ScreenshotsLoadedState.unreadCount] can tell
+  /// "found nothing" from "never looked".
+  Future<void> _onComputeTraits(
+    ComputeTraitsEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+
+    final Map<String, String> textByAssetId = await getCachedOcrTextUseCase();
+
+    // Ids whose text exists but whose traits are not derived yet. Restricted
+    // to the loaded library so a huge cache from another folder's session
+    // cannot make this pass longer than the screen it serves.
+    final List<String> pending = <String>[
+      for (final ScreenshotEntity shot in current.screenshots)
+        if (!_traitCache.containsKey(shot.id) &&
+            textByAssetId.containsKey(shot.id))
+          shot.id,
+    ];
+
+    if (pending.isEmpty) {
+      // Still publish: the map may have grown on a previous pass, and the
+      // first load has to flip `traitsReady` even for a library with no
+      // recognised text at all — otherwise the trait row never appears and
+      // the user is given no way to learn why.
+      if (!current.traitsReady || current.traits.length != _traitCache.length) {
+        emit(
+          current.copyWith(
+            traits: Map<String, Set<ContentTrait>>.unmodifiable(_traitCache),
+            traitsReady: true,
+          ),
+        );
+      }
+      return;
+    }
+
+    for (int start = 0; start < pending.length; start += traitChunkSize) {
+      final int end = (start + traitChunkSize).clamp(0, pending.length);
+      for (final String assetId in pending.sublist(start, end)) {
+        _traitCache[assetId] = ContentTraits.of(textByAssetId[assetId]);
+      }
+
+      // Hands the isolate back between bursts so frames and taps get through.
+      // Without it this is one long block on the first screen the user sees.
+      await Future<void>.delayed(Duration.zero);
+      if (isClosed) return;
+
+      current = state;
+      if (current is! ScreenshotsLoadedState) return;
+      emit(
+        current.copyWith(
+          traits: Map<String, Set<ContentTrait>>.unmodifiable(_traitCache),
+          traitsReady: end == pending.length,
+        ),
+      );
+    }
   }
 
   @override

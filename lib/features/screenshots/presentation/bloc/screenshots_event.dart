@@ -1,3 +1,4 @@
+import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 
@@ -67,3 +68,20 @@ class SetLibraryFilterEvent extends ScreenshotsEvent {
   final LibraryFilter filter;
   SetLibraryFilterEvent(this.filter);
 }
+
+/// Narrows the grid to screenshots whose contents carry [lens], or clears the
+/// narrowing when null.
+///
+/// Separate from [SetLibraryFilterEvent] because the two axes are independent:
+/// status and content can both be on, so one event carrying both would have to
+/// re-state the other axis on every tap.
+class SetLibraryLensEvent extends ScreenshotsEvent {
+  final ContentTrait? lens;
+  SetLibraryLensEvent(this.lens);
+}
+
+/// Derives content traits for the loaded library from already-cached OCR text.
+///
+/// Its own event rather than part of the load, because it is far too slow to
+/// sit in front of the grid — see [ScreenshotsBloc.traitChunkSize].
+class ComputeTraitsEvent extends ScreenshotsEvent {}

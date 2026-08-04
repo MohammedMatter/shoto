@@ -139,6 +139,49 @@ class AppLocalizationsEs extends AppLocalizations {
   String get libraryFilterFavorites => 'Favoritas';
 
   @override
+  String get libraryTraitSensitive => 'Sensible';
+
+  @override
+  String get libraryTraitLink => 'Enlaces';
+
+  @override
+  String get libraryTraitContact => 'Contactos';
+
+  @override
+  String get libraryTraitCode => 'Códigos';
+
+  @override
+  String get libraryTraitEvent => 'Fechas';
+
+  @override
+  String get libraryCertaintyVerified => 'Verificado por suma de control';
+
+  @override
+  String get libraryCertaintyRead => 'Leído del texto de tus capturas';
+
+  @override
+  String libraryLensNoteWithUnread(String basis, int count) {
+    return '$basis · $count sin leer aún';
+  }
+
+  @override
+  String libraryNoTraitTitle(String trait) {
+    return 'Ninguna captura con $trait';
+  }
+
+  @override
+  String get libraryNoTraitMessage =>
+      'Ninguna de las capturas leídas contiene esto.';
+
+  @override
+  String libraryNoTraitUnreadMessage(int count) {
+    return 'No se encontró nada en lo leído. $count capturas nunca se han leído, así que aún no pueden coincidir.';
+  }
+
+  @override
+  String get libraryShowAll => 'Mostrar todo';
+
+  @override
   String get libraryFilterUnsorted => 'Sin ordenar';
 
   @override
@@ -299,6 +342,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get foldersPrivate => 'Privada (bloqueo facial o huella)';
+
+  @override
+  String get foldersPrivateFace => 'Privada (bloqueo facial)';
+
+  @override
+  String get foldersPrivateFingerprint => 'Privada (bloqueo por huella)';
+
+  @override
+  String get foldersPrivateGeneric => 'Privada (bloqueada)';
 
   @override
   String get foldersOptions => 'Opciones de carpeta';

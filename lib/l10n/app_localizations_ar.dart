@@ -137,6 +137,49 @@ class AppLocalizationsAr extends AppLocalizations {
   String get libraryFilterFavorites => 'المفضّلة';
 
   @override
+  String get libraryTraitSensitive => 'حساسة';
+
+  @override
+  String get libraryTraitLink => 'روابط';
+
+  @override
+  String get libraryTraitContact => 'جهات اتصال';
+
+  @override
+  String get libraryTraitCode => 'رموز';
+
+  @override
+  String get libraryTraitEvent => 'مواعيد';
+
+  @override
+  String get libraryCertaintyVerified => 'مؤكدة بخوارزمية تحقق';
+
+  @override
+  String get libraryCertaintyRead => 'مقروءة من النص داخل صورك';
+
+  @override
+  String libraryLensNoteWithUnread(String basis, int count) {
+    return '$basis · $count لم تُقرأ بعد';
+  }
+
+  @override
+  String libraryNoTraitTitle(String trait) {
+    return 'ما في صور فيها $trait';
+  }
+
+  @override
+  String get libraryNoTraitMessage =>
+      'كل الصور المقروءة ما فيها ولا وحدة من هدول.';
+
+  @override
+  String libraryNoTraitUnreadMessage(int count) {
+    return 'ما لقينا شي بالمقروء. في $count صورة ما انقرأت أبداً، فما بنقدر نطابقها بعد.';
+  }
+
+  @override
+  String get libraryShowAll => 'اعرض الكل';
+
+  @override
   String get libraryFilterUnsorted => 'غير مرتّبة';
 
   @override
@@ -298,6 +341,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get foldersPrivate => 'خاص (قفل بالوجه أو البصمة)';
+
+  @override
+  String get foldersPrivateFace => 'خاص (قفل بالوجه)';
+
+  @override
+  String get foldersPrivateFingerprint => 'خاص (قفل بالبصمة)';
+
+  @override
+  String get foldersPrivateGeneric => 'خاص (مقفل)';
 
   @override
   String get foldersOptions => 'خيارات المجلد';

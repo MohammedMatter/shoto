@@ -140,6 +140,49 @@ class AppLocalizationsUr extends AppLocalizations {
   String get libraryFilterFavorites => 'پسندیدہ';
 
   @override
+  String get libraryTraitSensitive => 'حساس';
+
+  @override
+  String get libraryTraitLink => 'لنکس';
+
+  @override
+  String get libraryTraitContact => 'رابطے';
+
+  @override
+  String get libraryTraitCode => 'کوڈز';
+
+  @override
+  String get libraryTraitEvent => 'تاریخیں';
+
+  @override
+  String get libraryCertaintyVerified => 'چیک سم سے تصدیق شدہ';
+
+  @override
+  String get libraryCertaintyRead => 'آپ کے اسکرین شاٹس کے متن سے پڑھا گیا';
+
+  @override
+  String libraryLensNoteWithUnread(String basis, int count) {
+    return '$basis · $count ابھی تک نہیں پڑھے گئے';
+  }
+
+  @override
+  String libraryNoTraitTitle(String trait) {
+    return '$trait والا کوئی اسکرین شاٹ نہیں';
+  }
+
+  @override
+  String get libraryNoTraitMessage =>
+      'پڑھے گئے کسی بھی اسکرین شاٹ میں یہ نہیں ہے۔';
+
+  @override
+  String libraryNoTraitUnreadMessage(int count) {
+    return 'پڑھے گئے میں کچھ نہیں ملا۔ $count اسکرین شاٹس کبھی نہیں پڑھے گئے، اس لیے وہ ابھی میچ نہیں ہو سکتے۔';
+  }
+
+  @override
+  String get libraryShowAll => 'سب دکھائیں';
+
+  @override
   String get libraryFilterUnsorted => 'غیر ترتیب شدہ';
 
   @override
@@ -299,6 +342,15 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get foldersPrivate => 'نجی (چہرہ یا فنگر پرنٹ لاک)';
+
+  @override
+  String get foldersPrivateFace => 'نجی (چہرے کا لاک)';
+
+  @override
+  String get foldersPrivateFingerprint => 'نجی (فنگر پرنٹ لاک)';
+
+  @override
+  String get foldersPrivateGeneric => 'نجی (مقفل)';
 
   @override
   String get foldersOptions => 'فولڈر کے اختیارات';

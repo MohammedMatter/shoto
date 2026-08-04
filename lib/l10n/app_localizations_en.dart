@@ -137,6 +137,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String get libraryFilterFavorites => 'Favorites';
 
   @override
+  String get libraryTraitSensitive => 'Sensitive';
+
+  @override
+  String get libraryTraitLink => 'Links';
+
+  @override
+  String get libraryTraitContact => 'Contacts';
+
+  @override
+  String get libraryTraitCode => 'Codes';
+
+  @override
+  String get libraryTraitEvent => 'Dates';
+
+  @override
+  String get libraryCertaintyVerified => 'Verified by checksum';
+
+  @override
+  String get libraryCertaintyRead => 'Read from the text in your screenshots';
+
+  @override
+  String libraryLensNoteWithUnread(String basis, int count) {
+    return '$basis · $count not read yet';
+  }
+
+  @override
+  String libraryNoTraitTitle(String trait) {
+    return 'No screenshots with $trait';
+  }
+
+  @override
+  String get libraryNoTraitMessage =>
+      'Every screenshot that has been read carries none of these.';
+
+  @override
+  String libraryNoTraitUnreadMessage(int count) {
+    return 'Nothing found in what has been read. $count screenshots have never been read, so they can\'t be matched yet.';
+  }
+
+  @override
+  String get libraryShowAll => 'Show all';
+
+  @override
   String get libraryFilterUnsorted => 'Unsorted';
 
   @override
@@ -297,6 +340,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get foldersPrivate => 'Private (face or fingerprint lock)';
+
+  @override
+  String get foldersPrivateFace => 'Private (face lock)';
+
+  @override
+  String get foldersPrivateFingerprint => 'Private (fingerprint lock)';
+
+  @override
+  String get foldersPrivateGeneric => 'Private (locked)';
 
   @override
   String get foldersOptions => 'Folder options';
