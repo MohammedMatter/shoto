@@ -742,13 +742,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get proWelcomeAction => 'يلا نبلش';
 
   @override
-  String get featRules => 'قواعد بترتّب عنك';
-
-  @override
-  String get featRulesBody =>
-      'اكتب قاعدة مرة، وكل لقطة بتشاركها بترتّب حالها. إنت كاتب القاعدة، فدايماً بتعرف ليش راح الشي لهناك.';
-
-  @override
   String get featSearch => 'بحث جوّا لقطاتك';
 
   @override
@@ -789,22 +782,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get featUnlimitedBody =>
       'النسخة المجانية بتوقف عند كم مجلد وكم سكرين شوت. Pro بتشيل الحدين.';
-
-  @override
-  String get featRulesHow =>
-      'القاعدة جملة إنت بتكتبها بنفسك: لما تكون اللقطة هيك، حطها بهالمجلد. كل لقطة جديدة بتتفحص على قواعدك أول ما توصل، فالترتيب بيبطّل إشي لازم تتذكره.';
-
-  @override
-  String get featRulesPoint1 =>
-      'طابق على كلمات مكتوبة جوّا الصورة، أو على شو ظاهر فيها، أو على وجود بيانات حساسة.';
-
-  @override
-  String get featRulesPoint2 =>
-      'اطلب تتحقق كل شروطك أو أي واحد منها، وتقدر تعكس أي شرط.';
-
-  @override
-  String get featRulesPoint3 =>
-      'ما في تخمين. إنت كاتب القاعدة، فدايماً بتعرف ليش راحت اللقطة لهناك.';
 
   @override
   String get featSearchHow =>

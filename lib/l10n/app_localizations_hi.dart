@@ -749,13 +749,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get proWelcomeAction => 'शुरू करें';
 
   @override
-  String get featRules => 'नियम जो आपके लिए फ़ाइल करें';
-
-  @override
-  String get featRulesBody =>
-      'एक बार नियम लिखें और हर साझा किया स्क्रीनशॉट खुद फ़ाइल हो जाए। नियम आपने लिखा है, इसलिए वजह हमेशा पता होती है।';
-
-  @override
   String get featSearch => 'स्क्रीनशॉट के अंदर खोजें';
 
   @override
@@ -796,22 +789,6 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get featUnlimitedBody =>
       'मुफ़्त संस्करण कुछ ही फ़ोल्डर और स्क्रीनशॉट पर रुक जाता है। Pro दोनों सीमाएँ हटा देता है।';
-
-  @override
-  String get featRulesHow =>
-      'नियम एक वाक्य है जो आप खुद लिखते हैं: जब स्क्रीनशॉट ऐसा दिखे, उसे उस फ़ोल्डर में रखो। हर नया स्क्रीनशॉट आते ही आपके नियमों से जाँचा जाता है, इसलिए फ़ाइल करना याद रखने वाला काम नहीं रह जाता।';
-
-  @override
-  String get featRulesPoint1 =>
-      'तस्वीर के भीतर छपे शब्दों पर, तस्वीर में जो दिख रहा है उस पर, या उसमें कोई संवेदनशील जानकारी है या नहीं — इन पर मिलान करें।';
-
-  @override
-  String get featRulesPoint2 =>
-      'अपनी सभी शर्तें माँगें या उनमें से कोई एक, और किसी भी शर्त को उलट सकते हैं।';
-
-  @override
-  String get featRulesPoint3 =>
-      'कुछ भी अंदाज़े से नहीं होता। नियम आपने लिखा है, इसलिए आपको हमेशा पता रहता है कि स्क्रीनशॉट वहाँ क्यों गया।';
 
   @override
   String get featSearchHow =>

@@ -50,21 +50,15 @@ class PremiumFeature {
     required this.points,
   });
 
+  /// **Never list something the app cannot do.**
+  ///
+  /// This list headed with "Rules that file for you" for a while after the
+  /// filing-rules feature was deleted, so the first thing anyone read on the
+  /// paywall — the screen where they decide to pay — was a promise nothing in
+  /// the app could keep. Removing a feature means removing its entry here in
+  /// the same change; the class doc above says this list is the source of
+  /// truth, and a source of truth that lags reality is worse than no list.
   static final List<PremiumFeature> all = [
-    // First because it is the one that changes what using SHOTO is like:
-    // everything else here helps you handle a screenshot once you've found
-    // it, while this stops the filing being your job at all.
-    PremiumFeature(
-      icon: Icons.rule_folder_rounded,
-      title: (context) => context.l10n.featRules,
-      description: (context) => context.l10n.featRulesBody,
-      how: (context) => context.l10n.featRulesHow,
-      points: [
-        (context) => context.l10n.featRulesPoint1,
-        (context) => context.l10n.featRulesPoint2,
-        (context) => context.l10n.featRulesPoint3,
-      ],
-    ),
     PremiumFeature(
       icon: Icons.manage_search_rounded,
       title: (context) => context.l10n.featSearch,

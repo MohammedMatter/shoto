@@ -748,13 +748,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get proWelcomeAction => 'شروع کریں';
 
   @override
-  String get featRules => 'قواعد جو آپ کے لیے فائل کریں';
-
-  @override
-  String get featRulesBody =>
-      'ایک بار قاعدہ لکھیں اور ہر شیئر کیا گیا اسکرین شاٹ خود فائل ہو جائے۔ قاعدہ آپ نے لکھا ہے، اس لیے وجہ ہمیشہ معلوم ہوتی ہے۔';
-
-  @override
   String get featSearch => 'اسکرین شاٹس کے اندر تلاش';
 
   @override
@@ -795,22 +788,6 @@ class AppLocalizationsUr extends AppLocalizations {
   @override
   String get featUnlimitedBody =>
       'مفت درجہ چند فولڈرز اور اسکرین شاٹس پر رک جاتا ہے۔ Pro دونوں حدیں ہٹا دیتا ہے۔';
-
-  @override
-  String get featRulesHow =>
-      'قاعدہ ایک جملہ ہے جو آپ خود لکھتے ہیں: جب اسکرین شاٹ ایسا ہو، اسے اُس فولڈر میں رکھو۔ ہر نیا اسکرین شاٹ آتے ہی آپ کے قواعد پر پرکھا جاتا ہے، سو ترتیب دینا یاد رکھنے والا کام نہیں رہتا۔';
-
-  @override
-  String get featRulesPoint1 =>
-      'تصویر کے اندر لکھے الفاظ پر، تصویر میں جو دکھ رہا ہے اُس پر، یا اس میں کوئی حساس معلومات ہے یا نہیں — اِن پر مماثلت رکھیں۔';
-
-  @override
-  String get featRulesPoint2 =>
-      'اپنی تمام شرائط طلب کریں یا اُن میں سے کوئی ایک، اور کسی بھی شرط کو الٹ سکتے ہیں۔';
-
-  @override
-  String get featRulesPoint3 =>
-      'کچھ بھی اندازے سے نہیں ہوتا۔ قاعدہ آپ نے لکھا ہے، اس لیے آپ ہمیشہ جانتے ہیں کہ اسکرین شاٹ وہاں کیوں گیا۔';
 
   @override
   String get featSearchHow =>

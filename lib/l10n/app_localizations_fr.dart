@@ -750,13 +750,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get proWelcomeAction => 'Commencer';
 
   @override
-  String get featRules => 'Des règles qui classent pour vous';
-
-  @override
-  String get featRulesBody =>
-      'Écrivez une règle une fois et chaque capture partagée se classe seule. Vous avez écrit la règle, vous savez donc toujours pourquoi.';
-
-  @override
   String get featSearch => 'Cherchez dans vos captures';
 
   @override
@@ -797,22 +790,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get featUnlimitedBody =>
       'L\'offre gratuite s\'arrête à quelques dossiers et captures. Pro supprime les deux limites.';
-
-  @override
-  String get featRulesHow =>
-      'Une règle est une phrase que vous écrivez vous-même : quand une capture ressemble à ceci, range-la dans ce dossier. Chaque nouvelle capture est confrontée à vos règles dès son arrivée, si bien que le classement cesse d’être quelque chose à penser.';
-
-  @override
-  String get featRulesPoint1 =>
-      'Correspondance sur les mots imprimés dans l’image, sur ce que la photo montre, ou sur la présence de données sensibles.';
-
-  @override
-  String get featRulesPoint2 =>
-      'Exigez toutes vos conditions ou n’importe laquelle d’entre elles, et inversez la condition de votre choix.';
-
-  @override
-  String get featRulesPoint3 =>
-      'Rien n’est deviné. C’est vous qui avez écrit la règle, vous savez donc toujours pourquoi une capture a atterri là.';
 
   @override
   String get featSearchHow =>

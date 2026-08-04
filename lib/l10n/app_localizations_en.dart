@@ -748,13 +748,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get proWelcomeAction => 'Start using it';
 
   @override
-  String get featRules => 'Rules that file for you';
-
-  @override
-  String get featRulesBody =>
-      'Write a rule once and every screenshot you share in files itself. You wrote the rule, so you always know why something landed where it did.';
-
-  @override
   String get featSearch => 'Search inside your screenshots';
 
   @override
@@ -795,22 +788,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get featUnlimitedBody =>
       'The free tier stops at a few folders and screenshots. Pro removes both caps.';
-
-  @override
-  String get featRulesHow =>
-      'A rule is one sentence you write yourself: when a screenshot looks like this, put it in that folder. Every new screenshot is checked against your rules the moment it arrives, so filing stops being something you have to remember to do.';
-
-  @override
-  String get featRulesPoint1 =>
-      'Match on words printed inside the image, on what the picture shows, or on whether it holds something sensitive.';
-
-  @override
-  String get featRulesPoint2 =>
-      'Ask for all of your conditions or any of them, and turn any condition into its opposite.';
-
-  @override
-  String get featRulesPoint3 =>
-      'Nothing is guessed. You wrote the rule, so you always know why a screenshot landed where it did.';
 
   @override
   String get featSearchHow =>

@@ -749,13 +749,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proWelcomeAction => 'Empezar';
 
   @override
-  String get featRules => 'Reglas que archivan por ti';
-
-  @override
-  String get featRulesBody =>
-      'Escribe una regla una vez y cada captura que compartas se archiva sola. Tú escribiste la regla, así que siempre sabes por qué.';
-
-  @override
   String get featSearch => 'Busca dentro de tus capturas';
 
   @override
@@ -796,22 +789,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get featUnlimitedBody =>
       'El plan gratuito se detiene en unas pocas carpetas y capturas. Pro elimina ambos límites.';
-
-  @override
-  String get featRulesHow =>
-      'Una regla es una frase que escribes tú: cuando una captura sea así, guárdala en esa carpeta. Cada captura nueva se comprueba con tus reglas al llegar, así que archivar deja de ser algo que tengas que recordar.';
-
-  @override
-  String get featRulesPoint1 =>
-      'Coincide por las palabras impresas dentro de la imagen, por lo que muestra la foto o por si contiene algo sensible.';
-
-  @override
-  String get featRulesPoint2 =>
-      'Pide que se cumplan todas tus condiciones o cualquiera de ellas, y puedes invertir cualquier condición.';
-
-  @override
-  String get featRulesPoint3 =>
-      'No se adivina nada. La regla la escribiste tú, así que siempre sabes por qué una captura acabó donde acabó.';
 
   @override
   String get featSearchHow =>

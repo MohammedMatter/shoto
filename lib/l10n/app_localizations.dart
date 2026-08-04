@@ -1414,18 +1414,6 @@ abstract class AppLocalizations {
   /// **'Start using it'**
   String get proWelcomeAction;
 
-  /// No description provided for @featRules.
-  ///
-  /// In en, this message translates to:
-  /// **'Rules that file for you'**
-  String get featRules;
-
-  /// No description provided for @featRulesBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Write a rule once and every screenshot you share in files itself. You wrote the rule, so you always know why something landed where it did.'**
-  String get featRulesBody;
-
   /// No description provided for @featSearch.
   ///
   /// In en, this message translates to:
@@ -1497,30 +1485,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The free tier stops at a few folders and screenshots. Pro removes both caps.'**
   String get featUnlimitedBody;
-
-  /// No description provided for @featRulesHow.
-  ///
-  /// In en, this message translates to:
-  /// **'A rule is one sentence you write yourself: when a screenshot looks like this, put it in that folder. Every new screenshot is checked against your rules the moment it arrives, so filing stops being something you have to remember to do.'**
-  String get featRulesHow;
-
-  /// No description provided for @featRulesPoint1.
-  ///
-  /// In en, this message translates to:
-  /// **'Match on words printed inside the image, on what the picture shows, or on whether it holds something sensitive.'**
-  String get featRulesPoint1;
-
-  /// No description provided for @featRulesPoint2.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask for all of your conditions or any of them, and turn any condition into its opposite.'**
-  String get featRulesPoint2;
-
-  /// No description provided for @featRulesPoint3.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing is guessed. You wrote the rule, so you always know why a screenshot landed where it did.'**
-  String get featRulesPoint3;
 
   /// No description provided for @featSearchHow.
   ///
