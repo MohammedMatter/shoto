@@ -180,6 +180,49 @@ void main() {
       );
     });
 
+    test('OCR spacing around the @ does not lose the address', () {
+      // Verbatim from a sign-in screenshot on the test device. The recogniser
+      // reads the isolated @ glyph with a gap either side often enough that
+      // refusing it loses ordinary addresses — this one was reported as the
+      // filter simply not working.
+      expect(
+        ContentTraits.of('Create account\nwikihowseth @gmail.com\nSign in'),
+        contains(ContentTrait.contact),
+      );
+      expect(
+        ContentTraits.of('write to help @ example.com today'),
+        contains(ContentTrait.contact),
+      );
+    });
+
+    test('the relaxed spacing does not invent addresses', () {
+      // A local part always has a letter in it; without that rule "page 3 @
+      // site.com" becomes an address belonging to "3".
+      expect(
+        ContentTraits.of('see page 3 @ site.com for details'),
+        isNot(contains(ContentTrait.contact)),
+      );
+      // Two letters either side of a spaced @ is a sentence, not an address.
+      expect(
+        ContentTraits.of('meet me @ home.com later'),
+        isNot(contains(ContentTrait.contact)),
+      );
+      // Written normally, a short address is still an address.
+      expect(
+        ContentTraits.of('write to a@b.com'),
+        contains(ContentTrait.contact),
+      );
+    });
+
+    test('an @ cannot reach across a line break to find a domain', () {
+      // The mistake the phone pattern was making: a word ending one line
+      // welded to a domain starting the next.
+      expect(
+        ContentTraits.of('username\n@\nexample.com'),
+        isNot(contains(ContentTrait.contact)),
+      );
+    });
+
     test('an email is a contact with no cue word at all', () {
       expect(
         ContentTraits.of('help@example.com'),

@@ -336,13 +336,33 @@ abstract class SensitiveData {
     r'(?<![0-9])(?:[0-9][ -]?){12,19}(?![0-9])',
   );
 
+  /// A card printed as four groups of four, wrapped onto a second line.
+  ///
+  /// Narrow-field forms and receipts wrap, and OCR reports the wrap as a
+  /// newline — `4539 1488\n0343 6467` was going unrecognised, which for the
+  /// redaction screen means an unredacted card number in a shared image.
+  ///
+  /// **Every group must be exactly four digits, and that is what makes the
+  /// newline safe.** Allowing a line break as a general separator would let
+  /// this weld the tail of one line to the head of the next, and a run that
+  /// long passes Luhn by chance about one time in ten — turning the only
+  /// checksum-certain trait in the app into a guessing one. Card grouping is
+  /// 4-4-4-4; the account numbers and reference runs that sit on adjacent
+  /// lines in a real screenshot are not.
+  static final RegExp _wrappedCardCandidate = RegExp(
+    r'(?<![0-9])[0-9]{4}(?:[ \-\n\r]{1,2}[0-9]{4}){3}(?![0-9])',
+  );
+
   /// A 13-19 digit run that passes the Luhn checksum.
   ///
   /// Luhn is what separates a real card number from an order reference of the
   /// same length: roughly nine in ten random runs fail it, so flagging one
   /// that passes is a near-certainty rather than a guess.
   static void _claimCard(String source, List<SensitiveMatch> found) {
-    for (final RegExpMatch match in _cardCandidate.allMatches(source)) {
+    for (final RegExpMatch match in <RegExpMatch>[
+      ..._cardCandidate.allMatches(source),
+      ..._wrappedCardCandidate.allMatches(source),
+    ]) {
       final String raw = match.group(0)!;
       final String digits = raw.replaceAll(_nonDigit, '');
       if (digits.length < 13 || digits.length > 19) continue;

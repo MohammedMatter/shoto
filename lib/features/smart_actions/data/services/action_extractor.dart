@@ -133,10 +133,39 @@ abstract class ActionExtractor {
   // Patterns
   // -------------------------------------------------------------------
 
+  /// **Spaces around the `@` are tolerated, because OCR puts them there.**
+  ///
+  /// A real screenshot of a sign-in screen came back as
+  /// `wikihowseth @gmail.com` — the recogniser reads the isolated glyph with
+  /// gaps either side often enough that refusing it loses ordinary addresses.
+  /// The space is dropped from the value in [_buildEmail], so what the app
+  /// acts on is still a valid address.
+  ///
+  /// Bounded to spaces and tabs rather than `\s`: crossing a newline would
+  /// weld a word at the end of one line to a domain at the start of the next,
+  /// which is exactly the mistake the phone pattern was making.
   static final RegExp _emailPattern = RegExp(
-    r'[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}',
+    r'[a-z0-9._%+\-]+[ \t]{0,2}@[ \t]{0,2}[a-z0-9.\-]+\.[a-z]{2,}',
     caseSensitive: false,
   );
+
+  /// A local part has to contain a letter.
+  ///
+  /// Without it the relaxed spacing turns "see page 3 @ site.com" into an
+  /// address belonging to "3". Every real local part has a letter in it.
+  static final RegExp _emailLocalHasLetter = RegExp(
+    r'[a-z]',
+    caseSensitive: false,
+  );
+
+  /// Shortest local part accepted **when the match contains a space**.
+  ///
+  /// `a@b.com` is a legal address and is accepted written normally. Allowing
+  /// the same two characters either side of a *spaced* `@` is what turns
+  /// "meet me @ home.com" into somebody's address — so the relaxed form, which
+  /// exists only to survive OCR, asks for a little more evidence that it is
+  /// reading an address at all.
+  static const int _minSpacedLocalPart = 3;
 
   /// Explicit URLs, plus bare domains restricted to a known TLD list.
   ///
@@ -209,6 +238,13 @@ abstract class ActionExtractor {
     r'(?<![0-9])(?:[0-9][ -]?){12,19}(?![0-9])',
   );
 
+  /// The wrapped 4-4-4-4 spelling, matching `SensitiveData`. Claimed here for
+  /// the same reason the unwrapped one is: without it the code and phone rules
+  /// read the halves of a card number as two numbers of their own.
+  static final RegExp _wrappedCardCandidate = RegExp(
+    r'(?<![0-9])[0-9]{4}(?:[ \-\n\r]{1,2}[0-9]{4}){3}(?![0-9])',
+  );
+
   static final RegExp _standaloneNumber = RegExp(r'\b[0-9]{4,8}\b');
 
   /// Rejects date-shaped runs that the loose phone pattern would otherwise
@@ -268,10 +304,23 @@ abstract class ActionExtractor {
   // -------------------------------------------------------------------
 
   static DetectedAction? _buildEmail(String match) {
+    final String cleaned = match.replaceAll(RegExp(r'[ 	]'), '');
+    final int at = cleaned.indexOf('@');
+    if (at <= 0) return null;
+
+    final String local = cleaned.substring(0, at);
+    if (!_emailLocalHasLetter.hasMatch(local)) return null;
+    if (cleaned.length != match.trim().length &&
+        local.length < _minSpacedLocalPart) {
+      return null;
+    }
+
     return DetectedAction(
       kind: DetectedActionKind.email,
-      value: match.toLowerCase(),
-      display: match,
+      value: cleaned.toLowerCase(),
+      // The original spelling, so the sheet shows what is on the screenshot
+      // rather than a tidied version the user cannot find by looking.
+      display: match.trim(),
     );
   }
 
@@ -461,7 +510,10 @@ abstract class ActionExtractor {
   /// candidate pattern allows a run to end on a space or dash, and claiming
   /// that character would hide a separator the next rule needs to see.
   static void _claimCards(String text, List<_Span> claimed) {
-    for (final RegExpMatch match in _cardCandidate.allMatches(text)) {
+    for (final RegExpMatch match in <RegExpMatch>[
+      ..._cardCandidate.allMatches(text),
+      ..._wrappedCardCandidate.allMatches(text),
+    ]) {
       if (_overlaps(claimed, match.start, match.end)) continue;
 
       final String digits = match.group(0)!.replaceAll(RegExp(r'[^0-9]'), '');
