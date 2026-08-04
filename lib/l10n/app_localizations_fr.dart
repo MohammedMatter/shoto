@@ -1554,4 +1554,25 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get supportGreeting => 'Bonjour l\'équipe SHOTO,';
+
+  @override
+  String get dateToday => 'Aujourd\'hui';
+
+  @override
+  String get dateYesterday => 'Hier';
+
+  @override
+  String get dateThisWeek => 'Cette semaine';
+
+  @override
+  String get dateThisMonth => 'Ce mois-ci';
+
+  @override
+  String get librarySortNewest => 'Plus récentes d\'abord';
+
+  @override
+  String get librarySortOldest => 'Plus anciennes d\'abord';
+
+  @override
+  String get librarySortLabel => 'Ordre';
 }

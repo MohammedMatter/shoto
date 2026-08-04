@@ -1,6 +1,7 @@
 import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/library_sort.dart';
 
 class ScreenshotsEvent {}
 
@@ -67,6 +68,16 @@ class SelectAllEvent extends ScreenshotsEvent {}
 class SetLibraryFilterEvent extends ScreenshotsEvent {
   final LibraryFilter filter;
   SetLibraryFilterEvent(this.filter);
+}
+
+/// Flips the grid between newest-first and oldest-first.
+///
+/// Its own event for the same reason the lens has one: order is independent of
+/// which slice and which contents are showing, so folding it into either would
+/// make the caller re-state a choice it has no opinion about.
+class SetLibrarySortEvent extends ScreenshotsEvent {
+  final LibrarySort sort;
+  SetLibrarySortEvent(this.sort);
 }
 
 /// Narrows the grid to screenshots whose contents carry [lens], or clears the

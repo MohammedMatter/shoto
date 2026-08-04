@@ -791,5 +791,12 @@
   "settingsContactSupport": "Contact support",
   "supportSubject": "SHOTO support",
   "supportNoMailApp": "No email app found. The address is copied instead.",
-  "supportGreeting": "Hi SHOTO team,"
+  "supportGreeting": "Hi SHOTO team,",
+  "dateToday": "Today",
+  "dateYesterday": "Yesterday",
+  "dateThisWeek": "Earlier this week",
+  "dateThisMonth": "Earlier this month",
+  "librarySortNewest": "Newest first",
+  "librarySortOldest": "Oldest first",
+  "librarySortLabel": "Order"
 }

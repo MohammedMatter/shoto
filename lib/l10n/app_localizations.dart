@@ -2625,6 +2625,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hi SHOTO team,'**
   String get supportGreeting;
+
+  /// No description provided for @dateToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get dateToday;
+
+  /// No description provided for @dateYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get dateYesterday;
+
+  /// No description provided for @dateThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier this week'**
+  String get dateThisWeek;
+
+  /// No description provided for @dateThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier this month'**
+  String get dateThisMonth;
+
+  /// No description provided for @librarySortNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first'**
+  String get librarySortNewest;
+
+  /// No description provided for @librarySortOldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest first'**
+  String get librarySortOldest;
+
+  /// No description provided for @librarySortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order'**
+  String get librarySortLabel;
 }
 
 class _AppLocalizationsDelegate

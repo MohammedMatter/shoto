@@ -727,5 +727,12 @@
   "settingsContactSupport": "سپورٹ سے رابطہ کریں",
   "supportSubject": "SHOTO سپورٹ",
   "supportNoMailApp": "کوئی ای میل ایپ نہیں ملی۔ پتہ کاپی کر دیا گیا ہے۔",
-  "supportGreeting": "السلام علیکم SHOTO ٹیم،"
+  "supportGreeting": "السلام علیکم SHOTO ٹیم،",
+  "dateToday": "آج",
+  "dateYesterday": "کل",
+  "dateThisWeek": "اس ہفتے",
+  "dateThisMonth": "اس مہینے",
+  "librarySortNewest": "نئی پہلے",
+  "librarySortOldest": "پرانی پہلے",
+  "librarySortLabel": "ترتیب"
 }

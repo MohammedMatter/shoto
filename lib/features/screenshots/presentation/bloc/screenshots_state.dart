@@ -3,6 +3,7 @@ import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/library_sort.dart';
 
 class ScreenshotsState {}
 
@@ -61,6 +62,9 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   /// has not finished counting is worse than no trait row.
   final bool traitsReady;
 
+  /// Which end of the library the grid starts from.
+  final LibrarySort sort;
+
   ScreenshotsLoadedState({
     required this.screenshots,
     this.selectedIds = const {},
@@ -69,6 +73,7 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     this.traits = const {},
     this.lens,
     this.traitsReady = false,
+    this.sort = LibrarySort.newest,
   });
 
   /// **Selection mode is no longer the same thing as "something is
@@ -106,8 +111,24 @@ class ScreenshotsLoadedState extends ScreenshotsState {
       LibraryFilter.favorites => screenshots.where((s) => s.isFavorite),
     };
     final ContentTrait? active = lens;
-    if (active == null) return byStatus.toList();
-    return byStatus.where((s) => hasTrait(s.id, active)).toList();
+    final List<ScreenshotEntity> narrowed = active == null
+        ? byStatus.toList()
+        : byStatus.where((s) => hasTrait(s.id, active)).toList();
+
+    // Sorted last, and always — the repository's order is whatever the gallery
+    // handed back, and leaving "newest" to mean "however the OS felt" is how a
+    // grid ends up in a different order on two phones with the same library.
+    narrowed.sort((a, b) {
+      final int byDate = a.asset.createDateTime.compareTo(
+        b.asset.createDateTime,
+      );
+      // Ties broken by id so the order is total. Two screenshots captured in
+      // the same second are common — a burst of taps on the shutter — and an
+      // unstable comparator makes them swap places on every rebuild.
+      final int tie = byDate != 0 ? byDate : a.id.compareTo(b.id);
+      return sort.isNewestFirst ? -tie : tie;
+    });
+    return narrowed;
   }
 
   bool hasTrait(String assetId, ContentTrait trait) =>
@@ -153,6 +174,7 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     ContentTrait? lens,
     bool clearLens = false,
     bool? traitsReady,
+    LibrarySort? sort,
   }) {
     return ScreenshotsLoadedState(
       screenshots: screenshots ?? this.screenshots,
@@ -165,6 +187,7 @@ class ScreenshotsLoadedState extends ScreenshotsState {
       // needs its own flag, same as `clearFolder` on ScreenshotEntity.
       lens: clearLens ? null : (lens ?? this.lens),
       traitsReady: traitsReady ?? this.traitsReady,
+      sort: sort ?? this.sort,
     );
   }
 }

@@ -727,5 +727,12 @@
   "settingsContactSupport": "تواصل مع الدعم",
   "supportSubject": "دعم SHOTO",
   "supportNoMailApp": "ما في تطبيق إيميل. اننسخ العنوان بدالو.",
-  "supportGreeting": "مرحبا فريق SHOTO،"
+  "supportGreeting": "مرحبا فريق SHOTO،",
+  "dateToday": "اليوم",
+  "dateYesterday": "مبارح",
+  "dateThisWeek": "هالأسبوع",
+  "dateThisMonth": "هالشهر",
+  "librarySortNewest": "الأحدث أولاً",
+  "librarySortOldest": "الأقدم أولاً",
+  "librarySortLabel": "الترتيب"
 }

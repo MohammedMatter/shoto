@@ -1541,4 +1541,25 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get supportGreeting => 'السلام علیکم SHOTO ٹیم،';
+
+  @override
+  String get dateToday => 'آج';
+
+  @override
+  String get dateYesterday => 'کل';
+
+  @override
+  String get dateThisWeek => 'اس ہفتے';
+
+  @override
+  String get dateThisMonth => 'اس مہینے';
+
+  @override
+  String get librarySortNewest => 'نئی پہلے';
+
+  @override
+  String get librarySortOldest => 'پرانی پہلے';
+
+  @override
+  String get librarySortLabel => 'ترتیب';
 }

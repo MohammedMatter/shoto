@@ -727,5 +727,12 @@
   "settingsContactSupport": "Contactar con soporte",
   "supportSubject": "Soporte de SHOTO",
   "supportNoMailApp": "No hay ninguna app de correo. Se copió la dirección.",
-  "supportGreeting": "Hola, equipo de SHOTO:"
+  "supportGreeting": "Hola, equipo de SHOTO:",
+  "dateToday": "Hoy",
+  "dateYesterday": "Ayer",
+  "dateThisWeek": "Esta semana",
+  "dateThisMonth": "Este mes",
+  "librarySortNewest": "Más recientes primero",
+  "librarySortOldest": "Más antiguas primero",
+  "librarySortLabel": "Orden"
 }

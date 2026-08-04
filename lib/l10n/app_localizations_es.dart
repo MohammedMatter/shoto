@@ -1545,4 +1545,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get supportGreeting => 'Hola, equipo de SHOTO:';
+
+  @override
+  String get dateToday => 'Hoy';
+
+  @override
+  String get dateYesterday => 'Ayer';
+
+  @override
+  String get dateThisWeek => 'Esta semana';
+
+  @override
+  String get dateThisMonth => 'Este mes';
+
+  @override
+  String get librarySortNewest => 'Más recientes primero';
+
+  @override
+  String get librarySortOldest => 'Más antiguas primero';
+
+  @override
+  String get librarySortLabel => 'Orden';
 }

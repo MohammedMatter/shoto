@@ -727,5 +727,12 @@
   "settingsContactSupport": "सहायता से संपर्क करें",
   "supportSubject": "SHOTO सहायता",
   "supportNoMailApp": "कोई ईमेल ऐप नहीं मिला। पता कॉपी कर दिया गया है।",
-  "supportGreeting": "नमस्ते SHOTO टीम,"
+  "supportGreeting": "नमस्ते SHOTO टीम,",
+  "dateToday": "आज",
+  "dateYesterday": "कल",
+  "dateThisWeek": "इस हफ़्ते",
+  "dateThisMonth": "इस महीने",
+  "librarySortNewest": "नई पहले",
+  "librarySortOldest": "पुरानी पहले",
+  "librarySortLabel": "क्रम"
 }

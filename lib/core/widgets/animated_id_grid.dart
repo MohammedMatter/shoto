@@ -38,7 +38,7 @@ import 'package:shoto/core/theme/app_motion.dart';
 /// all — it rebuilds instantly via [_reset]. A reordered or wholesale-replaced
 /// list is rare here (the library is date-ordered), and a silent instant
 /// rebuild is a far better failure mode than a wrong animation or a crash.
-class AnimatedIdGrid<T> extends StatefulWidget {
+class AnimatedIdSliverGrid<T> extends StatefulWidget {
   final List<T> items;
 
   /// Stable identity. Two items with the same id are the same item, however
@@ -62,23 +62,22 @@ class AnimatedIdGrid<T> extends StatefulWidget {
 
   final SliverGridDelegate gridDelegate;
   final EdgeInsetsGeometry padding;
-  final double? cacheExtent;
 
-  const AnimatedIdGrid({
+  const AnimatedIdSliverGrid({
     super.key,
     required this.items,
     required this.idOf,
     required this.itemBuilder,
     required this.gridDelegate,
     this.padding = EdgeInsets.zero,
-    this.cacheExtent,
   });
 
   @override
-  State<AnimatedIdGrid<T>> createState() => _AnimatedIdGridState<T>();
+  State<AnimatedIdSliverGrid<T>> createState() =>
+      _AnimatedIdSliverGridState<T>();
 }
 
-class _AnimatedIdGridState<T> extends State<AnimatedIdGrid<T>> {
+class _AnimatedIdSliverGridState<T> extends State<AnimatedIdSliverGrid<T>> {
   /// What is actually on screen. Diverges from `widget.items` for exactly one
   /// frame after a change, and while items are animating out.
   late List<T> _shown = List<T>.of(widget.items);
@@ -96,7 +95,7 @@ class _AnimatedIdGridState<T> extends State<AnimatedIdGrid<T>> {
   bool _syncScheduled = false;
 
   @override
-  void didUpdateWidget(AnimatedIdGrid<T> oldWidget) {
+  void didUpdateWidget(AnimatedIdSliverGrid<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (_sameIds(oldWidget.items, widget.items)) {
       // Same items, changed data — a favourite toggled, a folder assigned.
@@ -200,37 +199,202 @@ class _AnimatedIdGridState<T> extends State<AnimatedIdGrid<T>> {
 
   @override
   Widget build(BuildContext context) {
+    // The generation key rides on the padding rather than on the grid itself:
+    // the grid already carries a GlobalKey, a widget gets exactly one key, and
+    // a sliver cannot be wrapped in a KeyedSubtree to borrow another.
+    return SliverPadding(
+      key: ValueKey<int>(_generation),
+      padding: widget.padding,
+      sliver: SliverAnimatedGrid(
+        key: _gridKey,
+        gridDelegate: widget.gridDelegate,
+        initialItemCount: _shown.length,
+        itemBuilder: (context, index, animation) {
+          // The grid can ask for an index that is mid-removal on the frame the
+          // counts are settling. Rendering nothing beats throwing.
+          if (index >= _shown.length) return const SizedBox.shrink();
+          return widget.itemBuilder(context, _shown[index], index, animation);
+        },
+      ),
+    );
+  }
+}
+
+/// A scrollable grid of identified items, animated on insert and removal.
+///
+/// The original shape of this widget and still its common case. It is now a
+/// thin wrapper so that the diff engine above can also be used several times
+/// over inside one scroll view — see [SectionedIdGrid].
+class AnimatedIdGrid<T> extends StatelessWidget {
+  final List<T> items;
+  final Object Function(T item) idOf;
+  final Widget Function(
+    BuildContext context,
+    T item,
+    int index,
+    Animation<double> animation,
+  )
+  itemBuilder;
+  final SliverGridDelegate gridDelegate;
+  final EdgeInsetsGeometry padding;
+  final double? cacheExtent;
+
+  const AnimatedIdGrid({
+    super.key,
+    required this.items,
+    required this.idOf,
+    required this.itemBuilder,
+    required this.gridDelegate,
+    this.padding = EdgeInsets.zero,
+    this.cacheExtent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     // A sliver rather than `AnimatedGrid`, purely for `cacheExtent`: the box
     // version does not expose it, and the library grid depends on it to have
     // thumbnails decoded roughly two rows ahead of the viewport instead of
     // popping in after it. `CustomScrollView` does.
-    return KeyedSubtree(
-      key: ValueKey<int>(_generation),
-      child: CustomScrollView(
-        cacheExtent: widget.cacheExtent,
-        slivers: [
-          SliverPadding(
-            padding: widget.padding,
-            sliver: SliverAnimatedGrid(
-              key: _gridKey,
-              gridDelegate: widget.gridDelegate,
-              initialItemCount: _shown.length,
-              itemBuilder: (context, index, animation) {
-                // The grid can ask for an index that is mid-removal on the
-                // frame the counts are settling. Rendering nothing beats
-                // throwing.
-                if (index >= _shown.length) return const SizedBox.shrink();
-                return widget.itemBuilder(
-                  context,
-                  _shown[index],
-                  index,
-                  animation,
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+    return CustomScrollView(
+      cacheExtent: cacheExtent,
+      slivers: [
+        AnimatedIdSliverGrid<T>(
+          items: items,
+          idOf: idOf,
+          itemBuilder: itemBuilder,
+          gridDelegate: gridDelegate,
+          padding: padding,
+        ),
+      ],
     );
   }
+}
+
+/// A run of items under one heading.
+class GridSection<T> {
+  /// Stable across rebuilds — it keys the sliver, so a section arriving above
+  /// this one must not make Flutter treat this as a different section.
+  final Object id;
+  final Widget header;
+  final List<T> items;
+
+  const GridSection({
+    required this.id,
+    required this.header,
+    required this.items,
+  });
+}
+
+/// The same animated grid, split under sticky headings.
+///
+/// One [AnimatedIdSliverGrid] per section rather than one grid with headers
+/// spliced in, because `SliverAnimatedGrid` owns a single contiguous run of
+/// tiles and cannot have a heading inserted into the middle of it. Each
+/// section therefore diffs and animates on its own — which is also the right
+/// behaviour: deleting the last screenshot from Tuesday should collapse
+/// Tuesday, not shuffle every tile in the library up by one.
+class SectionedIdGrid<T> extends StatelessWidget {
+  final List<GridSection<T>> sections;
+  final Object Function(T item) idOf;
+
+  /// [index] is the item's position across **all** sections, so a caller that
+  /// hands the flat list to another screen can still address into it.
+  final Widget Function(
+    BuildContext context,
+    T item,
+    int index,
+    Animation<double> animation,
+  )
+  itemBuilder;
+
+  final SliverGridDelegate gridDelegate;
+  final EdgeInsetsGeometry padding;
+  final double headerExtent;
+  final double? cacheExtent;
+
+  const SectionedIdGrid({
+    super.key,
+    required this.sections,
+    required this.idOf,
+    required this.itemBuilder,
+    required this.gridDelegate,
+    required this.headerExtent,
+    this.padding = EdgeInsets.zero,
+    this.cacheExtent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final EdgeInsets resolved = padding.resolve(Directionality.of(context));
+    final List<Widget> slivers = <Widget>[];
+    int offset = 0;
+
+    for (int s = 0; s < sections.length; s++) {
+      final GridSection<T> section = sections[s];
+      final int start = offset;
+      offset += section.items.length;
+
+      slivers.add(
+        SliverPersistentHeader(
+          pinned: true,
+          delegate: _SectionHeaderDelegate(
+            extent: headerExtent,
+            // Keyed so a pinned header swapping identity mid-scroll rebuilds
+            // rather than animating its text into the next heading's.
+            child: KeyedSubtree(
+              key: ValueKey<Object>(section.id),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: resolved.left,
+                  right: resolved.right,
+                ),
+                child: section.header,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      slivers.add(
+        AnimatedIdSliverGrid<T>(
+          key: ValueKey<Object>(section.id),
+          items: section.items,
+          idOf: idOf,
+          gridDelegate: gridDelegate,
+          padding: EdgeInsets.only(
+            left: resolved.left,
+            right: resolved.right,
+            // Only the last section carries the tail padding that keeps the
+            // final row clear of the navigation bar.
+            bottom: s == sections.length - 1 ? resolved.bottom : resolved.top,
+          ),
+          itemBuilder: (context, item, index, animation) =>
+              itemBuilder(context, item, start + index, animation),
+        ),
+      );
+    }
+
+    return CustomScrollView(cacheExtent: cacheExtent, slivers: slivers);
+  }
+}
+
+class _SectionHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final double extent;
+  final Widget child;
+
+  const _SectionHeaderDelegate({required this.extent, required this.child});
+
+  @override
+  double get minExtent => extent;
+
+  @override
+  double get maxExtent => extent;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlaps) =>
+      SizedBox.expand(child: child);
+
+  @override
+  bool shouldRebuild(_SectionHeaderDelegate old) =>
+      old.extent != extent || old.child != child;
 }

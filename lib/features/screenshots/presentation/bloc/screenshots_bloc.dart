@@ -96,6 +96,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     on<SelectAllEvent>(_onSelectAll);
     on<SetLibraryFilterEvent>(_onSetLibraryFilter);
     on<SetLibraryLensEvent>(_onSetLibraryLens);
+    on<SetLibrarySortEvent>(_onSetLibrarySort);
     on<ComputeTraitsEvent>(_onComputeTraits);
   }
 
@@ -208,6 +209,11 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
           traits: previous.traits,
           lens: previous.lens,
           traitsReady: previous.traitsReady,
+          // Carried like every other choice on this screen. Left off, a
+          // refresh — which fires on app resume and on any gallery change —
+          // silently put the grid back to newest-first while the header
+          // button still claimed the order the user had picked.
+          sort: previous.sort,
         ),
       );
       add(ComputeTraitsEvent());
@@ -426,6 +432,21 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     // is about to stop being on screen — and a delete button reporting six
     // when four of them are no longer visible is the worst kind of accurate.
     emit(current.copyWith(filter: event.filter, selectedIds: {}));
+  }
+
+  /// **Selection survives a sort**, unlike the filter and the lens.
+  ///
+  /// Re-ordering does not remove anything from the grid — every selected tile
+  /// is still there, just somewhere else — so clearing the selection here
+  /// would throw away work the user had done for no reason.
+  void _onSetLibrarySort(
+    SetLibrarySortEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+    if (current.sort == event.sort) return;
+    emit(current.copyWith(sort: event.sort));
   }
 
   /// Same contract as the status filter: the visible set changes, so anything

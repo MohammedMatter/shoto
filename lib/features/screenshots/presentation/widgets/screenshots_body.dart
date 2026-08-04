@@ -10,6 +10,7 @@ import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/photo_viewer_route.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
+import 'package:shoto/core/utils/date_sections.dart';
 import 'package:shoto/core/widgets/animated_id_grid.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
@@ -18,6 +19,7 @@ import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/core/widgets/empty_state.dart';
 import 'package:shoto/core/widgets/primary_button.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/content_trait_visuals.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/date_section_header.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/lens_provenance_note.dart';
 import 'package:shoto/features/folders/presentation/widgets/move_to_folder_sheet.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
@@ -40,6 +42,9 @@ class ScreenshotsBody extends StatefulWidget {
   final String emptyMessage;
   final bool showFavoritesFilter;
 
+  /// Whether to break the grid under dated headings.
+  final bool groupByDate;
+
   /// Namespace for this grid's shared-element tags.
   ///
   /// Hero tags have to be unique within a route, and the Library tab and a
@@ -53,6 +58,7 @@ class ScreenshotsBody extends StatefulWidget {
     required this.emptyTitle,
     required this.emptyMessage,
     this.showFavoritesFilter = true,
+    this.groupByDate = false,
     this.heroPrefix = 'grid',
   });
 
@@ -306,20 +312,10 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                             // scrolling a grid that is mid-delete — is not
                             // something tapping through the app reliably
                             // reaches.
-                            builder: (context, _) => AnimatedIdGrid<ScreenshotEntity>(
+                            builder: (context, _) => _buildGrid(
+                              context,
                               items: items,
-                              idOf: (item) => item.id,
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                20.w,
-                                4.h,
-                                20.w,
-                                120.h,
-                              ),
-                              // Roughly two extra rows built ahead of the
-                              // viewport, so a thumbnail has already decoded by
-                              // the time it scrolls into sight instead of
-                              // popping in after it.
-                              cacheExtent: 600,
+                              loaded: loaded,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount:
@@ -328,87 +324,6 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                                     crossAxisSpacing: 10.w,
                                     childAspectRatio: 1,
                                   ),
-                              itemBuilder: (context, item, index, animation) {
-                                // Isolates each tile's raster layer, so one
-                                // thumbnail finishing decoding doesn't repaint
-                                // every other tile on screen with it.
-                                return RepaintBoundary(
-                                  // Scale rather than a fade alone: a tile that
-                                  // only fades leaves a hole the same size
-                                  // behind it, so the grid still looks like it
-                                  // snapped shut. From 0.85 — never from zero.
-                                  child: FadeTransition(
-                                    opacity: animation,
-                                    child: ScaleTransition(
-                                      scale: Tween<double>(begin: 0.85, end: 1)
-                                          .animate(
-                                            CurvedAnimation(
-                                              parent: animation,
-                                              curve: AppMotion.standard,
-                                            ),
-                                          ),
-                                      // Entrance for the first few tiles on first
-                                      // paint only — see EntranceStagger for why
-                                      // it refuses to run on a recycled item.
-                                      child: EntranceStagger(
-                                        index: index,
-                                        since: _openedAt,
-                                        child: ScreenshotThumbnail(
-                                          asset: item.asset,
-                                          heroTag:
-                                              '${widget.heroPrefix}-${item.id}',
-                                          isFavorite: item.isFavorite,
-                                          isSelected: loaded.selectedIds
-                                              .contains(item.id),
-                                          selectionMode: loaded.isSelectionMode,
-                                          onTap: () {
-                                            if (loaded.isSelectionMode) {
-                                              context
-                                                  .read<ScreenshotsBloc>()
-                                                  .add(
-                                                    ToggleSelectItemEvent(
-                                                      item.id,
-                                                    ),
-                                                  );
-                                            } else {
-                                              Navigator.of(context).push(
-                                                PhotoViewerRoute(
-                                                  builder: (_) =>
-                                                      BlocProvider.value(
-                                                        value: context
-                                                            .read<
-                                                              ScreenshotsBloc
-                                                            >(),
-                                                        child:
-                                                            ScreenshotDetailPage(
-                                                              screenshots:
-                                                                  items,
-                                                              initialIndex:
-                                                                  index,
-                                                              heroPrefix: widget
-                                                                  .heroPrefix,
-                                                            ),
-                                                      ),
-                                                ),
-                                              );
-                                            }
-                                          },
-                                          onLongPress: () => context
-                                              .read<ScreenshotsBloc>()
-                                              .add(
-                                                ToggleSelectItemEvent(item.id),
-                                              ),
-                                          onMoreTap: () =>
-                                              showScreenshotQuickActionsSheet(
-                                                context,
-                                                item,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
                             ),
                           ),
                         ),
@@ -420,7 +335,147 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
       },
     );
   }
+
+  /// The grid itself, sectioned or flat.
+  ///
+  /// Both take the same tile builder, so the two modes cannot drift apart in
+  /// how a screenshot looks or what tapping it does — the only difference is
+  /// whether headings break the run.
+  Widget _buildGrid(
+    BuildContext context, {
+    required List<ScreenshotEntity> items,
+    required ScreenshotsLoadedState loaded,
+    required SliverGridDelegate gridDelegate,
+  }) {
+    final EdgeInsetsGeometry padding = EdgeInsetsDirectional.fromSTEB(
+      20.w,
+      4.h,
+      20.w,
+      120.h,
+    );
+
+    Widget tile(
+      BuildContext context,
+      ScreenshotEntity item,
+      int index,
+      Animation<double> animation,
+    ) => _tile(context, item, index, animation, items: items, loaded: loaded);
+
+    if (!widget.groupByDate) {
+      return AnimatedIdGrid<ScreenshotEntity>(
+        items: items,
+        idOf: (item) => item.id,
+        padding: padding,
+        cacheExtent: 600,
+        gridDelegate: gridDelegate,
+        itemBuilder: tile,
+      );
+    }
+
+    // Grouped fresh on every build rather than cached in the state: it is one
+    // pass over a list already in memory, and the alternative is a cache that
+    // has to be invalidated when the clock crosses midnight.
+    final List<DatedGroup<ScreenshotEntity>> groups =
+        groupByDate<ScreenshotEntity>(
+          items,
+          dateOf: (item) => item.asset.createDateTime,
+          now: DateTime.now(),
+        );
+
+    return SectionedIdGrid<ScreenshotEntity>(
+      idOf: (item) => item.id,
+      padding: padding,
+      cacheExtent: 600,
+      headerExtent: DateSectionHeader.extent,
+      gridDelegate: gridDelegate,
+      itemBuilder: tile,
+      sections: [
+        for (final DatedGroup<ScreenshotEntity> group in groups)
+          GridSection<ScreenshotEntity>(
+            id: group.section.id,
+            header: DateSectionHeader(section: group.section),
+            items: group.items,
+          ),
+      ],
+    );
+  }
+
+  /// One thumbnail.
+  ///
+  /// [index] addresses into [items] — the whole visible list, across every
+  /// section — because that is what the detail page pages through.
+  Widget _tile(
+    BuildContext context,
+    ScreenshotEntity item,
+    int index,
+    Animation<double> animation, {
+    required List<ScreenshotEntity> items,
+    required ScreenshotsLoadedState loaded,
+  }) {
+    // Isolates each tile's raster layer, so one thumbnail finishing decoding
+    // doesn't repaint every other tile on screen with it.
+    return RepaintBoundary(
+      // Scale rather than a fade alone: a tile that only fades leaves a hole
+      // the same size behind it, so the grid still looks like it snapped shut.
+      // From 0.85 — never from zero.
+      child: FadeTransition(
+        opacity: animation,
+        child: ScaleTransition(
+          scale: Tween<double>(begin: 0.85, end: 1).animate(
+            CurvedAnimation(parent: animation, curve: AppMotion.standard),
+          ),
+          // Entrance for the first few tiles on first paint only — see
+          // EntranceStagger for why it refuses to run on a recycled item.
+          child: EntranceStagger(
+            index: index,
+            since: _openedAt,
+            child: ScreenshotThumbnail(
+              asset: item.asset,
+              heroTag: '${widget.heroPrefix}-${item.id}',
+              isFavorite: item.isFavorite,
+              isSelected: loaded.selectedIds.contains(item.id),
+              selectionMode: loaded.isSelectionMode,
+              onTap: () {
+                if (loaded.isSelectionMode) {
+                  context.read<ScreenshotsBloc>().add(
+                    ToggleSelectItemEvent(item.id),
+                  );
+                  return;
+                }
+                // Looked up by id rather than trusting the index handed in.
+                // Sectioned mode composes the index from a section offset plus
+                // a position inside it, and for the frame where a deletion is
+                // still animating out those two disagree by one — which would
+                // open the neighbouring screenshot.
+                final int at = items.indexWhere(
+                  (ScreenshotEntity s) => s.id == item.id,
+                );
+                if (at < 0) return;
+                Navigator.of(context).push(
+                  PhotoViewerRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<ScreenshotsBloc>(),
+                      child: ScreenshotDetailPage(
+                        screenshots: items,
+                        initialIndex: at,
+                        heroPrefix: widget.heroPrefix,
+                      ),
+                    ),
+                  ),
+                );
+              },
+              onLongPress: () => context.read<ScreenshotsBloc>().add(
+                ToggleSelectItemEvent(item.id),
+              ),
+              onMoreTap: () => showScreenshotQuickActionsSheet(context, item),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
+
 
 class _SelectionToolbar extends StatelessWidget {
   final int count;

@@ -1544,4 +1544,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get supportGreeting => 'Hi SHOTO team,';
+
+  @override
+  String get dateToday => 'Today';
+
+  @override
+  String get dateYesterday => 'Yesterday';
+
+  @override
+  String get dateThisWeek => 'Earlier this week';
+
+  @override
+  String get dateThisMonth => 'Earlier this month';
+
+  @override
+  String get librarySortNewest => 'Newest first';
+
+  @override
+  String get librarySortOldest => 'Oldest first';
+
+  @override
+  String get librarySortLabel => 'Order';
 }

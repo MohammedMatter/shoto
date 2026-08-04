@@ -1543,4 +1543,25 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get supportGreeting => 'नमस्ते SHOTO टीम,';
+
+  @override
+  String get dateToday => 'आज';
+
+  @override
+  String get dateYesterday => 'कल';
+
+  @override
+  String get dateThisWeek => 'इस हफ़्ते';
+
+  @override
+  String get dateThisMonth => 'इस महीने';
+
+  @override
+  String get librarySortNewest => 'नई पहले';
+
+  @override
+  String get librarySortOldest => 'पुरानी पहले';
+
+  @override
+  String get librarySortLabel => 'क्रम';
 }

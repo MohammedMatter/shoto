@@ -1552,4 +1552,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get supportGreeting => 'مرحبا فريق SHOTO،';
+
+  @override
+  String get dateToday => 'اليوم';
+
+  @override
+  String get dateYesterday => 'مبارح';
+
+  @override
+  String get dateThisWeek => 'هالأسبوع';
+
+  @override
+  String get dateThisMonth => 'هالشهر';
+
+  @override
+  String get librarySortNewest => 'الأحدث أولاً';
+
+  @override
+  String get librarySortOldest => 'الأقدم أولاً';
+
+  @override
+  String get librarySortLabel => 'الترتيب';
 }
