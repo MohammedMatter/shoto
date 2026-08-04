@@ -132,6 +132,45 @@ void main() {
       );
     });
 
+    test('a cue must be a whole word, not a substring', () {
+      // Taken verbatim from an IBAN reference page on the test device: the
+      // byline "Mobilefish.com" contained the cue `mobile`, which certified an
+      // account-number fragment as somebody's phone number.
+      expect(
+        ContentTraits.of(
+          'IBAN structure BBAN NL91 ABNA0417164300 '
+          '2 digit checksum Country code Mobilefish.com',
+        ),
+        isNot(contains(ContentTrait.contact)),
+      );
+
+      // The same trap in the other cues.
+      for (final String text in <String>[
+        'The hotel booking 5551234 is confirmed',
+        'An excellent result 5551234 was recorded',
+        'Please recall order 5551234 immediately',
+      ]) {
+        expect(
+          ContentTraits.of(text),
+          isNot(contains(ContentTrait.contact)),
+          reason: text,
+        );
+      }
+    });
+
+    test('non-Latin cues still match as whole words', () {
+      // `\b` is ASCII-only in Dart, so a naive word-boundary fix would have
+      // silently killed every Arabic, Hindi and Urdu cue.
+      expect(
+        ContentTraits.of('هاتف 0599123456'),
+        contains(ContentTrait.contact),
+      );
+      expect(
+        ContentTraits.of('मोबाइल 0599123456'),
+        contains(ContentTrait.contact),
+      );
+    });
+
     test('an email is a contact with no cue word at all', () {
       expect(
         ContentTraits.of('help@example.com'),

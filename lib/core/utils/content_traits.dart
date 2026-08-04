@@ -124,6 +124,38 @@ abstract class ContentTraits {
   /// reasoning as [ActionExtractor]'s verification-code rule.
   static const int _cueWindow = 40;
 
+  /// Any letter or digit, in any script.
+  ///
+  /// `\b` cannot do this job. Dart's word class is ASCII-only, so `\bجوال\b`
+  /// sits between two non-word characters and never matches at all — the
+  /// Arabic, Hindi and Urdu cues would silently stop working the moment a word
+  /// boundary was demanded of them.
+  static final RegExp _letterOrDigit = RegExp(r'[\p{L}\p{N}]', unicode: true);
+
+  /// Whether [cue] appears in [context] as a **whole word**.
+  ///
+  /// Substring matching is what let this trait be wrong on the test device: a
+  /// screenshot of an IBAN reference page carried the byline "Mobilefish.com",
+  /// the cue `mobile` matched inside it, and an account-number fragment
+  /// alongside was certified as somebody's phone number. `tel` inside "hotel"
+  /// and `call` inside "recall" are the same bug waiting elsewhere.
+  static bool _hasCueWord(String context, String cue) {
+    int from = 0;
+    while (true) {
+      final int at = context.indexOf(cue, from);
+      if (at < 0) return false;
+
+      final bool openLeft =
+          at == 0 || !_letterOrDigit.hasMatch(context[at - 1]);
+      final int after = at + cue.length;
+      final bool openRight =
+          after >= context.length || !_letterOrDigit.hasMatch(context[after]);
+
+      if (openLeft && openRight) return true;
+      from = at + 1;
+    }
+  }
+
   /// Every trait present in [text].
   ///
   /// Returns an empty set for text that is absent or too short, which is the
@@ -173,7 +205,7 @@ abstract class ContentTraits {
         lowered!.length,
       );
       final String context = lowered!.substring(from, to);
-      return _phoneCues.any(context.contains);
+      return _phoneCues.any((String cue) => _hasCueWord(context, cue));
     }
 
     for (final DetectedAction action in ActionExtractor.extract(text)) {
