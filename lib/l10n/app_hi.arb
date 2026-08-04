@@ -722,5 +722,10 @@
   "restoreDone": "{screenshots, plural, =1{1 स्क्रीनशॉट} other{{screenshots} स्क्रीनशॉट}} और {folders, plural, =1{1 फ़ोल्डर} other{{folders} फ़ोल्डर}} लौटाए गए",
   "restoreDoneWithSkips": "{screenshots, plural, =1{1 स्क्रीनशॉट} other{{screenshots} स्क्रीनशॉट}} लौटाए गए। {skipped, plural, =1{1 छोड़ा गया} other{{skipped} छोड़े गए}}।",
   "restoreNotABackup": "यह फ़ाइल SHOTO का बैकअप नहीं है",
-  "restoreFailed": "पुनर्स्थापना पूरी नहीं हो सकी"
+  "restoreFailed": "पुनर्स्थापना पूरी नहीं हो सकी",
+  "settingsHelp": "सहायता",
+  "settingsContactSupport": "सहायता से संपर्क करें",
+  "supportSubject": "SHOTO सहायता",
+  "supportNoMailApp": "कोई ईमेल ऐप नहीं मिला। पता कॉपी कर दिया गया है।",
+  "supportGreeting": "नमस्ते SHOTO टीम,"
 }

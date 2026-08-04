@@ -1538,4 +1538,20 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get restoreFailed => 'La restauration n\'a pas pu aller au bout';
+
+  @override
+  String get settingsHelp => 'Aide';
+
+  @override
+  String get settingsContactSupport => 'Contacter le support';
+
+  @override
+  String get supportSubject => 'Support SHOTO';
+
+  @override
+  String get supportNoMailApp =>
+      'Aucune app de messagerie. L\'adresse a été copiée.';
+
+  @override
+  String get supportGreeting => 'Bonjour l\'équipe SHOTO,';
 }

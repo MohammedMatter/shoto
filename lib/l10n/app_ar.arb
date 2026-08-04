@@ -722,5 +722,10 @@
   "restoreDone": "انسترجع {screenshots, plural, =1{لقطة وحدة} =2{لقطتين} few{{screenshots} لقطات} other{{screenshots} لقطة}} و{folders, plural, =1{مجلد واحد} =2{مجلدين} few{{folders} مجلدات} other{{folders} مجلد}}",
   "restoreDoneWithSkips": "انسترجع {screenshots, plural, =1{لقطة وحدة} =2{لقطتين} few{{screenshots} لقطات} other{{screenshots} لقطة}}. في {skipped, plural, =1{وحدة انتخطّت} =2{تنتين انتخطّوا} few{{skipped} انتخطّوا} other{{skipped} انتخطّت}}.",
   "restoreNotABackup": "هالملف مش نسخة احتياطية من SHOTO",
-  "restoreFailed": "ما قدر يكمّل الاسترجاع"
+  "restoreFailed": "ما قدر يكمّل الاسترجاع",
+  "settingsHelp": "المساعدة",
+  "settingsContactSupport": "تواصل مع الدعم",
+  "supportSubject": "دعم SHOTO",
+  "supportNoMailApp": "ما في تطبيق إيميل. اننسخ العنوان بدالو.",
+  "supportGreeting": "مرحبا فريق SHOTO،"
 }

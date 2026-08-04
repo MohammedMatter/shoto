@@ -1527,4 +1527,20 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get restoreFailed => 'पुनर्स्थापना पूरी नहीं हो सकी';
+
+  @override
+  String get settingsHelp => 'सहायता';
+
+  @override
+  String get settingsContactSupport => 'सहायता से संपर्क करें';
+
+  @override
+  String get supportSubject => 'SHOTO सहायता';
+
+  @override
+  String get supportNoMailApp =>
+      'कोई ईमेल ऐप नहीं मिला। पता कॉपी कर दिया गया है।';
+
+  @override
+  String get supportGreeting => 'नमस्ते SHOTO टीम,';
 }

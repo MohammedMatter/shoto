@@ -29,6 +29,7 @@ import 'package:shoto/features/auth/presentation/bloc/auth_state.dart';
 import 'package:shoto/features/backup/presentation/pages/backup_page.dart';
 import 'package:shoto/features/duplicates/presentation/pages/duplicates_page.dart';
 import 'package:shoto/features/settings/presentation/widgets/app_version_block.dart';
+import 'package:shoto/features/settings/presentation/widgets/contact_support_tile.dart';
 import 'package:shoto/features/settings/presentation/widgets/language_sheet.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_group.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_tiles.dart';
@@ -242,6 +243,15 @@ class SettingsPage extends StatelessWidget {
                           ),
                         ),
                       ],
+                    ),
+
+                    // Above the privacy note and the account rows, because
+                    // "something is wrong and I need a human" is a more urgent
+                    // errand than either, and below the rest because it is not
+                    // what most visits to Settings are for.
+                    SettingsGroup(
+                      title: context.l10n.settingsHelp,
+                      children: const [ContactSupportTile()],
                     ),
 
                     // Not a group: this is the app's central promise, and a

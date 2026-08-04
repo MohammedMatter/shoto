@@ -2595,6 +2595,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The restore could not be finished'**
   String get restoreFailed;
+
+  /// No description provided for @settingsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get settingsHelp;
+
+  /// No description provided for @settingsContactSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact support'**
+  String get settingsContactSupport;
+
+  /// No description provided for @supportSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'SHOTO support'**
+  String get supportSubject;
+
+  /// No description provided for @supportNoMailApp.
+  ///
+  /// In en, this message translates to:
+  /// **'No email app found. The address is copied instead.'**
+  String get supportNoMailApp;
+
+  /// No description provided for @supportGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi SHOTO team,'**
+  String get supportGreeting;
 }
 
 class _AppLocalizationsDelegate

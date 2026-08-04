@@ -1537,4 +1537,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get restoreFailed => 'ما قدر يكمّل الاسترجاع';
+
+  @override
+  String get settingsHelp => 'المساعدة';
+
+  @override
+  String get settingsContactSupport => 'تواصل مع الدعم';
+
+  @override
+  String get supportSubject => 'دعم SHOTO';
+
+  @override
+  String get supportNoMailApp => 'ما في تطبيق إيميل. اننسخ العنوان بدالو.';
+
+  @override
+  String get supportGreeting => 'مرحبا فريق SHOTO،';
 }

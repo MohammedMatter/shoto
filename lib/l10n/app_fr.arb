@@ -722,5 +722,10 @@
   "restoreDone": "{screenshots, plural, =1{1 capture restaurée} other{{screenshots} captures restaurées}} et {folders, plural, =1{1 dossier} other{{folders} dossiers}}",
   "restoreDoneWithSkips": "{screenshots, plural, =1{1 capture restaurée} other{{screenshots} captures restaurées}}. {skipped, plural, =1{1 a été ignorée} other{{skipped} ont été ignorées}}.",
   "restoreNotABackup": "Ce fichier n'est pas une sauvegarde SHOTO",
-  "restoreFailed": "La restauration n'a pas pu aller au bout"
+  "restoreFailed": "La restauration n'a pas pu aller au bout",
+  "settingsHelp": "Aide",
+  "settingsContactSupport": "Contacter le support",
+  "supportSubject": "Support SHOTO",
+  "supportNoMailApp": "Aucune app de messagerie. L'adresse a été copiée.",
+  "supportGreeting": "Bonjour l'équipe SHOTO,"
 }

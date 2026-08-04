@@ -1529,4 +1529,20 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get restoreFailed => 'No se pudo terminar la restauración';
+
+  @override
+  String get settingsHelp => 'Ayuda';
+
+  @override
+  String get settingsContactSupport => 'Contactar con soporte';
+
+  @override
+  String get supportSubject => 'Soporte de SHOTO';
+
+  @override
+  String get supportNoMailApp =>
+      'No hay ninguna app de correo. Se copió la dirección.';
+
+  @override
+  String get supportGreeting => 'Hola, equipo de SHOTO:';
 }

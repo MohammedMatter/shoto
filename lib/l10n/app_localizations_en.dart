@@ -1528,4 +1528,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get restoreFailed => 'The restore could not be finished';
+
+  @override
+  String get settingsHelp => 'Help';
+
+  @override
+  String get settingsContactSupport => 'Contact support';
+
+  @override
+  String get supportSubject => 'SHOTO support';
+
+  @override
+  String get supportNoMailApp =>
+      'No email app found. The address is copied instead.';
+
+  @override
+  String get supportGreeting => 'Hi SHOTO team,';
 }

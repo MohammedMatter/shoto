@@ -786,5 +786,10 @@
     }
   },
   "restoreNotABackup": "That file is not a SHOTO backup",
-  "restoreFailed": "The restore could not be finished"
+  "restoreFailed": "The restore could not be finished",
+  "settingsHelp": "Help",
+  "settingsContactSupport": "Contact support",
+  "supportSubject": "SHOTO support",
+  "supportNoMailApp": "No email app found. The address is copied instead.",
+  "supportGreeting": "Hi SHOTO team,"
 }

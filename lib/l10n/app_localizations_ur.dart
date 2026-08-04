@@ -1525,4 +1525,20 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get restoreFailed => 'بحالی مکمل نہ ہو سکی';
+
+  @override
+  String get settingsHelp => 'مدد';
+
+  @override
+  String get settingsContactSupport => 'سپورٹ سے رابطہ کریں';
+
+  @override
+  String get supportSubject => 'SHOTO سپورٹ';
+
+  @override
+  String get supportNoMailApp =>
+      'کوئی ای میل ایپ نہیں ملی۔ پتہ کاپی کر دیا گیا ہے۔';
+
+  @override
+  String get supportGreeting => 'السلام علیکم SHOTO ٹیم،';
 }

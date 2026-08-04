@@ -722,5 +722,10 @@
   "restoreDone": "{screenshots, plural, =1{1 اسکرین شاٹ} other{{screenshots} اسکرین شاٹس}} اور {folders, plural, =1{1 فولڈر} other{{folders} فولڈرز}} بحال ہوئے",
   "restoreDoneWithSkips": "{screenshots, plural, =1{1 اسکرین شاٹ} other{{screenshots} اسکرین شاٹس}} بحال ہوئے۔ {skipped, plural, =1{1 چھوڑ دیا گیا} other{{skipped} چھوڑ دیے گئے}}۔",
   "restoreNotABackup": "یہ فائل SHOTO کا بیک اپ نہیں ہے",
-  "restoreFailed": "بحالی مکمل نہ ہو سکی"
+  "restoreFailed": "بحالی مکمل نہ ہو سکی",
+  "settingsHelp": "مدد",
+  "settingsContactSupport": "سپورٹ سے رابطہ کریں",
+  "supportSubject": "SHOTO سپورٹ",
+  "supportNoMailApp": "کوئی ای میل ایپ نہیں ملی۔ پتہ کاپی کر دیا گیا ہے۔",
+  "supportGreeting": "السلام علیکم SHOTO ٹیم،"
 }
