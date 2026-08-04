@@ -146,7 +146,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get libraryTraitLink => 'Liens';
 
   @override
-  String get libraryTraitContact => 'Contacts';
+  String get libraryTraitContact => 'Tél. ou e-mail';
 
   @override
   String get libraryTraitCode => 'Codes';

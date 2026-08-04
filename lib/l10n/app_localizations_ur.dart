@@ -146,7 +146,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get libraryTraitLink => 'لنکس';
 
   @override
-  String get libraryTraitContact => 'رابطے';
+  String get libraryTraitContact => 'فون یا ای میل';
 
   @override
   String get libraryTraitCode => 'کوڈز';

@@ -346,7 +346,7 @@ abstract class SensitiveData {
       final String raw = match.group(0)!;
       final String digits = raw.replaceAll(_nonDigit, '');
       if (digits.length < 13 || digits.length > 19) continue;
-      if (!_passesLuhn(digits)) continue;
+      if (!passesLuhn(digits)) continue;
 
       // The candidate pattern allows a trailing separator, which would
       // otherwise be swallowed into the replaced span and delete a space that
@@ -363,7 +363,13 @@ abstract class SensitiveData {
 
   static bool _isDigit(int unit) => unit >= 0x30 && unit <= 0x39;
 
-  static bool _passesLuhn(String digits) {
+  /// The card checksum, shared rather than reimplemented.
+  ///
+  /// Public because [ActionExtractor] needs the same test: a Luhn-valid run
+  /// must be claimed before its phone rule sees it, or a screenshot of card
+  /// numbers is reported as a screen full of phone numbers to dial. A checksum
+  /// copied into two files is a checksum that will eventually differ in one.
+  static bool passesLuhn(String digits) {
     int sum = 0;
     bool doubleIt = false;
     for (int i = digits.length - 1; i >= 0; i--) {

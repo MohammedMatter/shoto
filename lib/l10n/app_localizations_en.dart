@@ -143,7 +143,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get libraryTraitLink => 'Links';
 
   @override
-  String get libraryTraitContact => 'Contacts';
+  String get libraryTraitContact => 'Phone or email';
 
   @override
   String get libraryTraitCode => 'Codes';

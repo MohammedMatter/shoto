@@ -147,7 +147,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get libraryTraitLink => 'लिंक';
 
   @override
-  String get libraryTraitContact => 'संपर्क';
+  String get libraryTraitContact => 'फ़ोन या ईमेल';
 
   @override
   String get libraryTraitCode => 'कोड';

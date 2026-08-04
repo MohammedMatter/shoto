@@ -73,6 +73,57 @@ abstract class ContentTraits {
   /// is measurably slower than skipping it.
   static const int _minimumUsefulLength = 4;
 
+  /// Words that make a bare run of digits credible as somebody's number.
+  ///
+  /// Not an exhaustive vocabulary and does not need to be: a number carrying
+  /// its `+` is already accepted without one of these, and the failure mode
+  /// here is a screenshot going uncounted rather than a wrong claim — which is
+  /// the direction this trait is deliberately biased in.
+  ///
+  /// Deliberately excludes the bare word for "number" (`رقم`, `no.`): it
+  /// prefixes order numbers, invoice numbers and reference numbers far more
+  /// often than it prefixes a phone.
+  static const List<String> _phoneCues = <String>[
+    'phone',
+    'tel',
+    'mobile',
+    'cell',
+    'whatsapp',
+    'call',
+    'contact',
+    'جوال',
+    'هاتف',
+    'موبايل',
+    'تلفون',
+    'اتصل',
+    'واتساب',
+    'محمول',
+    'teléfono',
+    'telefono',
+    'móvil',
+    'movil',
+    'llamar',
+    'téléphone',
+    'telephone',
+    'portable',
+    'appeler',
+    'फ़ोन',
+    'फोन',
+    'मोबाइल',
+    'فون',
+    'موبائل',
+    'رابطہ',
+  ];
+
+  /// How far either side of the number a cue word still counts.
+  ///
+  /// The cue has to be *near* the number, not merely somewhere on the same
+  /// screen. Searching the whole text meant one "contact us" in a page footer
+  /// vouched for every unrelated reference number above it — which is the
+  /// exact over-reach this trait was tightened to remove. Same window and same
+  /// reasoning as [ActionExtractor]'s verification-code rule.
+  static const int _cueWindow = 40;
+
   /// Every trait present in [text].
   ///
   /// Returns an empty set for text that is absent or too short, which is the
@@ -101,11 +152,55 @@ abstract class ContentTraits {
       }
     }
 
+    // Lowercased once rather than per phone match; scanning two dozen cue
+    // words is not free when this runs over a whole library.
+    String? lowered;
+
+    /// Whether a cue word sits within [_cueWindow] characters of this match.
+    ///
+    /// Located by searching for the text as it was originally displayed, which
+    /// is the only handle a [DetectedAction] gives onto its own position. A
+    /// number the search cannot find is treated as uncorroborated rather than
+    /// as corroborated — the trait's whole bias is that a miss beats a wrong
+    /// claim.
+    bool cuedNear(String display) {
+      lowered ??= text.toLowerCase();
+      final int at = text.indexOf(display);
+      if (at < 0) return false;
+      final int from = (at - _cueWindow).clamp(0, lowered!.length);
+      final int to = (at + display.length + _cueWindow).clamp(
+        0,
+        lowered!.length,
+      );
+      final String context = lowered!.substring(from, to);
+      return _phoneCues.any(context.contains);
+    }
+
     for (final DetectedAction action in ActionExtractor.extract(text)) {
       switch (action.kind) {
         case DetectedActionKind.link:
           traits.add(ContentTrait.link);
+
+        // **A phone needs a reason to be a phone here, unlike in the actions
+        // sheet.** The two use the same detection at deliberately different
+        // bars, because being wrong costs different things. The sheet offers a
+        // pre-filled dialler you can see before you tap — a wrong number is a
+        // visible dead end. This chip makes a *claim about content*: it tells
+        // you a screenshot holds somebody's number, and nobody re-reads the
+        // screenshot to check. So the claim has to be evidenced.
+        //
+        // Evidence is a country code, or a word nearby saying what the number
+        // is. Without either, seven to eleven bare digits is indistinguishable
+        // from an order reference, and `SensitiveData` reached this same
+        // conclusion already — see its `number` kind, added precisely because
+        // every unlabelled digit run had been getting called a phone.
         case DetectedActionKind.phone:
+          if (action.value.startsWith('+') || cuedNear(action.display)) {
+            traits.add(ContentTrait.contact);
+          }
+
+        // An email needs no such test. `@` plus a real TLD is not a shape
+        // anything else shares.
         case DetectedActionKind.email:
           traits.add(ContentTrait.contact);
         case DetectedActionKind.code:

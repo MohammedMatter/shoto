@@ -23,7 +23,7 @@ void main() {
     });
 
     test('a phone number and an email both land on one contact trait', () {
-      final Set<ContentTrait> phone = ContentTraits.of('Call 0599 123 456');
+      final Set<ContentTrait> phone = ContentTraits.of('Phone 0599 123 456');
       final Set<ContentTrait> email = ContentTraits.of('write to a@b.com');
       expect(phone, contains(ContentTrait.contact));
       expect(email, contains(ContentTrait.contact));
@@ -59,6 +59,83 @@ void main() {
       expect(
         ContentTraits.of('Contact support at help@example.com'),
         isNot(contains(ContentTrait.sensitive)),
+      );
+    });
+  });
+
+  group('a phone needs a reason to be a phone', () {
+    // Every string in this group was pulled off the test device, where they
+    // were all being counted as somebody's phone number and lighting the
+    // contact chip on screenshots holding no contact at all.
+    test('4-4-4 reference groups are not contacts', () {
+      for (final String run in <String>[
+        '9923-7290-4590',
+        '4018-5724-2201',
+        '2143-9317-6250',
+        '4206-1401-2233',
+        '5296-8375-9467',
+        '3698-5387-3049',
+      ]) {
+        expect(
+          ContentTraits.of('Reference $run for your records'),
+          isNot(contains(ContentTrait.contact)),
+          reason: '$run must not read as a contact',
+        );
+      }
+    });
+
+    test('a long bare digit run is not a contact', () {
+      expect(
+        ContentTraits.of('Meter reading 742033809805910 recorded'),
+        isNot(contains(ContentTrait.contact)),
+      );
+    });
+
+    test('a number split across two lines is not a contact', () {
+      expect(
+        ContentTraits.of('Account\n76350000\n159759\nbalance'),
+        isNot(contains(ContentTrait.contact)),
+      );
+    });
+
+    test('a short unlabelled run is not a contact', () {
+      expect(
+        ContentTraits.of('Your order 1234565 has shipped today'),
+        isNot(contains(ContentTrait.contact)),
+      );
+    });
+
+    test('a country code is evidence enough on its own', () {
+      expect(
+        ContentTraits.of('+962 7 9123 4567'),
+        contains(ContentTrait.contact),
+      );
+    });
+
+    test('a cue word rescues a bare local number', () {
+      expect(
+        ContentTraits.of('جوال 0599123456'),
+        contains(ContentTrait.contact),
+      );
+      expect(
+        ContentTraits.of('Mobile 0599123456'),
+        contains(ContentTrait.contact),
+      );
+    });
+
+    test('"order number" is not a phone cue', () {
+      // The bare word for "number" prefixes far more order references than
+      // phones, which is why it is kept out of the cue list.
+      expect(
+        ContentTraits.of('رقم الطلب 5551234'),
+        isNot(contains(ContentTrait.contact)),
+      );
+    });
+
+    test('an email is a contact with no cue word at all', () {
+      expect(
+        ContentTraits.of('help@example.com'),
+        contains(ContentTrait.contact),
       );
     });
   });

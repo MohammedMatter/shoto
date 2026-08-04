@@ -145,7 +145,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get libraryTraitLink => 'Enlaces';
 
   @override
-  String get libraryTraitContact => 'Contactos';
+  String get libraryTraitContact => 'Teléfono o correo';
 
   @override
   String get libraryTraitCode => 'Códigos';

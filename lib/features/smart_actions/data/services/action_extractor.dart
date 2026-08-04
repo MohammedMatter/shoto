@@ -1,3 +1,4 @@
+import 'package:shoto/core/utils/sensitive_data.dart';
 import 'package:shoto/features/smart_actions/data/services/event_extractor.dart';
 import 'package:shoto/features/smart_actions/data/services/extraction.dart';
 import 'package:shoto/features/smart_actions/data/services/place_extractor.dart';
@@ -79,6 +80,19 @@ abstract class ActionExtractor {
     _collect(text, _emailPattern, claimed, found, _buildEmail);
     _collect(text, _urlPattern, claimed, found, _buildLink);
     _collect(text, _ibanPattern, claimed, found, _buildIban);
+
+    // Cards are claimed but never offered, which is the point: there is no
+    // useful action to take on somebody's card number, and every rule after
+    // this one would otherwise misread it. The code rule sees 4-digit groups
+    // and the phone rule sees a long run of digits with separators — a
+    // screenshot listing card numbers came back as a screen full of numbers
+    // to *dial*.
+    //
+    // Luhn is what makes claiming safe. Roughly nine in ten same-length
+    // reference numbers fail it, so this removes cards without quietly
+    // swallowing order numbers that a person might still want.
+    _claimCards(text, claimed);
+
     _collectCodes(text, claimed, found);
     _collect(text, _phonePattern, claimed, found, _buildPhone);
 
@@ -162,8 +176,24 @@ abstract class ActionExtractor {
 
   /// A run of digits with optional separators. Deliberately loose, because
   /// [_buildPhone] is where the real filtering happens.
+  ///
+  /// **Separators are spaces, not whitespace.** `\s` includes the newline, so
+  /// this used to reach across a line break and weld the tail of one line to
+  /// the head of the next — on a real screenshot of a numbers table it
+  /// produced "76350000\n159759" and called it a phone number. Worse than the
+  /// bogus match itself is that the greedy span then swallowed a genuine
+  /// number sitting alone on one of those lines.
   static final RegExp _phonePattern = RegExp(
-    r'\+?[0-9][0-9\s\-().]{5,20}[0-9]',
+    r'\+?[0-9][0-9 \-().]{5,20}[0-9]',
+  );
+
+  /// A 12-19 digit run, separators allowed — the shape of a bank card.
+  ///
+  /// Matches `SensitiveData`'s candidate pattern deliberately; the two must
+  /// agree on what a card looks like or one of them will claim a span the
+  /// other does not.
+  static final RegExp _cardCandidate = RegExp(
+    r'(?<![0-9])(?:[0-9][ -]?){12,19}(?![0-9])',
   );
 
   static final RegExp _standaloneNumber = RegExp(r'\b[0-9]{4,8}\b');
@@ -271,6 +301,20 @@ abstract class ActionExtractor {
     final String digits = match.replaceAll(RegExp(r'[^0-9]'), '');
     if (digits.length < 7 || digits.length > 15) return null;
 
+    // **Twelve or more digits without a country code is not a phone number.**
+    //
+    // E.164 allows up to fifteen, but a number that long is by definition
+    // international, and an international number written for a human to use
+    // carries its `+` (or a 00 prefix, which normalises to the same length
+    // with a leading zero). What actually turns up at twelve-plus bare digits
+    // is reference numbers, account numbers and meter readings — every single
+    // false positive on the test device's library was one of these.
+    //
+    // Local numbers are untouched: the longest national formats here are
+    // eleven digits.
+    final bool international = match.trim().startsWith('+');
+    if (!international && digits.length >= 12) return null;
+
     // A number wrapped in brackets that never close, or littered with more
     // punctuation than digits, is layout noise rather than a phone number.
     final int separators = match.length - digits.length;
@@ -363,6 +407,29 @@ abstract class ActionExtractor {
       );
     }
   }
+
+  /// Marks Luhn-valid card runs as spoken for, producing no action.
+  ///
+  /// The trailing-separator trim mirrors `SensitiveData._claimCard`: the
+  /// candidate pattern allows a run to end on a space or dash, and claiming
+  /// that character would hide a separator the next rule needs to see.
+  static void _claimCards(String text, List<_Span> claimed) {
+    for (final RegExpMatch match in _cardCandidate.allMatches(text)) {
+      if (_overlaps(claimed, match.start, match.end)) continue;
+
+      final String digits = match.group(0)!.replaceAll(RegExp(r'[^0-9]'), '');
+      if (digits.length < 13 || digits.length > 19) continue;
+      if (!SensitiveData.passesLuhn(digits)) continue;
+
+      int end = match.end;
+      while (end > match.start && !_isAsciiDigit(text.codeUnitAt(end - 1))) {
+        end--;
+      }
+      claimed.add(_Span(match.start, end));
+    }
+  }
+
+  static bool _isAsciiDigit(int unit) => unit >= 0x30 && unit <= 0x39;
 
   static bool _overlaps(List<_Span> claimed, int start, int end) {
     for (final _Span span in claimed) {

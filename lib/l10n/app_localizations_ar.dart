@@ -143,7 +143,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get libraryTraitLink => 'روابط';
 
   @override
-  String get libraryTraitContact => 'جهات اتصال';
+  String get libraryTraitContact => 'رقم أو إيميل';
 
   @override
   String get libraryTraitCode => 'رموز';

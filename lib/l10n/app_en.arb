@@ -44,7 +44,7 @@
   "libraryFilterFavorites": "Favorites",
   "libraryTraitSensitive": "Sensitive",
   "libraryTraitLink": "Links",
-  "libraryTraitContact": "Contacts",
+  "libraryTraitContact": "Phone or email",
   "libraryTraitCode": "Codes",
   "libraryTraitEvent": "Dates",
   "libraryCertaintyVerified": "Verified by checksum",

@@ -373,7 +373,7 @@ abstract class AppLocalizations {
   /// No description provided for @libraryTraitContact.
   ///
   /// In en, this message translates to:
-  /// **'Contacts'**
+  /// **'Phone or email'**
   String get libraryTraitContact;
 
   /// No description provided for @libraryTraitCode.
