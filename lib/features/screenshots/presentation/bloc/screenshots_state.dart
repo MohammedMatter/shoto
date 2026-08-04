@@ -1,6 +1,7 @@
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/utils/content_traits.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_sort.dart';
@@ -161,6 +162,42 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     };
     return byStatus.where((s) => hasTrait(s.id, trait)).length;
   }
+
+  /// Everything still waiting under [intent], oldest first.
+  ///
+  /// Oldest first here and newest first everywhere else, on purpose: the
+  /// library is a record and you look at the top of it, but a waiting list is
+  /// a debt and the thing that has been owed longest belongs at the top.
+  List<ScreenshotEntity> waitingFor(ScreenshotIntent intent) {
+    final List<ScreenshotEntity> waiting = screenshots
+        .where(
+          (ScreenshotEntity s) => s.intent?.intent == intent && s.isWaiting,
+        )
+        .toList();
+    waiting.sort(
+      (ScreenshotEntity a, ScreenshotEntity b) =>
+          a.asset.createDateTime.compareTo(b.asset.createDateTime),
+    );
+    return waiting;
+  }
+
+  int doneFor(ScreenshotIntent intent) => screenshots
+      .where((ScreenshotEntity s) => s.intent?.intent == intent && !s.isWaiting)
+      .length;
+
+  /// How many screenshots are waiting under each intent, skipping the ones
+  /// with nothing waiting.
+  ///
+  /// Home reads this to decide what to show at all — an intent nobody has used
+  /// must not appear as a permanent zero.
+  Map<ScreenshotIntent, int> get waitingByIntent => <ScreenshotIntent, int>{
+    for (final ScreenshotIntent intent in ScreenshotIntent.values)
+      if (waitingFor(intent).isNotEmpty) intent: waitingFor(intent).length,
+  };
+
+  /// The app's one shrinking number.
+  int get waitingCount =>
+      screenshots.where((ScreenshotEntity s) => s.isWaiting).length;
 
   /// Screenshots whose text has never been recognised, so no trait filter can
   /// see them yet.

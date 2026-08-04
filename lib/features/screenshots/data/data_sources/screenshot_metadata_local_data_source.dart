@@ -206,6 +206,85 @@ class ScreenshotMetadataLocalDataSource {
     }
   }
 
+  /// Sets, changes or clears what the user said they would do with a
+  /// screenshot.
+  ///
+  /// Setting an intent always clears `intent_done_at`. Changing your mind
+  /// about *what* you are going to do makes the old completion meaningless —
+  /// having ticked off "reply" says nothing about whether you have bought it —
+  /// and leaving the timestamp behind would file the screenshot as finished
+  /// under a task nobody has started.
+  Future<void> setIntent(String assetId, String? intentId) async {
+    final Database db = await _appDatabase.database;
+    final int now = DateTime.now().millisecondsSinceEpoch;
+    final Map<String, Object?>? existing = await _getMeta(db, assetId);
+
+    if (existing == null) {
+      await db.insert(AppDatabase.screenshotMeta, <String, Object?>{
+        'user_id': _userId,
+        'asset_id': assetId,
+        'is_favorite': 0,
+        'intent': intentId,
+        'intent_done_at': null,
+        'updated_at': now,
+      });
+      return;
+    }
+
+    await db.update(
+      AppDatabase.screenshotMeta,
+      <String, Object?>{
+        'intent': intentId,
+        'intent_done_at': null,
+        'updated_at': now,
+      },
+      where: 'user_id = ? AND asset_id = ?',
+      whereArgs: <Object?>[_userId, assetId],
+    );
+  }
+
+  /// Ticks an intent off, or puts it back on the list.
+  ///
+  /// Reversible on purpose. This is the one action in the app whose whole
+  /// point is that a number goes *down*, and a number that can only go down by
+  /// accident is worse than one that never moves — an accidental tick with no
+  /// way back would teach people not to use the tick at all.
+  Future<void> setIntentDone(String assetId, bool isDone) async {
+    final Database db = await _appDatabase.database;
+    final int now = DateTime.now().millisecondsSinceEpoch;
+    await db.update(
+      AppDatabase.screenshotMeta,
+      <String, Object?>{
+        'intent_done_at': isDone ? now : null,
+        'updated_at': now,
+      },
+      where: 'user_id = ? AND asset_id = ? AND intent IS NOT NULL',
+      whereArgs: <Object?>[_userId, assetId],
+    );
+  }
+
+  /// Every screenshot with an intent, as `assetId -> (intentId, doneAt)`.
+  ///
+  /// Read whole rather than per screenshot: Home needs the counts for the
+  /// entire library on every appearance, and asking row by row would be one
+  /// query per screenshot on the app's first screen.
+  Future<Map<String, ({String intent, int? doneAt})>> getAllIntents() async {
+    final Database db = await _appDatabase.database;
+    final List<Map<String, Object?>> rows = await db.query(
+      AppDatabase.screenshotMeta,
+      columns: <String>['asset_id', 'intent', 'intent_done_at'],
+      where: 'user_id = ? AND intent IS NOT NULL',
+      whereArgs: <Object?>[_userId],
+    );
+    return <String, ({String intent, int? doneAt})>{
+      for (final Map<String, Object?> row in rows)
+        row['asset_id'] as String: (
+          intent: row['intent'] as String,
+          doneAt: row['intent_done_at'] as int?,
+        ),
+    };
+  }
+
   /// Count of distinct screenshots that have ever been favorited or filed
   /// into a folder for the current user — the free-tier "managed" cap.
   Future<int> getManagedCount() async {

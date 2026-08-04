@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/core/utils/visual_vocabulary.dart';
 import 'package:shoto/features/screenshots/data/data_sources/image_labeling_data_source.dart';
 import 'package:shoto/features/screenshots/data/data_sources/library_ownership_local_data_source.dart';
@@ -117,6 +118,14 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
   @override
   Future<void> setFavorite(String assetId, bool isFavorite) =>
       _metadata.setFavorite(assetId, isFavorite);
+
+  @override
+  Future<void> setIntent(String assetId, ScreenshotIntent? intent) =>
+      _metadata.setIntent(assetId, intent?.id);
+
+  @override
+  Future<void> setIntentDone(String assetId, bool isDone) =>
+      _metadata.setIntentDone(assetId, isDone);
 
   @override
   Future<void> assignFolder(List<String> assetIds, int? folderId) =>
@@ -276,10 +285,26 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
   }
 
   ScreenshotEntity _toEntity(AssetEntity asset, Map<String, Object?>? meta) {
+    // An unrecognised id yields no intent rather than a guess — a value
+    // written by a newer build must read as "none set" here, not as whichever
+    // constant happens to sit first in the enum.
+    final ScreenshotIntent? intent = ScreenshotIntent.fromId(
+      meta?['intent'] as String?,
+    );
+    final int? doneAt = meta?['intent_done_at'] as int?;
+
     return ScreenshotEntity(
       asset: asset,
       isFavorite: (meta?['is_favorite'] as int?) == 1,
       folderId: meta?['folder_id'] as int?,
+      intent: intent == null
+          ? null
+          : IntentState(
+              intent: intent,
+              doneAt: doneAt == null
+                  ? null
+                  : DateTime.fromMillisecondsSinceEpoch(doneAt),
+            ),
     );
   }
 }

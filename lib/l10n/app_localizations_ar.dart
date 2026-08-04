@@ -1624,4 +1624,116 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get restoreClashSeparateBody =>
       'بيعمل مجلد تاني بنفس الاسم. ولا شي موجود بينمس.';
+
+  @override
+  String get intentBuy => 'أشتري';
+
+  @override
+  String get intentRead => 'أقرأ';
+
+  @override
+  String get intentReply => 'أرد';
+
+  @override
+  String get intentTry => 'أجرّب';
+
+  @override
+  String get intentVisit => 'أزور';
+
+  @override
+  String get intentBuyWaiting => 'للشراء';
+
+  @override
+  String get intentReadWaiting => 'للقراءة';
+
+  @override
+  String get intentReplyWaiting => 'للرد';
+
+  @override
+  String get intentTryWaiting => 'للتجربة';
+
+  @override
+  String get intentVisitWaiting => 'للزيارة';
+
+  @override
+  String get intentPrompt => 'شو رح تعمل فيها؟';
+
+  @override
+  String get intentSkip => 'ولا إشي محدد';
+
+  @override
+  String get intentWaitingTitle => 'مستني منك';
+
+  @override
+  String get intentNothingWaiting => 'ما في إشي مستني';
+
+  @override
+  String get intentAllDone => 'خلّصت كل اللي حفظته لبعدين.';
+
+  @override
+  String get intentMarkDone => 'خلص';
+
+  @override
+  String get intentUndo => 'رجّعها';
+
+  @override
+  String get intentDoneToast => 'تم';
+
+  @override
+  String get intentChange => 'غيّر ليش حافظها';
+
+  @override
+  String get intentClear => 'مش لإشي';
+
+  @override
+  String intentEmptyOne(String verb) {
+    return 'ما في إشي هون $verb';
+  }
+
+  @override
+  String get intentEmptyBody => 'الصور اللي بتحددها بتيجي هون لحد ما تشطّبها.';
+
+  @override
+  String intentDoneCount(int count) {
+    return '$count خلصت';
+  }
+
+  @override
+  String dateDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'من $count يوم',
+      few: 'من $count أيام',
+      two: 'من يومين',
+      one: 'من يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateWeeksAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'من $count أسبوع',
+      few: 'من $count أسابيع',
+      two: 'من أسبوعين',
+      one: 'من أسبوع',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateMonthsAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'من $count شهر',
+      few: 'من $count شهور',
+      two: 'من شهرين',
+      one: 'من شهر',
+    );
+    return '$_temp0';
+  }
 }

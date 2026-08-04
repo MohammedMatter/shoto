@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:photo_manager/photo_manager.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 
 /// Everything here is scoped to the signed-in account.
@@ -22,6 +23,13 @@ abstract class ScreenshotRepository {
   Stream<void> get onLibraryChanged;
   Future<void> setFavorite(String assetId, bool isFavorite);
   Future<void> assignFolder(List<String> assetIds, int? folderId);
+
+  /// Records what the user said they would do with a screenshot, or clears it
+  /// when [intent] is null. Setting one always resets its done state.
+  Future<void> setIntent(String assetId, ScreenshotIntent? intent);
+
+  /// Ticks an intent off, or puts it back on the waiting list.
+  Future<void> setIntentDone(String assetId, bool isDone);
 
   Future<void> deleteScreenshots(List<String> assetIds);
 
@@ -56,6 +64,7 @@ abstract class ScreenshotRepository {
   Future<String> saveGeneratedImage(
     Uint8List bytes, {
     required String filename,
+
     /// When the picture was originally captured, for images that are being
     /// put back rather than made. Omitted, the gallery dates it now.
     DateTime? createdAt,

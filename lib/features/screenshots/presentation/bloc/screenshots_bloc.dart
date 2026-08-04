@@ -16,6 +16,9 @@ import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_by_f
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/request_photo_permission_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_favorite_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/set_intent_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/set_intent_done_use_case.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/watch_library_changes_use_case.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
@@ -26,6 +29,8 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   final GetScreenshotsUseCase getScreenshotsUseCase;
   final GetScreenshotsByFolderUseCase getScreenshotsByFolderUseCase;
   final SetFavoriteUseCase setFavoriteUseCase;
+  final SetIntentUseCase setIntentUseCase;
+  final SetIntentDoneUseCase setIntentDoneUseCase;
   final AssignFolderUseCase assignFolderUseCase;
   final DeleteScreenshotsUseCase deleteScreenshotsUseCase;
   final WatchLibraryChangesUseCase watchLibraryChangesUseCase;
@@ -89,6 +94,8 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     required this.getScreenshotsUseCase,
     required this.getScreenshotsByFolderUseCase,
     required this.setFavoriteUseCase,
+    required this.setIntentUseCase,
+    required this.setIntentDoneUseCase,
     required this.assignFolderUseCase,
     required this.deleteScreenshotsUseCase,
     required this.watchLibraryChangesUseCase,
@@ -112,6 +119,8 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     on<SetLibrarySortEvent>(_onSetLibrarySort);
     on<ComputeTraitsEvent>(_onComputeTraits);
     on<ScanUnreadForTraitsEvent>(_onScanUnread);
+    on<SetIntentEvent>(_onSetIntent);
+    on<SetIntentDoneEvent>(_onSetIntentDone);
   }
 
   Future<void> _onLoad(
@@ -479,6 +488,67 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
         selectedIds: {},
       ),
     );
+  }
+
+  /// Both intent handlers write the state *before* awaiting the database.
+  ///
+  /// The tick is the one gesture in this app whose entire purpose is a number
+  /// going down, and a round trip to sqflite before the number moves makes it
+  /// feel like the tap missed. The write cannot fail in a way the user could
+  /// act on anyway — there is no retry for "could not save that you bought a
+  /// pair of shoes" — so the optimistic order is honest here.
+  Future<void> _onSetIntent(
+    SetIntentEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+
+    final ScreenshotIntent? intent = event.intent;
+    emit(
+      current.copyWith(
+        screenshots: current.screenshots
+            .map(
+              (ScreenshotEntity s) => s.id != event.assetId
+                  ? s
+                  // Changing the intent drops any completion with it: having
+                  // ticked off "reply" says nothing about whether you have
+                  // bought the thing.
+                  : s.copyWith(
+                      intent: intent == null
+                          ? null
+                          : IntentState(intent: intent),
+                      clearIntent: intent == null,
+                    ),
+            )
+            .toList(),
+      ),
+    );
+    await setIntentUseCase(event.assetId, intent);
+  }
+
+  Future<void> _onSetIntentDone(
+    SetIntentDoneEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+
+    emit(
+      current.copyWith(
+        screenshots: current.screenshots.map((ScreenshotEntity s) {
+          final IntentState? existing = s.intent;
+          if (s.id != event.assetId || existing == null) return s;
+          return s.copyWith(
+            intent: IntentState(
+              intent: existing.intent,
+              doneAt: event.isDone ? DateTime.now() : null,
+            ),
+          );
+        }).toList(),
+      ),
+    );
+    await setIntentDoneUseCase(event.assetId, event.isDone);
   }
 
   /// Reads text out of screenshots nobody has read yet, so the content

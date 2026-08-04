@@ -828,5 +828,66 @@
   "restoreClashMerge": "Put them together",
   "restoreClashMergeBody": "Screenshots go into the folders you already have.",
   "restoreClashSeparate": "Keep them apart",
-  "restoreClashSeparateBody": "Makes a second folder with the same name. Nothing existing is touched."
+  "restoreClashSeparateBody": "Makes a second folder with the same name. Nothing existing is touched.",
+  "intentBuy": "Buy",
+  "intentRead": "Read",
+  "intentReply": "Reply",
+  "intentTry": "Try",
+  "intentVisit": "Visit",
+  "intentBuyWaiting": "To buy",
+  "intentReadWaiting": "To read",
+  "intentReplyWaiting": "To reply",
+  "intentTryWaiting": "To try",
+  "intentVisitWaiting": "To visit",
+  "intentPrompt": "What will you do with it?",
+  "intentSkip": "Nothing in particular",
+  "intentWaitingTitle": "Waiting on you",
+  "intentNothingWaiting": "Nothing waiting on you",
+  "intentAllDone": "You have finished everything you saved for later.",
+  "intentMarkDone": "Done",
+  "intentUndo": "Put it back",
+  "intentDoneToast": "Ticked off",
+  "intentChange": "Change what this is for",
+  "intentClear": "Not for anything",
+  "intentEmptyOne": "Nothing here to {verb}",
+  "@intentEmptyOne": {
+    "placeholders": {
+      "verb": {
+        "type": "String"
+      }
+    }
+  },
+  "intentEmptyBody": "Screenshots you mark land here until you tick them off.",
+  "intentDoneCount": "{count} finished",
+  "@intentDoneCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@dateDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateWeeksAgo": "{count, plural, =1{1 week ago} other{{count} weeks ago}}",
+  "@dateWeeksAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateMonthsAgo": "{count, plural, =1{1 month ago} other{{count} months ago}}",
+  "@dateMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

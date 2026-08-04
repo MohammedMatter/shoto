@@ -67,6 +67,8 @@ import 'package:shoto/features/screenshots/domain/use_cases/import_from_system_p
 import 'package:shoto/features/screenshots/domain/use_cases/import_shared_screenshot_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/request_photo_permission_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_favorite_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/set_intent_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/set_intent_done_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/watch_library_changes_use_case.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
 import 'package:shoto/features/subscription/data/data_sources/revenue_cat_data_source.dart';
@@ -118,6 +120,8 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => GetScreenshotsByFolderUseCase(sl()));
   sl.registerLazySingleton(() => SetFavoriteUseCase(sl()));
   sl.registerLazySingleton(() => AssignFolderUseCase(sl()));
+  sl.registerLazySingleton(() => SetIntentUseCase(sl()));
+  sl.registerLazySingleton(() => SetIntentDoneUseCase(sl()));
   sl.registerLazySingleton(() => DeleteScreenshotsUseCase(sl()));
   sl.registerLazySingleton(() => WatchLibraryChangesUseCase(sl()));
   sl.registerLazySingleton(() => ImportSharedScreenshotUseCase(sl()));
@@ -134,6 +138,8 @@ void setupServiceLocator() {
       getScreenshotsUseCase: sl(),
       getScreenshotsByFolderUseCase: sl(),
       setFavoriteUseCase: sl(),
+      setIntentUseCase: sl(),
+      setIntentDoneUseCase: sl(),
       assignFolderUseCase: sl(),
       deleteScreenshotsUseCase: sl(),
       watchLibraryChangesUseCase: sl(),

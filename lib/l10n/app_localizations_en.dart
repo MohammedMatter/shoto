@@ -1613,4 +1613,112 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get restoreClashSeparateBody =>
       'Makes a second folder with the same name. Nothing existing is touched.';
+
+  @override
+  String get intentBuy => 'Buy';
+
+  @override
+  String get intentRead => 'Read';
+
+  @override
+  String get intentReply => 'Reply';
+
+  @override
+  String get intentTry => 'Try';
+
+  @override
+  String get intentVisit => 'Visit';
+
+  @override
+  String get intentBuyWaiting => 'To buy';
+
+  @override
+  String get intentReadWaiting => 'To read';
+
+  @override
+  String get intentReplyWaiting => 'To reply';
+
+  @override
+  String get intentTryWaiting => 'To try';
+
+  @override
+  String get intentVisitWaiting => 'To visit';
+
+  @override
+  String get intentPrompt => 'What will you do with it?';
+
+  @override
+  String get intentSkip => 'Nothing in particular';
+
+  @override
+  String get intentWaitingTitle => 'Waiting on you';
+
+  @override
+  String get intentNothingWaiting => 'Nothing waiting on you';
+
+  @override
+  String get intentAllDone =>
+      'You have finished everything you saved for later.';
+
+  @override
+  String get intentMarkDone => 'Done';
+
+  @override
+  String get intentUndo => 'Put it back';
+
+  @override
+  String get intentDoneToast => 'Ticked off';
+
+  @override
+  String get intentChange => 'Change what this is for';
+
+  @override
+  String get intentClear => 'Not for anything';
+
+  @override
+  String intentEmptyOne(String verb) {
+    return 'Nothing here to $verb';
+  }
+
+  @override
+  String get intentEmptyBody =>
+      'Screenshots you mark land here until you tick them off.';
+
+  @override
+  String intentDoneCount(int count) {
+    return '$count finished';
+  }
+
+  @override
+  String dateDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days ago',
+      one: '1 day ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateWeeksAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count weeks ago',
+      one: '1 week ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateMonthsAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count months ago',
+      one: '1 month ago',
+    );
+    return '$_temp0';
+  }
 }

@@ -1612,4 +1612,111 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get restoreClashSeparateBody =>
       'उसी नाम का दूसरा फ़ोल्डर बनता है। मौजूदा कुछ भी नहीं बदलता।';
+
+  @override
+  String get intentBuy => 'खरीदें';
+
+  @override
+  String get intentRead => 'पढ़ें';
+
+  @override
+  String get intentReply => 'जवाब दें';
+
+  @override
+  String get intentTry => 'आज़माएँ';
+
+  @override
+  String get intentVisit => 'जाएँ';
+
+  @override
+  String get intentBuyWaiting => 'खरीदने के लिए';
+
+  @override
+  String get intentReadWaiting => 'पढ़ने के लिए';
+
+  @override
+  String get intentReplyWaiting => 'जवाब देने के लिए';
+
+  @override
+  String get intentTryWaiting => 'आज़माने के लिए';
+
+  @override
+  String get intentVisitWaiting => 'जाने के लिए';
+
+  @override
+  String get intentPrompt => 'इसका क्या करेंगे?';
+
+  @override
+  String get intentSkip => 'कुछ ख़ास नहीं';
+
+  @override
+  String get intentWaitingTitle => 'आपका इंतज़ार';
+
+  @override
+  String get intentNothingWaiting => 'कुछ भी बाक़ी नहीं';
+
+  @override
+  String get intentAllDone => 'बाद के लिए सहेजा सब कुछ पूरा हो गया।';
+
+  @override
+  String get intentMarkDone => 'हो गया';
+
+  @override
+  String get intentUndo => 'वापस रखें';
+
+  @override
+  String get intentDoneToast => 'पूरा हुआ';
+
+  @override
+  String get intentChange => 'बदलें कि यह किसलिए है';
+
+  @override
+  String get intentClear => 'किसी काम के लिए नहीं';
+
+  @override
+  String intentEmptyOne(String verb) {
+    return 'यहाँ $verb को कुछ नहीं';
+  }
+
+  @override
+  String get intentEmptyBody =>
+      'आपके चिह्नित स्क्रीनशॉट यहाँ रहेंगे जब तक आप उन्हें पूरा न करें।';
+
+  @override
+  String intentDoneCount(int count) {
+    return '$count पूरे';
+  }
+
+  @override
+  String dateDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count दिन पहले',
+      one: '1 दिन पहले',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateWeeksAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count हफ़्ते पहले',
+      one: '1 हफ़्ता पहले',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateMonthsAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count महीने पहले',
+      one: '1 महीना पहले',
+    );
+    return '$_temp0';
+  }
 }

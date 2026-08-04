@@ -2721,6 +2721,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Makes a second folder with the same name. Nothing existing is touched.'**
   String get restoreClashSeparateBody;
+
+  /// No description provided for @intentBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy'**
+  String get intentBuy;
+
+  /// No description provided for @intentRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get intentRead;
+
+  /// No description provided for @intentReply.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get intentReply;
+
+  /// No description provided for @intentTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try'**
+  String get intentTry;
+
+  /// No description provided for @intentVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit'**
+  String get intentVisit;
+
+  /// No description provided for @intentBuyWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To buy'**
+  String get intentBuyWaiting;
+
+  /// No description provided for @intentReadWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To read'**
+  String get intentReadWaiting;
+
+  /// No description provided for @intentReplyWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To reply'**
+  String get intentReplyWaiting;
+
+  /// No description provided for @intentTryWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To try'**
+  String get intentTryWaiting;
+
+  /// No description provided for @intentVisitWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To visit'**
+  String get intentVisitWaiting;
+
+  /// No description provided for @intentPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'What will you do with it?'**
+  String get intentPrompt;
+
+  /// No description provided for @intentSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in particular'**
+  String get intentSkip;
+
+  /// No description provided for @intentWaitingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting on you'**
+  String get intentWaitingTitle;
+
+  /// No description provided for @intentNothingWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing waiting on you'**
+  String get intentNothingWaiting;
+
+  /// No description provided for @intentAllDone.
+  ///
+  /// In en, this message translates to:
+  /// **'You have finished everything you saved for later.'**
+  String get intentAllDone;
+
+  /// No description provided for @intentMarkDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get intentMarkDone;
+
+  /// No description provided for @intentUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Put it back'**
+  String get intentUndo;
+
+  /// No description provided for @intentDoneToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticked off'**
+  String get intentDoneToast;
+
+  /// No description provided for @intentChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change what this is for'**
+  String get intentChange;
+
+  /// No description provided for @intentClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Not for anything'**
+  String get intentClear;
+
+  /// No description provided for @intentEmptyOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here to {verb}'**
+  String intentEmptyOne(String verb);
+
+  /// No description provided for @intentEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshots you mark land here until you tick them off.'**
+  String get intentEmptyBody;
+
+  /// No description provided for @intentDoneCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} finished'**
+  String intentDoneCount(int count);
+
+  /// No description provided for @dateDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day ago} other{{count} days ago}}'**
+  String dateDaysAgo(int count);
+
+  /// No description provided for @dateWeeksAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 week ago} other{{count} weeks ago}}'**
+  String dateWeeksAgo(int count);
+
+  /// No description provided for @dateMonthsAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 month ago} other{{count} months ago}}'**
+  String dateMonthsAgo(int count);
 }
 
 class _AppLocalizationsDelegate

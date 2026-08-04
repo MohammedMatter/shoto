@@ -1,4 +1,5 @@
 import 'package:shoto/core/utils/content_traits.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_sort.dart';
@@ -96,6 +97,21 @@ class SetLibraryLensEvent extends ScreenshotsEvent {
 ///
 /// Budgeted rather than exhaustive — see [ScreenshotsBloc.scanBudget].
 class ScanUnreadForTraitsEvent extends ScreenshotsEvent {}
+
+/// Records what the user says they will do with a screenshot, or clears it
+/// with a null [intent].
+class SetIntentEvent extends ScreenshotsEvent {
+  final String assetId;
+  final ScreenshotIntent? intent;
+  SetIntentEvent(this.assetId, this.intent);
+}
+
+/// Ticks an intent off, or puts it back on the waiting list.
+class SetIntentDoneEvent extends ScreenshotsEvent {
+  final String assetId;
+  final bool isDone;
+  SetIntentDoneEvent(this.assetId, this.isDone);
+}
 
 /// Derives content traits for the loaded library from already-cached OCR text.
 ///

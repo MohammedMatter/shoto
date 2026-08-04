@@ -54,7 +54,7 @@ class AppDatabase {
     final String path = join(await getDatabasesPath(), 'shoto.db');
     return openDatabase(
       path,
-      version: 14,
+      version: 15,
       onCreate: (db, version) => _createTables(db),
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
@@ -154,6 +154,23 @@ class AppDatabase {
             'ALTER TABLE $screenshotMeta ADD COLUMN kept_at INTEGER',
           );
         }
+        if (oldVersion < 15) {
+          // What the user said they were going to *do* with a screenshot, and
+          // when they ticked it off. Two columns rather than one because they
+          // answer different questions and change at different times — the
+          // intent is set once at capture, done-ness flips later and can flip
+          // back.
+          //
+          // Additive, so nothing existing moves: every row already here simply
+          // has no intent, which is the correct answer for a screenshot saved
+          // before the question was ever asked.
+          await db.execute(
+            'ALTER TABLE $screenshotMeta ADD COLUMN intent TEXT',
+          );
+          await db.execute(
+            'ALTER TABLE $screenshotMeta ADD COLUMN intent_done_at INTEGER',
+          );
+        }
       },
       onConfigure: (db) async => db.execute('PRAGMA foreign_keys = ON'),
     );
@@ -182,6 +199,8 @@ class AppDatabase {
         visual_labels TEXT,
         category_override TEXT,
         kept_at INTEGER,
+        intent TEXT,
+        intent_done_at INTEGER,
         updated_at INTEGER NOT NULL,
         PRIMARY KEY (user_id, asset_id),
         FOREIGN KEY (folder_id) REFERENCES $folders (id) ON DELETE SET NULL
