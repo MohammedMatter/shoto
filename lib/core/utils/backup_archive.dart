@@ -71,6 +71,157 @@ class BackupContents {
       missingImages == 0 && skippedItems == 0 && skippedFolders == 0;
 }
 
+/// Writes one screenshot at a time into an open archive.
+///
+/// **The whole point is that it never holds the library.** The obvious version
+/// of this class collected every screenshot's bytes into a list and handed the
+/// lot to the zip encoder, which then built the finished archive as a second
+/// copy in memory. Peak cost was twice the library, so a phone with a few
+/// hundred screenshots — the phones this feature exists for — ran out of memory
+/// and the backup died. Here each image is written through to the sink and
+/// released before the next one is read, so the cost is one screenshot no
+/// matter how big the library gets.
+///
+/// The manifest is the one thing that does accumulate, because it cannot be
+/// written until every entry has been named. It is text, and small next to the
+/// pictures it describes.
+class BackupWriter {
+  final ZipEncoder _encoder;
+  final OutputStream _sink;
+  final List<BackupFolder> _folders;
+  final List<BackupItem> _items = <BackupItem>[];
+  bool _closed = false;
+
+  BackupWriter._(this._encoder, this._sink, this._folders);
+
+  /// How many screenshots have been written so far.
+  int get count => _items.length;
+
+  /// Writes [source] into the archive and forgets its bytes.
+  ///
+  /// Entry names are assigned here rather than by the caller, zero-padded so a
+  /// directory listing sorts the way the library does. That matters only to a
+  /// human poking around inside the zip — but that human is the whole reason
+  /// the format is a zip.
+  void add(BackupSource source) {
+    if (_closed) {
+      throw StateError('BackupWriter.add called after close');
+    }
+
+    final String name =
+        '${BackupManifest.imageDirectory}/'
+        '${(count + 1).toString().padLeft(5, '0')}'
+        '${BackupArchive._extensionOf(source.originalName)}';
+
+    // autoClose lets the encoder release the entry's bytes the moment they are
+    // on their way to the sink, which is what keeps the loop flat.
+    _encoder.add(ArchiveFile.bytes(name, source.bytes));
+
+    _items.add(
+      BackupItem(
+        path: name,
+        // Trusted from the caller but bounded here as well: an index the
+        // manifest cannot resolve on the way back in would silently unfile
+        // the screenshot, and it is cheaper to refuse to write it.
+        folderIndex:
+            source.folderIndex != null &&
+                source.folderIndex! >= 0 &&
+                source.folderIndex! < _folders.length
+            ? source.folderIndex
+            : null,
+        isFavorite: source.isFavorite,
+        ocrText: source.ocrText,
+        phash: source.phash,
+        visualLabels: source.visualLabels,
+        addedAt: source.addedAt,
+      ),
+    );
+  }
+
+  /// Appends the manifest, finishes the zip, and returns the archive's size.
+  ///
+  /// The manifest goes in last so the images are already present when a reader
+  /// streams the file, and sits at the root so it is the first thing anybody
+  /// opening the zip sees.
+  int close() {
+    if (_closed) {
+      throw StateError('BackupWriter.close called twice');
+    }
+    _closed = true;
+
+    _encoder.add(
+      ArchiveFile.string(
+        BackupManifest.fileName,
+        BackupManifest.now(folders: _folders, items: _items).encode(),
+      ),
+    );
+    _encoder.endEncode();
+
+    final int length = _sink.length;
+    _sink.closeSync();
+    return length;
+  }
+}
+
+/// Reads an archive one screenshot at a time.
+///
+/// The mirror of [BackupWriter], and for the same reason: the eager version
+/// decoded every image into a list before the restore had saved a single one,
+/// which cost the whole library in memory on top of the copy already read off
+/// disk. Here the zip's directory is read up front — it is small — and each
+/// image is pulled from the file only when the caller asks for it.
+class BackupReader {
+  final BackupManifest manifest;
+  final int skippedItems;
+  final int skippedFolders;
+
+  final Archive _archive;
+  final InputFileStream? _input;
+  final Map<String, ArchiveFile> _byName;
+  int _missing = 0;
+
+  BackupReader._({
+    required this.manifest,
+    required this.skippedItems,
+    required this.skippedFolders,
+    required Archive archive,
+    required InputFileStream? input,
+    required Map<String, ArchiveFile> byName,
+  }) : _archive = archive,
+       _input = input,
+       _byName = byName;
+
+  /// Entries the manifest listed whose image was missing from the archive.
+  ///
+  /// Only meaningful once [entries] has been walked to the end.
+  int get missingImages => _missing;
+
+  /// Walks the archive, yielding each screenshot the manifest can account for.
+  ///
+  /// A missing image is counted rather than thrown: a truncated archive still
+  /// holds most of somebody's library, and refusing all of it to punish the
+  /// part that did not survive helps nobody.
+  Iterable<BackupEntry> entries() sync* {
+    _missing = 0;
+    for (final BackupItem item in manifest.items) {
+      final ArchiveFile? file = _byName[BackupArchive._normalize(item.path)];
+      final Uint8List? content = file?.readBytes();
+      if (content == null || content.isEmpty) {
+        _missing++;
+        continue;
+      }
+      yield BackupEntry(item: item, bytes: content);
+      // Releases this entry's decoded bytes before the next one is read.
+      file!.closeSync();
+    }
+  }
+
+  void close() {
+    _archive.clearSync();
+    _input?.closeSync();
+  }
+}
+
 /// Reads and writes the SHOTO backup container.
 ///
 /// **A plain ZIP, deliberately.** A private format would be marginally smaller
@@ -85,80 +236,86 @@ class BackupContents {
 abstract class BackupArchive {
   BackupArchive._();
 
-  /// Builds the archive bytes.
+  /// Opens an archive that writes straight to [path].
   ///
-  /// Entry names are assigned here and zero-padded so a directory listing
-  /// sorts the way the library does, which matters only to a human poking
-  /// around inside the zip — but that human is the whole reason the format is
-  /// a zip.
+  /// This is what the app uses. Nothing is buffered beyond the screenshot
+  /// currently being written, so a library of any size costs the same.
+  static BackupWriter openWriter({
+    required String path,
+    required List<BackupFolder> folders,
+  }) => _openWriter(OutputFileStream(path), folders);
+
+  /// Opens the archive at [path] for reading, without loading it.
+  ///
+  /// Throws [BackupFormatException] when the file is not a zip, holds no
+  /// manifest, or holds one this build must refuse.
+  static BackupReader openReader(String path) {
+    final InputFileStream input = InputFileStream(path);
+    try {
+      return _openReader(_decode(() => ZipDecoder().decodeStream(input)), input);
+    } catch (_) {
+      input.closeSync();
+      rethrow;
+    }
+  }
+
+  /// Builds the archive entirely in memory and returns its bytes.
+  ///
+  /// Kept for tests and small callers. **Not for the library** — that is what
+  /// [openWriter] is for, and the whole reason it exists.
   static Uint8List write({
     required List<BackupFolder> folders,
     required List<BackupSource> sources,
   }) {
-    final Archive archive = Archive();
-    final List<BackupItem> items = <BackupItem>[];
-
-    for (int i = 0; i < sources.length; i++) {
-      final BackupSource source = sources[i];
-      final String name =
-          '${BackupManifest.imageDirectory}/'
-          '${(i + 1).toString().padLeft(5, '0')}'
-          '${_extensionOf(source.originalName)}';
-
-      archive.add(ArchiveFile.bytes(name, source.bytes));
-      items.add(
-        BackupItem(
-          path: name,
-          // Trusted from the caller but bounded here as well: an index the
-          // manifest cannot resolve on the way back in would silently unfile
-          // the screenshot, and it is cheaper to refuse to write it.
-          folderIndex:
-              source.folderIndex != null &&
-                  source.folderIndex! >= 0 &&
-                  source.folderIndex! < folders.length
-              ? source.folderIndex
-              : null,
-          isFavorite: source.isFavorite,
-          ocrText: source.ocrText,
-          phash: source.phash,
-          visualLabels: source.visualLabels,
-          addedAt: source.addedAt,
-        ),
-      );
+    final OutputMemoryStream sink = OutputMemoryStream();
+    final BackupWriter writer = _openWriter(sink, folders);
+    for (final BackupSource source in sources) {
+      writer.add(source);
     }
-
-    // Written last so the images are already in the archive when a reader
-    // streams it, and named at the root so it is the first thing anybody
-    // opening the zip sees.
-    archive.add(
-      ArchiveFile.string(
-        BackupManifest.fileName,
-        BackupManifest.now(folders: folders, items: items).encode(),
-      ),
-    );
-
-    return ZipEncoder().encodeBytes(archive, level: DeflateLevel.none);
+    writer.close();
+    return sink.getBytes();
   }
 
-  /// Reads an archive produced by [write].
+  /// Reads an archive held in memory.
   ///
-  /// Throws [BackupFormatException] when the file is not a zip, holds no
-  /// manifest, or holds one this build must refuse. Individual images going
-  /// missing is not fatal — it is counted in [BackupContents.missingImages]
-  /// and the rest are restored, because a truncated archive still holds most
-  /// of somebody's library.
+  /// Kept for tests and small callers, with the same caveat as [write]: the
+  /// app restores through [openReader] so it never holds the library at once.
   static BackupContents read(Uint8List bytes) {
-    final Archive archive;
-    try {
-      archive = ZipDecoder().decodeBytes(bytes);
-    } catch (_) {
-      throw const BackupFormatException('not a readable zip archive');
+    final BackupReader reader = _openReader(
+      _decode(() => ZipDecoder().decodeBytes(bytes)),
+      null,
+    );
+    final List<BackupEntry> entries = reader.entries().toList();
+    return BackupContents(
+      manifest: reader.manifest,
+      entries: entries,
+      missingImages: reader.missingImages,
+      skippedItems: reader.skippedItems,
+      skippedFolders: reader.skippedFolders,
+    );
+  }
+
+  static BackupWriter _openWriter(
+    OutputStream sink,
+    List<BackupFolder> folders,
+  ) {
+    final ZipEncoder encoder = ZipEncoder();
+    encoder.startEncode(sink, level: DeflateLevel.none);
+    return BackupWriter._(encoder, sink, folders);
+  }
+
+  static BackupReader _openReader(Archive archive, InputFileStream? input) {
+    // Built once instead of scanning the file list per manifest line. The scan
+    // was quadratic, which nobody notices at ten screenshots and everybody
+    // notices at a thousand.
+    final Map<String, ArchiveFile> byName = <String, ArchiveFile>{};
+    for (final ArchiveFile file in archive.files) {
+      if (file.isFile) byName.putIfAbsent(_normalize(file.name), () => file);
     }
 
-    final ArchiveFile? manifestFile = _findFile(
-      archive,
+    final ArchiveFile? manifestFile = byName[_normalize(
       BackupManifest.fileName,
-    );
+    )];
     if (manifestFile == null) {
       throw const BackupFormatException('no manifest inside the archive');
     }
@@ -166,40 +323,24 @@ abstract class BackupArchive {
     final BackupParseResult parsed = BackupManifest.decode(
       utf8.decode(manifestFile.readBytes() ?? <int>[], allowMalformed: true),
     );
+    manifestFile.closeSync();
 
-    int missing = 0;
-    final List<BackupEntry> entries = <BackupEntry>[];
-    for (final BackupItem item in parsed.manifest.items) {
-      final ArchiveFile? file = _findFile(archive, item.path);
-      final List<int>? content = file?.readBytes();
-      if (content == null || content.isEmpty) {
-        missing++;
-        continue;
-      }
-      entries.add(
-        BackupEntry(item: item, bytes: Uint8List.fromList(content)),
-      );
-    }
-
-    return BackupContents(
+    return BackupReader._(
       manifest: parsed.manifest,
-      entries: entries,
-      missingImages: missing,
       skippedItems: parsed.skippedItems,
       skippedFolders: parsed.skippedFolders,
+      archive: archive,
+      input: input,
+      byName: byName,
     );
   }
 
-  /// Zip entries can be written with either separator and some tools prefix a
-  /// leading `./`, so matching on the exact string alone loses files that are
-  /// present.
-  static ArchiveFile? _findFile(Archive archive, String path) {
-    final String wanted = _normalize(path);
-    for (final ArchiveFile file in archive.files) {
-      if (!file.isFile) continue;
-      if (_normalize(file.name) == wanted) return file;
+  static Archive _decode(Archive Function() decode) {
+    try {
+      return decode();
+    } catch (_) {
+      throw const BackupFormatException('not a readable zip archive');
     }
-    return null;
   }
 
   static String _normalize(String path) {

@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
 import 'package:shoto/core/utils/backup_archive.dart';
 import 'package:shoto/core/utils/backup_manifest.dart';
 
@@ -297,5 +299,119 @@ void main() {
     final Object? decoded = jsonDecode(utf8.decode(manifest.readBytes()!));
     expect(decoded, isA<Map<String, Object?>>());
     expect((decoded as Map<String, Object?>)['kind'], BackupManifest.kind);
+  });
+
+  // The path the app actually takes. Everything above goes through the
+  // in-memory helpers, which is convenient for a test and is precisely what a
+  // real library must never do — so the streaming pair needs covering on its
+  // own terms rather than by proxy.
+  group('streaming straight to and from a file', () {
+    late Directory directory;
+    late String path;
+
+    setUp(() {
+      directory = Directory.systemTemp.createTempSync('shoto-bk');
+      path = p.join(directory.path, 'backup.zip');
+    });
+    tearDown(() => directory.deleteSync(recursive: true));
+
+    test('a library written one at a time comes back whole', () {
+      final BackupWriter writer = BackupArchive.openWriter(
+        path: path,
+        folders: <BackupFolder>[_folder('Receipts'), _folder('وصفات')],
+      );
+      writer.add(_source('first', folder: 0, fav: true, text: 'رمز 481920'));
+      writer.add(_source('second', folder: 1, labels: <String>['Ice cream']));
+      writer.add(_source('third'));
+
+      expect(writer.count, 3);
+      final int size = writer.close();
+      expect(size, File(path).lengthSync());
+
+      final BackupReader reader = BackupArchive.openReader(path);
+      addTearDown(reader.close);
+
+      expect(reader.manifest.folders.map((BackupFolder f) => f.name), <String>[
+        'Receipts',
+        'وصفات',
+      ]);
+
+      final List<BackupEntry> entries = reader.entries().toList();
+      expect(entries, hasLength(3));
+      expect(reader.missingImages, 0);
+
+      expect(utf8.decode(entries[0].bytes), 'first');
+      expect(entries[0].item.folderIndex, 0);
+      expect(entries[0].item.isFavorite, isTrue);
+      expect(entries[0].item.ocrText, 'رمز 481920');
+
+      expect(utf8.decode(entries[1].bytes), 'second');
+      expect(entries[1].item.visualLabels, <String>['Ice cream']);
+
+      expect(utf8.decode(entries[2].bytes), 'third');
+      expect(entries[2].item.folderIndex, isNull);
+    });
+
+    test('the streamed file is byte-identical to the in-memory one', () {
+      // The two writers must not drift into producing different formats — one
+      // of them is what users have on disk and the other is what every test
+      // above is checking.
+      final BackupWriter writer = BackupArchive.openWriter(
+        path: path,
+        folders: <BackupFolder>[_folder('Work')],
+      );
+      writer.add(_source('a', folder: 0, fav: true));
+      writer.add(_source('b'));
+      writer.close();
+
+      final BackupContents streamed = BackupArchive.read(
+        File(path).readAsBytesSync(),
+      );
+      expect(streamed.isComplete, isTrue);
+      expect(streamed.entries.map((BackupEntry e) => utf8.decode(e.bytes)), <
+        String
+      >['a', 'b']);
+      expect(streamed.entries[0].item.isFavorite, isTrue);
+    });
+
+    test('an empty library still produces a readable archive', () {
+      // Nothing to back up is not an error, and the file must not be a zip
+      // with no central directory that every unzip tool then rejects.
+      BackupArchive.openWriter(path: path, folders: <BackupFolder>[]).close();
+
+      final BackupReader reader = BackupArchive.openReader(path);
+      addTearDown(reader.close);
+      expect(reader.entries().toList(), isEmpty);
+      expect(reader.manifest.folders, isEmpty);
+    });
+
+    test('a file that is not a zip is refused by name, not by crash', () {
+      File(path).writeAsStringSync('definitely not a zip file');
+      expect(
+        () => BackupArchive.openReader(path),
+        throwsA(isA<BackupFormatException>()),
+      );
+    });
+
+    test('a zip with no manifest is refused', () {
+      final Archive plain = Archive()
+        ..add(ArchiveFile.bytes('images/00001.png', _bytes('lonely')));
+      File(path).writeAsBytesSync(ZipEncoder().encodeBytes(plain));
+      expect(
+        () => BackupArchive.openReader(path),
+        throwsA(isA<BackupFormatException>()),
+      );
+    });
+
+    test('adding after close is refused rather than silently dropped', () {
+      final BackupWriter writer = BackupArchive.openWriter(
+        path: path,
+        folders: <BackupFolder>[],
+      );
+      writer.add(_source('a'));
+      writer.close();
+      expect(() => writer.add(_source('b')), throwsStateError);
+      expect(writer.close, throwsStateError);
+    });
   });
 }
