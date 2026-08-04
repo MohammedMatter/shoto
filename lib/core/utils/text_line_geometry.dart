@@ -119,7 +119,10 @@ abstract class TextLineGeometry {
   }
 
   static bool _isSpace(int unit) =>
-      unit == 0x20 || unit == 0x09 || unit == 0x0A || unit == 0x0D ||
+      unit == 0x20 ||
+      unit == 0x09 ||
+      unit == 0x0A ||
+      unit == 0x0D ||
       unit == 0x00A0;
 
   /// Each word paired with where its text sits inside [lineText].

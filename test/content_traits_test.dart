@@ -105,6 +105,15 @@ void main() {
       );
     });
 
+    test('digits welded to letters are not a number at all', () {
+      // Straight off the test device: an IBAN reference page printing
+      // ABNA0417164300, which the app was offering to dial.
+      expect(
+        ContentTraits.of('BBAN ABNA0417164300 country code'),
+        isNot(contains(ContentTrait.contact)),
+      );
+    });
+
     test('a country code is evidence enough on its own', () {
       expect(
         ContentTraits.of('+962 7 9123 4567'),

@@ -1,4 +1,5 @@
 import 'package:shoto/core/utils/sensitive_data.dart';
+import 'package:shoto/core/utils/text_cues.dart';
 import 'package:shoto/features/smart_actions/data/services/event_extractor.dart';
 import 'package:shoto/features/smart_actions/data/services/extraction.dart';
 import 'package:shoto/features/smart_actions/data/services/place_extractor.dart';
@@ -183,8 +184,14 @@ abstract class ActionExtractor {
   /// produced "76350000\n159759" and called it a phone number. Worse than the
   /// bogus match itself is that the greedy span then swallowed a genuine
   /// number sitting alone on one of those lines.
+  /// **Letters on either end disqualify it.** Without the boundaries this
+  /// pattern happily started inside a word: an IBAN printed as
+  /// `ABNA0417164300` on a reference page produced `0417164300`, and the app
+  /// offered to dial it. Nothing writes a phone number welded to letters, so
+  /// demanding a clear edge costs nothing and removes a whole class of account
+  /// and reference numbers.
   static final RegExp _phonePattern = RegExp(
-    r'\+?[0-9][0-9 \-().]{5,20}[0-9]',
+    r'(?<![0-9A-Za-z])\+?[0-9][0-9 \-().]{5,20}[0-9](?![0-9A-Za-z])',
   );
 
   /// A 12-19 digit run, separators allowed — the shape of a bank card.
@@ -207,6 +214,10 @@ abstract class ActionExtractor {
 
   /// Words that turn a bare number into a verification code. Without one of
   /// these nearby, four to eight digits is just a number.
+  ///
+  /// Matched as whole words via [TextCues] — `code` inside "barcode" and `pin`
+  /// inside "shipping" were both turning ordinary numbers into codes, the
+  /// former on a real screenshot from the test device.
   static const List<String> _codeCues = [
     'code',
     'otp',
@@ -224,6 +235,12 @@ abstract class ActionExtractor {
 
   /// How far either side of a number the cue may sit.
   static const int _cueWindow = 40;
+
+  /// Line breaks allowed between a code and the word naming it.
+  ///
+  /// One, not zero: "Your verification code is" followed by the digits on the
+  /// next line is how most one-time-password messages are laid out.
+  static const int _maxCodeLineGap = 1;
 
   // -------------------------------------------------------------------
   // Builders — each returns null to reject a shaped-but-invalid match
@@ -390,11 +407,20 @@ abstract class ActionExtractor {
     for (final RegExpMatch match in _standaloneNumber.allMatches(text)) {
       if (_overlaps(claimed, match.start, match.end)) continue;
 
-      final int from = (match.start - _cueWindow).clamp(0, haystack.length);
-      final int to = (match.end + _cueWindow).clamp(0, haystack.length);
-      final String context = haystack.substring(from, to);
-
-      if (!_codeCues.any(context.contains)) continue;
+      if (!TextCues.anyNear(
+        haystack,
+        match.start,
+        match.end,
+        _cueWindow,
+        _codeCues,
+        // A code and the word announcing it are written together — same line,
+        // or the line straight after when the sender breaks it. Anything
+        // further apart is a heading that happens to be nearby, which is what
+        // a page about barcode formats is made of.
+        maxLineGap: _maxCodeLineGap,
+      )) {
+        continue;
+      }
 
       final String digits = match.group(0)!;
       claimed.add(_Span(match.start, match.end));

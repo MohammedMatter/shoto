@@ -34,9 +34,7 @@ abstract class PlaceExtractor {
     _claimStreets(text, found);
 
     found.sort((Extraction a, Extraction b) => a.start.compareTo(b.start));
-    return found.length <= _maxPlaces
-        ? found
-        : found.sublist(0, _maxPlaces);
+    return found.length <= _maxPlaces ? found : found.sublist(0, _maxPlaces);
   }
 
   // -------------------------------------------------------------------
