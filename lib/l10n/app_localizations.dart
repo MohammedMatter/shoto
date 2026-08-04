@@ -2683,7 +2683,7 @@ abstract class AppLocalizations {
   /// No description provided for @restoreClashTitle.
   ///
   /// In en, this message translates to:
-  /// **'{count} folders already exist here'**
+  /// **'{count, plural, =1{1 folder already exists here} other{{count} folders already exist here}}'**
   String restoreClashTitle(int count);
 
   /// No description provided for @restoreClashBody.
@@ -2695,7 +2695,7 @@ abstract class AppLocalizations {
   /// No description provided for @restoreClashMore.
   ///
   /// In en, this message translates to:
-  /// **'and {count} more'**
+  /// **'{count, plural, =1{and 1 more} other{and {count} more}}'**
   String restoreClashMore(int count);
 
   /// No description provided for @restoreClashMerge.

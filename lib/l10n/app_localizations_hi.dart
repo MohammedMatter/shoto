@@ -1575,7 +1575,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String restoreClashTitle(int count) {
-    return '$count फ़ोल्डर यहाँ पहले से हैं';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count फ़ोल्डर यहाँ पहले से हैं',
+      one: '1 फ़ोल्डर यहाँ पहले से है',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1584,7 +1590,13 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String restoreClashMore(int count) {
-    return 'और $count अन्य';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'और $count अन्य',
+      one: 'और 1 अन्य',
+    );
+    return '$_temp0';
   }
 
   @override

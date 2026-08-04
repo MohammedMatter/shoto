@@ -808,7 +808,7 @@
       }
     }
   },
-  "restoreClashTitle": "{count} folders already exist here",
+  "restoreClashTitle": "{count, plural, =1{1 folder already exists here} other{{count} folders already exist here}}",
   "@restoreClashTitle": {
     "placeholders": {
       "count": {
@@ -817,7 +817,7 @@
     }
   },
   "restoreClashBody": "These names are in your library and in the backup. Same name does not always mean same folder, so this one is yours to decide.",
-  "restoreClashMore": "and {count} more",
+  "restoreClashMore": "{count, plural, =1{and 1 more} other{and {count} more}}",
   "@restoreClashMore": {
     "placeholders": {
       "count": {

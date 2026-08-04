@@ -1586,7 +1586,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String restoreClashTitle(int count) {
-    return '$count dossiers existent déjà ici';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dossiers existent déjà ici',
+      one: '1 dossier existe déjà ici',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1595,7 +1601,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String restoreClashMore(int count) {
-    return 'et $count de plus';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'et $count de plus',
+      one: 'et 1 de plus',
+    );
+    return '$_temp0';
   }
 
   @override

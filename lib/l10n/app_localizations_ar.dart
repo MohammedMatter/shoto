@@ -1584,7 +1584,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String restoreClashTitle(int count) {
-    return '$count مجلدات موجودة عندك أصلاً';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'في $count مجلد موجود عندك أصلاً',
+      few: 'في $count مجلدات موجودة عندك أصلاً',
+      two: 'في مجلدين موجودين عندك أصلاً',
+      one: 'في مجلد موجود عندك أصلاً',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1593,7 +1601,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String restoreClashMore(int count) {
-    return 'و $count غيرها';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'و $count غيرهم',
+      few: 'و $count غيرهم',
+      two: 'واثنين غيرهم',
+      one: 'وواحد غيره',
+    );
+    return '$_temp0';
   }
 
   @override

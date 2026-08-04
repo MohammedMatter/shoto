@@ -1577,7 +1577,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String restoreClashTitle(int count) {
-    return '$count carpetas ya existen aquí';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count carpetas ya existen aquí',
+      one: '1 carpeta ya existe aquí',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -1586,7 +1592,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String restoreClashMore(int count) {
-    return 'y $count más';
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'y $count más',
+      one: 'y 1 más',
+    );
+    return '$_temp0';
   }
 
   @override
