@@ -126,15 +126,24 @@ void main() {
 
     // ------------------------------------------- Android, the launch window
     //
-    // An empty tray, and the emptiness is the point: this is drawn by the OS
-    // before Flutter exists, so it cannot move — and the first Flutter frame
-    // draws exactly this, at exactly this size, in exactly this place, and
-    // then files the cards into it.
+    // The whole mark, at rest, slab included. This used to be the tray with
+    // no cards in it, because a Flutter splash then drew the same empty tray
+    // and filed the cards into it — a handover trick for a screen that no
+    // longer exists (the router decides the first destination before
+    // `runApp`, so nothing is shown between the OS window and the real first
+    // screen). With nothing to hand over to, an incomplete mark is just an
+    // incomplete mark.
+    //
+    // The slab is not optional here even though this is the one place the
+    // mark appears on a known background: that background is `#FAFAFA` in
+    // light mode, and the cards are paper. Without the slab the launch
+    // window would show two grey slivers and a pair of black bars floating on
+    // white.
     for (final MapEntry<String, double> d in _densities.entries) {
       await _png(
         '$_android/drawable-${d.key}/splash_logo.png',
         (_splashMark * d.value).round(),
-        (px) => ShotoBrandMarkPainter(markExtent: px, cards: false),
+        (px) => ShotoBrandMarkPainter(markExtent: px),
       );
     }
 
@@ -170,13 +179,13 @@ void main() {
       );
     }
 
-    // The iOS launch image, matching Android's: the same empty tray, at the
-    // same 96dp, for the same reason.
+    // The iOS launch image, matching Android's: the same mark, at the same
+    // 96dp, for the same reason.
     for (int scale = 1; scale <= 3; scale++) {
       await _png(
         '$_iosLaunch/LaunchImage${scale == 1 ? '' : '@${scale}x'}.png',
         (_splashMark * scale).round(),
-        (px) => ShotoBrandMarkPainter(markExtent: px, cards: false),
+        (px) => ShotoBrandMarkPainter(markExtent: px),
       );
     }
 

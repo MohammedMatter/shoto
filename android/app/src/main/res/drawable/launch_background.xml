@@ -5,13 +5,12 @@
 
     Two layers: the app's own background colour, and the mark centred on it.
 
-    **The mark here is an empty tray — no cards in it — and that is on
-    purpose.** This window is painted by the OS, so nothing on it can move.
-    SplashPage draws the identical empty tray at the identical 96dp in the
-    identical place, so the handover from the OS to the app is invisible, and
-    then files the three cards into it. Anything the launch window had already
-    shown is never re-introduced; the only thing that arrives is the thing that
-    was never here.
+    The mark here is the whole mark, at rest. It used to be an empty tray, for
+    a Flutter splash screen that drew the identical empty tray and then filed
+    the cards into it — a handover that stopped existing when the router
+    started deciding the first destination before `runApp`. There is nothing
+    between this window and the first real screen now, so there is nothing for
+    an incomplete mark to hand over to.
 
     `splash_logo` is a real raster now (generated per density by
     `tool/generate_brand_assets.dart`), so wrapping it in <bitmap> is both
