@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.shoto"
+    namespace = "com.shoto.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -23,8 +23,11 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.shoto"
+        // Permanent, and the one thing on this page that can never be changed
+        // after the first upload: Play identifies an app by its applicationId
+        // forever. Renaming it later is not an edit, it is a different app
+        // with a different listing and none of the installs.
+        applicationId = "com.shoto.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

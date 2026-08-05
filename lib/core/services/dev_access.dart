@@ -30,13 +30,18 @@ class DevAccess extends ChangeNotifier {
   /// over a week would still count.
   static const Duration tapWindow = Duration(seconds: 2);
 
-  /// ⚠️ **Set this to `kDebugMode` before submitting to the stores.**
+  /// Debug builds only, and deliberately not a switch anybody can flip back.
   ///
-  /// While it is `true` in a release build, anyone who finds the tap and
-  /// guesses four digits gets every paid feature for nothing. It is `true`
-  /// now so the unlock also works in release builds installed for testing.
-  /// Listed in DOCUMENTATION §8 so it is not forgotten at submission time.
-  static const bool enabled = true;
+  /// While this was `true` in a release build, anyone who strings a
+  /// decompiled APK finds both the tap count and the four digits, and gets
+  /// every paid feature for nothing. Tying it to [kDebugMode] means the code
+  /// path is compiled out of release entirely: there is nothing left in the
+  /// binary to find, and no way to forget this at submission time.
+  ///
+  /// The cost is that the unlock no longer works in a release build installed
+  /// for testing. Use a profile or debug build to demo the paid features, or
+  /// a RevenueCat sandbox purchase once the store products exist.
+  static const bool enabled = kDebugMode;
 
   static const String _key = 'dev_premium_unlocked';
 

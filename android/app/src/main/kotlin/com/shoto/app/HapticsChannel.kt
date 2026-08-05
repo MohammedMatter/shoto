@@ -1,4 +1,4 @@
-package com.example.shoto
+package com.shoto.app
 
 import android.content.Context
 import android.os.Build
