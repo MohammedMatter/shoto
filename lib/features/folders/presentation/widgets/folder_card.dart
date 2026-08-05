@@ -218,11 +218,23 @@ class _Cover extends StatelessWidget {
 /// What stands in for a picture when there is no picture to show: an empty
 /// folder, or a locked one.
 ///
-/// A flat wash of the folder's own colour rather than a grey box. An empty
-/// folder is still a folder the user made and named and tagged, and rendering
-/// it in neutral grey would make the newest, emptiest folder — the one just
-/// created, which is exactly the one being looked for — the least
-/// recognisable thing on the screen.
+/// **Neutral, with the colour carried by the glyph and the spine.**
+///
+/// This was a wash of the folder's own colour at 14%. The reasoning was that
+/// an empty folder is still one the user made and named and tagged, and a
+/// grey box would make the newest, emptiest folder — the one just created,
+/// which is exactly the one being looked for — the least recognisable thing
+/// on the screen. That reasoning is right, and nothing here gives it up: the
+/// glyph and the spine are both still the folder's colour, at full strength,
+/// which is what identifies it.
+///
+/// What changed is the *area*. SHOTO's stated rule is that the interface has
+/// no colour and the screenshots do — the whole palette is built on it, and
+/// it is the argument that makes a screen full of other apps' screenshots
+/// readable at all. A grid of empty folders was the one place that rule broke
+/// outright: four half-tile fields of tinted colour, none of them a
+/// screenshot, on the second-most-visited tab. Recognition costs a glyph and
+/// a 4px edge; it never needed the whole cover.
 class _Placeholder extends StatelessWidget {
   final FolderEntity folder;
   final Color color;
@@ -232,10 +244,7 @@ class _Placeholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      // The same 0.14 the tool rows on Home tint their icon tiles with. A
-      // solid fill of a saturated label colour, at half-tile size across a
-      // whole grid, would outshout every real screenshot next to it.
-      color: color.withValues(alpha: 0.14),
+      color: AppColors.surfaceVariant,
       child: Center(
         child: Icon(
           folder.isPrivate ? Icons.lock_rounded : Icons.folder_rounded,
