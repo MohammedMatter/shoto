@@ -5,8 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shoto/core/localization/l10n.dart';
-import 'package:shoto/core/services/haptics.dart';
-import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/core/routes/app_sheet.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_colors.dart';
@@ -17,7 +15,7 @@ import 'package:shoto/features/folders/presentation/widgets/move_to_folder_sheet
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
-import 'package:shoto/features/screenshots/presentation/widgets/intent_picker_row.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/intent_section.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_limit_gate.dart';
 
 /// Shared "share to another app" action, used by both the detail viewer and
@@ -56,7 +54,7 @@ Future<void> showScreenshotQuickActionsSheet(
               // mind twice is normal and closing the sheet to reopen it is not.
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(20.w, 8.h, 20.w, 14.h),
-                child: _IntentSection(item: item, bloc: bloc),
+                child: IntentSection(item: item, bloc: bloc),
               ),
               Divider(height: 1, color: AppColors.border),
               SizedBox(height: 6.h),
@@ -175,98 +173,6 @@ class _QuickActionTile extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// The intent row inside the quick-actions sheet, plus the tick when one is
-/// set.
-///
-/// Stateful only so the chips repaint the instant they are tapped: the sheet
-/// is built from the [ScreenshotEntity] handed in, which is a snapshot and
-/// does not change under it while the sheet is open.
-class _IntentSection extends StatefulWidget {
-  final ScreenshotEntity item;
-  final ScreenshotsBloc bloc;
-
-  const _IntentSection({required this.item, required this.bloc});
-
-  @override
-  State<_IntentSection> createState() => _IntentSectionState();
-}
-
-class _IntentSectionState extends State<_IntentSection> {
-  late ScreenshotIntent? _intent = widget.item.intent?.intent;
-  late bool _isDone = widget.item.intent?.isDone ?? false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IntentPickerRow(
-          selected: _intent,
-          onChanged: (ScreenshotIntent? next) {
-            setState(() {
-              _intent = next;
-              // Changing the intent drops the tick with it, matching what the
-              // repository does — the sheet must not show a finished state for
-              // a task that has just been replaced.
-              _isDone = false;
-            });
-            widget.bloc.add(SetIntentEvent(widget.item.id, next));
-          },
-        ),
-
-        // The tick appears only once there is something to tick. Offering it
-        // beforehand would be a control that does nothing, and this sheet has
-        // no room to spend on those.
-        AnimatedSize(
-          duration: AppMotion.duration(context, AppMotion.instant),
-          curve: AppMotion.standard,
-          alignment: Alignment.topCenter,
-          child: _intent == null
-              ? const SizedBox(width: double.infinity)
-              : Padding(
-                  padding: EdgeInsets.only(top: 12.h),
-                  child: PressableScale(
-                    scale: 0.97,
-                    onTap: () {
-                      Haptics.confirm();
-                      setState(() => _isDone = !_isDone);
-                      widget.bloc.add(
-                        SetIntentDoneEvent(widget.item.id, _isDone),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Icon(
-                          _isDone
-                              ? Icons.check_circle_rounded
-                              : Icons.radio_button_unchecked_rounded,
-                          size: 19.sp,
-                          color: _isDone
-                              ? AppColors.success
-                              : AppColors.textSecondary,
-                        ),
-                        SizedBox(width: 10.w),
-                        Text(
-                          _isDone
-                              ? context.l10n.intentUndo
-                              : context.l10n.intentMarkDone,
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            color: _isDone
-                                ? AppColors.success
-                                : AppColors.textPrimary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-        ),
-      ],
     );
   }
 }

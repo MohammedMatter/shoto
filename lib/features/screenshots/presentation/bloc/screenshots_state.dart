@@ -168,11 +168,9 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   /// Oldest first here and newest first everywhere else, on purpose: the
   /// library is a record and you look at the top of it, but a waiting list is
   /// a debt and the thing that has been owed longest belongs at the top.
-  List<ScreenshotEntity> waitingFor(ScreenshotIntent intent) {
+  List<ScreenshotEntity> waitingFor(IntentRef intent) {
     final List<ScreenshotEntity> waiting = screenshots
-        .where(
-          (ScreenshotEntity s) => s.intent?.intent == intent && s.isWaiting,
-        )
+        .where((ScreenshotEntity s) => s.intent?.ref == intent && s.isWaiting)
         .toList();
     waiting.sort(
       (ScreenshotEntity a, ScreenshotEntity b) =>
@@ -181,18 +179,42 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     return waiting;
   }
 
-  int doneFor(ScreenshotIntent intent) => screenshots
-      .where((ScreenshotEntity s) => s.intent?.intent == intent && !s.isWaiting)
+  int doneFor(IntentRef intent) => screenshots
+      .where((ScreenshotEntity s) => s.intent?.ref == intent && !s.isWaiting)
       .length;
 
   /// How many screenshots are waiting under each intent, skipping the ones
   /// with nothing waiting.
   ///
   /// Home reads this to decide what to show at all — an intent nobody has used
-  /// must not appear as a permanent zero.
-  Map<ScreenshotIntent, int> get waitingByIntent => <ScreenshotIntent, int>{
-    for (final ScreenshotIntent intent in ScreenshotIntent.values)
-      if (waitingFor(intent).isNotEmpty) intent: waitingFor(intent).length,
+  /// must not appear as a permanent zero. Built by walking the library rather
+  /// than by asking each known intent in turn, which is both one pass instead
+  /// of fifteen and the only version that can see a verb the user invented.
+  Map<IntentRef, int> get waitingByIntent {
+    final Map<IntentRef, int> counts = <IntentRef, int>{};
+    for (final ScreenshotEntity screenshot in screenshots) {
+      final IntentState? intent = screenshot.intent;
+      if (intent == null || !intent.isWaiting) continue;
+      counts.update(intent.ref, (int n) => n + 1, ifAbsent: () => 1);
+    }
+
+    // Sorted rather than left in library order, so the section does not
+    // reshuffle itself every time a screenshot is added — the same list in the
+    // same order is what makes it glanceable.
+    final List<MapEntry<IntentRef, int>> ordered = counts.entries.toList()
+      ..sort(
+        (MapEntry<IntentRef, int> a, MapEntry<IntentRef, int> b) =>
+            _pickerOrder(a.key).compareTo(_pickerOrder(b.key)),
+      );
+    return Map<IntentRef, int>.fromEntries(ordered);
+  }
+
+  /// Built-ins in the order they are declared, then the user's own after all
+  /// of them.
+  static int _pickerOrder(IntentRef ref) => switch (ref) {
+    BuiltInIntent(:final ScreenshotIntent intent) => intent.index,
+    CustomIntent(:final int sortOrder) =>
+      ScreenshotIntent.values.length + sortOrder,
   };
 
   /// The app's one shrinking number.

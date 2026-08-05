@@ -19,9 +19,9 @@ import 'package:shoto/features/screenshots/presentation/widgets/intent_visuals.d
 /// finished should look like nothing at all.
 class WaitingOnYou extends StatelessWidget {
   /// How many are waiting under each intent. Intents with none are absent.
-  final Map<ScreenshotIntent, int> waiting;
+  final Map<IntentRef, int> waiting;
 
-  final void Function(ScreenshotIntent intent) onOpen;
+  final void Function(IntentRef intent) onOpen;
 
   const WaitingOnYou({super.key, required this.waiting, required this.onOpen});
 
@@ -43,14 +43,17 @@ class WaitingOnYou extends StatelessWidget {
           ],
         ),
         SizedBox(height: 12.h),
-        // A wrap rather than a scrolling strip: at most five short cards, and
-        // anything the user might act on today should not be reachable only by
-        // swiping past what they have already dealt with.
+        // A wrap rather than a scrolling strip: anything the user might act on
+        // today should not be reachable only by swiping past what they have
+        // already dealt with. It grows down the screen rather than off the
+        // side of it, which is the right way for this list to get long — the
+        // vocabulary is now fifteen verbs plus the user's own, but only the
+        // ones with something waiting under them are ever here.
         Wrap(
           spacing: 10.w,
           runSpacing: 10.h,
           children: [
-            for (final MapEntry<ScreenshotIntent, int> entry in waiting.entries)
+            for (final MapEntry<IntentRef, int> entry in waiting.entries)
               _WaitingCard(
                 intent: entry.key,
                 count: entry.value,
@@ -64,7 +67,7 @@ class WaitingOnYou extends StatelessWidget {
 }
 
 class _WaitingCard extends StatelessWidget {
-  final ScreenshotIntent intent;
+  final IntentRef intent;
   final int count;
   final VoidCallback onTap;
 

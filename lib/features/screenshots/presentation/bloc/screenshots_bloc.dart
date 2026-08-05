@@ -17,9 +17,11 @@ import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_use_
 import 'package:shoto/features/screenshots/domain/use_cases/request_photo_permission_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_favorite_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_intent_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/set_intents_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_intent_done_use_case.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/watch_library_changes_use_case.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/intent_catalog.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 
@@ -30,12 +32,18 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   final GetScreenshotsByFolderUseCase getScreenshotsByFolderUseCase;
   final SetFavoriteUseCase setFavoriteUseCase;
   final SetIntentUseCase setIntentUseCase;
+  final SetIntentsUseCase setIntentsUseCase;
   final SetIntentDoneUseCase setIntentDoneUseCase;
   final AssignFolderUseCase assignFolderUseCase;
   final DeleteScreenshotsUseCase deleteScreenshotsUseCase;
   final WatchLibraryChangesUseCase watchLibraryChangesUseCase;
   final GetCachedOcrTextUseCase getCachedOcrTextUseCase;
   final ExtractAndCacheTextUseCase extractAndCacheTextUseCase;
+
+  /// Watched, not read: the catalog is what the pickers edit, and a deletion
+  /// there changes rows this bloc has already loaded. Nothing else about the
+  /// catalog concerns the library — see [IntentCatalog.deletions].
+  final IntentCatalog intentCatalog;
 
   StreamSubscription<void>? _librarySubscription;
   Timer? _refreshDebounce;
@@ -95,13 +103,16 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     required this.getScreenshotsByFolderUseCase,
     required this.setFavoriteUseCase,
     required this.setIntentUseCase,
+    required this.setIntentsUseCase,
     required this.setIntentDoneUseCase,
     required this.assignFolderUseCase,
     required this.deleteScreenshotsUseCase,
     required this.watchLibraryChangesUseCase,
     required this.getCachedOcrTextUseCase,
     required this.extractAndCacheTextUseCase,
+    required this.intentCatalog,
   }) : super(ScreenshotsInitialState()) {
+    intentCatalog.deletions.addListener(_onCustomIntentDeleted);
     on<LoadScreenshotsEvent>(_onLoad);
     on<RecheckPermissionEvent>(_onRecheckPermission);
     on<RefreshScreenshotsEvent>(_onRefresh);
@@ -120,7 +131,9 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     on<ComputeTraitsEvent>(_onComputeTraits);
     on<ScanUnreadForTraitsEvent>(_onScanUnread);
     on<SetIntentEvent>(_onSetIntent);
+    on<SetIntentForSelectionEvent>(_onSetIntentForSelection);
     on<SetIntentDoneEvent>(_onSetIntentDone);
+    on<CustomIntentsChangedEvent>(_onCustomIntentsChanged);
   }
 
   Future<void> _onLoad(
@@ -139,6 +152,12 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
       return;
     }
     await _loadAndEmit(emit);
+    // Re-read here rather than inside the pickers. The front row is ordered by
+    // what this person used most recently, and recomputing that at the moment
+    // a sheet opens would reshuffle the chips under a thumb already on its way
+    // down. Loading the library is the natural seam: it happens before any
+    // picker can be reached, and never while one is open.
+    unawaited(intentCatalog.refresh());
     _watchLibrary();
   }
 
@@ -504,7 +523,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     final ScreenshotsState current = state;
     if (current is! ScreenshotsLoadedState) return;
 
-    final ScreenshotIntent? intent = event.intent;
+    final IntentRef? intent = event.intent;
     emit(
       current.copyWith(
         screenshots: current.screenshots
@@ -515,9 +534,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
                   // ticked off "reply" says nothing about whether you have
                   // bought the thing.
                   : s.copyWith(
-                      intent: intent == null
-                          ? null
-                          : IntentState(intent: intent),
+                      intent: intent == null ? null : IntentState(ref: intent),
                       clearIntent: intent == null,
                     ),
             )
@@ -525,6 +542,40 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
       ),
     );
     await setIntentUseCase(event.assetId, intent);
+  }
+
+  /// Answers the question for everything selected at once.
+  ///
+  /// The selection is cleared afterwards, like every other bulk action here:
+  /// the answer has been given, and leaving forty screenshots lit invites the
+  /// next tap to overwrite what was just set.
+  Future<void> _onSetIntentForSelection(
+    SetIntentForSelectionEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState || current.selectedIds.isEmpty) {
+      return;
+    }
+
+    final List<String> ids = current.selectedIds.toList();
+    final IntentRef? intent = event.intent;
+    await setIntentsUseCase(ids, intent);
+    emit(
+      current.copyWith(
+        screenshots: current.screenshots
+            .map(
+              (ScreenshotEntity s) => !current.selectedIds.contains(s.id)
+                  ? s
+                  : s.copyWith(
+                      intent: intent == null ? null : IntentState(ref: intent),
+                      clearIntent: intent == null,
+                    ),
+            )
+            .toList(),
+        selectedIds: <String>{},
+      ),
+    );
   }
 
   Future<void> _onSetIntentDone(
@@ -541,7 +592,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
           if (s.id != event.assetId || existing == null) return s;
           return s.copyWith(
             intent: IntentState(
-              intent: existing.intent,
+              ref: existing.ref,
               doneAt: event.isDone ? DateTime.now() : null,
             ),
           );
@@ -549,6 +600,21 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
       ),
     );
     await setIntentDoneUseCase(event.assetId, event.isDone);
+  }
+
+  /// Rebuilds the library after the user edited their own verbs.
+  ///
+  /// A full reload rather than a patch, because a deletion has already changed
+  /// rows this state cannot see: clearing the intent off every screenshot that
+  /// carried it happens inside the database, in one transaction, and guessing
+  /// at which screenshots those were is how the grid and the table start
+  /// disagreeing.
+  Future<void> _onCustomIntentsChanged(
+    CustomIntentsChangedEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    if (state is! ScreenshotsLoadedState) return;
+    await _loadAndEmit(emit);
   }
 
   /// Reads text out of screenshots nobody has read yet, so the content
@@ -677,6 +743,12 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   Future<void> close() {
     _refreshDebounce?.cancel();
     _librarySubscription?.cancel();
+    intentCatalog.deletions.removeListener(_onCustomIntentDeleted);
     return super.close();
   }
+
+  /// A deleted verb has already been cleared off its screenshots in the
+  /// database, so the loaded state is now describing rows that no longer say
+  /// what it thinks they say.
+  void _onCustomIntentDeleted() => add(CustomIntentsChangedEvent());
 }

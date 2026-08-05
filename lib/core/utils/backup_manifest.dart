@@ -59,6 +59,50 @@ class BackupFolder {
   static const int _fallbackColor = 0xFF3355FF;
 }
 
+/// A verb the user wrote for themselves, travelling without its id.
+///
+/// Same reasoning as [BackupFolder], one step further. A custom intent's id is
+/// generated from the clock on the device that made it, so carrying it across
+/// would either collide with a row the receiving account already has (restoring
+/// your own backup onto the same phone) or bake one device's timestamps into
+/// another's database forever. Items point at these **by position in the
+/// manifest's list**, and the restore assigns real ids as it inserts.
+///
+/// The label is the user's own words and is never translated — see
+/// [CustomIntent].
+class BackupCustomIntent {
+  final String label;
+
+  /// Names a glyph in `IntentIcons`. An unknown key falls back at display
+  /// time, so a backup made by a newer build restores with a plain flag rather
+  /// than failing.
+  final String iconKey;
+
+  const BackupCustomIntent({required this.label, required this.iconKey});
+
+  Map<String, Object?> toJson() => <String, Object?>{
+    'label': label,
+    'icon': iconKey,
+  };
+
+  static BackupCustomIntent? tryFrom(Object? raw) {
+    if (raw is! Map) return null;
+    final Object? label = raw['label'];
+    // The label is the whole intent. Without it there is no verb to restore,
+    // and an unnamed chip is worse than a screenshot that simply arrives with
+    // nothing set.
+    if (label is! String || label.trim().isEmpty) return null;
+    return BackupCustomIntent(
+      label: label,
+      iconKey: raw['icon'] is String ? raw['icon'] as String : _fallbackIcon,
+    );
+  }
+
+  /// Matches `IntentIcons.fallback`, kept as a literal so this file stays free
+  /// of Flutter imports.
+  static const String _fallbackIcon = 'flag';
+}
+
 /// One screenshot: where its bytes sit inside the archive, plus everything the
 /// app knows about it that a photo file cannot carry.
 class BackupItem {
@@ -78,6 +122,28 @@ class BackupItem {
   final List<String> visualLabels;
   final DateTime addedAt;
 
+  /// A built-in intent's permanent id — `buy`, `read` — or null.
+  ///
+  /// **The one identifier in this format that is carried verbatim**, and it
+  /// can be because it is not a database key: it is a constant this app ships,
+  /// the same string in every install of every version. An id the receiving
+  /// build does not know reads as no intent, exactly as it does everywhere
+  /// else.
+  final String? intentId;
+
+  /// Index into [BackupManifest.customIntents], or null.
+  ///
+  /// Mutually exclusive with [intentId]: a screenshot has one intent, and it
+  /// is either one SHOTO ships or one the user wrote.
+  final int? customIntentIndex;
+
+  /// When the user ticked this intent off, or null while it is still waiting.
+  ///
+  /// Carried rather than reset, so a restored library does not present a
+  /// hundred finished tasks as outstanding work — which would make the app's
+  /// one shrinking number jump on the day the user's phone broke.
+  final DateTime? intentDoneAt;
+
   const BackupItem({
     required this.path,
     required this.folderIndex,
@@ -86,9 +152,16 @@ class BackupItem {
     required this.phash,
     required this.visualLabels,
     required this.addedAt,
+    this.intentId,
+    this.customIntentIndex,
+    this.intentDoneAt,
   });
 
-  BackupItem copyWith({int? folderIndex, bool clearFolder = false}) {
+  BackupItem copyWith({
+    int? folderIndex,
+    bool clearFolder = false,
+    bool clearIntent = false,
+  }) {
     return BackupItem(
       path: path,
       folderIndex: clearFolder ? null : (folderIndex ?? this.folderIndex),
@@ -97,6 +170,11 @@ class BackupItem {
       phash: phash,
       visualLabels: visualLabels,
       addedAt: addedAt,
+      intentId: clearIntent ? null : intentId,
+      customIntentIndex: clearIntent ? null : customIntentIndex,
+      // Dropped with the intent it belonged to. A completion timestamp with
+      // nothing to have completed is a fact about no task.
+      intentDoneAt: clearIntent ? null : intentDoneAt,
     );
   }
 
@@ -107,6 +185,10 @@ class BackupItem {
     if (ocrText != null && ocrText!.isNotEmpty) 'text': ocrText,
     if (phash != null && phash!.isNotEmpty) 'phash': phash,
     if (visualLabels.isNotEmpty) 'labels': visualLabels,
+    if (intentId != null) 'intent': intentId,
+    if (customIntentIndex != null) 'customIntent': customIntentIndex,
+    if (intentDoneAt != null)
+      'intentDone': intentDoneAt!.toUtc().millisecondsSinceEpoch,
     'added': addedAt.toUtc().millisecondsSinceEpoch,
   };
 
@@ -116,6 +198,13 @@ class BackupItem {
     if (raw is! Map) return null;
     final Object? path = raw['path'];
     if (path is! String || path.trim().isEmpty) return null;
+
+    // A built-in id wins if a malformed file somehow carries both. It is the
+    // one of the two that needs nothing else to resolve, so preferring it
+    // cannot leave the screenshot pointing at a verb that is not there.
+    final String? intentId = raw['intent'] is String
+        ? raw['intent'] as String
+        : null;
 
     return BackupItem(
       path: path,
@@ -128,6 +217,9 @@ class BackupItem {
           for (final Object? label in raw['labels'] as List)
             if (label is String) label,
       ],
+      intentId: intentId,
+      customIntentIndex: intentId == null ? _asInt(raw['customIntent']) : null,
+      intentDoneAt: _asDate(raw['intentDone']),
       addedAt: _asDate(raw['added']) ?? DateTime.now().toUtc(),
     );
   }
@@ -186,6 +278,11 @@ class BackupManifest {
   final int version;
   final DateTime createdAt;
   final List<BackupFolder> folders;
+
+  /// The verbs this account wrote for itself. Empty for most backups, and
+  /// absent entirely from any made before custom intents existed.
+  final List<BackupCustomIntent> customIntents;
+
   final List<BackupItem> items;
 
   const BackupManifest({
@@ -193,17 +290,29 @@ class BackupManifest {
     required this.createdAt,
     required this.folders,
     required this.items,
+    this.customIntents = const <BackupCustomIntent>[],
   });
 
-  BackupManifest.now({required this.folders, required this.items})
-    : version = currentVersion,
-      createdAt = DateTime.now().toUtc();
+  BackupManifest.now({
+    required this.folders,
+    required this.items,
+    this.customIntents = const <BackupCustomIntent>[],
+  }) : version = currentVersion,
+       createdAt = DateTime.now().toUtc();
 
   String encode() => jsonEncode(<String, Object?>{
     'kind': kind,
     'version': version,
     'created': createdAt.toUtc().millisecondsSinceEpoch,
     'folders': folders.map((BackupFolder f) => f.toJson()).toList(),
+    // Omitted entirely when there are none, which is the common case. An
+    // absent key and an empty list mean the same thing to the reader, and the
+    // absent one keeps the manifest readable for the people this format is a
+    // plain zip for.
+    if (customIntents.isNotEmpty)
+      'customIntents': customIntents
+          .map((BackupCustomIntent i) => i.toJson())
+          .toList(),
     'items': items.map((BackupItem i) => i.toJson()).toList(),
   });
 
@@ -253,14 +362,40 @@ class BackupManifest {
       }
     }
 
+    // Damaged entries are dropped silently rather than counted. The two
+    // skipped-counters are shown to the user as "part of your backup could not
+    // be read", and a lost verb is not that: the screenshots it described all
+    // still restore, with their pictures, their folders and their favourites
+    // intact, minus one word. Putting it in the same number as a lost
+    // screenshot would make a trivial loss look like a serious one.
+    final List<BackupCustomIntent> customIntents = <BackupCustomIntent>[];
+    if (root['customIntents'] is List) {
+      for (final Object? raw in root['customIntents'] as List) {
+        final BackupCustomIntent? intent = BackupCustomIntent.tryFrom(raw);
+        if (intent != null) customIntents.add(intent);
+      }
+    }
+
     int skippedItems = 0;
     final List<BackupItem> items = <BackupItem>[];
     if (root['items'] is List) {
       for (final Object? raw in root['items'] as List) {
-        final BackupItem? item = BackupItem.tryFrom(raw);
+        BackupItem? item = BackupItem.tryFrom(raw);
         if (item == null) {
           skippedItems++;
           continue;
+        }
+
+        // Same rule as the folder index below, for the same reason: dropping a
+        // damaged verb renumbers every one after it, and an index written
+        // against the original list would then name the wrong verb. A
+        // screenshot that arrives with no intent is a small, visible loss; one
+        // that arrives filed under somebody else's word is a wrong answer
+        // nobody goes looking for.
+        final int? intentIndex = item.customIntentIndex;
+        if (intentIndex != null &&
+            (intentIndex < 0 || intentIndex >= customIntents.length)) {
+          item = item.copyWith(clearIntent: true);
         }
 
         // **A folder reference that does not resolve must not cost the
@@ -283,6 +418,7 @@ class BackupManifest {
         version: version,
         createdAt: _asDate(root['created']) ?? DateTime.now().toUtc(),
         folders: folders,
+        customIntents: customIntents,
         items: items,
       ),
       skippedItems: skippedItems,

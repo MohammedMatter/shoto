@@ -196,7 +196,7 @@ class _HomePageState extends State<HomePage>
                       child: _Gutter(
                         child: WaitingOnYou(
                           waiting: loaded.waitingByIntent,
-                          onOpen: (ScreenshotIntent intent) => Navigator.of(
+                          onOpen: (IntentRef intent) => Navigator.of(
                             context,
                           ).push(
                             FadeSlidePageRoute(

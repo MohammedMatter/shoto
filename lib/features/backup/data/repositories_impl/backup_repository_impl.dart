@@ -5,6 +5,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:shoto/core/utils/backup_archive.dart';
 import 'package:shoto/core/utils/backup_manifest.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/features/backup/domain/entities/backup_outcome.dart';
 import 'package:shoto/features/backup/domain/entities/restore_plan.dart';
 import 'package:shoto/features/backup/domain/repositories/backup_repository.dart';
@@ -42,6 +43,14 @@ class BackupRepositoryImpl implements BackupRepository {
       for (int i = 0; i < folders.length; i++) folders[i].id: i,
     };
 
+    // The same trick for the verbs the user wrote. Their ids are generated
+    // from this device's clock, so they travel by position too.
+    final List<CustomIntent> customIntents = await _screenshots
+        .getCustomIntents();
+    final Map<String, int> indexOfCustomIntent = <String, int>{
+      for (int i = 0; i < customIntents.length; i++) customIntents[i].id: i,
+    };
+
     final File file = File(
       p.join((await getTemporaryDirectory()).path, _fileName()),
     );
@@ -60,6 +69,12 @@ class BackupRepositoryImpl implements BackupRepository {
               isPrivate: f.isPrivate,
               createdAt: f.createdAt,
             ),
+          )
+          .toList(),
+      customIntents: customIntents
+          .map(
+            (CustomIntent i) =>
+                BackupCustomIntent(label: i.label, iconKey: i.iconKey),
           )
           .toList(),
     );
@@ -97,6 +112,19 @@ class BackupRepositoryImpl implements BackupRepository {
             ocrText: ocr[shot.id],
             phash: hashes[shot.id],
             visualLabels: labels[shot.id] ?? const <String>[],
+            // What the user said they would do with it, and whether they
+            // have. Nothing else in a backup is a *promise* the person made to
+            // themselves, and losing it is the one loss they would notice by
+            // its absence rather than by looking for it.
+            intentId: switch (shot.intent?.ref) {
+              BuiltInIntent(:final ScreenshotIntent intent) => intent.id,
+              _ => null,
+            },
+            customIntentIndex: switch (shot.intent?.ref) {
+              CustomIntent(:final String id) => indexOfCustomIntent[id],
+              _ => null,
+            },
+            intentDoneAt: shot.intent?.doneAt,
             addedAt: shot.asset.createDateTime,
           ),
         );
@@ -203,6 +231,50 @@ class BackupRepositoryImpl implements BackupRepository {
       existingByName[created.name.trim().toLowerCase()] = created.id;
     }
 
+    // **Verbs merge by name, without asking.** Folders get a prompt because
+    // two folders called "Work" can genuinely be two different piles, and
+    // pouring one into the other mixes contents that were meant to stay apart.
+    // An intent has no contents to mix: it is a word, and two identical words
+    // in one picker are not two categories, they are a bug the user has to
+    // clean up by hand. Matched the same way folder names are compared, so
+    // "Return it" and "return it " are the one verb they obviously are.
+    final Map<String, CustomIntent> intentsByLabel = <String, CustomIntent>{
+      for (final CustomIntent intent in await _screenshots.getCustomIntents())
+        intent.label.trim().toLowerCase(): intent,
+    };
+
+    // Positional, parallel to the manifest's list, exactly like newFolderIds.
+    // Null entries are verbs this restore could not create; the screenshots
+    // pointing at them come back with no intent rather than the wrong one.
+    final List<CustomIntent?> restoredIntents = <CustomIntent?>[];
+    for (final BackupCustomIntent intent in reader.manifest.customIntents) {
+      final String key = intent.label.trim().toLowerCase();
+      final CustomIntent? existing = intentsByLabel[key];
+      if (existing != null) {
+        restoredIntents.add(existing);
+        continue;
+      }
+      try {
+        // Deliberately not checked against the free-tier cap. A restore is the
+        // user getting their own data back, and every other part of it already
+        // works this way — folders past the free limit and favourites past the
+        // fifty-screenshot cap both restore in full. A backup that came back
+        // missing the words its owner wrote would be a paywall placed on
+        // recovering from a broken phone.
+        final CustomIntent created = await _screenshots.createCustomIntent(
+          label: intent.label,
+          iconKey: intent.iconKey,
+        );
+        restoredIntents.add(created);
+        // Registered so a backup holding the same verb twice merges its own
+        // duplicates, same as the folder loop above.
+        intentsByLabel[key] = created;
+      } catch (error) {
+        debugPrint('SHOTO restore could not create "${intent.label}": $error');
+        restoredIntents.add(null);
+      }
+    }
+
     int failed = 0;
     int restored = 0;
     int seen = 0;
@@ -252,6 +324,19 @@ class BackupRepositoryImpl implements BackupRepository {
               assetId: phash,
             });
           }
+
+          final IntentRef? intent = _intentFor(entry.item, restoredIntents);
+          if (intent != null) {
+            // The original completion timestamp travels with it, so a library
+            // where two hundred things were already ticked off does not come
+            // back claiming two hundred things are owed — or claiming they
+            // were all finished on the day of the restore.
+            await _screenshots.setIntent(
+              assetId,
+              intent,
+              doneAt: entry.item.intentDoneAt,
+            );
+          }
           restored++;
         } catch (error, stack) {
           // One picture the device refuses to save must not cost the other
@@ -274,6 +359,24 @@ class BackupRepositoryImpl implements BackupRepository {
       missing: reader.missingImages + reader.skippedItems,
       failed: failed,
     );
+  }
+
+  /// Resolves what an item said its intent was against what this restore
+  /// actually created.
+  ///
+  /// Null for three cases, all of which mean the screenshot arrives with no
+  /// intent rather than the wrong one: it never had one, it names a built-in
+  /// verb this build does not know (a backup from a newer version), or the
+  /// custom verb it pointed at could not be created here.
+  static IntentRef? _intentFor(BackupItem item, List<CustomIntent?> restored) {
+    final String? builtInId = item.intentId;
+    if (builtInId != null) {
+      final ScreenshotIntent? intent = ScreenshotIntent.fromId(builtInId);
+      return intent == null ? null : BuiltInIntent(intent);
+    }
+    final int? index = item.customIntentIndex;
+    if (index == null || index < 0 || index >= restored.length) return null;
+    return restored[index];
   }
 
   /// Deletes archives left behind by earlier runs.

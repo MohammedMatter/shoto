@@ -1,6 +1,8 @@
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/features/safe_share/presentation/pages/safe_share_page.dart';
+import 'package:shoto/core/widgets/app_snack_bar.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/intent_full_picker_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -446,6 +448,7 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
               asset: item.asset,
               heroTag: '${widget.heroPrefix}-${item.id}',
               isFavorite: item.isFavorite,
+              intent: item.intent,
               isSelected: loaded.selectedIds.contains(item.id),
               selectionMode: loaded.isSelectionMode,
               onTap: () {
@@ -618,6 +621,35 @@ class _SelectionToolbar extends StatelessWidget {
           // the two is destructive, which is not a thing to put under the
           // thumb of a person who came here to do something else.
           if (!intent.isGuided) ...[
+            // **The only way an existing library ever gets answered.**
+            //
+            // Intents were reachable one screenshot at a time, from a sheet
+            // behind a small icon — which is fine for the ones taken from now
+            // on and useless for the two thousand already there. Nobody opens
+            // two thousand sheets. Here, forty at a time, "what are all of
+            // these for" is a question with an answer.
+            //
+            // Not gated by the free-tier cap, unlike Move: an intent brings
+            // nothing under management. It files no screenshot into anything
+            // and stars nothing — it records a sentence about pictures the
+            // user already has.
+            _ToolbarAction(
+              icon: Icons.checklist_rtl_rounded,
+              iconColor: AppColors.secondary,
+              label: context.l10n.intentSelectionAction,
+              onTap: () async {
+                final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
+                final IntentPickerResult? result =
+                    await showIntentFullPickerSheet(context, selected: null);
+                if (result == null) return;
+                bloc.add(SetIntentForSelectionEvent(result.intent));
+                if (!context.mounted) return;
+                showAppSnackBar(
+                  context,
+                  context.l10n.intentSelectionApplied(count),
+                );
+              },
+            ),
             _ToolbarAction(
               icon: Icons.drive_file_move_rounded,
               iconColor: AppColors.secondary,

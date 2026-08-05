@@ -102,9 +102,29 @@ class ScanUnreadForTraitsEvent extends ScreenshotsEvent {}
 /// with a null [intent].
 class SetIntentEvent extends ScreenshotsEvent {
   final String assetId;
-  final ScreenshotIntent? intent;
+  final IntentRef? intent;
   SetIntentEvent(this.assetId, this.intent);
 }
+
+/// The same answer for everything currently selected, or clears it with a null
+/// [intent].
+///
+/// The only way a library that predates the question ever gets answered: doing
+/// it one screenshot at a time is a thousand sheets, so nobody does it and the
+/// waiting list stays a feature that only applies to screenshots taken from
+/// now on.
+class SetIntentForSelectionEvent extends ScreenshotsEvent {
+  final IntentRef? intent;
+  SetIntentForSelectionEvent(this.intent);
+}
+
+/// Re-reads the library after a custom intent was renamed or deleted.
+///
+/// Deleting one clears it off every screenshot that carried it, in the
+/// database, underneath the loaded state — so the state has to be rebuilt
+/// rather than patched, or the grid keeps showing a verb that no longer
+/// exists.
+class CustomIntentsChangedEvent extends ScreenshotsEvent {}
 
 /// Ticks an intent off, or puts it back on the waiting list.
 class SetIntentDoneEvent extends ScreenshotsEvent {

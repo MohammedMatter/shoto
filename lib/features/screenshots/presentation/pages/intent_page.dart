@@ -15,6 +15,7 @@ import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dar
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/intent_full_picker_sheet.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/intent_visuals.dart';
 
 /// Everything still waiting under one intent, and one gesture to finish it.
@@ -27,7 +28,7 @@ import 'package:shoto/features/screenshots/presentation/widgets/intent_visuals.d
 /// control on the row, and the item leaving the list under its own animation
 /// so the change is something you watch rather than something you notice.
 class IntentPage extends StatelessWidget {
-  final ScreenshotIntent intent;
+  final IntentRef intent;
 
   const IntentPage({super.key, required this.intent});
 
@@ -103,6 +104,7 @@ class IntentPage extends StatelessWidget {
                           sizeFactor: animation,
                           child: _WaitingRow(
                             screenshot: item,
+                            onChange: () => _changeIntent(context, item),
                             onDone: () {
                               // Fires before the row leaves, so the feedback
                               // and the movement are one event rather than a
@@ -128,10 +130,31 @@ class _WaitingRow extends StatelessWidget {
   final ScreenshotEntity screenshot;
   final VoidCallback onDone;
 
-  const _WaitingRow({required this.screenshot, required this.onDone});
+  /// Re-answers the question for this one.
+  ///
+  /// The row used to offer exactly one verdict — finished — which is only half
+  /// of what a waiting list is for. The other half is realising a thing was
+  /// filed wrong, or that you are never going to do it: both are ways of
+  /// getting a number down honestly, and without them the only way off this
+  /// screen was to claim you had done something you had not.
+  final VoidCallback onChange;
+
+  const _WaitingRow({
+    required this.screenshot,
+    required this.onDone,
+    required this.onChange,
+  });
 
   @override
   Widget build(BuildContext context) {
+    return PressableScale(
+      scale: 0.98,
+      onTap: onChange,
+      child: _body(context),
+    );
+  }
+
+  Widget _body(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
@@ -193,6 +216,21 @@ class _WaitingRow extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Opens the full picker for one row and writes whatever comes back.
+///
+/// Clearing it is a real outcome here and not an escape hatch: "I am not going
+/// to do this" is the honest answer often enough that a list which cannot
+/// accept it stops being trusted.
+Future<void> _changeIntent(BuildContext context, ScreenshotEntity item) async {
+  final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
+  final IntentPickerResult? result = await showIntentFullPickerSheet(
+    context,
+    selected: item.intent?.ref,
+  );
+  if (result == null) return;
+  bloc.add(SetIntentEvent(item.id, result.intent));
 }
 
 /// How long a thing has been waiting, in words.

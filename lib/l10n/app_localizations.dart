@@ -2782,6 +2782,210 @@ abstract class AppLocalizations {
   /// **'To visit'**
   String get intentVisitWaiting;
 
+  /// No description provided for @intentWatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch'**
+  String get intentWatch;
+
+  /// No description provided for @intentListen.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen'**
+  String get intentListen;
+
+  /// No description provided for @intentCook.
+  ///
+  /// In en, this message translates to:
+  /// **'Cook'**
+  String get intentCook;
+
+  /// No description provided for @intentBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get intentBook;
+
+  /// No description provided for @intentPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay'**
+  String get intentPay;
+
+  /// No description provided for @intentSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get intentSend;
+
+  /// No description provided for @intentDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get intentDownload;
+
+  /// No description provided for @intentApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get intentApply;
+
+  /// No description provided for @intentCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get intentCompare;
+
+  /// No description provided for @intentFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Fix'**
+  String get intentFix;
+
+  /// No description provided for @intentWatchWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To watch'**
+  String get intentWatchWaiting;
+
+  /// No description provided for @intentListenWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To listen to'**
+  String get intentListenWaiting;
+
+  /// No description provided for @intentCookWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To cook'**
+  String get intentCookWaiting;
+
+  /// No description provided for @intentBookWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To book'**
+  String get intentBookWaiting;
+
+  /// No description provided for @intentPayWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To pay'**
+  String get intentPayWaiting;
+
+  /// No description provided for @intentSendWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To send'**
+  String get intentSendWaiting;
+
+  /// No description provided for @intentDownloadWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To download'**
+  String get intentDownloadWaiting;
+
+  /// No description provided for @intentApplyWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To apply for'**
+  String get intentApplyWaiting;
+
+  /// No description provided for @intentCompareWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To compare'**
+  String get intentCompareWaiting;
+
+  /// No description provided for @intentFixWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To fix'**
+  String get intentFixWaiting;
+
+  /// No description provided for @intentMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get intentMore;
+
+  /// No description provided for @intentSectionCommon.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready-made'**
+  String get intentSectionCommon;
+
+  /// No description provided for @intentSectionYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Yours'**
+  String get intentSectionYours;
+
+  /// No description provided for @intentYoursEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'A verb you write yourself works exactly like the ones above.'**
+  String get intentYoursEmpty;
+
+  /// No description provided for @intentNewAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Write your own'**
+  String get intentNewAction;
+
+  /// No description provided for @intentNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Name it yourself'**
+  String get intentNewTitle;
+
+  /// No description provided for @intentEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit this one'**
+  String get intentEditTitle;
+
+  /// No description provided for @intentNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'The verb'**
+  String get intentNameLabel;
+
+  /// No description provided for @intentNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Return it, cancel it, call them…'**
+  String get intentNameHint;
+
+  /// No description provided for @intentIconLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon'**
+  String get intentIconLabel;
+
+  /// No description provided for @intentDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{label}\"?'**
+  String intentDeleteTitle(String label);
+
+  /// No description provided for @intentDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The screenshots stay where they are. They just stop waiting for anything.'**
+  String get intentDeleteMessage;
+
+  /// No description provided for @intentSelectionAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as'**
+  String get intentSelectionAction;
+
+  /// No description provided for @intentSelectionApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 screenshot marked} other{{count} screenshots marked}}'**
+  String intentSelectionApplied(int count);
+
   /// No description provided for @intentPrompt.
   ///
   /// In en, this message translates to:

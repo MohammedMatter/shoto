@@ -1656,6 +1656,119 @@ class AppLocalizationsAr extends AppLocalizations {
   String get intentVisitWaiting => 'للزيارة';
 
   @override
+  String get intentWatch => 'أشاهد';
+
+  @override
+  String get intentListen => 'أسمع';
+
+  @override
+  String get intentCook => 'أطبخ';
+
+  @override
+  String get intentBook => 'أحجز';
+
+  @override
+  String get intentPay => 'أدفع';
+
+  @override
+  String get intentSend => 'أبعت';
+
+  @override
+  String get intentDownload => 'أنزّل';
+
+  @override
+  String get intentApply => 'أقدّم';
+
+  @override
+  String get intentCompare => 'أقارن';
+
+  @override
+  String get intentFix => 'أصلّح';
+
+  @override
+  String get intentWatchWaiting => 'للمشاهدة';
+
+  @override
+  String get intentListenWaiting => 'للاستماع';
+
+  @override
+  String get intentCookWaiting => 'للطبخ';
+
+  @override
+  String get intentBookWaiting => 'للحجز';
+
+  @override
+  String get intentPayWaiting => 'للدفع';
+
+  @override
+  String get intentSendWaiting => 'للإرسال';
+
+  @override
+  String get intentDownloadWaiting => 'للتنزيل';
+
+  @override
+  String get intentApplyWaiting => 'للتقديم';
+
+  @override
+  String get intentCompareWaiting => 'للمقارنة';
+
+  @override
+  String get intentFixWaiting => 'للتصليح';
+
+  @override
+  String get intentMore => 'المزيد';
+
+  @override
+  String get intentSectionCommon => 'جاهزة';
+
+  @override
+  String get intentSectionYours => 'تبعك';
+
+  @override
+  String get intentYoursEmpty =>
+      'أي كلمة بتكتبها بإيدك بتشتغل تمامًا زي اللي فوق.';
+
+  @override
+  String get intentNewAction => 'اكتب وحدة بإيدك';
+
+  @override
+  String get intentNewTitle => 'سمّيها بإيدك';
+
+  @override
+  String get intentEditTitle => 'عدّل هاي';
+
+  @override
+  String get intentNameLabel => 'الفعل';
+
+  @override
+  String get intentNameHint => 'أرجّعها، ألغيها، أتصل فيهم…';
+
+  @override
+  String get intentIconLabel => 'الأيقونة';
+
+  @override
+  String intentDeleteTitle(String label) {
+    return 'تحذف \"$label\"؟';
+  }
+
+  @override
+  String get intentDeleteMessage => 'الصور بتضل مكانها. بس بتبطّل تستنى إشي.';
+
+  @override
+  String get intentSelectionAction => 'حدّد ليش';
+
+  @override
+  String intentSelectionApplied(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count صور تحددت',
+      one: 'صورة وحدة تحددت',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get intentPrompt => 'شو رح تعمل فيها؟';
 
   @override

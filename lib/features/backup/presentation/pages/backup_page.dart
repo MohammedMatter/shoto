@@ -16,6 +16,7 @@ import 'package:shoto/features/backup/domain/entities/restore_plan.dart';
 import 'package:shoto/features/backup/presentation/widgets/restore_merge_sheet.dart';
 import 'package:shoto/features/backup/domain/use_cases/preview_backup_use_case.dart';
 import 'package:shoto/features/backup/domain/use_cases/restore_backup_use_case.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/intent_catalog.dart';
 
 /// Making a copy of the library, and putting one back.
 ///
@@ -168,6 +169,11 @@ class _BackupPageState extends State<BackupPage> {
         onNameClash: choice,
         onProgress: _setProgress,
       );
+      // The restore wrote custom intents straight into the database, under a
+      // catalog that has been held in memory since the app started. Without
+      // this the verbs are back but no picker can see them until the next
+      // launch — which reads exactly like the restore having dropped them.
+      await sl<IntentCatalog>().refresh();
       if (!mounted) return;
 
       showAppSnackBar(

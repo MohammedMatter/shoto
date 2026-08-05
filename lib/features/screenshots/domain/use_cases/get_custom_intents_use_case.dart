@@ -1,10 +1,9 @@
 import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/features/screenshots/domain/repositories/screenshot_repository.dart';
 
-class SetIntentUseCase {
+class GetCustomIntentsUseCase {
   final ScreenshotRepository repository;
-  SetIntentUseCase(this.repository);
+  GetCustomIntentsUseCase(this.repository);
 
-  Future<void> call(String assetId, IntentRef? intent) =>
-      repository.setIntent(assetId, intent);
+  Future<List<CustomIntent>> call() => repository.getCustomIntents();
 }

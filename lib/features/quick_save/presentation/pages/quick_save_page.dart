@@ -99,7 +99,7 @@ class _QuickSavePageState extends State<QuickSavePage>
   /// Never required. The button is enabled without it and always has been —
   /// this is one optional tap taken at the only moment the answer is obvious,
   /// not a second thing to fill in before a screenshot can be kept.
-  ScreenshotIntent? _intent;
+  IntentRef? _intent;
 
   int get _alreadyInLibraryCount =>
       _images.where((image) => image.isAlreadyInLibrary).length;
@@ -284,7 +284,7 @@ class _QuickSavePageState extends State<QuickSavePage>
       // the user pressed the button for; an intent is a note attached to it,
       // and losing the screenshot because a note could not be written would be
       // the wrong way round.
-      final ScreenshotIntent? intent = _intent;
+      final IntentRef? intent = _intent;
       if (intent != null) {
         for (final String assetId in assetIds) {
           try {
@@ -772,7 +772,7 @@ class _QuickSavePageState extends State<QuickSavePage>
         SizedBox(height: 18.h),
         IntentPickerRow(
           selected: _intent,
-          onChanged: (ScreenshotIntent? next) => setState(() => _intent = next),
+          onChanged: (IntentRef? next) => setState(() => _intent = next),
         ),
 
         SizedBox(height: 20.h),

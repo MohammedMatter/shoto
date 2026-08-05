@@ -28,6 +28,20 @@ Future<T?> showAppSheet<T>({
   bool isDismissible = true,
   bool enableDrag = true,
   bool useSafeArea = false,
+
+  /// Overrides the entrance timing for the few sheets whose size makes the
+  /// shared one read as slow.
+  ///
+  /// **Duration is not the same as distance.** [AppMotion.sheet] is tuned for
+  /// a panel that covers a third of the screen; the same 280ms spent carrying
+  /// a near-full-screen sheet is 280ms in which the phone is also re-blurring
+  /// most of what is behind it, and the entrance is the one animation nobody
+  /// looks away from. Shortening it is the honest fix — every frame saved is a
+  /// frame that no longer has to be perfect.
+  ///
+  /// Left null by every ordinary sheet, which is the point: this is an
+  /// exception with a reason, not a knob.
+  Duration? enterDuration,
 }) {
   return showModalBottomSheet<T>(
     context: context,
@@ -54,7 +68,7 @@ Future<T?> showAppSheet<T>({
     // an almost-black rectangle.
     barrierColor: Colors.black.withValues(alpha: 0.3),
     sheetAnimationStyle: AnimationStyle(
-      duration: AppMotion.duration(context, AppMotion.sheet),
+      duration: AppMotion.duration(context, enterDuration ?? AppMotion.sheet),
       // Out faster than in. The entrance is the app answering a tap; the
       // exit is the app getting out of the way of a decision already made.
       reverseDuration: AppMotion.duration(context, AppMotion.normal),

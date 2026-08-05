@@ -414,4 +414,109 @@ void main() {
       expect(writer.close, throwsStateError);
     });
   });
+
+  group('intents survive the archive', () {
+    test('a whole library of intents round trips through a real zip', () {
+      final Uint8List archive = BackupArchive.write(
+        folders: <BackupFolder>[],
+        customIntents: const <BackupCustomIntent>[
+          BackupCustomIntent(label: 'Return it', iconKey: 'cart'),
+          BackupCustomIntent(label: 'Chase them', iconKey: 'call'),
+        ],
+        sources: <BackupSource>[
+          BackupSource(
+            bytes: _bytes('a'),
+            originalName: 'a.png',
+            folderIndex: null,
+            isFavorite: false,
+            ocrText: null,
+            phash: null,
+            visualLabels: const <String>[],
+            addedAt: DateTime.utc(2026),
+            intentId: 'buy',
+          ),
+          BackupSource(
+            bytes: _bytes('b'),
+            originalName: 'b.png',
+            folderIndex: null,
+            isFavorite: false,
+            ocrText: null,
+            phash: null,
+            visualLabels: const <String>[],
+            addedAt: DateTime.utc(2026),
+            customIntentIndex: 1,
+            intentDoneAt: DateTime.utc(2026, 4, 5),
+          ),
+        ],
+      );
+
+      final BackupContents contents = BackupArchive.read(archive);
+      expect(contents.isComplete, isTrue);
+      expect(contents.manifest.customIntents.length, 2);
+      expect(contents.manifest.customIntents.last.label, 'Chase them');
+
+      expect(contents.entries.first.item.intentId, 'buy');
+      expect(contents.entries.last.item.customIntentIndex, 1);
+      expect(contents.entries.last.item.intentDoneAt, DateTime.utc(2026, 4, 5));
+    });
+
+    test('a custom index past the end of the list is never written', () {
+      // The writer refuses it for the same reason it refuses a bad folder
+      // index: an index the reader cannot resolve silently loses the intent,
+      // and it is cheaper to catch here than to find out on a restore.
+      final Uint8List archive = BackupArchive.write(
+        folders: <BackupFolder>[],
+        customIntents: const <BackupCustomIntent>[
+          BackupCustomIntent(label: 'Return it', iconKey: 'cart'),
+        ],
+        sources: <BackupSource>[
+          BackupSource(
+            bytes: _bytes('a'),
+            originalName: 'a.png',
+            folderIndex: null,
+            isFavorite: false,
+            ocrText: null,
+            phash: null,
+            visualLabels: const <String>[],
+            addedAt: DateTime.utc(2026),
+            customIntentIndex: 9,
+          ),
+        ],
+      );
+
+      expect(
+        BackupArchive.read(archive).entries.single.item.customIntentIndex,
+        isNull,
+      );
+    });
+
+    test('a built-in id wins over a custom index, never both', () {
+      // A screenshot has one intent. Writing both would leave the reader
+      // choosing, and the choice it makes is not the user's.
+      final Uint8List archive = BackupArchive.write(
+        folders: <BackupFolder>[],
+        customIntents: const <BackupCustomIntent>[
+          BackupCustomIntent(label: 'Return it', iconKey: 'cart'),
+        ],
+        sources: <BackupSource>[
+          BackupSource(
+            bytes: _bytes('a'),
+            originalName: 'a.png',
+            folderIndex: null,
+            isFavorite: false,
+            ocrText: null,
+            phash: null,
+            visualLabels: const <String>[],
+            addedAt: DateTime.utc(2026),
+            intentId: 'buy',
+            customIntentIndex: 0,
+          ),
+        ],
+      );
+
+      final BackupItem item = BackupArchive.read(archive).entries.single.item;
+      expect(item.intentId, 'buy');
+      expect(item.customIntentIndex, isNull);
+    });
+  });
 }

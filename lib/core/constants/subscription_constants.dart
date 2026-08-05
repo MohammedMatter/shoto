@@ -30,4 +30,10 @@ abstract class SubscriptionConstants {
   // gallery beyond this — SHOTO can't hide what the OS already captured —
   // this only gates bringing a new screenshot under organization.
   static const int freeScreenshotLimit = 50;
+
+  // Intents a free user may write in their own words, on top of the fifteen
+  // the app ships. Three is enough for anybody to find out whether naming
+  // their own is worth anything to them — which is the only honest basis for
+  // asking them to pay for the fourth.
+  static const int freeCustomIntentLimit = 3;
 }

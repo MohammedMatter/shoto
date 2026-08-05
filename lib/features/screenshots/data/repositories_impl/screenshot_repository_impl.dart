@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/core/utils/visual_vocabulary.dart';
+import 'package:shoto/features/screenshots/data/data_sources/custom_intents_local_data_source.dart';
 import 'package:shoto/features/screenshots/data/data_sources/image_labeling_data_source.dart';
 import 'package:shoto/features/screenshots/data/data_sources/library_ownership_local_data_source.dart';
 import 'package:shoto/features/screenshots/data/data_sources/screenshot_gallery_data_source.dart';
@@ -23,6 +24,7 @@ import 'package:shoto/features/screenshots/domain/repositories/screenshot_reposi
 class ScreenshotRepositoryImpl implements ScreenshotRepository {
   final ScreenshotGalleryDataSource _gallery;
   final ScreenshotMetadataLocalDataSource _metadata;
+  final CustomIntentsLocalDataSource _customIntents;
   final LibraryOwnershipLocalDataSource _ownership;
   final TextRecognitionDataSource _textRecognition;
   final ImageLabelingDataSource _imageLabeling;
@@ -30,6 +32,7 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
   ScreenshotRepositoryImpl(
     this._gallery,
     this._metadata,
+    this._customIntents,
     this._ownership,
     this._textRecognition,
     this._imageLabeling,
@@ -120,8 +123,44 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
       _metadata.setFavorite(assetId, isFavorite);
 
   @override
-  Future<void> setIntent(String assetId, ScreenshotIntent? intent) =>
-      _metadata.setIntent(assetId, intent?.id);
+  Future<void> setIntent(String assetId, IntentRef? intent, {DateTime? doneAt}) =>
+      _metadata.setIntent(<String>[assetId], intent?.id, doneAt: doneAt);
+
+  @override
+  Future<void> setIntents(List<String> assetIds, IntentRef? intent) =>
+      _metadata.setIntent(assetIds, intent?.id);
+
+  @override
+  Future<List<CustomIntent>> getCustomIntents() =>
+      _customIntents.getCustomIntents();
+
+  @override
+  Future<int> getCustomIntentCount() => _customIntents.countCustomIntents();
+
+  @override
+  Future<CustomIntent> createCustomIntent({
+    required String label,
+    required String iconKey,
+  }) => _customIntents.createCustomIntent(label: label, iconKey: iconKey);
+
+  @override
+  Future<void> updateCustomIntent({
+    required String id,
+    required String label,
+    required String iconKey,
+  }) => _customIntents.updateCustomIntent(
+    id: id,
+    label: label,
+    iconKey: iconKey,
+  );
+
+  @override
+  Future<void> deleteCustomIntent(String id) =>
+      _customIntents.deleteCustomIntent(id);
+
+  @override
+  Future<List<String>> getIntentIdsByRecentUse() =>
+      _customIntents.getIntentIdsByRecentUse();
 
   @override
   Future<void> setIntentDone(String assetId, bool isDone) =>
@@ -256,7 +295,19 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
     if (assets.isEmpty) return const [];
     final Map<String, Map<String, Object?>> metaMap = await _metadata
         .getAllMeta();
-    return assets.map((asset) => _toEntity(asset, metaMap[asset.id])).toList();
+    // Read once for the whole library rather than per screenshot. There are a
+    // handful of these and thousands of screenshots, and the alternative is a
+    // query per row on the app's first screen.
+    final Map<String, CustomIntent> customIntents = <String, CustomIntent>{
+      for (final CustomIntent intent in await _customIntents.getCustomIntents())
+        intent.id: intent,
+    };
+    return assets
+        .map(
+          (AssetEntity asset) =>
+              _toEntity(asset, metaMap[asset.id], customIntents),
+        )
+        .toList();
   }
 
   /// Hands the images that predate ownership to the first account that opens
@@ -284,23 +335,36 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
     await _ownership.markLegacyAdoptionDone();
   }
 
-  ScreenshotEntity _toEntity(AssetEntity asset, Map<String, Object?>? meta) {
-    // An unrecognised id yields no intent rather than a guess — a value
-    // written by a newer build must read as "none set" here, not as whichever
-    // constant happens to sit first in the enum.
-    final ScreenshotIntent? intent = ScreenshotIntent.fromId(
-      meta?['intent'] as String?,
-    );
+  ScreenshotEntity _toEntity(
+    AssetEntity asset,
+    Map<String, Object?>? meta,
+    Map<String, CustomIntent> customIntents,
+  ) {
+    // An unresolvable id yields no intent rather than a guess. That covers a
+    // value written by a newer build, and now also a custom intent this
+    // account has since deleted — deletion clears the references itself, so
+    // reaching this with a `c:` id means the two are momentarily out of step,
+    // and "none set" is the honest reading of that, not whichever constant
+    // happens to sit first in the enum.
+    final String? intentId = meta?['intent'] as String?;
+    final IntentRef? ref = intentId == null
+        ? null
+        : IntentRef.isCustomId(intentId)
+        ? customIntents[intentId]
+        : switch (ScreenshotIntent.fromId(intentId)) {
+            final ScreenshotIntent intent => BuiltInIntent(intent),
+            null => null,
+          };
     final int? doneAt = meta?['intent_done_at'] as int?;
 
     return ScreenshotEntity(
       asset: asset,
       isFavorite: (meta?['is_favorite'] as int?) == 1,
       folderId: meta?['folder_id'] as int?,
-      intent: intent == null
+      intent: ref == null
           ? null
           : IntentState(
-              intent: intent,
+              ref: ref,
               doneAt: doneAt == null
                   ? null
                   : DateTime.fromMillisecondsSinceEpoch(doneAt),

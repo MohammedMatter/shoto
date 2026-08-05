@@ -206,41 +206,60 @@ class ScreenshotMetadataLocalDataSource {
     }
   }
 
-  /// Sets, changes or clears what the user said they would do with a
-  /// screenshot.
+  /// Sets, changes or clears what the user said they would do with any number
+  /// of screenshots.
   ///
   /// Setting an intent always clears `intent_done_at`. Changing your mind
   /// about *what* you are going to do makes the old completion meaningless —
   /// having ticked off "reply" says nothing about whether you have bought it —
   /// and leaving the timestamp behind would file the screenshot as finished
   /// under a task nobody has started.
-  Future<void> setIntent(String assetId, String? intentId) async {
+  ///
+  /// Takes a list because answering the question for forty screenshots at once
+  /// is how a library that predates the question ever gets answered at all.
+  /// One transaction and one commit, and the existence check disappears into
+  /// `update`'s row count — same pattern, and same reasoning, as
+  /// [assignFolder].
+  /// [doneAt] exists for restores, which are re-creating an intent that was
+  /// ticked off at some known point in the past — the same reason
+  /// [FoldersLocalDataSource.createFolder] takes a `createdAt`. Left off
+  /// everywhere else, so setting an intent by hand always starts it waiting.
+  Future<void> setIntent(
+    List<String> assetIds,
+    String? intentId, {
+    DateTime? doneAt,
+  }) async {
+    if (assetIds.isEmpty) return;
     final Database db = await _appDatabase.database;
     final int now = DateTime.now().millisecondsSinceEpoch;
-    final Map<String, Object?>? existing = await _getMeta(db, assetId);
+    final int? doneMillis = intentId == null
+        ? null
+        : doneAt?.millisecondsSinceEpoch;
 
-    if (existing == null) {
-      await db.insert(AppDatabase.screenshotMeta, <String, Object?>{
-        'user_id': _userId,
-        'asset_id': assetId,
-        'is_favorite': 0,
-        'intent': intentId,
-        'intent_done_at': null,
-        'updated_at': now,
-      });
-      return;
-    }
-
-    await db.update(
-      AppDatabase.screenshotMeta,
-      <String, Object?>{
-        'intent': intentId,
-        'intent_done_at': null,
-        'updated_at': now,
-      },
-      where: 'user_id = ? AND asset_id = ?',
-      whereArgs: <Object?>[_userId, assetId],
-    );
+    await db.transaction((Transaction txn) async {
+      for (final String assetId in assetIds) {
+        final int updated = await txn.update(
+          AppDatabase.screenshotMeta,
+          <String, Object?>{
+            'intent': intentId,
+            'intent_done_at': doneMillis,
+            'updated_at': now,
+          },
+          where: 'user_id = ? AND asset_id = ?',
+          whereArgs: <Object?>[_userId, assetId],
+        );
+        if (updated == 0) {
+          await txn.insert(AppDatabase.screenshotMeta, <String, Object?>{
+            'user_id': _userId,
+            'asset_id': assetId,
+            'is_favorite': 0,
+            'intent': intentId,
+            'intent_done_at': doneMillis,
+            'updated_at': now,
+          });
+        }
+      }
+    });
   }
 
   /// Ticks an intent off, or puts it back on the list.

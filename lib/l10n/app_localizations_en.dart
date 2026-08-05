@@ -1645,6 +1645,120 @@ class AppLocalizationsEn extends AppLocalizations {
   String get intentVisitWaiting => 'To visit';
 
   @override
+  String get intentWatch => 'Watch';
+
+  @override
+  String get intentListen => 'Listen';
+
+  @override
+  String get intentCook => 'Cook';
+
+  @override
+  String get intentBook => 'Book';
+
+  @override
+  String get intentPay => 'Pay';
+
+  @override
+  String get intentSend => 'Send';
+
+  @override
+  String get intentDownload => 'Download';
+
+  @override
+  String get intentApply => 'Apply';
+
+  @override
+  String get intentCompare => 'Compare';
+
+  @override
+  String get intentFix => 'Fix';
+
+  @override
+  String get intentWatchWaiting => 'To watch';
+
+  @override
+  String get intentListenWaiting => 'To listen to';
+
+  @override
+  String get intentCookWaiting => 'To cook';
+
+  @override
+  String get intentBookWaiting => 'To book';
+
+  @override
+  String get intentPayWaiting => 'To pay';
+
+  @override
+  String get intentSendWaiting => 'To send';
+
+  @override
+  String get intentDownloadWaiting => 'To download';
+
+  @override
+  String get intentApplyWaiting => 'To apply for';
+
+  @override
+  String get intentCompareWaiting => 'To compare';
+
+  @override
+  String get intentFixWaiting => 'To fix';
+
+  @override
+  String get intentMore => 'More';
+
+  @override
+  String get intentSectionCommon => 'Ready-made';
+
+  @override
+  String get intentSectionYours => 'Yours';
+
+  @override
+  String get intentYoursEmpty =>
+      'A verb you write yourself works exactly like the ones above.';
+
+  @override
+  String get intentNewAction => 'Write your own';
+
+  @override
+  String get intentNewTitle => 'Name it yourself';
+
+  @override
+  String get intentEditTitle => 'Edit this one';
+
+  @override
+  String get intentNameLabel => 'The verb';
+
+  @override
+  String get intentNameHint => 'Return it, cancel it, call them…';
+
+  @override
+  String get intentIconLabel => 'Icon';
+
+  @override
+  String intentDeleteTitle(String label) {
+    return 'Delete \"$label\"?';
+  }
+
+  @override
+  String get intentDeleteMessage =>
+      'The screenshots stay where they are. They just stop waiting for anything.';
+
+  @override
+  String get intentSelectionAction => 'Mark as';
+
+  @override
+  String intentSelectionApplied(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count screenshots marked',
+      one: '1 screenshot marked',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get intentPrompt => 'What will you do with it?';
 
   @override

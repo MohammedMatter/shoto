@@ -839,6 +839,54 @@
   "intentReplyWaiting": "To reply",
   "intentTryWaiting": "To try",
   "intentVisitWaiting": "To visit",
+  "intentWatch": "Watch",
+  "intentListen": "Listen",
+  "intentCook": "Cook",
+  "intentBook": "Book",
+  "intentPay": "Pay",
+  "intentSend": "Send",
+  "intentDownload": "Download",
+  "intentApply": "Apply",
+  "intentCompare": "Compare",
+  "intentFix": "Fix",
+  "intentWatchWaiting": "To watch",
+  "intentListenWaiting": "To listen to",
+  "intentCookWaiting": "To cook",
+  "intentBookWaiting": "To book",
+  "intentPayWaiting": "To pay",
+  "intentSendWaiting": "To send",
+  "intentDownloadWaiting": "To download",
+  "intentApplyWaiting": "To apply for",
+  "intentCompareWaiting": "To compare",
+  "intentFixWaiting": "To fix",
+  "intentMore": "More",
+  "intentSectionCommon": "Ready-made",
+  "intentSectionYours": "Yours",
+  "intentYoursEmpty": "A verb you write yourself works exactly like the ones above.",
+  "intentNewAction": "Write your own",
+  "intentNewTitle": "Name it yourself",
+  "intentEditTitle": "Edit this one",
+  "intentNameLabel": "The verb",
+  "intentNameHint": "Return it, cancel it, call them…",
+  "intentIconLabel": "Icon",
+  "intentDeleteTitle": "Delete \"{label}\"?",
+  "@intentDeleteTitle": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "intentDeleteMessage": "The screenshots stay where they are. They just stop waiting for anything.",
+  "intentSelectionAction": "Mark as",
+  "intentSelectionApplied": "{count, plural, =1{1 screenshot marked} other{{count} screenshots marked}}",
+  "@intentSelectionApplied": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "intentPrompt": "What will you do with it?",
   "intentSkip": "Nothing in particular",
   "intentWaitingTitle": "Waiting on you",

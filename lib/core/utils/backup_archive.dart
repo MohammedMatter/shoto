@@ -23,6 +23,15 @@ class BackupSource {
   final List<String> visualLabels;
   final DateTime addedAt;
 
+  /// A built-in intent's permanent id, or null. See [BackupItem.intentId].
+  final String? intentId;
+
+  /// Index into the writer's custom-intent list, or null. Bounded by the
+  /// writer, same as [folderIndex].
+  final int? customIntentIndex;
+
+  final DateTime? intentDoneAt;
+
   const BackupSource({
     required this.bytes,
     required this.originalName,
@@ -32,6 +41,9 @@ class BackupSource {
     required this.phash,
     required this.visualLabels,
     required this.addedAt,
+    this.intentId,
+    this.customIntentIndex,
+    this.intentDoneAt,
   });
 }
 
@@ -89,10 +101,16 @@ class BackupWriter {
   final ZipEncoder _encoder;
   final OutputStream _sink;
   final List<BackupFolder> _folders;
+  final List<BackupCustomIntent> _customIntents;
   final List<BackupItem> _items = <BackupItem>[];
   bool _closed = false;
 
-  BackupWriter._(this._encoder, this._sink, this._folders);
+  BackupWriter._(
+    this._encoder,
+    this._sink,
+    this._folders,
+    this._customIntents,
+  );
 
   /// How many screenshots have been written so far.
   int get count => _items.length;
@@ -133,6 +151,19 @@ class BackupWriter {
         ocrText: source.ocrText,
         phash: source.phash,
         visualLabels: source.visualLabels,
+        intentId: source.intentId,
+        // Bounded here as well, for the same reason the folder index is: an
+        // index the manifest cannot resolve on the way back in silently drops
+        // the intent, and refusing to write it is cheaper than finding out
+        // later.
+        customIntentIndex:
+            source.intentId == null &&
+                source.customIntentIndex != null &&
+                source.customIntentIndex! >= 0 &&
+                source.customIntentIndex! < _customIntents.length
+            ? source.customIntentIndex
+            : null,
+        intentDoneAt: source.intentDoneAt,
         addedAt: source.addedAt,
       ),
     );
@@ -152,7 +183,11 @@ class BackupWriter {
     _encoder.add(
       ArchiveFile.string(
         BackupManifest.fileName,
-        BackupManifest.now(folders: _folders, items: _items).encode(),
+        BackupManifest.now(
+          folders: _folders,
+          customIntents: _customIntents,
+          items: _items,
+        ).encode(),
       ),
     );
     _encoder.endEncode();
@@ -243,7 +278,8 @@ abstract class BackupArchive {
   static BackupWriter openWriter({
     required String path,
     required List<BackupFolder> folders,
-  }) => _openWriter(OutputFileStream(path), folders);
+    List<BackupCustomIntent> customIntents = const <BackupCustomIntent>[],
+  }) => _openWriter(OutputFileStream(path), folders, customIntents);
 
   /// Opens the archive at [path] for reading, without loading it.
   ///
@@ -266,9 +302,10 @@ abstract class BackupArchive {
   static Uint8List write({
     required List<BackupFolder> folders,
     required List<BackupSource> sources,
+    List<BackupCustomIntent> customIntents = const <BackupCustomIntent>[],
   }) {
     final OutputMemoryStream sink = OutputMemoryStream();
-    final BackupWriter writer = _openWriter(sink, folders);
+    final BackupWriter writer = _openWriter(sink, folders, customIntents);
     for (final BackupSource source in sources) {
       writer.add(source);
     }
@@ -298,10 +335,11 @@ abstract class BackupArchive {
   static BackupWriter _openWriter(
     OutputStream sink,
     List<BackupFolder> folders,
+    List<BackupCustomIntent> customIntents,
   ) {
     final ZipEncoder encoder = ZipEncoder();
     encoder.startEncode(sink, level: DeflateLevel.none);
-    return BackupWriter._(encoder, sink, folders);
+    return BackupWriter._(encoder, sink, folders, customIntents);
   }
 
   static BackupReader _openReader(Archive archive, InputFileStream? input) {

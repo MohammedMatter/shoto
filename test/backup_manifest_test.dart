@@ -314,4 +314,193 @@ void main() {
             as Map<String, Object?>;
     expect(item.keys, unorderedEquals(<String>['path', 'added']));
   });
+
+  group('intents travel too', () {
+    // A screenshot's intent is the one thing in a backup the user *said*
+    // rather than accumulated, so losing it in transit is the loss they would
+    // actually feel.
+    test('a built-in intent survives by its permanent id', () {
+      final BackupManifest source = BackupManifest.now(
+        folders: const <BackupFolder>[],
+        items: <BackupItem>[
+          BackupItem(
+            path: 'images/00001.png',
+            folderIndex: null,
+            isFavorite: false,
+            ocrText: null,
+            phash: null,
+            visualLabels: const <String>[],
+            addedAt: DateTime.utc(2026, 5, 6),
+            intentId: 'buy',
+          ),
+        ],
+      );
+
+      final BackupItem item = BackupManifest.decode(
+        source.encode(),
+      ).manifest.items.single;
+      expect(item.intentId, 'buy');
+      expect(item.customIntentIndex, isNull);
+      expect(item.intentDoneAt, isNull);
+    });
+
+    test('a finished intent comes back finished, on its original date', () {
+      // Restoring these as outstanding would make the app's one shrinking
+      // number jump on the day somebody's phone broke.
+      final BackupManifest source = BackupManifest.now(
+        folders: const <BackupFolder>[],
+        items: <BackupItem>[
+          BackupItem(
+            path: 'images/00001.png',
+            folderIndex: null,
+            isFavorite: false,
+            ocrText: null,
+            phash: null,
+            visualLabels: const <String>[],
+            addedAt: DateTime.utc(2026, 5, 6),
+            intentId: 'read',
+            intentDoneAt: DateTime.utc(2026, 6, 7, 8, 9),
+          ),
+        ],
+      );
+
+      final BackupItem item = BackupManifest.decode(
+        source.encode(),
+      ).manifest.items.single;
+      expect(item.intentDoneAt, DateTime.utc(2026, 6, 7, 8, 9));
+    });
+
+    test('a custom intent travels by position, with its label and glyph', () {
+      final BackupManifest source = BackupManifest.now(
+        folders: const <BackupFolder>[],
+        customIntents: const <BackupCustomIntent>[
+          BackupCustomIntent(label: 'أرجّعها', iconKey: 'cart'),
+        ],
+        items: <BackupItem>[
+          BackupItem(
+            path: 'images/00001.png',
+            folderIndex: null,
+            isFavorite: false,
+            ocrText: null,
+            phash: null,
+            visualLabels: const <String>[],
+            addedAt: DateTime.utc(2026, 5, 6),
+            customIntentIndex: 0,
+          ),
+        ],
+      );
+
+      final BackupParseResult result = BackupManifest.decode(source.encode());
+      final BackupCustomIntent intent = result.manifest.customIntents.single;
+      expect(intent.label, 'أرجّعها');
+      expect(intent.iconKey, 'cart');
+      expect(result.manifest.items.single.customIntentIndex, 0);
+    });
+
+    test('a custom intent index that does not resolve clears the intent', () {
+      // Same rule as an unresolvable folder: arriving with nothing set is a
+      // small visible loss, arriving under somebody else's word is a wrong
+      // answer nobody goes looking for.
+      final String json = jsonEncode(<String, Object?>{
+        'kind': BackupManifest.kind,
+        'version': BackupManifest.currentVersion,
+        'created': 0,
+        'folders': <Object?>[],
+        'customIntents': <Object?>[
+          <String, Object?>{'label': 'Return it', 'icon': 'cart'},
+        ],
+        'items': <Object?>[
+          <String, Object?>{
+            'path': 'images/00001.png',
+            'customIntent': 7,
+            'intentDone': 1234,
+            'added': 0,
+          },
+        ],
+      });
+
+      final BackupItem item = BackupManifest.decode(json).manifest.items.single;
+      expect(item.customIntentIndex, isNull);
+      // The completion goes with the intent it belonged to — a timestamp for
+      // a task that is not there is a fact about nothing.
+      expect(item.intentDoneAt, isNull);
+    });
+
+    test('an unnamed custom intent is dropped without renumbering', () {
+      // Dropping it silently would shift every index after it by one, which is
+      // exactly how a screenshot ends up filed under the wrong verb.
+      final String json = jsonEncode(<String, Object?>{
+        'kind': BackupManifest.kind,
+        'version': BackupManifest.currentVersion,
+        'created': 0,
+        'folders': <Object?>[],
+        'customIntents': <Object?>[
+          <String, Object?>{'label': '   '},
+          <String, Object?>{'label': 'Chase them'},
+        ],
+        'items': <Object?>[
+          <String, Object?>{'path': 'images/00001.png', 'customIntent': 1},
+        ],
+      });
+
+      final BackupParseResult result = BackupManifest.decode(json);
+      expect(result.manifest.customIntents.length, 1);
+      expect(result.manifest.customIntents.single.label, 'Chase them');
+      // Index 1 no longer exists after the drop, so it is cleared rather than
+      // left pointing past the end.
+      expect(result.manifest.items.single.customIntentIndex, isNull);
+      // And a lost verb is not counted as a lost screenshot — the user is told
+      // about the second, not the first.
+      expect(result.isComplete, isTrue);
+    });
+
+    test('a missing icon falls back rather than dropping the verb', () {
+      final String json = jsonEncode(<String, Object?>{
+        'kind': BackupManifest.kind,
+        'version': BackupManifest.currentVersion,
+        'created': 0,
+        'folders': <Object?>[],
+        'customIntents': <Object?>[
+          <String, Object?>{'label': 'Return it'},
+        ],
+        'items': <Object?>[],
+      });
+
+      expect(
+        BackupManifest.decode(json).manifest.customIntents.single.iconKey,
+        'flag',
+      );
+    });
+
+    test('a backup with no intents omits the key entirely', () {
+      // The format is a plain zip so a human can read the manifest; an empty
+      // list nobody uses is noise in the file they open.
+      final Map<String, Object?> encoded =
+          jsonDecode(
+                BackupManifest.now(
+                  folders: const <BackupFolder>[],
+                  items: <BackupItem>[_item('images/00001.png')],
+                ).encode(),
+              )
+              as Map<String, Object?>;
+      expect(encoded.containsKey('customIntents'), isFalse);
+    });
+
+    test('an old backup with no intents at all still reads', () {
+      // Every archive made before this feature existed.
+      final BackupManifest source = BackupManifest.now(
+        folders: <BackupFolder>[_folder('Work')],
+        items: <BackupItem>[_item('images/00001.png', folder: 0, fav: true)],
+      );
+
+      final BackupParseResult result = BackupManifest.decode(source.encode());
+      expect(result.isComplete, isTrue);
+      expect(result.manifest.customIntents, isEmpty);
+      final BackupItem item = result.manifest.items.single;
+      expect(item.intentId, isNull);
+      expect(item.customIntentIndex, isNull);
+      expect(item.isFavorite, isTrue);
+      expect(item.folderIndex, 0);
+    });
+  });
 }

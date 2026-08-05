@@ -1646,6 +1646,120 @@ class AppLocalizationsEs extends AppLocalizations {
   String get intentVisitWaiting => 'Por visitar';
 
   @override
+  String get intentWatch => 'Ver';
+
+  @override
+  String get intentListen => 'Escuchar';
+
+  @override
+  String get intentCook => 'Cocinar';
+
+  @override
+  String get intentBook => 'Reservar';
+
+  @override
+  String get intentPay => 'Pagar';
+
+  @override
+  String get intentSend => 'Enviar';
+
+  @override
+  String get intentDownload => 'Descargar';
+
+  @override
+  String get intentApply => 'Postular';
+
+  @override
+  String get intentCompare => 'Comparar';
+
+  @override
+  String get intentFix => 'Arreglar';
+
+  @override
+  String get intentWatchWaiting => 'Por ver';
+
+  @override
+  String get intentListenWaiting => 'Por escuchar';
+
+  @override
+  String get intentCookWaiting => 'Por cocinar';
+
+  @override
+  String get intentBookWaiting => 'Por reservar';
+
+  @override
+  String get intentPayWaiting => 'Por pagar';
+
+  @override
+  String get intentSendWaiting => 'Por enviar';
+
+  @override
+  String get intentDownloadWaiting => 'Por descargar';
+
+  @override
+  String get intentApplyWaiting => 'Por postular';
+
+  @override
+  String get intentCompareWaiting => 'Por comparar';
+
+  @override
+  String get intentFixWaiting => 'Por arreglar';
+
+  @override
+  String get intentMore => 'Más';
+
+  @override
+  String get intentSectionCommon => 'Listas para usar';
+
+  @override
+  String get intentSectionYours => 'Tuyas';
+
+  @override
+  String get intentYoursEmpty =>
+      'Un verbo que escribas tú funciona igual que los de arriba.';
+
+  @override
+  String get intentNewAction => 'Escribe el tuyo';
+
+  @override
+  String get intentNewTitle => 'Ponle tu nombre';
+
+  @override
+  String get intentEditTitle => 'Editar esta';
+
+  @override
+  String get intentNameLabel => 'El verbo';
+
+  @override
+  String get intentNameHint => 'Devolverlo, cancelarlo, llamarlos…';
+
+  @override
+  String get intentIconLabel => 'Icono';
+
+  @override
+  String intentDeleteTitle(String label) {
+    return '¿Eliminar \"$label\"?';
+  }
+
+  @override
+  String get intentDeleteMessage =>
+      'Las capturas se quedan donde están. Solo dejan de esperar algo.';
+
+  @override
+  String get intentSelectionAction => 'Marcar como';
+
+  @override
+  String intentSelectionApplied(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count capturas marcadas',
+      one: '1 captura marcada',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get intentPrompt => '¿Qué vas a hacer con esto?';
 
   @override

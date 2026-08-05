@@ -308,6 +308,7 @@ class _SearchPageState extends State<SearchPage> {
               // route is the day a duplicate tag crashes it.
               heroTag: 'search-${item.id}',
               isFavorite: item.isFavorite,
+              intent: item.intent,
               isSelected: false,
               selectionMode: false,
               onTap: () => Navigator.of(context).push(

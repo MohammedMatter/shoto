@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/intent_catalog.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
 import 'package:shoto/core/routes/app_router.dart';
@@ -279,6 +280,13 @@ class SettingsPage extends StatelessWidget {
                                 isDestructive: true,
                               );
                               if (confirmed && context.mounted) {
+                                // Held in memory for the whole app session and
+                                // scoped to one account, so it has to be
+                                // dropped here or the next person to sign in on
+                                // this phone is offered the previous one's
+                                // verbs. Everything else per-account is read
+                                // fresh from the database on load.
+                                sl<IntentCatalog>().clear();
                                 context.read<AuthBloc>().add(
                                   SignOutRequestedEvent(),
                                 );

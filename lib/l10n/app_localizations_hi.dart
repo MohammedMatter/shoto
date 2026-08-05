@@ -1644,6 +1644,120 @@ class AppLocalizationsHi extends AppLocalizations {
   String get intentVisitWaiting => 'जाने के लिए';
 
   @override
+  String get intentWatch => 'देखें';
+
+  @override
+  String get intentListen => 'सुनें';
+
+  @override
+  String get intentCook => 'पकाएँ';
+
+  @override
+  String get intentBook => 'बुक करें';
+
+  @override
+  String get intentPay => 'भुगतान करें';
+
+  @override
+  String get intentSend => 'भेजें';
+
+  @override
+  String get intentDownload => 'डाउनलोड करें';
+
+  @override
+  String get intentApply => 'आवेदन करें';
+
+  @override
+  String get intentCompare => 'तुलना करें';
+
+  @override
+  String get intentFix => 'ठीक करें';
+
+  @override
+  String get intentWatchWaiting => 'देखने के लिए';
+
+  @override
+  String get intentListenWaiting => 'सुनने के लिए';
+
+  @override
+  String get intentCookWaiting => 'पकाने के लिए';
+
+  @override
+  String get intentBookWaiting => 'बुक करने के लिए';
+
+  @override
+  String get intentPayWaiting => 'भुगतान के लिए';
+
+  @override
+  String get intentSendWaiting => 'भेजने के लिए';
+
+  @override
+  String get intentDownloadWaiting => 'डाउनलोड के लिए';
+
+  @override
+  String get intentApplyWaiting => 'आवेदन के लिए';
+
+  @override
+  String get intentCompareWaiting => 'तुलना के लिए';
+
+  @override
+  String get intentFixWaiting => 'ठीक करने के लिए';
+
+  @override
+  String get intentMore => 'और';
+
+  @override
+  String get intentSectionCommon => 'पहले से मौजूद';
+
+  @override
+  String get intentSectionYours => 'आपके';
+
+  @override
+  String get intentYoursEmpty =>
+      'आपका लिखा हुआ शब्द भी ऊपर वालों जैसा ही काम करता है।';
+
+  @override
+  String get intentNewAction => 'अपना लिखें';
+
+  @override
+  String get intentNewTitle => 'इसे अपना नाम दें';
+
+  @override
+  String get intentEditTitle => 'इसे बदलें';
+
+  @override
+  String get intentNameLabel => 'क्रिया';
+
+  @override
+  String get intentNameHint => 'वापस करें, रद्द करें, फ़ोन करें…';
+
+  @override
+  String get intentIconLabel => 'आइकॉन';
+
+  @override
+  String intentDeleteTitle(String label) {
+    return '\"$label\" हटाएँ?';
+  }
+
+  @override
+  String get intentDeleteMessage =>
+      'स्क्रीनशॉट जहाँ हैं वहीं रहेंगे। बस किसी चीज़ का इंतज़ार करना बंद कर देंगे।';
+
+  @override
+  String get intentSelectionAction => 'इस रूप में चिह्नित करें';
+
+  @override
+  String intentSelectionApplied(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count स्क्रीनशॉट चिह्नित',
+      one: '1 स्क्रीनशॉट चिह्नित',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get intentPrompt => 'इसका क्या करेंगे?';
 
   @override

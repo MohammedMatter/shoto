@@ -1655,6 +1655,120 @@ class AppLocalizationsFr extends AppLocalizations {
   String get intentVisitWaiting => 'À visiter';
 
   @override
+  String get intentWatch => 'Regarder';
+
+  @override
+  String get intentListen => 'Écouter';
+
+  @override
+  String get intentCook => 'Cuisiner';
+
+  @override
+  String get intentBook => 'Réserver';
+
+  @override
+  String get intentPay => 'Payer';
+
+  @override
+  String get intentSend => 'Envoyer';
+
+  @override
+  String get intentDownload => 'Télécharger';
+
+  @override
+  String get intentApply => 'Postuler';
+
+  @override
+  String get intentCompare => 'Comparer';
+
+  @override
+  String get intentFix => 'Réparer';
+
+  @override
+  String get intentWatchWaiting => 'À regarder';
+
+  @override
+  String get intentListenWaiting => 'À écouter';
+
+  @override
+  String get intentCookWaiting => 'À cuisiner';
+
+  @override
+  String get intentBookWaiting => 'À réserver';
+
+  @override
+  String get intentPayWaiting => 'À payer';
+
+  @override
+  String get intentSendWaiting => 'À envoyer';
+
+  @override
+  String get intentDownloadWaiting => 'À télécharger';
+
+  @override
+  String get intentApplyWaiting => 'À postuler';
+
+  @override
+  String get intentCompareWaiting => 'À comparer';
+
+  @override
+  String get intentFixWaiting => 'À réparer';
+
+  @override
+  String get intentMore => 'Plus';
+
+  @override
+  String get intentSectionCommon => 'Prêtes à l\'emploi';
+
+  @override
+  String get intentSectionYours => 'Les vôtres';
+
+  @override
+  String get intentYoursEmpty =>
+      'Un verbe que vous écrivez vous-même fonctionne exactement comme ceux du dessus.';
+
+  @override
+  String get intentNewAction => 'Écrivez le vôtre';
+
+  @override
+  String get intentNewTitle => 'Nommez-la vous-même';
+
+  @override
+  String get intentEditTitle => 'Modifier celle-ci';
+
+  @override
+  String get intentNameLabel => 'Le verbe';
+
+  @override
+  String get intentNameHint => 'La rendre, l\'annuler, les appeler…';
+
+  @override
+  String get intentIconLabel => 'Icône';
+
+  @override
+  String intentDeleteTitle(String label) {
+    return 'Supprimer « $label » ?';
+  }
+
+  @override
+  String get intentDeleteMessage =>
+      'Les captures restent où elles sont. Elles cessent simplement d\'attendre quelque chose.';
+
+  @override
+  String get intentSelectionAction => 'Marquer comme';
+
+  @override
+  String intentSelectionApplied(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count captures marquées',
+      one: '1 capture marquée',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get intentPrompt => 'Qu\'allez-vous en faire ?';
 
   @override
