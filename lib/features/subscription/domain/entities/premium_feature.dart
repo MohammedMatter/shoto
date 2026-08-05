@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shoto/core/constants/subscription_constants.dart';
 import 'package:shoto/core/localization/l10n.dart';
 
 /// The single source of truth for what paying actually gets you.
@@ -58,18 +59,21 @@ class PremiumFeature {
   /// the app could keep. Removing a feature means removing its entry here in
   /// the same change; the class doc above says this list is the source of
   /// truth, and a source of truth that lags reality is worse than no list.
+  /// Safe Share is first, and search is gone.
+  ///
+  /// **Search left** because it is free now. Listing it here would have been
+  /// the exact failure the paragraph above describes, pointed the other way:
+  /// charging for something the app hands out, on the screen where somebody
+  /// decides whether to trust the price.
+  ///
+  /// **Safe Share leads** because it is the only thing in this list that
+  /// neither Google Photos nor Apple Photos will ever ship. They both OCR
+  /// every screenshot for free, index it and search it, so "find your
+  /// screenshots" is a commodity the OS gives away — but neither platform can
+  /// approve a feature that helpfully writes a *different, plausible* card
+  /// number into a user's photo. Whatever is genuinely ours belongs at the
+  /// top, because the first row is the one people read.
   static final List<PremiumFeature> all = [
-    PremiumFeature(
-      icon: Icons.manage_search_rounded,
-      title: (context) => context.l10n.featSearch,
-      description: (context) => context.l10n.featSearchBody,
-      how: (context) => context.l10n.featSearchHow,
-      points: [
-        (context) => context.l10n.featSearchPoint1,
-        (context) => context.l10n.featSearchPoint2,
-        (context) => context.l10n.featSearchPoint3,
-      ],
-    ),
     PremiumFeature(
       icon: Icons.shield_moon_rounded,
       title: (context) => context.l10n.featSafeShare,
@@ -117,7 +121,12 @@ class PremiumFeature {
     PremiumFeature(
       icon: Icons.create_new_folder_rounded,
       title: (context) => context.l10n.featUnlimited,
-      description: (context) => context.l10n.featUnlimitedBody,
+      // The one free-tier number, stated rather than alluded to. A paywall
+      // that says "removes the caps" without saying what they were is asking
+      // somebody to pay to find out.
+      description: (context) => context.l10n.featUnlimitedBody(
+        SubscriptionConstants.freeScreenshotLimit,
+      ),
       how: (context) => context.l10n.featUnlimitedHow,
       points: [
         (context) => context.l10n.featUnlimitedPoint1,

@@ -742,13 +742,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get proWelcomeAction => 'शुरू करें';
 
   @override
-  String get featSearch => 'स्क्रीनशॉट के अंदर खोजें';
-
-  @override
-  String get featSearchBody =>
-      'उसमें लिखे शब्दों से कोई भी स्क्रीनशॉट ढूँढें, अरबी या अंग्रेज़ी में। कुछ अपलोड नहीं होता — पढ़ना आपके फ़ोन पर होता है।';
-
-  @override
   String get featSafeShare => 'सुरक्षित साझा';
 
   @override
@@ -777,27 +770,12 @@ class AppLocalizationsHi extends AppLocalizations {
       'स्क्रॉल की गई तस्वीरों को एक लंबी तस्वीर में जोड़ें, ओवरलैप अपने आप ढूँढकर हटा दिया जाता है।';
 
   @override
-  String get featUnlimited => 'असीमित फ़ोल्डर और स्क्रीनशॉट';
+  String get featUnlimited => 'आपकी लाइब्रेरी पर कोई सीमा नहीं';
 
   @override
-  String get featUnlimitedBody =>
-      'मुफ़्त संस्करण कुछ ही फ़ोल्डर और स्क्रीनशॉट पर रुक जाता है। Pro दोनों सीमाएँ हटा देता है।';
-
-  @override
-  String get featSearchHow =>
-      'SHOTO हर स्क्रीनशॉट के भीतर छपा पाठ पढ़कर याद रखता है, इसलिए याद आया एक शब्द ही तस्वीर दोबारा ढूँढने के लिए काफ़ी है — न फ़ाइल नाम, न फ़ोल्डर, न स्क्रॉल।';
-
-  @override
-  String get featSearchPoint1 =>
-      'अरबी और अंग्रेज़ी पढ़ता है, और वर्तनी थोड़ी अलग हो तब भी मिलान कर लेता है।';
-
-  @override
-  String get featSearchPoint2 =>
-      'तस्वीर में जो दिख रहा है उससे भी ढूँढता है — «रसीद», «बिल्ली» या «खाना» आज़माएँ।';
-
-  @override
-  String get featSearchPoint3 =>
-      'पढ़ने का काम आपके फ़ोन पर होता है। कुछ भी अपलोड नहीं होता, इसलिए ऑफ़लाइन भी चलता है।';
+  String featUnlimitedBody(Object count) {
+    return 'मुफ़्त संस्करण $count स्क्रीनशॉट व्यवस्थित करता है। प्रो यह सीमा हटा देता है।';
+  }
 
   @override
   String get featSafeShareHow =>
@@ -865,19 +843,19 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get featUnlimitedHow =>
-      'मुफ़्त संस्करण एक असली, काम लायक ऐप है, ट्रायल नहीं — बस उसकी एक सीमा है। Pro वह सीमा हटा देता है, और जो कुछ आपने पहले से व्यवस्थित किया है वह ठीक वहीं रहता है।';
+      'मुफ़्त संस्करण एक असली, काम का ऐप है: सेव करना, फ़ोल्डर, पसंदीदा और पूरी खोज — बिना खाते के और बिना कुछ अपलोड किए। इसमें सिर्फ़ एक सीमा है — कितने स्क्रीनशॉट व्यवस्थित होते हैं — और प्रो उसे हटा देता है। आपने जो पहले से व्यवस्थित किया है वह वैसे ही रहता है।';
 
   @override
   String get featUnlimitedPoint1 =>
-      'आपकी लाइब्रेरी को जितने फ़ोल्डर सचमुच चाहिए, उतने।';
+      'मुफ़्त संस्करण में फ़ोल्डर असीमित हैं, जैसा होना चाहिए।';
 
   @override
   String get featUnlimitedPoint2 =>
-      'आप कितने स्क्रीनशॉट फ़ाइल और पसंदीदा करते हैं, इस पर कोई सीमा नहीं।';
+      'स्क्रीनशॉट किसलिए है, यह नाम देना भी मुफ़्त और असीमित है।';
 
   @override
   String get featUnlimitedPoint3 =>
-      'सहेजना, फ़ोल्डर, पसंदीदा और खोज इतिहास दोनों ही स्थिति में आपके रहते हैं।';
+      'सीमा तक पहुँचने का मतलब है SHOTO वह जगह बन गया जहाँ आप चीज़ें रखते हैं। तब कुछ भी नहीं मिटता।';
 
   @override
   String get includedSubtitle => 'हर Pro सुविधा, समझाई गई।';
@@ -903,11 +881,11 @@ class AppLocalizationsHi extends AppLocalizations {
       'पढ़ें कि हर सुविधा असल में क्या करती है, फिर तय करें।';
 
   @override
-  String get includedFreeTitle => 'मुफ़्त स्तर आपको क्या देता है';
+  String get includedFreeTitle => 'मुफ़्त संस्करण में क्या मिलता है';
 
   @override
-  String includedFreeBody(int folders, int count) {
-    return '$folders फ़ोल्डर और $count व्यवस्थित स्क्रीनशॉट — साथ में सहेजना, पसंदीदा और गैलरी, हमेशा के लिए मुफ़्त।';
+  String includedFreeBody(int count) {
+    return '$count व्यवस्थित स्क्रीनशॉट, असीमित फ़ोल्डर, और पूरी खोज — हमेशा के लिए मुफ़्त।';
   }
 
   @override

@@ -8,7 +8,6 @@ import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/core/routes/photo_viewer_route.dart';
 import 'package:shoto/core/utils/visual_vocabulary.dart';
-import 'package:shoto/core/widgets/premium_gate.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/widgets/empty_state.dart';
@@ -23,17 +22,24 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.d
 import 'package:shoto/features/screenshots/presentation/pages/screenshot_detail_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_thumbnail.dart';
 
-/// Premium-gates then opens [SearchPage]. Pass [bloc] to reuse an
-/// already-loaded [ScreenshotsBloc] (e.g. Home's, so favorite/move actions
-/// taken from search stay in sync with Home's grid); omit it to spin up a
-/// fresh, independently-loaded one for entry points that don't have one in
-/// scope (e.g. the shell's quick-actions button).
+/// Opens [SearchPage]. Pass [bloc] to reuse an already-loaded
+/// [ScreenshotsBloc] (e.g. Home's, so favorite/move actions taken from search
+/// stay in sync with Home's grid); omit it to spin up a fresh, independently
+/// loaded one for entry points that don't have one in scope (e.g. the shell's
+/// quick-actions button).
+///
+/// Free, and deliberately so. This used to call `ensurePremium` first, which
+/// meant the most prominent control on the app's first screen — the search
+/// field, placed second on Home precisely to be reachable and obvious — was
+/// a paywall trigger. "Find any screenshot in seconds" is the sentence the
+/// whole product is sold on; withholding it does not make the free tier a
+/// smaller version of SHOTO, it makes it a demo with the point removed. The
+/// paid line now sits at Safe Share, Stitch, and volume: things somebody
+/// reaches for after the app has already proved it works.
 Future<void> openSearchPage(
   BuildContext context, {
   ScreenshotsBloc? bloc,
 }) async {
-  if (!await ensurePremium(context)) return;
-  if (!context.mounted) return;
   final ScreenshotsBloc resolvedBloc =
       bloc ?? (sl<ScreenshotsBloc>()..add(LoadScreenshotsEvent()));
   Navigator.of(context).push(
@@ -44,7 +50,7 @@ Future<void> openSearchPage(
   );
 }
 
-/// Premium "search your screenshots" feature, reading each picture two ways.
+/// "Search your screenshots", reading each picture two ways.
 ///
 /// **Text**, via OCR — the words printed inside the image.
 ///

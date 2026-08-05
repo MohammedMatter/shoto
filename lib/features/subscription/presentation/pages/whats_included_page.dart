@@ -538,7 +538,6 @@ class _FreeTierNote extends StatelessWidget {
           SizedBox(height: 3.h),
           Text(
             context.l10n.includedFreeBody(
-              SubscriptionConstants.freeFolderLimit,
               SubscriptionConstants.freeScreenshotLimit,
             ),
             style: AppTextStyles.bodySmall,

@@ -22,18 +22,21 @@ abstract class SubscriptionConstants {
   static const String monthlyFallbackPrice = '\$7.00';
   static const String yearlyFallbackPrice = '\$23.00';
 
-  // Screenshots organized into a folder before hitting the free-tier cap.
-  static const int freeFolderLimit = 3;
-
-  // Distinct screenshots a free user may "manage" (favorite and/or file
-  // into a folder) in total. Screenshots themselves still show up in the
-  // gallery beyond this — SHOTO can't hide what the OS already captured —
-  // this only gates bringing a new screenshot under organization.
-  static const int freeScreenshotLimit = 50;
-
-  // Intents a free user may write in their own words, on top of the fifteen
-  // the app ships. Three is enough for anybody to find out whether naming
-  // their own is worth anything to them — which is the only honest basis for
-  // asking them to pay for the fourth.
-  static const int freeCustomIntentLimit = 3;
+  // The free tier is one number, and this is it: distinct screenshots a free
+  // user may bring under organization (favorite and/or file into a folder).
+  //
+  // There used to be three separate caps — 50 screenshots, 3 folders, 3
+  // custom intents — in three different currencies. Nobody can hold that in
+  // their head, and two of the three counted things a user has no feel for
+  // the value of: being told you have run out of *folders* is a strange
+  // sentence, and it arrives while you are trying to tidy up, which is the
+  // moment the app was supposed to be helping.
+  //
+  // One number can be stated on the paywall in one line, understood without
+  // reading it twice, and felt: a hundred screenshots is enough that hitting
+  // the ceiling means SHOTO has genuinely become the place you keep things.
+  // Folders and intents are now unlimited, because they are the *organizing*
+  // — charging for the containers while giving away the contents had it
+  // backwards.
+  static const int freeScreenshotLimit = 100;
 }

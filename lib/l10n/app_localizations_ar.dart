@@ -735,13 +735,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get proWelcomeAction => 'يلا نبلش';
 
   @override
-  String get featSearch => 'بحث جوّا لقطاتك';
-
-  @override
-  String get featSearchBody =>
-      'لاقي أي لقطة من الكلمات المكتوبة فيها، بالعربي أو الإنجليزي. ولا شي بينرفع — القراءة بتصير على جهازك.';
-
-  @override
   String get featSafeShare => 'مشاركة آمنة';
 
   @override
@@ -770,27 +763,12 @@ class AppLocalizationsAr extends AppLocalizations {
       'ارجع اجمع لقطات التمرير بصورة وحدة طويلة، والتداخل بينلاقى وبينشال تلقائياً.';
 
   @override
-  String get featUnlimited => 'مجلدات ولقطات بلا حدود';
+  String get featUnlimited => 'بلا سقف لمكتبتك';
 
   @override
-  String get featUnlimitedBody =>
-      'النسخة المجانية بتوقف عند كم مجلد وكم سكرين شوت. Pro بتشيل الحدين.';
-
-  @override
-  String get featSearchHow =>
-      'SHOTO بيقرأ النص المكتوب جوّا كل لقطة وبيحفظه، فكلمة وحدة متذكّرها بتكفي تلاقي الصورة من جديد — بدون أسماء ملفات ولا مجلدات ولا تمرير.';
-
-  @override
-  String get featSearchPoint1 =>
-      'بيقرأ عربي وإنجليزي، وبيطابق حتى لو الإملاء اختلف شوي.';
-
-  @override
-  String get featSearchPoint2 =>
-      'كمان بتلاقي حسب شو ظاهر بالصورة — جرّب «فاتورة» أو «قطة» أو «أكل».';
-
-  @override
-  String get featSearchPoint3 =>
-      'القراءة بتصير على جهازك. ولا شي بينرفع، فبتشتغل حتى بدون إنترنت.';
+  String featUnlimitedBody(Object count) {
+    return 'المجاني بيرتّب $count لقطة. برو بيشيل الرقم كلياً.';
+  }
 
   @override
   String get featSafeShareHow =>
@@ -857,18 +835,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get featUnlimitedHow =>
-      'النسخة المجانية تطبيق حقيقي بينشتغل فيه، مش تجربة — بس إله سقف. Pro بتشيل السقف، وكل شي رتبته بيضل مكانه بالظبط.';
+      'النسخة المجانية تطبيق حقيقي بيشتغل: حفظ، مجلدات، مفضلة، وبحث كامل، بدون حساب وبدون ما يطلع إشي من جهازك. في سقف واحد بس — كم لقطة بيرتّب — وبرو بيشيله. وكل شي رتّبته بيضل مكانه بالضبط.';
 
   @override
-  String get featUnlimitedPoint1 => 'مجلدات قد ما مكتبتك بتحتاج فعلياً.';
+  String get featUnlimitedPoint1 =>
+      'المجلدات بلا حدود بالمجاني، وهيك المفروض تكون من البداية.';
 
   @override
   String get featUnlimitedPoint2 =>
-      'ما في حد لعدد اللقطات اللي بترتبها وبتحطها بالمفضلة.';
+      'وتسمية شو الهدف من اللقطة كمان مجانية وبلا عدد.';
 
   @override
   String get featUnlimitedPoint3 =>
-      'الحفظ والمجلدات والمفضلة وسجل البحث بيضلوا إلك بالحالتين.';
+      'لما توصل للسقف يعني SHOTO صار المكان اللي بتحفظ فيه. وما بينحذف إشي وقتها.';
 
   @override
   String get includedSubtitle => 'كل ميزة بـ Pro، مشروحة.';
@@ -895,8 +874,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get includedFreeTitle => 'شو بيعطيك المجاني';
 
   @override
-  String includedFreeBody(int folders, int count) {
-    return '$folders مجلدات و$count لقطة مرتّبة — وكمان الحفظ والمفضلة والمعرض، مجاناً للأبد.';
+  String includedFreeBody(int count) {
+    return '$count لقطة مرتّبة، مجلدات بلا حدود، والبحث كامل — مجاناً للأبد.';
   }
 
   @override

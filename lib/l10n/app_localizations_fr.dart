@@ -743,13 +743,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get proWelcomeAction => 'Commencer';
 
   @override
-  String get featSearch => 'Cherchez dans vos captures';
-
-  @override
-  String get featSearchBody =>
-      'Retrouvez n’importe quelle capture par les mots qu’elle contient, en arabe ou en anglais. Rien n’est envoyé — la lecture se fait sur votre téléphone.';
-
-  @override
   String get featSafeShare => 'Partage protégé';
 
   @override
@@ -778,27 +771,12 @@ class AppLocalizationsFr extends AppLocalizations {
       'Réunissez une capture défilante en une seule image haute, le recouvrement étant détecté et retiré automatiquement.';
 
   @override
-  String get featUnlimited => 'Dossiers et captures illimités';
+  String get featUnlimited => 'Aucun plafond pour votre bibliothèque';
 
   @override
-  String get featUnlimitedBody =>
-      'L\'offre gratuite s\'arrête à quelques dossiers et captures. Pro supprime les deux limites.';
-
-  @override
-  String get featSearchHow =>
-      'SHOTO lit le texte imprimé dans chaque capture et le retient : un seul mot dont vous vous souvenez suffit à retrouver l’image — sans nom de fichier, sans dossier, sans faire défiler.';
-
-  @override
-  String get featSearchPoint1 =>
-      'Lit l’arabe et l’anglais, et trouve encore le bon résultat quand l’orthographe diffère légèrement.';
-
-  @override
-  String get featSearchPoint2 =>
-      'Cherche aussi d’après ce que montre l’image : essayez « reçu », « chat » ou « nourriture ».';
-
-  @override
-  String get featSearchPoint3 =>
-      'La lecture se fait sur votre téléphone. Rien n’est envoyé, cela fonctionne donc aussi hors ligne.';
+  String featUnlimitedBody(Object count) {
+    return 'La version gratuite organise $count captures. Pro supprime la limite.';
+  }
 
   @override
   String get featSafeShareHow =>
@@ -866,19 +844,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get featUnlimitedHow =>
-      'L\'offre gratuite est une vraie application utilisable, pas un essai — elle a simplement un plafond. Pro retire ce plafond, et tout ce que vous avez déjà organisé reste exactement où il est.';
+      'La version gratuite est une vraie application : enregistrement, dossiers, favoris et recherche complète, sans compte et sans rien téléverser. Elle n\'a qu\'un seul plafond — le nombre de captures organisées — et Pro le supprime. Tout ce que vous avez déjà organisé reste en place.';
 
   @override
   String get featUnlimitedPoint1 =>
-      'Autant de dossiers que votre bibliothèque en a réellement besoin.';
+      'Les dossiers sont illimités en version gratuite, comme il se doit.';
 
   @override
   String get featUnlimitedPoint2 =>
-      'Aucune limite au nombre de captures que vous classez et mettez en favori.';
+      'Nommer l\'usage d\'une capture est aussi gratuit et illimité.';
 
   @override
   String get featUnlimitedPoint3 =>
-      'L’enregistrement, les dossiers, les favoris et l’historique de recherche restent les vôtres dans tous les cas.';
+      'Atteindre le plafond signifie que SHOTO est devenu l\'endroit où vous rangez vos choses. Rien n\'est supprimé.';
 
   @override
   String get includedSubtitle => 'Chaque fonction Pro, expliquée.';
@@ -908,8 +886,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get includedFreeTitle => 'Ce que la version gratuite vous donne';
 
   @override
-  String includedFreeBody(int folders, int count) {
-    return '$folders dossiers et $count captures organisées, plus l’enregistrement, les favoris et la galerie, gratuits pour toujours.';
+  String includedFreeBody(int count) {
+    return '$count captures organisées, dossiers illimités et recherche complète — gratuit pour toujours.';
   }
 
   @override

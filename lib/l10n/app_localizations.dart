@@ -1402,18 +1402,6 @@ abstract class AppLocalizations {
   /// **'Start using it'**
   String get proWelcomeAction;
 
-  /// No description provided for @featSearch.
-  ///
-  /// In en, this message translates to:
-  /// **'Search inside your screenshots'**
-  String get featSearch;
-
-  /// No description provided for @featSearchBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Find any screenshot by the words written in it, in Arabic or English. Nothing is uploaded — the reading happens on your phone.'**
-  String get featSearchBody;
-
   /// No description provided for @featSafeShare.
   ///
   /// In en, this message translates to:
@@ -1465,38 +1453,14 @@ abstract class AppLocalizations {
   /// No description provided for @featUnlimited.
   ///
   /// In en, this message translates to:
-  /// **'Unlimited folders and screenshots'**
+  /// **'No ceiling on your library'**
   String get featUnlimited;
 
   /// No description provided for @featUnlimitedBody.
   ///
   /// In en, this message translates to:
-  /// **'The free tier stops at a few folders and screenshots. Pro removes both caps.'**
-  String get featUnlimitedBody;
-
-  /// No description provided for @featSearchHow.
-  ///
-  /// In en, this message translates to:
-  /// **'SHOTO reads the text printed inside every screenshot and remembers it, so one word you remember seeing is enough to find the picture again — no file names, no folders, no scrolling.'**
-  String get featSearchHow;
-
-  /// No description provided for @featSearchPoint1.
-  ///
-  /// In en, this message translates to:
-  /// **'Reads Arabic and English, and still matches when the spelling differs slightly.'**
-  String get featSearchPoint1;
-
-  /// No description provided for @featSearchPoint2.
-  ///
-  /// In en, this message translates to:
-  /// **'Also finds by what the picture shows — try \"receipt\", \"cat\" or \"food\".'**
-  String get featSearchPoint2;
-
-  /// No description provided for @featSearchPoint3.
-  ///
-  /// In en, this message translates to:
-  /// **'The reading happens on your phone. Nothing is uploaded, so it works offline too.'**
-  String get featSearchPoint3;
+  /// **'The free tier organizes {count} screenshots. Pro takes the number away.'**
+  String featUnlimitedBody(Object count);
 
   /// No description provided for @featSafeShareHow.
   ///
@@ -1597,25 +1561,25 @@ abstract class AppLocalizations {
   /// No description provided for @featUnlimitedHow.
   ///
   /// In en, this message translates to:
-  /// **'The free tier is a real, usable app rather than a trial — it just has a ceiling. Pro takes the ceiling off, and everything you already organized stays exactly where it is.'**
+  /// **'The free tier is a real, usable app: saving, folders, favourites and full search, with no account and nothing uploaded. It has exactly one ceiling — how many screenshots it organizes — and Pro removes it. Everything you already organized stays exactly where it is.'**
   String get featUnlimitedHow;
 
   /// No description provided for @featUnlimitedPoint1.
   ///
   /// In en, this message translates to:
-  /// **'As many folders as your library actually needs.'**
+  /// **'Folders are unlimited on the free tier, and always were meant to be.'**
   String get featUnlimitedPoint1;
 
   /// No description provided for @featUnlimitedPoint2.
   ///
   /// In en, this message translates to:
-  /// **'No cap on how many screenshots you file and favourite.'**
+  /// **'Naming what a screenshot is for is free and uncapped too.'**
   String get featUnlimitedPoint2;
 
   /// No description provided for @featUnlimitedPoint3.
   ///
   /// In en, this message translates to:
-  /// **'Saving, folders, favourites and search history stay yours either way.'**
+  /// **'Hitting the ceiling means SHOTO became where you keep things. Nothing is deleted when you do.'**
   String get featUnlimitedPoint3;
 
   /// No description provided for @includedSubtitle.
@@ -1669,8 +1633,8 @@ abstract class AppLocalizations {
   /// No description provided for @includedFreeBody.
   ///
   /// In en, this message translates to:
-  /// **'{folders} folders and {count} organized screenshots — plus saving, favourites and the gallery, free for good.'**
-  String includedFreeBody(int folders, int count);
+  /// **'{count} organized screenshots, unlimited folders, and full search — free for good.'**
+  String includedFreeBody(int count);
 
   /// No description provided for @authWelcome.
   ///

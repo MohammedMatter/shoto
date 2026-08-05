@@ -741,13 +741,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get proWelcomeAction => 'شروع کریں';
 
   @override
-  String get featSearch => 'اسکرین شاٹس کے اندر تلاش';
-
-  @override
-  String get featSearchBody =>
-      'اس میں لکھے الفاظ سے کوئی بھی اسکرین شاٹ ڈھونڈیں، عربی یا انگریزی میں۔ کچھ اپ لوڈ نہیں ہوتا — پڑھنا آپ کے فون پر ہوتا ہے۔';
-
-  @override
   String get featSafeShare => 'محفوظ اشتراک';
 
   @override
@@ -776,27 +769,12 @@ class AppLocalizationsUr extends AppLocalizations {
       'اسکرول کی گئی تصویریں دوبارہ ایک لمبی تصویر میں جوڑیں، اوورلیپ خود ڈھونڈ کر ہٹا دیا جاتا ہے۔';
 
   @override
-  String get featUnlimited => 'لامحدود فولڈر اور اسکرین شاٹس';
+  String get featUnlimited => 'آپ کی لائبریری پر کوئی حد نہیں';
 
   @override
-  String get featUnlimitedBody =>
-      'مفت درجہ چند فولڈرز اور اسکرین شاٹس پر رک جاتا ہے۔ Pro دونوں حدیں ہٹا دیتا ہے۔';
-
-  @override
-  String get featSearchHow =>
-      'SHOTO ہر اسکرین شاٹ کے اندر لکھا متن پڑھ کر یاد رکھتا ہے، سو یاد آیا ہوا ایک لفظ ہی تصویر دوبارہ ڈھونڈنے کے لیے کافی ہے — نہ فائل کے نام، نہ فولڈر، نہ اسکرول۔';
-
-  @override
-  String get featSearchPoint1 =>
-      'عربی اور انگریزی پڑھتا ہے، اور املا تھوڑا مختلف ہو تب بھی مماثلت پا لیتا ہے۔';
-
-  @override
-  String get featSearchPoint2 =>
-      'تصویر میں جو دکھ رہا ہے اُس سے بھی ڈھونڈتا ہے — «رسید»، «بلی» یا «کھانا» آزمائیں۔';
-
-  @override
-  String get featSearchPoint3 =>
-      'پڑھنے کا کام آپ کے فون پر ہوتا ہے۔ کچھ اپ لوڈ نہیں ہوتا، اس لیے آف لائن بھی چلتا ہے۔';
+  String featUnlimitedBody(Object count) {
+    return 'مفت ورژن $count اسکرین شاٹس منظم کرتا ہے۔ پرو یہ حد ہٹا دیتا ہے۔';
+  }
 
   @override
   String get featSafeShareHow =>
@@ -864,19 +842,19 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get featUnlimitedHow =>
-      'مفت درجہ ایک حقیقی، قابلِ استعمال ایپ ہے، آزمائش نہیں — بس اس کی ایک حد ہے۔ Pro وہ حد ہٹا دیتا ہے، اور جو کچھ آپ پہلے ترتیب دے چکے ہیں وہ بالکل اپنی جگہ رہتا ہے۔';
+      'مفت ورژن ایک حقیقی، قابلِ استعمال ایپ ہے: محفوظ کرنا، فولڈرز، پسندیدہ اور مکمل تلاش — بغیر اکاؤنٹ کے اور بغیر کچھ اپ لوڈ کیے۔ اس میں صرف ایک حد ہے — کتنے اسکرین شاٹس منظم ہوتے ہیں — اور پرو اسے ہٹا دیتا ہے۔ جو کچھ آپ پہلے سے منظم کر چکے ہیں وہ ویسے ہی رہتا ہے۔';
 
   @override
   String get featUnlimitedPoint1 =>
-      'آپ کی لائبریری کو جتنے فولڈر واقعی چاہئیں، اُتنے۔';
+      'مفت ورژن میں فولڈرز لامحدود ہیں، جیسا کہ ہونا چاہیے۔';
 
   @override
   String get featUnlimitedPoint2 =>
-      'آپ کتنے اسکرین شاٹس ترتیب دیتے اور پسندیدہ بناتے ہیں، اس پر کوئی حد نہیں۔';
+      'اسکرین شاٹ کس لیے ہے، یہ نام دینا بھی مفت اور لامحدود ہے۔';
 
   @override
   String get featUnlimitedPoint3 =>
-      'محفوظ کرنا، فولڈرز، پسندیدہ اور تلاش کی تاریخ دونوں صورتوں میں آپ کے پاس رہتے ہیں۔';
+      'حد تک پہنچنے کا مطلب ہے SHOTO وہ جگہ بن گیا جہاں آپ چیزیں رکھتے ہیں۔ تب کچھ بھی حذف نہیں ہوتا۔';
 
   @override
   String get includedSubtitle => 'ہر Pro فیچر، وضاحت کے ساتھ۔';
@@ -902,11 +880,11 @@ class AppLocalizationsUr extends AppLocalizations {
       'پڑھیں کہ ہر خوبی اصل میں کیا کرتی ہے، پھر فیصلہ کریں۔';
 
   @override
-  String get includedFreeTitle => 'مفت درجہ آپ کو کیا دیتا ہے';
+  String get includedFreeTitle => 'مفت ورژن میں کیا ملتا ہے';
 
   @override
-  String includedFreeBody(int folders, int count) {
-    return '$folders فولڈرز اور $count ترتیب شدہ اسکرین شاٹس — ساتھ محفوظ کرنا، پسندیدہ اور گیلری، ہمیشہ کے لیے مفت۔';
+  String includedFreeBody(int count) {
+    return '$count منظم اسکرین شاٹس، لامحدود فولڈرز، اور مکمل تلاش — ہمیشہ کے لیے مفت۔';
   }
 
   @override
