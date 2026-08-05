@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shoto/core/constants/v1_features.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
@@ -203,17 +202,11 @@ void main() {
       const Locale('en'),
     );
 
-    // Driven by the flag rather than by a fixed list, so this test keeps
-    // asserting the property — *whatever rows are shipping, none of them
-    // dead-ends* — instead of having to be rewritten each time the v1 scope
-    // moves. See [V1Features].
-    final List<String> labels = <String>[
+    for (final String label in <String>[
       l10n.homeToolSafeShare,
-      if (V1Features.duplicates) l10n.homeToolDuplicates,
-      if (V1Features.stitch) l10n.homeToolStitch,
-    ];
-
-    for (final String label in labels) {
+      l10n.homeToolDuplicates,
+      l10n.homeToolStitch,
+    ]) {
       final Finder row = find.text(label);
       expect(row, findsOneWidget, reason: '$label should still be visible');
       await tester.tap(row);
@@ -222,7 +215,7 @@ void main() {
 
     // Each row asked for screenshots instead of opening an empty selection
     // or the paywall.
-    expect(import.calls, labels.length);
+    expect(import.calls, 3);
     expect(
       intentsOpened,
       isEmpty,

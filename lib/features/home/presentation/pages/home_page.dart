@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:shoto/core/constants/v1_features.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
@@ -1178,45 +1177,43 @@ class _ToolList extends StatelessWidget {
           () => onOpenLibraryForIntent(LibraryIntent.protect),
         ),
       ),
-      if (V1Features.duplicates)
-        _Tool(
-          icon: Icons.content_copy_rounded,
-          // Deleting copies is the one tool here that removes something.
-          tint: AppColors.error,
-          title: context.l10n.homeToolDuplicates,
-          subtitle: context.l10n.homeToolDuplicatesSubtitle,
-          // The paywall sits *inside* the ready branch, so an empty library
-          // never reaches it. Asking somebody to pay to scan nothing for
-          // duplicates was the single worst interaction on the first screen.
-          onTap: _orImportFirst(context, () async {
-            if (!await ensurePremium(context)) return;
-            if (!context.mounted) return;
-            await Navigator.of(
-              context,
-            ).push(FadeSlidePageRoute(builder: (_) => DuplicatesPage()));
-          }),
-        ),
+      _Tool(
+        icon: Icons.content_copy_rounded,
+        // Deleting copies is the one tool here that removes something.
+        tint: AppColors.error,
+        title: context.l10n.homeToolDuplicates,
+        subtitle: context.l10n.homeToolDuplicatesSubtitle,
+        // The paywall sits *inside* the ready branch, so an empty library
+        // never reaches it. Asking somebody to pay to scan nothing for
+        // duplicates was the single worst interaction on the first screen.
+        onTap: _orImportFirst(context, () async {
+          if (!await ensurePremium(context)) return;
+          if (!context.mounted) return;
+          await Navigator.of(
+            context,
+          ).push(FadeSlidePageRoute(builder: (_) => DuplicatesPage()));
+        }),
+      ),
       // Search is **not** in this list any more.
       //
       // It is the field at the top of the screen now, which is both more
       // reachable and more prominent than a row four items down — and one
       // capability with two entry points on one screen is not twice as
       // discoverable, it just makes the list longer.
-      if (V1Features.stitch)
-        _Tool(
-          icon: Icons.photo_size_select_large_rounded,
-          // Merging produces something finished.
-          tint: AppColors.success,
-          title: context.l10n.homeToolStitch,
-          subtitle: context.l10n.homeToolStitchSubtitle,
-          // Was: "Long-press two or more screenshots in your library, then tap
-          // Merge." Three instructions, one of them a gesture with no visual
-          // affordance, on a screen the user had to find first.
-          onTap: _orImportFirst(
-            context,
-            () => onOpenLibraryForIntent(LibraryIntent.merge),
-          ),
+      _Tool(
+        icon: Icons.photo_size_select_large_rounded,
+        // Merging produces something finished.
+        tint: AppColors.success,
+        title: context.l10n.homeToolStitch,
+        subtitle: context.l10n.homeToolStitchSubtitle,
+        // Was: "Long-press two or more screenshots in your library, then tap
+        // Merge." Three instructions, one of them a gesture with no visual
+        // affordance, on a screen the user had to find first.
+        onTap: _orImportFirst(
+          context,
+          () => onOpenLibraryForIntent(LibraryIntent.merge),
         ),
+      ),
     ];
 
     return Column(

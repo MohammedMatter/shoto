@@ -51,7 +51,19 @@ android {
     }
 }
 
+// EXPERIMENT — unbundled OCR. See docs/decisions/ml-models.md.
+//
+// The text-recognition plugin depends on `com.google.mlkit:text-recognition`,
+// which carries the model inside the APK. `play-services-mlkit-text-recognition`
+// exposes the identical `com.google.mlkit.vision.text` API and keeps the model
+// in Google Play services instead.
+configurations.all {
+    exclude(group = "com.google.mlkit", module = "text-recognition")
+}
+
 dependencies {
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1")
+
     // local_auth_android pins androidx.biometric 1.1.0, which predates
     // Android 12's rework of BiometricPrompt. On 1.1.0 the prompt routes
     // class-2 (weak) biometrics through a legacy path, and face unlock — which

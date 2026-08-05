@@ -1,4 +1,3 @@
-import 'package:shoto/core/constants/v1_features.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/features/safe_share/presentation/pages/safe_share_page.dart';
 import 'package:shoto/core/widgets/app_snack_bar.dart';
@@ -576,7 +575,7 @@ class _SelectionToolbar extends StatelessWidget {
           // Merging needs at least two captures to have anything to join, so
           // the action only appears once that's true rather than sitting
           // there greyed out.
-          if (V1Features.stitch && count >= 2 && intent != LibraryIntent.protect)
+          if (count >= 2 && intent != LibraryIntent.protect)
             _ToolbarAction(
               icon: Icons.photo_size_select_large_rounded,
               iconColor: AppColors.primary,

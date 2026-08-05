@@ -85,6 +85,13 @@
             </intent-filter>
         </activity>
 
+        <!-- EXPERIMENT — see docs/decisions/ml-models.md. Asks Play services
+             to fetch the OCR model at install time rather than on first
+             scan, which is what makes an unbundled model tolerable. -->
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="ocr" />
+
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

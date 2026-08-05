@@ -62,8 +62,8 @@ old?*
   the empty room, and the inbox that answers both.
 - [onboarding.md](onboarding.md) — what the introduction used to describe, and
   why it no longer ends on a price.
-- [v1-scope.md](v1-scope.md) — the two features built for an app that no
-  longer exists.
+- [v1-scope.md](v1-scope.md) — cutting two features to sharpen the pitch:
+  proposed, built, and reversed.
 - [ios.md](ios.md) — what a Share Extension actually costs, so "later" stops
   being a sentence without a number.
 - [ml-models.md](ml-models.md) — the bundled models, the unbundled swap, and

@@ -24,9 +24,13 @@ new install is an empty app, and it stays as full as the user's willpower.
 The people with four hundred unfindable screenshots are drowning *precisely
 because they never curate*. An app that only works for people disciplined
 enough to file at capture time works for the people who do not have the
-problem. Two of the paid features quietly lost their justification at the same
+problem.
+
+Two of the paid features appeared to lose their justification at the same
 moment — you do not accumulate duplicates in a set assembled by hand — and
-nobody noticed for two sessions. See [v1-scope.md](v1-scope.md).
+were nearly cut for it. The queue below is what put them back: a library fed
+forty captures at a time is not a hand-curated one. See
+[v1-scope.md](v1-scope.md).
 
 ## The third option: an inbox, not a library
 

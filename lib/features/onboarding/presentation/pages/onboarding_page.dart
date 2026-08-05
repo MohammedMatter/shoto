@@ -40,11 +40,10 @@ import 'package:shoto/features/onboarding/presentation/widgets/stage_canvas.dart
 /// Nothing here is loaded from anywhere. The old screen had a data source, a
 /// repository, a use case and a bloc behind a JSON file of marketing copy —
 /// four layers to fetch five sentences that have to be translated anyway. The
-/// copy is in the ARB files with the rest of the app's language.
-///
-/// **Nothing is sold here.** The last stage used to be a price list — six
-/// paid features shown to somebody who had not yet saved a single
-/// screenshot. See `docs/decisions/onboarding.md`.
+/// copy is in the ARB files with the rest of the app's language, and the Pro
+/// stage reads [PremiumFeature.all], the list the paywall itself renders
+/// from, so the introduction cannot promise a feature set that no longer
+/// matches the product.
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
 
@@ -356,10 +355,11 @@ const List<CardPose> _found = [
   CardPose(x: 1.9, y: 1.2, opacity: 0, scale: 0.8),
 ];
 
-/// **Stage five — Safe Share.** The cards settle into a fan and the one in
-/// front covers its card number, which is the single most concrete thing
-/// SHOTO does and the last thing seen before the button.
-const List<CardPose> _safeShare = [
+/// **Stage five — Pro.** The cards retreat to a tidy fan at the top and hand
+/// the screen to the paid list. One of them is covering a card number, which
+/// is the single most concrete thing SHOTO does and the last thing seen
+/// before the button.
+const List<CardPose> _pro = [
   CardPose(x: -1.9, y: -0.9, opacity: 0, scale: 0.8),
   CardPose(x: -0.48, y: -0.5, turns: -0.05, scale: 0.72, opacity: 0.9),
   CardPose(x: 1.9, y: -0.9, opacity: 0, scale: 0.8),
@@ -406,7 +406,7 @@ List<OnboardingStage> _stages(BuildContext context) => [
   OnboardingStage(
     title: (context) => context.l10n.onbSafeShareTitle,
     body: (context) => context.l10n.onbSafeShareBody,
-    poses: _safeShare,
+    poses: _pro,
     prop: StageProp.safeShare,
   ),
 ];
