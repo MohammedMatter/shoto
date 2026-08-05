@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:shoto/core/database/app_database.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
+import 'package:shoto/core/services/local_identity.dart';
 
 /// Answers the one question the device gallery cannot: is this screenshot
 /// actually *in* SHOTO's library.
@@ -17,9 +17,9 @@ import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 /// stitch flows are all built on.
 class LibraryOwnershipLocalDataSource {
   final AppDatabase _appDatabase;
-  final AuthRepository _authRepository;
+  final LocalIdentity _localIdentity;
 
-  LibraryOwnershipLocalDataSource(this._appDatabase, this._authRepository);
+  LibraryOwnershipLocalDataSource(this._appDatabase, this._localIdentity);
 
   /// Always present. This used to be the signed-in account's uid and was
   /// therefore nullable, which made every read below carry an "empty library"
@@ -27,7 +27,7 @@ class LibraryOwnershipLocalDataSource {
   /// identity exists from first launch and never goes away, so all of that
   /// is gone: there is no state in which SHOTO does not know whose library
   /// this is.
-  String get _userId => _authRepository.userId;
+  String get _userId => _localIdentity.id;
 
   /// Every asset id in this device's library.
   ///

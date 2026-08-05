@@ -1,5 +1,11 @@
 {
   "@@locale": "fr",
+  "settingsYourName": "Votre nom",
+  "settingsYourNameHint": "Pour que Safe Share le masque quand il apparaît",
+  "settingsYourNameNotSet": "Non défini",
+  "ownerNameTitle": "Votre nom",
+  "ownerNameBody": "Safe Share trouve les numéros de carte et les codes par leur propre arithmétique. Un nom, il ne le trouve que s'il connaît déjà le vôtre. Saisi une fois, conservé sur ce téléphone, jamais envoyé nulle part.",
+  "ownerNameFieldHint": "Le nom que votre banque imprime",
   "commonCancel": "Annuler",
   "commonDelete": "Supprimer",
   "commonRetry": "Réessayer",
@@ -109,8 +115,6 @@
   "settingsFindDuplicates": "Trouver les doublons",
   "settingsClearCache": "Vider le cache d'images",
   "settingsShare": "Partager SHOTO",
-  "settingsSignOut": "Se déconnecter",
-  "settingsSignOutTitle": "Se déconnecter ?",
   "settingsPrivacyNote": "SHOTO ne lit jamais votre galerie. Il ne garde que les captures que vous lui partagez, et tout ce qu'il en fait — lire le texte, chercher les doublons — se passe sur cet appareil. Rien n'est jamais envoyé ailleurs.",
   "commonSave": "Enregistrer",
   "commonConfirm": "Confirmer",
@@ -419,11 +423,6 @@
       }
     }
   },
-  "authWelcome": "Bienvenue sur SHOTO",
-  "authSubtitle": "Aucun compte n'est nécessaire pour utiliser SHOTO. Connectez-vous uniquement pour transférer un achat vers un autre téléphone.",
-  "authGoogle": "Continuer avec Google",
-  "authApple": "Continuer avec Apple",
-  "authLegal": "En continuant, vous acceptez nos Conditions et notre Politique de confidentialité.",
   "onboardingCta": "Commencer",
   "onboardingPromise": "Tout reste sur votre téléphone.",
   "actionsTitle": "Actions",
@@ -548,10 +547,6 @@
   },
   "settingsShareHint": "Parlez-en à quelqu’un qui en a besoin",
   "settingsShareText": "SHOTO range mes captures tout seul — tout reste sur le téléphone.",
-  "settingsAccount": "Compte",
-  "settingsSignOutHint": "Vos captures restent sur cet appareil",
-  "settingsSignIn": "Se connecter",
-  "settingsSignInHint": "Facultatif. Sert uniquement à transférer un achat vers un autre téléphone.",
   "settingsCacheMeasuring": "Mesure…",
   "settingsCacheSize": "{size} de miniatures",
   "@settingsCacheSize": {

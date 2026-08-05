@@ -9,6 +9,26 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get settingsYourName => 'Your name';
+
+  @override
+  String get settingsYourNameHint =>
+      'So Safe Share can cover it when it appears';
+
+  @override
+  String get settingsYourNameNotSet => 'Not set';
+
+  @override
+  String get ownerNameTitle => 'Your name';
+
+  @override
+  String get ownerNameBody =>
+      'Safe Share finds card numbers and codes by their own arithmetic. A name it can only find if it already knows yours. Typed once, kept on this phone, never sent anywhere.';
+
+  @override
+  String get ownerNameFieldHint => 'The name your bank prints';
+
+  @override
   String get commonCancel => 'Cancel';
 
   @override
@@ -297,12 +317,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsShare => 'Share SHOTO';
-
-  @override
-  String get settingsSignOut => 'Sign out';
-
-  @override
-  String get settingsSignOutTitle => 'Sign out?';
 
   @override
   String get settingsPrivacyNote =>
@@ -892,23 +906,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get authWelcome => 'Welcome to SHOTO';
-
-  @override
-  String get authSubtitle =>
-      'You don\'t need an account to use SHOTO. Sign in only to move a purchase to another phone.';
-
-  @override
-  String get authGoogle => 'Continue with Google';
-
-  @override
-  String get authApple => 'Continue with Apple';
-
-  @override
-  String get authLegal =>
-      'By continuing, you agree to our Terms of Service and Privacy Policy.';
-
-  @override
   String get onboardingCta => 'Get started';
 
   @override
@@ -1113,19 +1110,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsShareText =>
       'SHOTO keeps my screenshots organized on their own — everything stays on the phone.';
-
-  @override
-  String get settingsAccount => 'Account';
-
-  @override
-  String get settingsSignOutHint => 'Your screenshots stay on this device';
-
-  @override
-  String get settingsSignIn => 'Sign in';
-
-  @override
-  String get settingsSignInHint =>
-      'Optional. Only needed to move a purchase to another phone.';
 
   @override
   String get settingsCacheMeasuring => 'Measuring…';

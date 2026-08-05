@@ -32,13 +32,6 @@ import 'package:shoto/features/backup/domain/use_cases/restore_backup_use_case.d
 import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
-import 'package:shoto/features/auth/data/data_sources/auth_remote_data_source.dart';
-import 'package:shoto/features/auth/data/repositories_impl/auth_repository_impl.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
-import 'package:shoto/features/auth/domain/use_cases/sign_in_with_apple_use_case.dart';
-import 'package:shoto/features/auth/domain/use_cases/sign_in_with_google_use_case.dart';
-import 'package:shoto/features/auth/domain/use_cases/sign_out_use_case.dart';
-import 'package:shoto/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:shoto/features/folders/data/data_sources/folders_local_data_source.dart';
 import 'package:shoto/features/folders/data/repositories_impl/folders_repository_impl.dart';
 import 'package:shoto/features/folders/domain/repositories/folders_repository.dart';
@@ -95,20 +88,6 @@ final sl = GetIt.instance;
 
 void setupServiceLocator() {
   sl.registerLazySingleton(() => LocalIdentity());
-  sl.registerLazySingleton(() => AuthRemoteDataSource());
-  sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(sl(), sl()),
-  );
-  sl.registerLazySingleton(() => SignInWithGoogleUseCase(sl()));
-  sl.registerLazySingleton(() => SignInWithAppleUseCase(sl()));
-  sl.registerLazySingleton(() => SignOutUseCase(sl()));
-  sl.registerFactory(
-    () => AuthBloc(
-      signInWithGoogleUseCase: sl(),
-      signInWithAppleUseCase: sl(),
-      signOutUseCase: sl(),
-    ),
-  );
 
   sl.registerLazySingleton(() => AppDatabase(sl()));
   sl.registerLazySingleton(() => ThemeController());

@@ -9,6 +9,25 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get settingsYourName => 'اسمك';
+
+  @override
+  String get settingsYourNameHint => 'عشان Safe Share يغطّيه لما يظهر بلقطة';
+
+  @override
+  String get settingsYourNameNotSet => 'مش محدّد';
+
+  @override
+  String get ownerNameTitle => 'اسمك';
+
+  @override
+  String get ownerNameBody =>
+      'Safe Share بيلاقي أرقام البطاقات والرموز بحسابها هي. الاسم ما بيقدر يلاقيه إلا إذا كان عارف اسمك. بتكتبه مرة، بيضل على هالجهاز، وما بينبعت لأي مكان.';
+
+  @override
+  String get ownerNameFieldHint => 'الاسم يلي بيطبعه البنك';
+
+  @override
   String get commonCancel => 'إلغاء';
 
   @override
@@ -298,12 +317,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsShare => 'شارك SHOTO';
-
-  @override
-  String get settingsSignOut => 'تسجيل الخروج';
-
-  @override
-  String get settingsSignOutTitle => 'تسجيل الخروج؟';
 
   @override
   String get settingsPrivacyNote =>
@@ -883,22 +896,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get authWelcome => 'أهلاً بك في SHOTO';
-
-  @override
-  String get authSubtitle =>
-      'ما بتحتاج حساب لتستخدم SHOTO. سجّل دخول بس إذا بدك تنقل اشتراكك لجهاز تاني.';
-
-  @override
-  String get authGoogle => 'تابع باستخدام Google';
-
-  @override
-  String get authApple => 'تابع باستخدام Apple';
-
-  @override
-  String get authLegal => 'بمتابعتك، بتوافق على شروط الخدمة وسياسة الخصوصية.';
-
-  @override
   String get onboardingCta => 'يلا نبدأ';
 
   @override
@@ -1107,18 +1104,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get settingsShareText =>
       'SHOTO بيرتّب لقطاتي لحاله — وكل شي بيضل على الجوال.';
-
-  @override
-  String get settingsAccount => 'الحساب';
-
-  @override
-  String get settingsSignOutHint => 'لقطاتك بتضل على هالجهاز';
-
-  @override
-  String get settingsSignIn => 'تسجيل الدخول';
-
-  @override
-  String get settingsSignInHint => 'اختياري. بيلزم بس لنقل اشتراكك لجهاز تاني.';
 
   @override
   String get settingsCacheMeasuring => 'بنقيس…';

@@ -1,5 +1,11 @@
 {
   "@@locale": "ur",
+  "settingsYourName": "آپ کا نام",
+  "settingsYourNameHint": "تاکہ Safe Share اسے ظاہر ہونے پر ڈھانپ سکے",
+  "settingsYourNameNotSet": "مقرر نہیں",
+  "ownerNameTitle": "آپ کا نام",
+  "ownerNameBody": "Safe Share کارڈ نمبر اور کوڈ اپنے حساب سے پہچانتا ہے۔ نام وہ تبھی پہچان سکتا ہے جب آپ کا نام پہلے سے معلوم ہو۔ ایک بار لکھیں، یہ اسی فون پر رہتا ہے، کہیں نہیں بھیجا جاتا۔",
+  "ownerNameFieldHint": "وہ نام جو آپ کا بینک چھاپتا ہے",
   "commonCancel": "منسوخ کریں",
   "commonDelete": "حذف کریں",
   "commonRetry": "دوبارہ کوشش کریں",
@@ -109,8 +115,6 @@
   "settingsFindDuplicates": "نقول تلاش کریں",
   "settingsClearCache": "تصویری کیش صاف کریں",
   "settingsShare": "SHOTO شیئر کریں",
-  "settingsSignOut": "سائن آؤٹ",
-  "settingsSignOutTitle": "سائن آؤٹ کریں؟",
   "settingsPrivacyNote": "SHOTO آپ کی گیلری کبھی نہیں پڑھتا۔ یہ صرف وہی اسکرین شاٹس رکھتا ہے جو آپ اس میں شیئر کریں، اور ان کے ساتھ جو کچھ کرتا ہے — متن پڑھنا، نقول ڈھونڈنا — سب اسی آلے پر ہوتا ہے۔ کچھ بھی کہیں اپ لوڈ نہیں ہوتا۔",
   "commonSave": "محفوظ کریں",
   "commonConfirm": "تصدیق کریں",
@@ -419,11 +423,6 @@
       }
     }
   },
-  "authWelcome": "SHOTO میں خوش آمدید",
-  "authSubtitle": "SHOTO استعمال کرنے کے لیے اکاؤنٹ کی ضرورت نہیں۔ سائن ان صرف خریداری کو دوسرے فون پر منتقل کرنے کے لیے کریں۔",
-  "authGoogle": "Google کے ساتھ جاری رکھیں",
-  "authApple": "Apple کے ساتھ جاری رکھیں",
-  "authLegal": "جاری رکھنے سے آپ ہماری شرائط اور رازداری کی پالیسی سے متفق ہوتے ہیں۔",
   "onboardingCta": "شروع کریں",
   "onboardingPromise": "سب کچھ آپ کے فون پر رہتا ہے۔",
   "actionsTitle": "اقدامات",
@@ -548,10 +547,6 @@
   },
   "settingsShareHint": "کسی ضرورت مند کو بتائیں",
   "settingsShareText": "SHOTO میرے اسکرین شاٹس خود ترتیب دیتا ہے — سب کچھ فون پر رہتا ہے۔",
-  "settingsAccount": "اکاؤنٹ",
-  "settingsSignOutHint": "آپ کے اسکرین شاٹس اسی آلے پر رہیں گے",
-  "settingsSignIn": "سائن ان",
-  "settingsSignInHint": "اختیاری۔ صرف خریداری کو دوسرے فون پر منتقل کرنے کے لیے درکار ہے۔",
   "settingsCacheMeasuring": "ماپا جا رہا ہے…",
   "settingsCacheSize": "تھمب نیلز کے {size}",
   "@settingsCacheSize": {

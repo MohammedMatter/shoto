@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:shoto/core/database/app_database.dart';
 import 'package:shoto/core/utils/visual_label_codec.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
+import 'package:shoto/core/services/local_identity.dart';
 
 /// Owns the locally-stored organization metadata (favorite flag, folder
 /// assignment) keyed by the gallery asset id. Never stores image bytes.
@@ -13,10 +13,10 @@ import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 /// each other's organization.
 class ScreenshotMetadataLocalDataSource {
   final AppDatabase _appDatabase;
-  final AuthRepository _authRepository;
-  ScreenshotMetadataLocalDataSource(this._appDatabase, this._authRepository);
+  final LocalIdentity _localIdentity;
+  ScreenshotMetadataLocalDataSource(this._appDatabase, this._localIdentity);
 
-  String get _userId => _authRepository.userId;
+  String get _userId => _localIdentity.id;
 
   Future<Map<String, Map<String, Object?>>> getAllMeta() async {
     final Database db = await _appDatabase.database;

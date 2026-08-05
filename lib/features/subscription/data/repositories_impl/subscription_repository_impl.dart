@@ -1,7 +1,7 @@
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:shoto/core/constants/subscription_constants.dart';
 import 'package:shoto/core/services/dev_access.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
+import 'package:shoto/core/services/local_identity.dart';
 import 'package:shoto/features/subscription/data/data_sources/revenue_cat_data_source.dart';
 import 'package:shoto/features/subscription/domain/entities/subscription_package_info.dart';
 import 'package:shoto/features/subscription/domain/entities/subscription_status.dart';
@@ -15,23 +15,24 @@ import 'package:shoto/features/subscription/domain/repositories/subscription_rep
 /// each call site is exactly how the inverted premium check happened before.
 class SubscriptionRepositoryImpl implements SubscriptionRepository {
   final RevenueCatDataSource _dataSource;
-  final AuthRepository _authRepository;
+  final LocalIdentity _localIdentity;
   final DevAccess _devAccess;
 
   SubscriptionRepositoryImpl(
     this._dataSource,
-    this._authRepository,
+    this._localIdentity,
     this._devAccess,
   );
 
   @override
   Future<void> initialize() {
-    // The device id, not the account. A purchase made without ever signing
-    // in still has to be restorable on this phone after a reinstall, and an
-    // anonymous RevenueCat id — what null produces — is regenerated each
-    // time, so it cannot do that. Signing in later aliases this id to the
-    // account rather than replacing it, so nothing is stranded.
-    return _dataSource.initialize(appUserId: _authRepository.userId);
+    // The device id. A purchase has to be restorable on this phone after a
+    // reinstall, and an anonymous RevenueCat id — what null produces — is
+    // regenerated each time, so it cannot do that. Carrying a purchase to a
+    // *second* phone is the store account's job: both Play and the App Store
+    // restore what the same store account bought, which is the account the
+    // user paid with and the only one they should have to remember.
+    return _dataSource.initialize(appUserId: _localIdentity.id);
   }
 
   @override

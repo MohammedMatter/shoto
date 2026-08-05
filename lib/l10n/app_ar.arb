@@ -1,5 +1,11 @@
 {
   "@@locale": "ar",
+  "settingsYourName": "اسمك",
+  "settingsYourNameHint": "عشان Safe Share يغطّيه لما يظهر بلقطة",
+  "settingsYourNameNotSet": "مش محدّد",
+  "ownerNameTitle": "اسمك",
+  "ownerNameBody": "Safe Share بيلاقي أرقام البطاقات والرموز بحسابها هي. الاسم ما بيقدر يلاقيه إلا إذا كان عارف اسمك. بتكتبه مرة، بيضل على هالجهاز، وما بينبعت لأي مكان.",
+  "ownerNameFieldHint": "الاسم يلي بيطبعه البنك",
   "commonCancel": "إلغاء",
   "commonDelete": "حذف",
   "commonRetry": "حاول مرة ثانية",
@@ -109,8 +115,6 @@
   "settingsFindDuplicates": "كشف المكرر",
   "settingsClearCache": "مسح ذاكرة الصور المؤقتة",
   "settingsShare": "شارك SHOTO",
-  "settingsSignOut": "تسجيل الخروج",
-  "settingsSignOutTitle": "تسجيل الخروج؟",
   "settingsPrivacyNote": "SHOTO ما بيقرأ معرض صورك أبداً. بيحتفظ بس باللقطات اللي بتشاركها معه، وكل شي بيعمله فيها — قراءة النص، كشف المكرر — بيصير على جهازك. ولا شي بينرفع لأي مكان.",
   "commonSave": "حفظ",
   "commonConfirm": "تأكيد",
@@ -419,11 +423,6 @@
       }
     }
   },
-  "authWelcome": "أهلاً بك في SHOTO",
-  "authSubtitle": "ما بتحتاج حساب لتستخدم SHOTO. سجّل دخول بس إذا بدك تنقل اشتراكك لجهاز تاني.",
-  "authGoogle": "تابع باستخدام Google",
-  "authApple": "تابع باستخدام Apple",
-  "authLegal": "بمتابعتك، بتوافق على شروط الخدمة وسياسة الخصوصية.",
   "onboardingCta": "يلا نبدأ",
   "onboardingPromise": "كل شي بيضل على جهازك.",
   "actionsTitle": "إجراءات",
@@ -548,10 +547,6 @@
   },
   "settingsShareHint": "خبّر حدا محتاجه",
   "settingsShareText": "SHOTO بيرتّب لقطاتي لحاله — وكل شي بيضل على الجوال.",
-  "settingsAccount": "الحساب",
-  "settingsSignOutHint": "لقطاتك بتضل على هالجهاز",
-  "settingsSignIn": "تسجيل الدخول",
-  "settingsSignInHint": "اختياري. بيلزم بس لنقل اشتراكك لجهاز تاني.",
   "settingsCacheMeasuring": "بنقيس…",
   "settingsCacheSize": "{size} من المصغّرات",
   "@settingsCacheSize": {

@@ -1,8 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
-import 'package:shoto/features/auth/domain/entities/user_entity.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
+import 'package:shoto/core/services/local_identity.dart';
 import 'package:shoto/features/subscription/data/data_sources/revenue_cat_data_source.dart';
 import 'package:shoto/features/subscription/data/repositories_impl/subscription_repository_impl.dart';
 import 'package:shoto/features/subscription/domain/entities/subscription_status.dart';
@@ -27,7 +26,7 @@ void main() {
   SubscriptionRepositoryImpl repositoryWith(DevAccess devAccess) {
     return SubscriptionRepositoryImpl(
       RevenueCatDataSource(),
-      _StubAuthRepository(),
+      LocalIdentity(),
       devAccess,
     );
   }
@@ -80,22 +79,3 @@ void main() {
   });
 }
 
-class _StubAuthRepository implements AuthRepository {
-  @override
-  UserEntity? get currentUser => null;
-
-  @override
-  String get userId => 'local:test';
-
-  @override
-  Stream<UserEntity?> get authStateChanges => const Stream.empty();
-
-  @override
-  Future<UserEntity> signInWithGoogle() => throw UnimplementedError();
-
-  @override
-  Future<UserEntity> signInWithApple() => throw UnimplementedError();
-
-  @override
-  Future<void> signOut() => throw UnimplementedError();
-}

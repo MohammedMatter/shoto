@@ -1,5 +1,11 @@
 {
   "@@locale": "en",
+  "settingsYourName": "Your name",
+  "settingsYourNameHint": "So Safe Share can cover it when it appears",
+  "settingsYourNameNotSet": "Not set",
+  "ownerNameTitle": "Your name",
+  "ownerNameBody": "Safe Share finds card numbers and codes by their own arithmetic. A name it can only find if it already knows yours. Typed once, kept on this phone, never sent anywhere.",
+  "ownerNameFieldHint": "The name your bank prints",
   "commonCancel": "Cancel",
   "commonDelete": "Delete",
   "commonRetry": "Try again",
@@ -133,8 +139,6 @@
   "settingsFindDuplicates": "Find duplicates",
   "settingsClearCache": "Clear image cache",
   "settingsShare": "Share SHOTO",
-  "settingsSignOut": "Sign out",
-  "settingsSignOutTitle": "Sign out?",
   "settingsPrivacyNote": "SHOTO never reads your gallery. It only holds the screenshots you share into it, and everything it does with them — reading text, finding duplicates — happens on this device. Nothing is ever uploaded.",
   "commonSave": "Save",
   "commonConfirm": "Confirm",
@@ -443,11 +447,6 @@
       }
     }
   },
-  "authWelcome": "Welcome to SHOTO",
-  "authSubtitle": "You don't need an account to use SHOTO. Sign in only to move a purchase to another phone.",
-  "authGoogle": "Continue with Google",
-  "authApple": "Continue with Apple",
-  "authLegal": "By continuing, you agree to our Terms of Service and Privacy Policy.",
   "onboardingCta": "Get started",
   "onboardingPromise": "Everything stays on your phone.",
   "actionsTitle": "Actions",
@@ -572,10 +571,6 @@
   },
   "settingsShareHint": "Tell someone who needs it",
   "settingsShareText": "SHOTO keeps my screenshots organized on their own — everything stays on the phone.",
-  "settingsAccount": "Account",
-  "settingsSignOutHint": "Your screenshots stay on this device",
-  "settingsSignIn": "Sign in",
-  "settingsSignInHint": "Optional. Only needed to move a purchase to another phone.",
   "settingsCacheMeasuring": "Measuring…",
   "settingsCacheSize": "{size} of thumbnails",
   "@settingsCacheSize": {

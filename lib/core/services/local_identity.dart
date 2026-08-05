@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shoto/core/utils/nonce_generator.dart';
+import 'package:shoto/core/utils/random_id.dart';
 
 /// Who this phone's library belongs to when nobody has signed in.
 ///
@@ -68,7 +68,7 @@ class LocalIdentity {
     // one sqlite file on one phone — but a guessable id would end up in
     // backup archives, and an id that looks like a counter invites somebody
     // to assume it means something.
-    final String minted = '$prefix${NonceGenerator.generate()}';
+    final String minted = '$prefix${RandomId.generate()}';
     _id = minted;
     await prefs.setString(_key, minted);
     if (kDebugMode) debugPrint('LocalIdentity: minted $minted');

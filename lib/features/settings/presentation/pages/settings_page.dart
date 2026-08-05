@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
-import 'package:shoto/core/routes/app_router.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/haptics.dart';
@@ -15,22 +12,16 @@ import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
-import 'package:shoto/core/widgets/confirm_dialog.dart';
 import 'package:shoto/core/widgets/grid_density_selector.dart';
 import 'package:shoto/core/widgets/premium_gate.dart';
 import 'package:shoto/core/widgets/privacy_note.dart';
-import 'package:shoto/core/widgets/pro_badge.dart';
 import 'package:shoto/core/widgets/theme_mode_selector.dart';
-import 'package:shoto/features/auth/domain/entities/user_entity.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
-import 'package:shoto/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:shoto/features/auth/presentation/bloc/auth_event.dart';
-import 'package:shoto/features/auth/presentation/bloc/auth_state.dart';
 import 'package:shoto/features/backup/presentation/pages/backup_page.dart';
 import 'package:shoto/features/duplicates/presentation/pages/duplicates_page.dart';
 import 'package:shoto/features/settings/presentation/widgets/app_version_block.dart';
 import 'package:shoto/features/settings/presentation/widgets/contact_support_tile.dart';
 import 'package:shoto/features/settings/presentation/widgets/language_sheet.dart';
+import 'package:shoto/features/settings/presentation/widgets/owner_name_sheet.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_group.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_tiles.dart';
 import 'package:shoto/features/settings/presentation/widgets/subscription_card_widget.dart';
@@ -42,22 +33,7 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<AuthBloc>(),
-      // A builder rather than a listener, because signing out no longer
-      // navigates anywhere and so has nothing to *do* except redraw.
-      //
-      // It used to throw the user back to the sign-in wall, since being
-      // signed out meant being locked out of the app. Now an account is
-      // optional: signing out detaches it and leaves the library, the
-      // folders and every setting exactly where they are, because all of
-      // that belongs to the device. The profile card below is the only thing
-      // on this screen that has any reason to change.
-      child: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, authState) {
-          final UserEntity? user = sl<AuthRepository>().currentUser;
-
-          return ListenableBuilder(
+    return ListenableBuilder(
             // SettingsPage is kept alive inside MainShellPage's IndexedStack,
             // so it doesn't automatically rebuild just because the theme
             // toggle lives on this same page — without this, tapping
@@ -67,8 +43,7 @@ class SettingsPage extends StatelessWidget {
             // Merged rather than nested: both of these repaint the whole page,
             // and two nested builders would rebuild it twice for one change.
             // ProStatus is here because the PRO tags on the paid rows have to
-            // come down the moment a subscription lands, and the profile card
-            // below reads it too.
+            // come down the moment a subscription lands.
             listenable: Listenable.merge([
               sl<ThemeController>(),
               sl<ProStatus>(),
@@ -91,8 +66,12 @@ class SettingsPage extends StatelessWidget {
                         style: AppTextStyles.headlineLarge,
                       ),
                       SizedBox(height: 18.h),
-                      _ProfileCard(user: user),
-                      SizedBox(height: 16.h),
+                      // A profile card used to sit here: an avatar, a name and
+                      // an email. With no account there is no name to put in
+                      // it, and a card showing a grey silhouette next to the
+                      // word "SHOTO" is a box that says nothing. The
+                      // subscription card carries the one fact it was really
+                      // for — whether this is Pro.
                       SubscriptionCard(),
 
                       // Appearance first: it is the setting people come here to
@@ -179,6 +158,19 @@ class SettingsPage extends StatelessWidget {
                                 value: prefs.confirmBeforeDelete,
                                 onChanged: prefs.setConfirmBeforeDelete,
                               ),
+                              // The app's only personal field, and it sits
+                              // with the other two preferences rather than in
+                              // a group of its own, because it is the same
+                              // kind of thing: something you set once so the
+                              // app behaves the way you want later.
+                              SettingsNavTile(
+                                icon: Icons.badge_outlined,
+                                label: context.l10n.settingsYourName,
+                                description: prefs.ownerName.isEmpty
+                                    ? context.l10n.settingsYourNameHint
+                                    : prefs.ownerName,
+                                onTap: () => showOwnerNameSheet(context),
+                              ),
                             ],
                           );
                         },
@@ -250,10 +242,10 @@ class SettingsPage extends StatelessWidget {
                         ],
                       ),
 
-                      // Above the privacy note and the account rows, because
-                      // "something is wrong and I need a human" is a more urgent
-                      // errand than either, and below the rest because it is not
-                      // what most visits to Settings are for.
+                      // Above the privacy note because "something is wrong and
+                      // I need a human" is the more urgent errand, and below
+                      // the rest because it is not what most visits to
+                      // Settings are for.
                       SettingsGroup(
                         title: context.l10n.settingsHelp,
                         children: const [ContactSupportTile()],
@@ -265,57 +257,9 @@ class SettingsPage extends StatelessWidget {
                       SizedBox(height: 26.h),
                       const PrivacyNote(),
 
-                      // Signed out is the ordinary state now, so this group
-                      // has two shapes rather than one. Offering "Sign out"
-                      // to somebody who never signed in was the giveaway
-                      // that the app assumed an account always existed.
-                      SettingsGroup(
-                        title: context.l10n.settingsAccount,
-                        caption: user?.email,
-                        children: [
-                          if (user == null)
-                            SettingsNavTile(
-                              icon: Icons.person_outline_rounded,
-                              label: context.l10n.settingsSignIn,
-                              description: context.l10n.settingsSignInHint,
-                              onTap: () =>
-                                  context.pushNamed(AppRouter.authPage),
-                            )
-                          else
-                            Builder(
-                              builder: (context) => SettingsNavTile(
-                                icon: Icons.logout_rounded,
-                                label: context.l10n.settingsSignOut,
-                                description: context.l10n.settingsSignOutHint,
-                                isDestructive: true,
-                                onTap: () async {
-                                  final bool
-                                  confirmed = await showConfirmDialog(
-                                    context,
-                                    title: context.l10n.settingsSignOutTitle,
-                                    message: context.l10n.settingsSignOutHint,
-                                    confirmLabel: context.l10n.settingsSignOut,
-                                    isDestructive: true,
-                                  );
-                                  if (confirmed && context.mounted) {
-                                    // The intent catalog is deliberately NOT
-                                    // cleared here any more. It used to be,
-                                    // because verbs were scoped to an account
-                                    // and the next person to sign in would
-                                    // otherwise inherit them. They are scoped
-                                    // to the device now, so dropping them on
-                                    // sign-out would delete work the same
-                                    // person is about to look for.
-                                    context.read<AuthBloc>().add(
-                                      SignOutRequestedEvent(),
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-                        ],
-                      ),
-
+                      // There is no Account group, because there is no
+                      // account. Restoring a purchase on a new phone is the
+                      // store's job and it lives on the subscription card.
                       SizedBox(height: 34.h),
                       AppVersionBlock(),
                     ],
@@ -324,105 +268,5 @@ class SettingsPage extends StatelessWidget {
               );
             },
           );
-        },
-      ),
-    );
-  }
-}
-
-class _ProfileCard extends StatelessWidget {
-  final UserEntity? user;
-  const _ProfileCard({required this.user});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      // The avatar's ring is the quietest of the app's three Pro signals and
-      // the one most worth having: this card is where somebody looks to answer
-      // "what account am I on", and being on Pro is part of that answer.
-      listenable: sl<ProStatus>(),
-      builder: (context, _) {
-        final bool isPro = sl<ProStatus>().isPro;
-
-        return Container(
-          padding: EdgeInsets.all(16.w),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(22.r),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Row(
-            children: [
-              // A ring *around* the avatar rather than a border on it, so a
-              // photograph is not cropped by a stroke drawn over its own edge.
-              // Padding when there is no ring keeps the avatar the same size
-              // and in the same place either way — a Pro badge arriving must
-              // not shuffle the card.
-              Container(
-                padding: EdgeInsets.all(3.w),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: isPro ? AppColors.primary : Colors.transparent,
-                    width: 1.5,
-                  ),
-                ),
-                child: Container(
-                  width: 46.w,
-                  height: 46.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.surfaceVariant,
-                    image: user?.photoUrl != null
-                        ? DecorationImage(
-                            image: NetworkImage(user!.photoUrl!),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
-                  ),
-                  child: user?.photoUrl == null
-                      ? Icon(
-                          Icons.person_rounded,
-                          color: AppColors.textSecondary,
-                          size: 23.sp,
-                        )
-                      : null,
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            (user?.name?.isNotEmpty ?? false)
-                                ? user!.name!
-                                : 'SHOTO',
-                            style: AppTextStyles.titleLarge,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (isPro) ...[SizedBox(width: 8.w), const ProBadge()],
-                      ],
-                    ),
-                    if (user?.email != null) ...[
-                      SizedBox(height: 1.h),
-                      Text(
-                        user!.email!,
-                        style: AppTextStyles.bodySmall,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 }

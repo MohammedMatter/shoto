@@ -6,7 +6,7 @@ import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/utils/line_stitching.dart';
 import 'package:shoto/core/utils/sensitive_data.dart';
 import 'package:shoto/core/utils/text_line_geometry.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
+import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/features/safe_share/domain/entities/sensitive_region.dart';
 import 'package:shoto/features/screenshots/data/data_sources/text_recognition_data_source.dart';
 
@@ -32,9 +32,9 @@ import 'package:shoto/features/screenshots/data/data_sources/text_recognition_da
 ///   copy is the only version of that image which exists.
 class RedactionService {
   final TextRecognitionDataSource _textRecognition;
-  final AuthRepository _auth;
+  final AppPreferences _preferences;
 
-  RedactionService(this._textRecognition, this._auth);
+  RedactionService(this._textRecognition, this._preferences);
 
   /// Scans [imageFile] and reports what it found and where.
   Future<RedactionPlan> scan(File imageFile) async {
@@ -55,10 +55,12 @@ class RedactionService {
     );
     image.dispose();
 
-    // The signed-in user's own name is the one piece of context that lets an
-    // unlabelled name be recognised without guessing. See [SensitiveData].
+    // The user's own name is the one piece of context that lets an unlabelled
+    // name be recognised without guessing. See [SensitiveData]. Empty until
+    // they type it in Settings, and empty is a fine answer — everything else
+    // this scan finds is found by checksum or by label.
     final Set<String> ownerNames = SensitiveData.namesFrom(
-      _auth.currentUser?.name,
+      _preferences.ownerName,
     );
 
     final List<SensitiveRegion> regions = regionsIn(

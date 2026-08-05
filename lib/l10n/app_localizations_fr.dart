@@ -9,6 +9,26 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
+  String get settingsYourName => 'Votre nom';
+
+  @override
+  String get settingsYourNameHint =>
+      'Pour que Safe Share le masque quand il apparaît';
+
+  @override
+  String get settingsYourNameNotSet => 'Non défini';
+
+  @override
+  String get ownerNameTitle => 'Votre nom';
+
+  @override
+  String get ownerNameBody =>
+      'Safe Share trouve les numéros de carte et les codes par leur propre arithmétique. Un nom, il ne le trouve que s\'il connaît déjà le vôtre. Saisi une fois, conservé sur ce téléphone, jamais envoyé nulle part.';
+
+  @override
+  String get ownerNameFieldHint => 'Le nom que votre banque imprime';
+
+  @override
   String get commonCancel => 'Annuler';
 
   @override
@@ -299,12 +319,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsShare => 'Partager SHOTO';
-
-  @override
-  String get settingsSignOut => 'Se déconnecter';
-
-  @override
-  String get settingsSignOutTitle => 'Se déconnecter ?';
 
   @override
   String get settingsPrivacyNote =>
@@ -894,23 +908,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get authWelcome => 'Bienvenue sur SHOTO';
-
-  @override
-  String get authSubtitle =>
-      'Aucun compte n\'est nécessaire pour utiliser SHOTO. Connectez-vous uniquement pour transférer un achat vers un autre téléphone.';
-
-  @override
-  String get authGoogle => 'Continuer avec Google';
-
-  @override
-  String get authApple => 'Continuer avec Apple';
-
-  @override
-  String get authLegal =>
-      'En continuant, vous acceptez nos Conditions et notre Politique de confidentialité.';
-
-  @override
   String get onboardingCta => 'Commencer';
 
   @override
@@ -1116,19 +1113,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get settingsShareText =>
       'SHOTO range mes captures tout seul — tout reste sur le téléphone.';
-
-  @override
-  String get settingsAccount => 'Compte';
-
-  @override
-  String get settingsSignOutHint => 'Vos captures restent sur cet appareil';
-
-  @override
-  String get settingsSignIn => 'Se connecter';
-
-  @override
-  String get settingsSignInHint =>
-      'Facultatif. Sert uniquement à transférer un achat vers un autre téléphone.';
 
   @override
   String get settingsCacheMeasuring => 'Mesure…';

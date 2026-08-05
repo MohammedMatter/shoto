@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui' show PlatformDispatcher;
@@ -20,7 +19,6 @@ import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/features/quick_save/presentation/pages/quick_save_page.dart';
 import 'package:shoto/features/subscription/domain/repositories/subscription_repository.dart';
-import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,14 +45,6 @@ void main() async {
     // access and the subscription repository (quick save is free, so nothing
     // in the sheet is gated).
     //
-    // Firebase is now off this path too, and it was the single slowest step
-    // in it. The sheet only ever needed Firebase to answer "who is signed
-    // in", because that used to be what decided which library to save into.
-    // It is [LocalIdentity] that decides now — a SharedPreferences read — so
-    // the network stack, the auth SDK and the plugin channel behind them are
-    // all work the sheet no longer waits on. Nothing here signs anybody in,
-    // and the app proper still initializes Firebase normally below.
-    //
     // Waiting for any of this was pure delay in front of the one screen
     // where delay is least acceptable — the user is mid-gesture in another
     // app, and a sheet that arrives late has already lost the point of not
@@ -80,15 +70,11 @@ void main() async {
     return;
   }
 
-  // Started, not awaited. Firebase is the single slowest step here and none
-  // of the preference loads depend on it, so they overlap instead of queuing
-  // behind it.
-  final Future<void> firebaseReady = Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
+  // Every one of these is a SharedPreferences read. There used to be a
+  // `Firebase.initializeApp` at the head of this list — the slowest single
+  // step in launching the app, for an SDK nothing in it calls any more. See
+  // `docs/decisions/accounts.md`.
   await Future.wait([
-    firebaseReady,
     sl<LocalIdentity>().load(),
     sl<LocaleController>().load(),
     sl<ThemeController>().load(),

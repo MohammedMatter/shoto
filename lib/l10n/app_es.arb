@@ -1,5 +1,11 @@
 {
   "@@locale": "es",
+  "settingsYourName": "Tu nombre",
+  "settingsYourNameHint": "Para que Safe Share lo tape cuando aparezca",
+  "settingsYourNameNotSet": "Sin definir",
+  "ownerNameTitle": "Tu nombre",
+  "ownerNameBody": "Safe Share encuentra los números de tarjeta y los códigos por su propia aritmética. Un nombre solo lo encuentra si ya conoce el tuyo. Se escribe una vez, se queda en este teléfono y no se envía a ningún sitio.",
+  "ownerNameFieldHint": "El nombre que imprime tu banco",
   "commonCancel": "Cancelar",
   "commonDelete": "Eliminar",
   "commonRetry": "Reintentar",
@@ -109,8 +115,6 @@
   "settingsFindDuplicates": "Buscar duplicados",
   "settingsClearCache": "Vaciar caché de imágenes",
   "settingsShare": "Compartir SHOTO",
-  "settingsSignOut": "Cerrar sesión",
-  "settingsSignOutTitle": "¿Cerrar sesión?",
   "settingsPrivacyNote": "SHOTO nunca lee tu galería. Solo guarda las capturas que compartes con él, y todo lo que hace con ellas —leer texto, buscar duplicados— ocurre en este dispositivo. Nunca se sube nada.",
   "commonSave": "Guardar",
   "commonConfirm": "Confirmar",
@@ -419,11 +423,6 @@
       }
     }
   },
-  "authWelcome": "Bienvenido a SHOTO",
-  "authSubtitle": "No necesitas una cuenta para usar SHOTO. Inicia sesión solo para pasar una compra a otro teléfono.",
-  "authGoogle": "Continuar con Google",
-  "authApple": "Continuar con Apple",
-  "authLegal": "Al continuar, aceptas nuestros Términos y la Política de privacidad.",
   "onboardingCta": "Empezar",
   "onboardingPromise": "Todo se queda en tu teléfono.",
   "actionsTitle": "Acciones",
@@ -548,10 +547,6 @@
   },
   "settingsShareHint": "Cuéntaselo a quien lo necesite",
   "settingsShareText": "SHOTO ordena mis capturas solo, y todo se queda en el teléfono.",
-  "settingsAccount": "Cuenta",
-  "settingsSignOutHint": "Tus capturas se quedan en este dispositivo",
-  "settingsSignIn": "Iniciar sesión",
-  "settingsSignInHint": "Opcional. Solo hace falta para pasar una compra a otro teléfono.",
   "settingsCacheMeasuring": "Midiendo…",
   "settingsCacheSize": "{size} de miniaturas",
   "@settingsCacheSize": {

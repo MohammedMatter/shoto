@@ -106,6 +106,42 @@ abstract class AppLocalizations {
     Locale('ur'),
   ];
 
+  /// No description provided for @settingsYourName.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name'**
+  String get settingsYourName;
+
+  /// No description provided for @settingsYourNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'So Safe Share can cover it when it appears'**
+  String get settingsYourNameHint;
+
+  /// No description provided for @settingsYourNameNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get settingsYourNameNotSet;
+
+  /// No description provided for @ownerNameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your name'**
+  String get ownerNameTitle;
+
+  /// No description provided for @ownerNameBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe Share finds card numbers and codes by their own arithmetic. A name it can only find if it already knows yours. Typed once, kept on this phone, never sent anywhere.'**
+  String get ownerNameBody;
+
+  /// No description provided for @ownerNameFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The name your bank prints'**
+  String get ownerNameFieldHint;
+
   /// No description provided for @commonCancel.
   ///
   /// In en, this message translates to:
@@ -633,18 +669,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Share SHOTO'**
   String get settingsShare;
-
-  /// No description provided for @settingsSignOut.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign out'**
-  String get settingsSignOut;
-
-  /// No description provided for @settingsSignOutTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign out?'**
-  String get settingsSignOutTitle;
 
   /// No description provided for @settingsPrivacyNote.
   ///
@@ -1642,36 +1666,6 @@ abstract class AppLocalizations {
   /// **'{count} organized screenshots, unlimited folders, and full search — free for good.'**
   String includedFreeBody(int count);
 
-  /// No description provided for @authWelcome.
-  ///
-  /// In en, this message translates to:
-  /// **'Welcome to SHOTO'**
-  String get authWelcome;
-
-  /// No description provided for @authSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'You don\'t need an account to use SHOTO. Sign in only to move a purchase to another phone.'**
-  String get authSubtitle;
-
-  /// No description provided for @authGoogle.
-  ///
-  /// In en, this message translates to:
-  /// **'Continue with Google'**
-  String get authGoogle;
-
-  /// No description provided for @authApple.
-  ///
-  /// In en, this message translates to:
-  /// **'Continue with Apple'**
-  String get authApple;
-
-  /// No description provided for @authLegal.
-  ///
-  /// In en, this message translates to:
-  /// **'By continuing, you agree to our Terms of Service and Privacy Policy.'**
-  String get authLegal;
-
   /// No description provided for @onboardingCta.
   ///
   /// In en, this message translates to:
@@ -2001,30 +1995,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'SHOTO keeps my screenshots organized on their own — everything stays on the phone.'**
   String get settingsShareText;
-
-  /// No description provided for @settingsAccount.
-  ///
-  /// In en, this message translates to:
-  /// **'Account'**
-  String get settingsAccount;
-
-  /// No description provided for @settingsSignOutHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Your screenshots stay on this device'**
-  String get settingsSignOutHint;
-
-  /// No description provided for @settingsSignIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in'**
-  String get settingsSignIn;
-
-  /// No description provided for @settingsSignInHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Optional. Only needed to move a purchase to another phone.'**
-  String get settingsSignInHint;
 
   /// No description provided for @settingsCacheMeasuring.
   ///

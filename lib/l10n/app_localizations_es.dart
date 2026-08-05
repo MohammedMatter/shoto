@@ -9,6 +9,26 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get settingsYourName => 'Tu nombre';
+
+  @override
+  String get settingsYourNameHint =>
+      'Para que Safe Share lo tape cuando aparezca';
+
+  @override
+  String get settingsYourNameNotSet => 'Sin definir';
+
+  @override
+  String get ownerNameTitle => 'Tu nombre';
+
+  @override
+  String get ownerNameBody =>
+      'Safe Share encuentra los números de tarjeta y los códigos por su propia aritmética. Un nombre solo lo encuentra si ya conoce el tuyo. Se escribe una vez, se queda en este teléfono y no se envía a ningún sitio.';
+
+  @override
+  String get ownerNameFieldHint => 'El nombre que imprime tu banco';
+
+  @override
   String get commonCancel => 'Cancelar';
 
   @override
@@ -298,12 +318,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsShare => 'Compartir SHOTO';
-
-  @override
-  String get settingsSignOut => 'Cerrar sesión';
-
-  @override
-  String get settingsSignOutTitle => '¿Cerrar sesión?';
 
   @override
   String get settingsPrivacyNote =>
@@ -892,23 +906,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get authWelcome => 'Bienvenido a SHOTO';
-
-  @override
-  String get authSubtitle =>
-      'No necesitas una cuenta para usar SHOTO. Inicia sesión solo para pasar una compra a otro teléfono.';
-
-  @override
-  String get authGoogle => 'Continuar con Google';
-
-  @override
-  String get authApple => 'Continuar con Apple';
-
-  @override
-  String get authLegal =>
-      'Al continuar, aceptas nuestros Términos y la Política de privacidad.';
-
-  @override
   String get onboardingCta => 'Empezar';
 
   @override
@@ -1113,20 +1110,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get settingsShareText =>
       'SHOTO ordena mis capturas solo, y todo se queda en el teléfono.';
-
-  @override
-  String get settingsAccount => 'Cuenta';
-
-  @override
-  String get settingsSignOutHint =>
-      'Tus capturas se quedan en este dispositivo';
-
-  @override
-  String get settingsSignIn => 'Iniciar sesión';
-
-  @override
-  String get settingsSignInHint =>
-      'Opcional. Solo hace falta para pasar una compra a otro teléfono.';
 
   @override
   String get settingsCacheMeasuring => 'Midiendo…';

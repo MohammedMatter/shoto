@@ -9,6 +9,26 @@ class AppLocalizationsUr extends AppLocalizations {
   AppLocalizationsUr([String locale = 'ur']) : super(locale);
 
   @override
+  String get settingsYourName => 'آپ کا نام';
+
+  @override
+  String get settingsYourNameHint =>
+      'تاکہ Safe Share اسے ظاہر ہونے پر ڈھانپ سکے';
+
+  @override
+  String get settingsYourNameNotSet => 'مقرر نہیں';
+
+  @override
+  String get ownerNameTitle => 'آپ کا نام';
+
+  @override
+  String get ownerNameBody =>
+      'Safe Share کارڈ نمبر اور کوڈ اپنے حساب سے پہچانتا ہے۔ نام وہ تبھی پہچان سکتا ہے جب آپ کا نام پہلے سے معلوم ہو۔ ایک بار لکھیں، یہ اسی فون پر رہتا ہے، کہیں نہیں بھیجا جاتا۔';
+
+  @override
+  String get ownerNameFieldHint => 'وہ نام جو آپ کا بینک چھاپتا ہے';
+
+  @override
   String get commonCancel => 'منسوخ کریں';
 
   @override
@@ -298,12 +318,6 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get settingsShare => 'SHOTO شیئر کریں';
-
-  @override
-  String get settingsSignOut => 'سائن آؤٹ';
-
-  @override
-  String get settingsSignOutTitle => 'سائن آؤٹ کریں؟';
 
   @override
   String get settingsPrivacyNote =>
@@ -891,23 +905,6 @@ class AppLocalizationsUr extends AppLocalizations {
   }
 
   @override
-  String get authWelcome => 'SHOTO میں خوش آمدید';
-
-  @override
-  String get authSubtitle =>
-      'SHOTO استعمال کرنے کے لیے اکاؤنٹ کی ضرورت نہیں۔ سائن ان صرف خریداری کو دوسرے فون پر منتقل کرنے کے لیے کریں۔';
-
-  @override
-  String get authGoogle => 'Google کے ساتھ جاری رکھیں';
-
-  @override
-  String get authApple => 'Apple کے ساتھ جاری رکھیں';
-
-  @override
-  String get authLegal =>
-      'جاری رکھنے سے آپ ہماری شرائط اور رازداری کی پالیسی سے متفق ہوتے ہیں۔';
-
-  @override
   String get onboardingCta => 'شروع کریں';
 
   @override
@@ -1112,19 +1109,6 @@ class AppLocalizationsUr extends AppLocalizations {
   @override
   String get settingsShareText =>
       'SHOTO میرے اسکرین شاٹس خود ترتیب دیتا ہے — سب کچھ فون پر رہتا ہے۔';
-
-  @override
-  String get settingsAccount => 'اکاؤنٹ';
-
-  @override
-  String get settingsSignOutHint => 'آپ کے اسکرین شاٹس اسی آلے پر رہیں گے';
-
-  @override
-  String get settingsSignIn => 'سائن ان';
-
-  @override
-  String get settingsSignInHint =>
-      'اختیاری۔ صرف خریداری کو دوسرے فون پر منتقل کرنے کے لیے درکار ہے۔';
 
   @override
   String get settingsCacheMeasuring => 'ماپا جا رہا ہے…';

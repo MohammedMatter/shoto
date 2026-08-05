@@ -1,5 +1,11 @@
 {
   "@@locale": "hi",
+  "settingsYourName": "आपका नाम",
+  "settingsYourNameHint": "ताकि Safe Share इसे दिखने पर ढक सके",
+  "settingsYourNameNotSet": "तय नहीं",
+  "ownerNameTitle": "आपका नाम",
+  "ownerNameBody": "Safe Share कार्ड नंबर और कोड उनके अपने गणित से पहचानता है। नाम वह तभी पहचान सकता है जब आपका नाम पहले से पता हो। एक बार लिखिए, यह इसी फ़ोन पर रहता है, कहीं नहीं भेजा जाता।",
+  "ownerNameFieldHint": "वह नाम जो आपका बैंक छापता है",
   "commonCancel": "रद्द करें",
   "commonDelete": "हटाएँ",
   "commonRetry": "फिर कोशिश करें",
@@ -109,8 +115,6 @@
   "settingsFindDuplicates": "डुप्लिकेट खोजें",
   "settingsClearCache": "इमेज कैश साफ़ करें",
   "settingsShare": "SHOTO साझा करें",
-  "settingsSignOut": "साइन आउट",
-  "settingsSignOutTitle": "साइन आउट करें?",
   "settingsPrivacyNote": "SHOTO आपकी गैलरी कभी नहीं पढ़ता। यह सिर्फ़ वही स्क्रीनशॉट रखता है जो आप इसमें साझा करते हैं, और उनके साथ जो कुछ करता है — पाठ पढ़ना, डुप्लिकेट ढूँढना — सब इसी डिवाइस पर होता है। कुछ भी कहीं अपलोड नहीं होता।",
   "commonSave": "सहेजें",
   "commonConfirm": "पुष्टि करें",
@@ -419,11 +423,6 @@
       }
     }
   },
-  "authWelcome": "SHOTO में आपका स्वागत है",
-  "authSubtitle": "SHOTO इस्तेमाल करने के लिए खाते की ज़रूरत नहीं। साइन इन सिर्फ़ खरीद को दूसरे फ़ोन पर ले जाने के लिए करें।",
-  "authGoogle": "Google से जारी रखें",
-  "authApple": "Apple से जारी रखें",
-  "authLegal": "जारी रखने पर आप हमारी शर्तें और गोपनीयता नीति स्वीकार करते हैं।",
   "onboardingCta": "शुरू करें",
   "onboardingPromise": "सब कुछ आपके फ़ोन पर ही रहता है।",
   "actionsTitle": "क्रियाएँ",
@@ -548,10 +547,6 @@
   },
   "settingsShareHint": "किसी ज़रूरतमंद को बताएँ",
   "settingsShareText": "SHOTO मेरे स्क्रीनशॉट खुद व्यवस्थित करता है — सब कुछ फ़ोन पर रहता है।",
-  "settingsAccount": "खाता",
-  "settingsSignOutHint": "आपके स्क्रीनशॉट इसी डिवाइस पर रहेंगे",
-  "settingsSignIn": "साइन इन",
-  "settingsSignInHint": "वैकल्पिक। सिर्फ़ खरीद को दूसरे फ़ोन पर ले जाने के लिए ज़रूरी है।",
   "settingsCacheMeasuring": "माप रहे हैं…",
   "settingsCacheSize": "{size} थंबनेल",
   "@settingsCacheSize": {

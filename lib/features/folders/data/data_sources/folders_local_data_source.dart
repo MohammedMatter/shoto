@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:shoto/core/database/app_database.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
+import 'package:shoto/core/services/local_identity.dart';
 import 'package:shoto/features/folders/data/models/folder_model.dart';
 
 /// Folders are scoped to the current Firebase user id, same reasoning as
@@ -8,10 +8,10 @@ import 'package:shoto/features/folders/data/models/folder_model.dart';
 /// device never see each other's folders.
 class FoldersLocalDataSource {
   final AppDatabase _appDatabase;
-  final AuthRepository _authRepository;
-  FoldersLocalDataSource(this._appDatabase, this._authRepository);
+  final LocalIdentity _localIdentity;
+  FoldersLocalDataSource(this._appDatabase, this._localIdentity);
 
-  String get _userId => _authRepository.userId;
+  String get _userId => _localIdentity.id;
 
   Future<List<FolderModel>> getFolders() async {
     final Database db = await _appDatabase.database;

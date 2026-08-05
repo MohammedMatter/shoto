@@ -9,6 +9,25 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String get settingsYourName => 'आपका नाम';
+
+  @override
+  String get settingsYourNameHint => 'ताकि Safe Share इसे दिखने पर ढक सके';
+
+  @override
+  String get settingsYourNameNotSet => 'तय नहीं';
+
+  @override
+  String get ownerNameTitle => 'आपका नाम';
+
+  @override
+  String get ownerNameBody =>
+      'Safe Share कार्ड नंबर और कोड उनके अपने गणित से पहचानता है। नाम वह तभी पहचान सकता है जब आपका नाम पहले से पता हो। एक बार लिखिए, यह इसी फ़ोन पर रहता है, कहीं नहीं भेजा जाता।';
+
+  @override
+  String get ownerNameFieldHint => 'वह नाम जो आपका बैंक छापता है';
+
+  @override
   String get commonCancel => 'रद्द करें';
 
   @override
@@ -299,12 +318,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsShare => 'SHOTO साझा करें';
-
-  @override
-  String get settingsSignOut => 'साइन आउट';
-
-  @override
-  String get settingsSignOutTitle => 'साइन आउट करें?';
 
   @override
   String get settingsPrivacyNote =>
@@ -892,23 +905,6 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get authWelcome => 'SHOTO में आपका स्वागत है';
-
-  @override
-  String get authSubtitle =>
-      'SHOTO इस्तेमाल करने के लिए खाते की ज़रूरत नहीं। साइन इन सिर्फ़ खरीद को दूसरे फ़ोन पर ले जाने के लिए करें।';
-
-  @override
-  String get authGoogle => 'Google से जारी रखें';
-
-  @override
-  String get authApple => 'Apple से जारी रखें';
-
-  @override
-  String get authLegal =>
-      'जारी रखने पर आप हमारी शर्तें और गोपनीयता नीति स्वीकार करते हैं।';
-
-  @override
   String get onboardingCta => 'शुरू करें';
 
   @override
@@ -1113,19 +1109,6 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get settingsShareText =>
       'SHOTO मेरे स्क्रीनशॉट खुद व्यवस्थित करता है — सब कुछ फ़ोन पर रहता है।';
-
-  @override
-  String get settingsAccount => 'खाता';
-
-  @override
-  String get settingsSignOutHint => 'आपके स्क्रीनशॉट इसी डिवाइस पर रहेंगे';
-
-  @override
-  String get settingsSignIn => 'साइन इन';
-
-  @override
-  String get settingsSignInHint =>
-      'वैकल्पिक। सिर्फ़ खरीद को दूसरे फ़ोन पर ले जाने के लिए ज़रूरी है।';
 
   @override
   String get settingsCacheMeasuring => 'माप रहे हैं…';
