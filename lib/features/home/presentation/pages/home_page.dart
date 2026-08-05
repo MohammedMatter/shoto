@@ -152,27 +152,12 @@ class _HomePageState extends State<HomePage>
                     child: _Gutter(child: _Greeting()),
                   ),
                   SizedBox(height: 18.h),
-                  // **Second on the page, and that is the whole point.**
+                  // **Second on the page, and the screen's only entry to
+                  // search** — see `docs/decisions/home.md`.
                   //
-                  // Search used to be a 44px circle in the top-right corner —
-                  // the least reachable point on a tall phone held in one
-                  // hand, for the single most valuable action in an app whose
-                  // entire purpose is finding a screenshot again. It was also
-                  // duplicated as a row at the bottom of the tools list, so
-                  // the app had two entry points to its best feature and both
-                  // were awkward.
-                  //
-                  // A full-width field is reachable, unmistakable, and does a
-                  // second job for free: its placeholder says the app searches
-                  // *what a picture shows*, which is the one capability people
-                  // never guess a screenshot app has.
-                  //
-                  // **But not before there is anything to search.** On a fresh
-                  // install this was the second element on the first screen,
-                  // inviting the user to search a library of zero — directly
-                  // above the words "Nothing saved". A control that cannot
-                  // succeed is worse than no control: it reads as the app not
-                  // knowing its own state. It appears with the library.
+                  // Not shown before there is anything to search. A control
+                  // that cannot succeed is worse than no control: it reads as
+                  // the app not knowing its own state.
                   if (all.isNotEmpty) ...[
                     _Enter(
                       parent: _entrance,
@@ -225,13 +210,9 @@ class _HomePageState extends State<HomePage>
                     ),
                     SizedBox(height: 22.h),
                   ],
-                  // Three zeros are not three facts. On a fresh install this
-                  // line read "Screenshots 0 · Favorites 0 · Folders 0",
-                  // directly under a heading that had just said nothing was
-                  // saved — the same claim a third time, in the space between
-                  // the one action on the screen and the way to reach it. The
-                  // counts appear when there is something to count, which is
-                  // the same rule the search field above now follows.
+                  // Three zeros are not three facts. The counts appear when
+                  // there is something to count — the same rule the search
+                  // field above follows.
                   if (all.isNotEmpty)
                     _Enter(
                       parent: _entrance,
@@ -277,19 +258,9 @@ class _HomePageState extends State<HomePage>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // "What SHOTO can do" was a brochure heading — it
-                          // describes the software to you. Its replacement,
-                          // "Do something", fixed that and introduced a
-                          // different problem: it is vague, and faintly
-                          // instructional, which is the last tone to take with
-                          // somebody who has just opened an empty app.
-                          //
-                          // Two headings, because the list is answering two
-                          // different questions. With nothing saved it is the
-                          // only thing on the screen worth touching, so it
-                          // says where to begin. Once there is a library it is
-                          // no longer a starting point but a toolbox, and the
-                          // plainest available noun beats any instruction.
+                          // Two headings, because the list answers two
+                          // different questions — where to begin, versus what
+                          // is available. See `docs/decisions/home.md`.
                           _SectionTitle(
                             all.isEmpty
                                 ? context.l10n.homeToolsTitleEmpty
@@ -558,20 +529,9 @@ class _SearchField extends StatelessWidget {
 /// The screen's one hero. Everything else here is secondary to the question
 /// "is there anything for me to do?".
 ///
-/// **It is not a card, and that is the whole point.**
-///
-/// This began as a slab of accent colour with a glow under it, became a
-/// bordered surface with a coloured rule, and is now nothing at all — a
-/// figure, a line of text, and the page behind it. Each step removed a
-/// container, and the screen got better each time, which is the argument:
-/// what made Home read as generated was that every piece of information on
-/// it had been put in a box, and seven boxes stacked vertically is the shape
-/// of a template regardless of what is written in them.
-///
-/// A 58px numeral in the display face outranks anything a border can do. It
-/// needs no fill to be the first thing you see, it costs one text node
-/// instead of a decorated container, and it lets the count be *read* rather
-/// than presented.
+/// **It is not a card, and it must not become one** — the figure carries the
+/// screen on type size alone. See `docs/decisions/home.md` for the three
+/// shapes this went through and why each container came off.
 class _UnsortedHeadline extends StatelessWidget {
   final int unsortedCount;
   final bool hasLibrary;
