@@ -13,15 +13,17 @@
   "homeGreetingMorning": "सुप्रभात",
   "homeGreetingAfternoon": "नमस्कार",
   "homeGreetingEvening": "शुभ संध्या",
-  "homeInboxEmpty": "कुछ सहेजा नहीं गया",
-  "homeInboxEmptySubtitle": "शुरू करने के लिए कोई स्क्रीनशॉट SHOTO में साझा करें",
+  "homeInboxEmpty": "अभी कुछ सहेजा नहीं गया",
+  "homeInboxEmptySubtitle": "अभी अपने फ़ोन से कुछ चुनें, या किसी भी ऐप से स्क्रीनशॉट SHOTO में शेयर करें।",
+  "homeEmptyImportCta": "मेरे फ़ोन से चुनें",
   "homeInboxClear": "सब व्यवस्थित है",
   "homeInboxClearSubtitle": "छाँटने के लिए कुछ बाकी नहीं",
   "homeInboxCountSubtitle": "वे स्क्रीनशॉट जो आपने अभी फ़ाइल नहीं किए",
   "homeStatScreenshots": "स्क्रीनशॉट",
   "homeStatFavorites": "पसंदीदा",
   "homeStatFolders": "फ़ोल्डर",
-  "homeToolsTitle": "SHOTO क्या कर सकता है",
+  "homeToolsTitle": "टूल",
+  "homeToolsTitleEmpty": "यहाँ से शुरू करें",
   "homeToolSafeShare": "सुरक्षित साझा",
   "homeToolSafeShareSubtitle": "पहले निजी जानकारी छिपाएँ",
   "homeToolDuplicates": "डुप्लिकेट खोजें",
@@ -34,7 +36,6 @@
   "libraryPickForMerge": "एक ही पेज के दो या ज़्यादा स्क्रीनशॉट चुनें",
   "libraryPickForProtect": "वह स्क्रीनशॉट चुनें जिसे सुरक्षित करना है",
   "libraryActionProtect": "सुरक्षित करें",
-  "homeToolsTitleShort": "कुछ करें",
   "homeSeeAll": "सभी देखें",
   "libraryEmptyTitle": "अभी कुछ सहेजा नहीं गया",
   "libraryEmptyMessage": "कोई स्क्रीनशॉट SHOTO को साझा करें, या + बटन से जोड़ें। आपकी गैलरी कभी नहीं पढ़ी जाती — सिर्फ़ वही रखा जाता है जो आप देते हैं।",
@@ -656,16 +657,8 @@
   "onbFileBody": "शेयर शीट में ही फ़ोल्डर चुनें। ऐप खुलता तक नहीं।",
   "onbFindTitle": "उनके अंदर जो है, वह खोजें",
   "onbFindBody": "स्क्रीनशॉट में लिखे शब्द, और तस्वीर में जो दिख रहा है। लिखें “रसीद” या “कुत्ता”।",
-  "onbProTitle": "SHOTO Pro",
-  "onbProBody": "नियम आपके नए स्क्रीनशॉट खुद फ़ाइल करते हैं, और नीचे सब कुछ साथ आता है।",
-  "onbProMore": "और {count} अन्य",
-  "@onbProMore": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+  "onbSafeShareTitle": "वह स्क्रीनशॉट जो आप सच में भेज सकते हैं",
+  "onbSafeShareBody": "कार्ड नंबर दूसरा कार्ड नंबर बन जाता है — वही लंबाई, वही जगह, फिर भी वैध। किसी को पता नहीं चलता कि बदला गया।",
   "onbFolderExample": "रसीदें",
   "onbSearchExample": "रसीद",
   "importTitle": "स्क्रीनशॉट जोड़ें",

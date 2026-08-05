@@ -48,11 +48,14 @@ class AppLocalizationsUr extends AppLocalizations {
   String get homeGreetingEvening => 'شام بخیر';
 
   @override
-  String get homeInboxEmpty => 'کچھ محفوظ نہیں';
+  String get homeInboxEmpty => 'ابھی کچھ محفوظ نہیں ہوا';
 
   @override
   String get homeInboxEmptySubtitle =>
-      'شروع کرنے کے لیے کوئی اسکرین شاٹ SHOTO میں شیئر کریں';
+      'ابھی اپنے فون سے کچھ منتخب کریں، یا کسی بھی ایپ سے اسکرین شاٹ SHOTO میں شیئر کریں۔';
+
+  @override
+  String get homeEmptyImportCta => 'میرے فون سے منتخب کریں';
 
   @override
   String get homeInboxClear => 'سب ترتیب میں ہے';
@@ -74,7 +77,10 @@ class AppLocalizationsUr extends AppLocalizations {
   String get homeStatFolders => 'فولڈرز';
 
   @override
-  String get homeToolsTitle => 'SHOTO کیا کر سکتا ہے';
+  String get homeToolsTitle => 'ٹولز';
+
+  @override
+  String get homeToolsTitleEmpty => 'یہاں سے شروع کریں';
 
   @override
   String get homeToolSafeShare => 'محفوظ اشتراک';
@@ -112,9 +118,6 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get libraryActionProtect => 'محفوظ کریں';
-
-  @override
-  String get homeToolsTitleShort => 'کچھ کریں';
 
   @override
   String get homeSeeAll => 'سب دیکھیں';
@@ -1328,16 +1331,11 @@ class AppLocalizationsUr extends AppLocalizations {
       'سکرین شاٹ میں لکھے الفاظ، اور تصویر میں جو دکھ رہا ہے۔ لکھیں ”رسید“ یا ”کتا“۔';
 
   @override
-  String get onbProTitle => 'SHOTO Pro';
+  String get onbSafeShareTitle => 'وہ اسکرین شاٹ جو آپ واقعی بھیج سکتے ہیں';
 
   @override
-  String get onbProBody =>
-      'قواعد آپ کے نئے سکرین شاٹ خود فائل کرتے ہیں، اور نیچے سب کچھ ساتھ آتا ہے۔';
-
-  @override
-  String onbProMore(int count) {
-    return 'اور $count مزید';
-  }
+  String get onbSafeShareBody =>
+      'کارڈ نمبر ایک مختلف کارڈ نمبر بن جاتا ہے — وہی لمبائی، وہی جگہ، پھر بھی درست۔ کسی کو پتہ نہیں چلتا کہ تبدیل ہوا۔';
 
   @override
   String get onbFolderExample => 'رسیدیں';

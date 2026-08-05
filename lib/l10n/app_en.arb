@@ -13,15 +13,17 @@
   "homeGreetingMorning": "Good morning",
   "homeGreetingAfternoon": "Good afternoon",
   "homeGreetingEvening": "Good evening",
-  "homeInboxEmpty": "Nothing saved",
-  "homeInboxEmptySubtitle": "Share a screenshot into SHOTO to start",
+  "homeInboxEmpty": "Nothing saved yet",
+  "homeInboxEmptySubtitle": "Pick a few from your phone now, or share a screenshot into SHOTO from any app.",
+  "homeEmptyImportCta": "Choose from my phone",
   "homeInboxClear": "All filed",
   "homeInboxClearSubtitle": "Nothing waiting to be sorted",
   "homeInboxCountSubtitle": "Screenshots you have not filed yet",
   "homeStatScreenshots": "Screenshots",
   "homeStatFavorites": "Favorites",
   "homeStatFolders": "Folders",
-  "homeToolsTitle": "What SHOTO can do",
+  "homeToolsTitle": "Tools",
+  "homeToolsTitleEmpty": "Start here",
   "homeToolSafeShare": "Safe share",
   "homeToolSafeShareSubtitle": "Hide private details first",
   "homeToolDuplicates": "Find duplicates",
@@ -34,7 +36,6 @@
   "libraryPickForMerge": "Pick two or more shots of the same page",
   "libraryPickForProtect": "Pick the screenshot to protect",
   "libraryActionProtect": "Protect",
-  "homeToolsTitleShort": "Do something",
   "homeSeeAll": "See all",
   "libraryEmptyTitle": "Nothing saved yet",
   "libraryEmptyMessage": "Share a screenshot to SHOTO, or add one with the + button. Your gallery is never read — only what you hand over is kept.",
@@ -680,16 +681,8 @@
   "onbFileBody": "Pick a folder right in the share sheet. The app does not even open.",
   "onbFindTitle": "Search what is inside them",
   "onbFindBody": "The words printed in a screenshot, and what the picture shows. Type “receipt”, or “dog”.",
-  "onbProTitle": "SHOTO Pro",
-  "onbProBody": "Rules file new screenshots for you, and everything below comes with them.",
-  "onbProMore": "and {count} more",
-  "@onbProMore": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+  "onbSafeShareTitle": "The screenshot you can actually send",
+  "onbSafeShareBody": "A card number becomes a different card number — same length, same place, still valid. Nobody can tell it was edited.",
   "onbFolderExample": "Receipts",
   "onbSearchExample": "receipt",
   "importTitle": "Add screenshots",

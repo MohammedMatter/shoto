@@ -48,10 +48,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeGreetingEvening => 'مساء الخير';
 
   @override
-  String get homeInboxEmpty => 'ما في شي محفوظ';
+  String get homeInboxEmpty => 'لسا ما في شي محفوظ';
 
   @override
-  String get homeInboxEmptySubtitle => 'شارك لقطة مع SHOTO لتبدأ';
+  String get homeInboxEmptySubtitle =>
+      'اختار كم وحدة من جهازك هلق، أو شارك أي لقطة مع SHOTO من أي تطبيق.';
+
+  @override
+  String get homeEmptyImportCta => 'اختار من جهازي';
 
   @override
   String get homeInboxClear => 'كله مرتّب';
@@ -72,7 +76,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeStatFolders => 'مجلدات';
 
   @override
-  String get homeToolsTitle => 'شو بيقدر يعمل SHOTO';
+  String get homeToolsTitle => 'أدوات';
+
+  @override
+  String get homeToolsTitleEmpty => 'ابدأ من هون';
 
   @override
   String get homeToolSafeShare => 'مشاركة آمنة';
@@ -109,9 +116,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get libraryActionProtect => 'احمِ';
-
-  @override
-  String get homeToolsTitleShort => 'اعمل شي';
 
   @override
   String get homeSeeAll => 'عرض الكل';
@@ -1323,16 +1327,11 @@ class AppLocalizationsAr extends AppLocalizations {
       'الكلمات المكتوبة داخل اللقطة، وكمان اللي الصورة بتوريه. اكتب «فاتورة»، أو «قطة».';
 
   @override
-  String get onbProTitle => '‏SHOTO Pro';
+  String get onbSafeShareTitle => 'اللقطة اللي فعلاً بتقدر تبعتها';
 
   @override
-  String get onbProBody =>
-      'قواعد بترتّب اللقطات الجديدة عنك، وكل اللي تحت بيجي معها.';
-
-  @override
-  String onbProMore(int count) {
-    return 'و$count غيرها';
-  }
+  String get onbSafeShareBody =>
+      'رقم البطاقة بيصير رقم بطاقة تاني — نفس الطول، نفس المكان، وبيضل صالح. ما حدا بيعرف إنها تعدّلت.';
 
   @override
   String get onbFolderExample => 'فواتير';

@@ -352,8 +352,8 @@ const List<CardPose> _found = [
 
 /// **Stage five — Pro.** The cards retreat to a tidy fan at the top and hand
 /// the screen to the paid list. One of them is covering a card number, which
-/// is the single most concrete thing Pro does and the last thing seen before
-/// the button.
+/// is the single most concrete thing SHOTO does and the last thing seen
+/// before the button.
 const List<CardPose> _pro = [
   CardPose(x: -1.9, y: -0.9, opacity: 0, scale: 0.8),
   CardPose(x: -0.48, y: -0.5, turns: -0.05, scale: 0.72, opacity: 0.9),
@@ -389,10 +389,19 @@ List<OnboardingStage> _stages(BuildContext context) => [
     poses: _found,
     prop: StageProp.search,
   ),
+  // Last, and no longer a price list.
+  //
+  // This stage used to pitch the subscription — six paid features shown to
+  // somebody who had not yet saved a single screenshot, as the final thing
+  // before the button that lets them start. Its copy also still promised
+  // rules that file screenshots for you, three releases after filing rules
+  // were deleted.
+  //
+  // It now ends on the one thing the phone's own gallery will never do.
   OnboardingStage(
-    title: (context) => context.l10n.onbProTitle,
-    body: (context) => context.l10n.onbProBody,
+    title: (context) => context.l10n.onbSafeShareTitle,
+    body: (context) => context.l10n.onbSafeShareBody,
     poses: _pro,
-    prop: StageProp.premium,
+    prop: StageProp.safeShare,
   ),
 ];

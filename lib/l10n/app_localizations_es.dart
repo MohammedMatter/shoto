@@ -48,11 +48,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeGreetingEvening => 'Buenas noches';
 
   @override
-  String get homeInboxEmpty => 'Nada guardado';
+  String get homeInboxEmpty => 'Todavía no hay nada guardado';
 
   @override
   String get homeInboxEmptySubtitle =>
-      'Comparte una captura con SHOTO para empezar';
+      'Elige algunas de tu teléfono ahora, o comparte una captura en SHOTO desde cualquier app.';
+
+  @override
+  String get homeEmptyImportCta => 'Elegir desde mi teléfono';
 
   @override
   String get homeInboxClear => 'Todo archivado';
@@ -73,7 +76,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get homeStatFolders => 'Carpetas';
 
   @override
-  String get homeToolsTitle => 'Qué puede hacer SHOTO';
+  String get homeToolsTitle => 'Herramientas';
+
+  @override
+  String get homeToolsTitleEmpty => 'Empieza aquí';
 
   @override
   String get homeToolSafeShare => 'Compartir seguro';
@@ -111,9 +117,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get libraryActionProtect => 'Proteger';
-
-  @override
-  String get homeToolsTitleShort => 'Haz algo';
 
   @override
   String get homeSeeAll => 'Ver todo';
@@ -1332,16 +1335,11 @@ class AppLocalizationsEs extends AppLocalizations {
       'Las palabras escritas en la captura, y lo que muestra la imagen. Escribe «recibo» o «perro».';
 
   @override
-  String get onbProTitle => 'SHOTO Pro';
+  String get onbSafeShareTitle => 'La captura que sí puedes enviar';
 
   @override
-  String get onbProBody =>
-      'Las reglas archivan tus capturas nuevas por ti, y todo lo de abajo viene incluido.';
-
-  @override
-  String onbProMore(int count) {
-    return 'y $count más';
-  }
+  String get onbSafeShareBody =>
+      'Un número de tarjeta se convierte en otro: mismo largo, mismo sitio, igual de válido. Nadie nota que se editó.';
 
   @override
   String get onbFolderExample => 'Recibos';

@@ -187,14 +187,20 @@ abstract class AppLocalizations {
   /// No description provided for @homeInboxEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Nothing saved'**
+  /// **'Nothing saved yet'**
   String get homeInboxEmpty;
 
   /// No description provided for @homeInboxEmptySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Share a screenshot into SHOTO to start'**
+  /// **'Pick a few from your phone now, or share a screenshot into SHOTO from any app.'**
   String get homeInboxEmptySubtitle;
+
+  /// No description provided for @homeEmptyImportCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from my phone'**
+  String get homeEmptyImportCta;
 
   /// No description provided for @homeInboxClear.
   ///
@@ -235,8 +241,14 @@ abstract class AppLocalizations {
   /// No description provided for @homeToolsTitle.
   ///
   /// In en, this message translates to:
-  /// **'What SHOTO can do'**
+  /// **'Tools'**
   String get homeToolsTitle;
+
+  /// No description provided for @homeToolsTitleEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Start here'**
+  String get homeToolsTitleEmpty;
 
   /// No description provided for @homeToolSafeShare.
   ///
@@ -309,12 +321,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Protect'**
   String get libraryActionProtect;
-
-  /// No description provided for @homeToolsTitleShort.
-  ///
-  /// In en, this message translates to:
-  /// **'Do something'**
-  String get homeToolsTitleShort;
 
   /// No description provided for @homeSeeAll.
   ///
@@ -2356,23 +2362,17 @@ abstract class AppLocalizations {
   /// **'The words printed in a screenshot, and what the picture shows. Type “receipt”, or “dog”.'**
   String get onbFindBody;
 
-  /// No description provided for @onbProTitle.
+  /// No description provided for @onbSafeShareTitle.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO Pro'**
-  String get onbProTitle;
+  /// **'The screenshot you can actually send'**
+  String get onbSafeShareTitle;
 
-  /// No description provided for @onbProBody.
+  /// No description provided for @onbSafeShareBody.
   ///
   /// In en, this message translates to:
-  /// **'Rules file new screenshots for you, and everything below comes with them.'**
-  String get onbProBody;
-
-  /// No description provided for @onbProMore.
-  ///
-  /// In en, this message translates to:
-  /// **'and {count} more'**
-  String onbProMore(int count);
+  /// **'A card number becomes a different card number — same length, same place, still valid. Nobody can tell it was edited.'**
+  String get onbSafeShareBody;
 
   /// No description provided for @onbFolderExample.
   ///

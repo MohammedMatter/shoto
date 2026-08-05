@@ -48,11 +48,14 @@ class AppLocalizationsHi extends AppLocalizations {
   String get homeGreetingEvening => 'शुभ संध्या';
 
   @override
-  String get homeInboxEmpty => 'कुछ सहेजा नहीं गया';
+  String get homeInboxEmpty => 'अभी कुछ सहेजा नहीं गया';
 
   @override
   String get homeInboxEmptySubtitle =>
-      'शुरू करने के लिए कोई स्क्रीनशॉट SHOTO में साझा करें';
+      'अभी अपने फ़ोन से कुछ चुनें, या किसी भी ऐप से स्क्रीनशॉट SHOTO में शेयर करें।';
+
+  @override
+  String get homeEmptyImportCta => 'मेरे फ़ोन से चुनें';
 
   @override
   String get homeInboxClear => 'सब व्यवस्थित है';
@@ -74,7 +77,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get homeStatFolders => 'फ़ोल्डर';
 
   @override
-  String get homeToolsTitle => 'SHOTO क्या कर सकता है';
+  String get homeToolsTitle => 'टूल';
+
+  @override
+  String get homeToolsTitleEmpty => 'यहाँ से शुरू करें';
 
   @override
   String get homeToolSafeShare => 'सुरक्षित साझा';
@@ -113,9 +119,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get libraryActionProtect => 'सुरक्षित करें';
-
-  @override
-  String get homeToolsTitleShort => 'कुछ करें';
 
   @override
   String get homeSeeAll => 'सभी देखें';
@@ -1330,16 +1333,11 @@ class AppLocalizationsHi extends AppLocalizations {
       'स्क्रीनशॉट में लिखे शब्द, और तस्वीर में जो दिख रहा है। लिखें “रसीद” या “कुत्ता”।';
 
   @override
-  String get onbProTitle => 'SHOTO Pro';
+  String get onbSafeShareTitle => 'वह स्क्रीनशॉट जो आप सच में भेज सकते हैं';
 
   @override
-  String get onbProBody =>
-      'नियम आपके नए स्क्रीनशॉट खुद फ़ाइल करते हैं, और नीचे सब कुछ साथ आता है।';
-
-  @override
-  String onbProMore(int count) {
-    return 'और $count अन्य';
-  }
+  String get onbSafeShareBody =>
+      'कार्ड नंबर दूसरा कार्ड नंबर बन जाता है — वही लंबाई, वही जगह, फिर भी वैध। किसी को पता नहीं चलता कि बदला गया।';
 
   @override
   String get onbFolderExample => 'रसीदें';

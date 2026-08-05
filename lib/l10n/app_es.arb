@@ -13,15 +13,17 @@
   "homeGreetingMorning": "Buenos días",
   "homeGreetingAfternoon": "Buenas tardes",
   "homeGreetingEvening": "Buenas noches",
-  "homeInboxEmpty": "Nada guardado",
-  "homeInboxEmptySubtitle": "Comparte una captura con SHOTO para empezar",
+  "homeInboxEmpty": "Todavía no hay nada guardado",
+  "homeInboxEmptySubtitle": "Elige algunas de tu teléfono ahora, o comparte una captura en SHOTO desde cualquier app.",
+  "homeEmptyImportCta": "Elegir desde mi teléfono",
   "homeInboxClear": "Todo archivado",
   "homeInboxClearSubtitle": "No queda nada por ordenar",
   "homeInboxCountSubtitle": "Capturas que aún no has archivado",
   "homeStatScreenshots": "Capturas",
   "homeStatFavorites": "Favoritas",
   "homeStatFolders": "Carpetas",
-  "homeToolsTitle": "Qué puede hacer SHOTO",
+  "homeToolsTitle": "Herramientas",
+  "homeToolsTitleEmpty": "Empieza aquí",
   "homeToolSafeShare": "Compartir seguro",
   "homeToolSafeShareSubtitle": "Oculta antes los datos privados",
   "homeToolDuplicates": "Buscar duplicados",
@@ -34,7 +36,6 @@
   "libraryPickForMerge": "Elige dos o más capturas de la misma página",
   "libraryPickForProtect": "Elige la captura que quieres proteger",
   "libraryActionProtect": "Proteger",
-  "homeToolsTitleShort": "Haz algo",
   "homeSeeAll": "Ver todo",
   "libraryEmptyTitle": "Aún no hay nada guardado",
   "libraryEmptyMessage": "Comparte una captura con SHOTO o añádela con el botón +. Tu galería nunca se lee: solo se guarda lo que entregas.",
@@ -656,16 +657,8 @@
   "onbFileBody": "Elige una carpeta desde el propio menú de compartir. La app ni se abre.",
   "onbFindTitle": "Busca lo que hay dentro",
   "onbFindBody": "Las palabras escritas en la captura, y lo que muestra la imagen. Escribe «recibo» o «perro».",
-  "onbProTitle": "SHOTO Pro",
-  "onbProBody": "Las reglas archivan tus capturas nuevas por ti, y todo lo de abajo viene incluido.",
-  "onbProMore": "y {count} más",
-  "@onbProMore": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+  "onbSafeShareTitle": "La captura que sí puedes enviar",
+  "onbSafeShareBody": "Un número de tarjeta se convierte en otro: mismo largo, mismo sitio, igual de válido. Nadie nota que se editó.",
   "onbFolderExample": "Recibos",
   "onbSearchExample": "recibo",
   "importTitle": "Añadir capturas",

@@ -13,15 +13,17 @@
   "homeGreetingMorning": "Bonjour",
   "homeGreetingAfternoon": "Bon après-midi",
   "homeGreetingEvening": "Bonsoir",
-  "homeInboxEmpty": "Rien d'enregistré",
-  "homeInboxEmptySubtitle": "Partagez une capture vers SHOTO pour commencer",
+  "homeInboxEmpty": "Rien d'enregistré pour l'instant",
+  "homeInboxEmptySubtitle": "Choisissez-en quelques-unes sur votre téléphone, ou partagez une capture vers SHOTO depuis n'importe quelle app.",
+  "homeEmptyImportCta": "Choisir sur mon téléphone",
   "homeInboxClear": "Tout est rangé",
   "homeInboxClearSubtitle": "Plus rien à trier",
   "homeInboxCountSubtitle": "Captures que vous n'avez pas encore classées",
   "homeStatScreenshots": "Captures",
   "homeStatFavorites": "Favoris",
   "homeStatFolders": "Dossiers",
-  "homeToolsTitle": "Ce que SHOTO sait faire",
+  "homeToolsTitle": "Outils",
+  "homeToolsTitleEmpty": "Commencez ici",
   "homeToolSafeShare": "Partage protégé",
   "homeToolSafeShareSubtitle": "Masquez d'abord les infos privées",
   "homeToolDuplicates": "Trouver les doublons",
@@ -34,7 +36,6 @@
   "libraryPickForMerge": "Choisissez deux captures ou plus de la même page",
   "libraryPickForProtect": "Choisissez la capture à protéger",
   "libraryActionProtect": "Protéger",
-  "homeToolsTitleShort": "Faire quelque chose",
   "homeSeeAll": "Tout voir",
   "libraryEmptyTitle": "Rien d'enregistré pour l'instant",
   "libraryEmptyMessage": "Partagez une capture vers SHOTO, ou ajoutez-en une avec le bouton +. Votre galerie n'est jamais lue : seul ce que vous confiez est conservé.",
@@ -656,16 +657,8 @@
   "onbFileBody": "Choisissez un dossier depuis le menu de partage. L’app ne s’ouvre même pas.",
   "onbFindTitle": "Cherchez ce qu’il y a dedans",
   "onbFindBody": "Les mots écrits dans la capture, et ce que l’image montre. Tapez « reçu » ou « chien ».",
-  "onbProTitle": "SHOTO Pro",
-  "onbProBody": "Les règles classent vos nouvelles captures à votre place, et tout ce qui suit est inclus.",
-  "onbProMore": "et {count} de plus",
-  "@onbProMore": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+  "onbSafeShareTitle": "La capture que vous pouvez vraiment envoyer",
+  "onbSafeShareBody": "Un numéro de carte en devient un autre — même longueur, même place, toujours valide. Personne ne voit la retouche.",
   "onbFolderExample": "Reçus",
   "onbSearchExample": "reçu",
   "importTitle": "Ajouter des captures",

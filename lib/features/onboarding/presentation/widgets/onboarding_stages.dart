@@ -42,7 +42,7 @@ class CardPose {
 }
 
 /// What the stage shows *besides* the cards.
-enum StageProp { none, folder, search, premium }
+enum StageProp { none, folder, search, safeShare }
 
 /// One step of the introduction.
 @immutable

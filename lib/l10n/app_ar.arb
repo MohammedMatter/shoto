@@ -13,15 +13,17 @@
   "homeGreetingMorning": "صباح الخير",
   "homeGreetingAfternoon": "مساء الخير",
   "homeGreetingEvening": "مساء الخير",
-  "homeInboxEmpty": "ما في شي محفوظ",
-  "homeInboxEmptySubtitle": "شارك لقطة مع SHOTO لتبدأ",
+  "homeInboxEmpty": "لسا ما في شي محفوظ",
+  "homeInboxEmptySubtitle": "اختار كم وحدة من جهازك هلق، أو شارك أي لقطة مع SHOTO من أي تطبيق.",
+  "homeEmptyImportCta": "اختار من جهازي",
   "homeInboxClear": "كله مرتّب",
   "homeInboxClearSubtitle": "ما في شي ينتظر الترتيب",
   "homeInboxCountSubtitle": "لقطات لسه ما رتّبتها",
   "homeStatScreenshots": "لقطات",
   "homeStatFavorites": "مفضّلة",
   "homeStatFolders": "مجلدات",
-  "homeToolsTitle": "شو بيقدر يعمل SHOTO",
+  "homeToolsTitle": "أدوات",
+  "homeToolsTitleEmpty": "ابدأ من هون",
   "homeToolSafeShare": "مشاركة آمنة",
   "homeToolSafeShareSubtitle": "أخفِ التفاصيل الخاصة أولاً",
   "homeToolDuplicates": "كشف المكرر",
@@ -34,7 +36,6 @@
   "libraryPickForMerge": "اختار لقطتين أو أكتر لنفس الصفحة",
   "libraryPickForProtect": "اختار اللقطة يلي بدك تحميها",
   "libraryActionProtect": "احمِ",
-  "homeToolsTitleShort": "اعمل شي",
   "homeSeeAll": "عرض الكل",
   "libraryEmptyTitle": "ما في شي محفوظ بعد",
   "libraryEmptyMessage": "شيّر لقطة لـSHOTO، أو أضفها بزر +. معرض صورك ما بينقرأ — بس اللي تعطيه بينحفظ.",
@@ -656,16 +657,8 @@
   "onbFileBody": "اختار المجلد من شيت المشاركة نفسه. التطبيق ولا بيفتح.",
   "onbFindTitle": "دوّر على اللي جوّاها",
   "onbFindBody": "الكلمات المكتوبة داخل اللقطة، وكمان اللي الصورة بتوريه. اكتب «فاتورة»، أو «قطة».",
-  "onbProTitle": "‏SHOTO Pro",
-  "onbProBody": "قواعد بترتّب اللقطات الجديدة عنك، وكل اللي تحت بيجي معها.",
-  "onbProMore": "و{count} غيرها",
-  "@onbProMore": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+  "onbSafeShareTitle": "اللقطة اللي فعلاً بتقدر تبعتها",
+  "onbSafeShareBody": "رقم البطاقة بيصير رقم بطاقة تاني — نفس الطول، نفس المكان، وبيضل صالح. ما حدا بيعرف إنها تعدّلت.",
   "onbFolderExample": "فواتير",
   "onbSearchExample": "فاتورة",
   "importTitle": "أضف لقطات",

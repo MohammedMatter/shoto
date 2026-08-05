@@ -13,15 +13,17 @@
   "homeGreetingMorning": "صبح بخیر",
   "homeGreetingAfternoon": "دوپہر بخیر",
   "homeGreetingEvening": "شام بخیر",
-  "homeInboxEmpty": "کچھ محفوظ نہیں",
-  "homeInboxEmptySubtitle": "شروع کرنے کے لیے کوئی اسکرین شاٹ SHOTO میں شیئر کریں",
+  "homeInboxEmpty": "ابھی کچھ محفوظ نہیں ہوا",
+  "homeInboxEmptySubtitle": "ابھی اپنے فون سے کچھ منتخب کریں، یا کسی بھی ایپ سے اسکرین شاٹ SHOTO میں شیئر کریں۔",
+  "homeEmptyImportCta": "میرے فون سے منتخب کریں",
   "homeInboxClear": "سب ترتیب میں ہے",
   "homeInboxClearSubtitle": "ترتیب کے انتظار میں کچھ نہیں",
   "homeInboxCountSubtitle": "وہ اسکرین شاٹس جو آپ نے ابھی فائل نہیں کیے",
   "homeStatScreenshots": "اسکرین شاٹس",
   "homeStatFavorites": "پسندیدہ",
   "homeStatFolders": "فولڈرز",
-  "homeToolsTitle": "SHOTO کیا کر سکتا ہے",
+  "homeToolsTitle": "ٹولز",
+  "homeToolsTitleEmpty": "یہاں سے شروع کریں",
   "homeToolSafeShare": "محفوظ اشتراک",
   "homeToolSafeShareSubtitle": "پہلے نجی تفصیلات چھپائیں",
   "homeToolDuplicates": "نقول تلاش کریں",
@@ -34,7 +36,6 @@
   "libraryPickForMerge": "ایک ہی صفحے کے دو یا زیادہ اسکرین شاٹ چنیں",
   "libraryPickForProtect": "وہ اسکرین شاٹ چنیں جسے محفوظ کرنا ہے",
   "libraryActionProtect": "محفوظ کریں",
-  "homeToolsTitleShort": "کچھ کریں",
   "homeSeeAll": "سب دیکھیں",
   "libraryEmptyTitle": "ابھی کچھ محفوظ نہیں",
   "libraryEmptyMessage": "کوئی اسکرین شاٹ SHOTO کو شیئر کریں، یا + بٹن سے شامل کریں۔ آپ کی گیلری کبھی نہیں پڑھی جاتی — صرف وہی محفوظ ہوتا ہے جو آپ دیں۔",
@@ -656,16 +657,8 @@
   "onbFileBody": "شیئر شیٹ میں ہی فولڈر چنیں۔ ایپ کھلتی تک نہیں۔",
   "onbFindTitle": "جو ان کے اندر ہے، وہ ڈھونڈیں",
   "onbFindBody": "سکرین شاٹ میں لکھے الفاظ، اور تصویر میں جو دکھ رہا ہے۔ لکھیں ”رسید“ یا ”کتا“۔",
-  "onbProTitle": "SHOTO Pro",
-  "onbProBody": "قواعد آپ کے نئے سکرین شاٹ خود فائل کرتے ہیں، اور نیچے سب کچھ ساتھ آتا ہے۔",
-  "onbProMore": "اور {count} مزید",
-  "@onbProMore": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+  "onbSafeShareTitle": "وہ اسکرین شاٹ جو آپ واقعی بھیج سکتے ہیں",
+  "onbSafeShareBody": "کارڈ نمبر ایک مختلف کارڈ نمبر بن جاتا ہے — وہی لمبائی، وہی جگہ، پھر بھی درست۔ کسی کو پتہ نہیں چلتا کہ تبدیل ہوا۔",
   "onbFolderExample": "رسیدیں",
   "onbSearchExample": "رسید",
   "importTitle": "اسکرین شاٹ شامل کریں",

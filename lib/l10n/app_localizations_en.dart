@@ -48,10 +48,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeGreetingEvening => 'Good evening';
 
   @override
-  String get homeInboxEmpty => 'Nothing saved';
+  String get homeInboxEmpty => 'Nothing saved yet';
 
   @override
-  String get homeInboxEmptySubtitle => 'Share a screenshot into SHOTO to start';
+  String get homeInboxEmptySubtitle =>
+      'Pick a few from your phone now, or share a screenshot into SHOTO from any app.';
+
+  @override
+  String get homeEmptyImportCta => 'Choose from my phone';
 
   @override
   String get homeInboxClear => 'All filed';
@@ -72,7 +76,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeStatFolders => 'Folders';
 
   @override
-  String get homeToolsTitle => 'What SHOTO can do';
+  String get homeToolsTitle => 'Tools';
+
+  @override
+  String get homeToolsTitleEmpty => 'Start here';
 
   @override
   String get homeToolSafeShare => 'Safe share';
@@ -109,9 +116,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get libraryActionProtect => 'Protect';
-
-  @override
-  String get homeToolsTitleShort => 'Do something';
 
   @override
   String get homeSeeAll => 'See all';
@@ -1331,16 +1335,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'The words printed in a screenshot, and what the picture shows. Type “receipt”, or “dog”.';
 
   @override
-  String get onbProTitle => 'SHOTO Pro';
+  String get onbSafeShareTitle => 'The screenshot you can actually send';
 
   @override
-  String get onbProBody =>
-      'Rules file new screenshots for you, and everything below comes with them.';
-
-  @override
-  String onbProMore(int count) {
-    return 'and $count more';
-  }
+  String get onbSafeShareBody =>
+      'A card number becomes a different card number — same length, same place, still valid. Nobody can tell it was edited.';
 
   @override
   String get onbFolderExample => 'Receipts';
