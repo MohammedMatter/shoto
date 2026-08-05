@@ -719,6 +719,8 @@
   "librarySortNewest": "नई पहले",
   "librarySortOldest": "पुरानी पहले",
   "librarySortLabel": "क्रम",
+  "libraryShowOnly": "सिर्फ़ दिखाएँ",
+  "libraryShowEverything": "सब कुछ",
   "libraryScanPrompt": "{count} स्क्रीनशॉट पढ़ें",
   "libraryScanning": "पढ़ा जा रहा है…",
   "restoreClashTitle": "{count, plural, =1{1 फ़ोल्डर यहाँ पहले से है} other{{count} फ़ोल्डर यहाँ पहले से हैं}}",

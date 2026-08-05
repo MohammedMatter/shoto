@@ -783,6 +783,8 @@
   "librarySortNewest": "Newest first",
   "librarySortOldest": "Oldest first",
   "librarySortLabel": "Order",
+  "libraryShowOnly": "Show only",
+  "libraryShowEverything": "Everything",
   "libraryScanPrompt": "Read {count} screenshots",
   "libraryScanning": "Reading…",
   "@libraryScanPrompt": {

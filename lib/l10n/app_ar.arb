@@ -719,6 +719,8 @@
   "librarySortNewest": "الأحدث أولاً",
   "librarySortOldest": "الأقدم أولاً",
   "librarySortLabel": "الترتيب",
+  "libraryShowOnly": "اعرض بس",
+  "libraryShowEverything": "كل شي",
   "libraryScanPrompt": "اقرأ {count} صورة",
   "libraryScanning": "عم نقرأ…",
   "restoreClashTitle": "{count, plural, =1{في مجلد موجود عندك أصلاً} =2{في مجلدين موجودين عندك أصلاً} few{في {count} مجلدات موجودة عندك أصلاً} other{في {count} مجلد موجود عندك أصلاً}}",

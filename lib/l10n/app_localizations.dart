@@ -2632,6 +2632,18 @@ abstract class AppLocalizations {
   /// **'Order'**
   String get librarySortLabel;
 
+  /// No description provided for @libraryShowOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Show only'**
+  String get libraryShowOnly;
+
+  /// No description provided for @libraryShowEverything.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything'**
+  String get libraryShowEverything;
+
   /// No description provided for @libraryScanPrompt.
   ///
   /// In en, this message translates to:

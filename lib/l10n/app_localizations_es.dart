@@ -1544,6 +1544,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get librarySortLabel => 'Orden';
 
   @override
+  String get libraryShowOnly => 'Mostrar solo';
+
+  @override
+  String get libraryShowEverything => 'Todo';
+
+  @override
   String libraryScanPrompt(int count) {
     return 'Leer $count capturas';
   }

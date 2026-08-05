@@ -1552,6 +1552,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get librarySortLabel => 'الترتيب';
 
   @override
+  String get libraryShowOnly => 'اعرض بس';
+
+  @override
+  String get libraryShowEverything => 'كل شي';
+
+  @override
   String libraryScanPrompt(int count) {
     return 'اقرأ $count صورة';
   }

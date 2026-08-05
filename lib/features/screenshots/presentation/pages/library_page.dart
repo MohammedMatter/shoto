@@ -6,6 +6,8 @@ import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
+import 'package:shoto/core/utils/content_traits.dart';
+import 'package:shoto/core/widgets/premium_gate.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/widgets/header_icon_button.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_sort.dart';
@@ -14,7 +16,7 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.d
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/pages/search_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/import_screenshots_action.dart';
-import 'package:shoto/features/screenshots/presentation/widgets/library_sort_sheet.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/library_view_sheet.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshots_body.dart';
 
 /// The full grid of every screenshot.
@@ -104,7 +106,14 @@ class LibraryPage extends StatelessWidget {
                     // a bare ↓/↑ that flipped on tap, and the first person to
                     // meet it asked what it filtered — which is the answer:
                     // an unlabelled arrow says neither what it changes nor
-                    // what is currently on. See showLibrarySortSheet.
+                    // what is currently on.
+                    //
+                    // It now carries the content traits as well as the order,
+                    // which is what let the second row of chips come off the
+                    // top of the grid. A dot appears whenever a trait is
+                    // narrowing what is shown: the row it replaced said so by
+                    // having a chip lit, and a control that hides an active
+                    // filter without saying so is worse than the row was.
                     BlocBuilder<ScreenshotsBloc, ScreenshotsState>(
                       builder: (context, state) {
                         if (state is! ScreenshotsLoadedState) {
@@ -114,18 +123,38 @@ class LibraryPage extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             HeaderIconButton(
-                              // The conventional "reorder" glyph, and stable:
-                              // the sheet is where the current order is
-                              // stated, so the button only has to say what
-                              // tapping it is about.
-                              icon: Icons.swap_vert_rounded,
+                              icon: Icons.tune_rounded,
                               tooltip: context.l10n.librarySortLabel,
-                              onTap: () => showLibrarySortSheet(
+                              isMarked: state.lens != null,
+                              onTap: () => showLibraryViewSheet(
                                 context,
-                                current: state.sort,
-                                onSelected: (LibrarySort sort) => context
+                                sort: state.sort,
+                                onSort: (LibrarySort sort) => context
                                     .read<ScreenshotsBloc>()
                                     .add(SetLibrarySortEvent(sort)),
+                                lens: state.lens,
+                                onSelectLens: (ContentTrait? lens) => context
+                                    .read<ScreenshotsBloc>()
+                                    .add(SetLibraryLensEvent(lens)),
+                                traitCounts: <ContentTrait, int>{
+                                  for (final ContentTrait trait
+                                      in ContentTrait.values)
+                                    trait: state.traitCount(trait),
+                                },
+                                traitsReady: state.traitsReady,
+                                unreadCount: state.unreadCount,
+                                isScanning: state.isScanning,
+                                onScan: () async {
+                                  // Recognition is the paid feature behind
+                                  // every trait, so the gate belongs on the
+                                  // thing that starts it rather than on the
+                                  // counts it eventually fills in.
+                                  if (!await ensurePremium(context)) return;
+                                  if (!context.mounted) return;
+                                  context.read<ScreenshotsBloc>().add(
+                                    ScanUnreadForTraitsEvent(),
+                                  );
+                                },
                               ),
                             ),
                             SizedBox(width: 8.w),

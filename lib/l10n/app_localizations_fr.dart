@@ -1553,6 +1553,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get librarySortLabel => 'Ordre';
 
   @override
+  String get libraryShowOnly => 'Afficher uniquement';
+
+  @override
+  String get libraryShowEverything => 'Tout';
+
+  @override
   String libraryScanPrompt(int count) {
     return 'Lire $count captures';
   }

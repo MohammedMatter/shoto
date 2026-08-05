@@ -2,23 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/library_sort.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/lens_provenance_note.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/library_view_sheet.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshots_filter_row.dart';
 import 'package:shoto/l10n/app_localizations.dart';
 
 import 'support/test_fonts.dart';
 
-/// Renders the library's filter strip in the states that actually matter, so
-/// the design can be *looked at*.
+/// The library's filter strip and the sheet the content traits moved into, in
+/// the states that actually matter, so the design can be *looked at*.
 ///
-/// The whole point of this change is visual — two axes have to read as two
-/// axes — and no assertion can tell you whether they do. Running with
-/// `--update-goldens` writes real PNGs; it is never a regression gate, so a
-/// normal `flutter test` run skips it.
+/// This file used to render two stacked chip axes. There is one row now: the
+/// traits are in [showLibraryViewSheet] beside the sort order, which is what
+/// took roughly 40dp of controls back off the top of the grid. Both halves are
+/// here because the question the change has to answer is visual and split
+/// across them — is the row quieter, and did the traits stay findable.
+///
+/// Running with `--update-goldens` writes real PNGs; it is never a regression
+/// gate, so a normal `flutter test` run skips it.
 const Map<ContentTrait, int> _counts = <ContentTrait, int>{
   ContentTrait.sensitive: 3,
   ContentTrait.link: 24,
@@ -27,14 +34,17 @@ const Map<ContentTrait, int> _counts = <ContentTrait, int>{
   ContentTrait.event: 2,
 };
 
-Widget _case({
+Widget _wrap(Widget child) => ScreenUtilInit(
+  designSize: const Size(360, 690),
+  minTextAdapt: true,
+  builder: (context, _) => child,
+);
+
+Widget _strip({
   required Locale locale,
   required LibraryFilter filter,
   ContentTrait? lens,
-  bool traitsReady = true,
   int unreadCount = 0,
-  bool isScanning = false,
-  Map<ContentTrait, int> counts = _counts,
 }) {
   return MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -53,6 +63,51 @@ Widget _case({
               favoritesCount: 9,
               filter: filter,
               onSelect: (_) {},
+            ),
+            // Still here, and still the feature's honesty mechanism: with the
+            // chips gone this is the line that says an active lens can only
+            // see what has been read.
+            LensProvenanceNote(lens: lens, unreadCount: unreadCount),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+/// The sheet, opened for real rather than built directly, so what is
+/// photographed is what the user meets — surface, insets and all.
+///
+/// [slot] keys the whole app, and it is load-bearing. `pumpWidget` reuses the
+/// element tree when the new widget matches the old one, so the Navigator —
+/// and the route pushed onto it — survived from one case to the next: the
+/// second and third sheets were never built, and all three goldens came out
+/// byte-identical pictures of the first. A distinct key forces a real
+/// teardown between cases.
+Widget _sheetHost({
+  required String slot,
+  required Locale locale,
+  ContentTrait? lens,
+  bool traitsReady = true,
+  int unreadCount = 0,
+  bool isScanning = false,
+  Map<ContentTrait, int> counts = _counts,
+}) {
+  return MaterialApp(
+    key: ValueKey<String>(slot),
+    debugShowCheckedModeBanner: false,
+    locale: locale,
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: Builder(
+      builder: (context) => Scaffold(
+        backgroundColor: AppColors.background,
+        body: Center(
+          child: ElevatedButton(
+            onPressed: () => showLibraryViewSheet(
+              context,
+              sort: LibrarySort.newest,
+              onSort: (_) {},
               lens: lens,
               onSelectLens: (_) {},
               traitCounts: counts,
@@ -61,8 +116,8 @@ Widget _case({
               isScanning: isScanning,
               onScan: () {},
             ),
-            LensProvenanceNote(lens: lens, unreadCount: unreadCount),
-          ],
+            child: const Text('open'),
+          ),
         ),
       ),
     ),
@@ -73,6 +128,9 @@ Future<void> _shoot(
   WidgetTester tester,
   Widget app,
   String name, {
+  Finder? target,
+  bool openSheet = false,
+
   /// False when the frame contains a never-ending animation.
   ///
   /// `pumpAndSettle` waits for the tree to stop changing, and a
@@ -81,13 +139,20 @@ Future<void> _shoot(
   bool settle = true,
 }) async {
   await tester.pumpWidget(app);
+  if (openSheet) {
+    await tester.tap(find.text('open'));
+  }
   if (settle) {
     await tester.pumpAndSettle();
   } else {
-    await tester.pump(const Duration(milliseconds: 400));
+    // One frame to build the pushed route, then long enough for its entrance
+    // to finish. Advancing straight to 400ms in a single pump photographed a
+    // sheet that had not been built yet — a blank white frame.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 700));
   }
   await expectLater(
-    find.byType(Column).first,
+    target ?? find.byType(Column).first,
     matchesGoldenFile('goldens/$name.png'),
   );
 }
@@ -100,13 +165,18 @@ void main() {
     if (!sl.isRegistered<ThemeController>()) {
       sl.registerSingleton<ThemeController>(ThemeController());
     }
+    // The sheet's rows ripple and buzz, and `Haptics` reads the preference
+    // out of the locator to decide whether to.
+    if (!sl.isRegistered<AppPreferences>()) {
+      sl.registerLazySingleton<AppPreferences>(() => AppPreferences());
+    }
   });
 
   setUp(() {
     AppColors.setBrightness(Brightness.dark);
   });
 
-  testWidgets('filter row states', (WidgetTester tester) async {
+  testWidgets('filter strip states', (WidgetTester tester) async {
     // Must match the 360x690 design size. ScreenUtil derives `.h` from the
     // *view* height, so a short test surface silently shrinks every vertical
     // dimension — at 520 physical px the 50.h row collapsed to 12 logical px
@@ -116,147 +186,155 @@ void main() {
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
 
-    Widget wrap(Widget child) => ScreenUtilInit(
-      designSize: const Size(360, 690),
-      minTextAdapt: true,
-      builder: (context, _) => child,
-    );
-
-    // 1. Resting: status only, before the trait pass has finished. This is the
-    //    first thing anyone sees, and it must not look like a broken row.
+    // 1. Resting. One row, and this is now the entire cost of the filter
+    //    controls above the grid.
     await _shoot(
       tester,
-      wrap(
-        _case(
+      _wrap(_strip(locale: const Locale('en'), filter: LibraryFilter.all)),
+      'library_strip_1_resting',
+    );
+
+    // 2. Arrived from Home's hero: Unsorted lit, agreeing with the 58px
+    //    figure that was tapped.
+    await _shoot(
+      tester,
+      _wrap(_strip(locale: const Locale('en'), filter: LibraryFilter.unsorted)),
+      'library_strip_2_unsorted',
+    );
+
+    // 3. A lens is on. With the chips gone this line is the only thing on the
+    //    grid saying so, besides the dot on the header button.
+    await _shoot(
+      tester,
+      _wrap(
+        _strip(
           locale: const Locale('en'),
           filter: LibraryFilter.all,
-          traitsReady: false,
+          lens: ContentTrait.link,
+          unreadCount: 87,
         ),
       ),
-      'library_filter_1_status_only',
+      'library_strip_3_lens_note',
     );
 
-    // 1b. Nothing has been read yet, so no trait can have a count. This used
-    //     to render as nothing at all — the whole feature silently absent —
-    //     and the row now has to say what is missing and offer the fix.
+    // 4. Arabic, RTL. The row must start from the right and the note must not
+    //    flip its punctuation to the front.
     await _shoot(
       tester,
-      wrap(
-        _case(
+      _wrap(
+        _strip(
+          locale: const Locale('ar'),
+          filter: LibraryFilter.unsorted,
+          lens: ContentTrait.link,
+          unreadCount: 87,
+        ),
+      ),
+      'library_strip_4_arabic_rtl',
+    );
+
+    AppColors.setBrightness(Brightness.light);
+    await _shoot(
+      tester,
+      _wrap(
+        _strip(locale: const Locale('en'), filter: LibraryFilter.favorites),
+      ),
+      'library_strip_5_light',
+    );
+  }, skip: !autoUpdateGoldenFiles);
+
+  testWidgets('view sheet states', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1080, 2070);
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+
+    final Finder sheet = find.byType(BottomSheet);
+
+    // 1. Everything present: order, every trait that would land on something,
+    //    and the scan for what has never been read. The whole second axis, in
+    //    rows wide enough to hold "Phone or email · 11" without cutting it —
+    //    which the chip could not.
+    await _shoot(
+      tester,
+      _wrap(
+        _sheetHost(slot: 'full', locale: const Locale('en'), unreadCount: 87),
+      ),
+      'library_sheet_1_full',
+      target: sheet,
+      openSheet: true,
+    );
+
+    // 2. A trait active, so the tick and the "Everything" way out are both
+    //    visible in one frame.
+    await _shoot(
+      tester,
+      _wrap(
+        _sheetHost(
+          slot: 'lens',
           locale: const Locale('en'),
-          filter: LibraryFilter.all,
+          lens: ContentTrait.sensitive,
+        ),
+      ),
+      'library_sheet_2_lens_active',
+      target: sheet,
+      openSheet: true,
+    );
+
+    // 3. Nothing read yet. The trait section is absent entirely rather than a
+    //    list of dead zeroes, leaving the one row that fixes it.
+    await _shoot(
+      tester,
+      _wrap(
+        _sheetHost(
+          slot: 'unread',
+          locale: const Locale('en'),
           unreadCount: 12,
           counts: const <ContentTrait, int>{},
         ),
       ),
-      'library_filter_1b_nothing_read',
+      'library_sheet_3_nothing_read',
+      target: sheet,
+      openSheet: true,
     );
 
     await _shoot(
       tester,
-      wrap(
-        _case(
+      _wrap(
+        _sheetHost(
+          slot: 'scanning',
           locale: const Locale('ar'),
-          filter: LibraryFilter.all,
           unreadCount: 12,
           isScanning: true,
           counts: const <ContentTrait, int>{},
         ),
       ),
-      'library_filter_1c_scanning_arabic',
+      'library_sheet_4_scanning_arabic',
+      target: sheet,
+      openSheet: true,
       settle: false,
     );
 
-    // 2. Both groups present, nothing narrowed — the separator has to make the
-    //    two axes read as two.
-    await _shoot(
-      tester,
-      wrap(_case(locale: const Locale('en'), filter: LibraryFilter.all)),
-      'library_filter_2_both_axes',
-    );
-
-    // 3. Both axes on at once, with the danger trait active. The gradient pill
-    //    and the flat rose chip must be distinguishable at a glance.
-    await _shoot(
-      tester,
-      wrap(
-        _case(
-          locale: const Locale('en'),
-          filter: LibraryFilter.unsorted,
-          lens: ContentTrait.sensitive,
-        ),
-      ),
-      'library_filter_3_sensitive_lens',
-    );
-
-    // 4. A read-provenance lens with unread screenshots outstanding — the
-    //    honesty line at its longest.
-    await _shoot(
-      tester,
-      wrap(
-        _case(
-          locale: const Locale('en'),
-          filter: LibraryFilter.all,
-          lens: ContentTrait.link,
-          unreadCount: 87,
-        ),
-      ),
-      'library_filter_4_unread_note',
-    );
-
-    // 5. Arabic, RTL. The row must start from the right and the note must not
-    //    flip its punctuation to the front.
-    await _shoot(
-      tester,
-      wrap(
-        _case(
-          locale: const Locale('ar'),
-          filter: LibraryFilter.unsorted,
-          lens: ContentTrait.link,
-          unreadCount: 87,
-        ),
-      ),
-      'library_filter_5_arabic_rtl',
-    );
-
-    // 6. Light mode, so the flat accent fills can be checked for contrast
-    //    against a pale surface rather than only a dark one.
-    AppColors.setBrightness(Brightness.light);
-    await _shoot(
-      tester,
-      wrap(
-        _case(
-          locale: const Locale('en'),
-          filter: LibraryFilter.favorites,
-          lens: ContentTrait.code,
-        ),
-      ),
-      'library_filter_6_light',
-    );
-
-    // 7-10. The remaining shipped languages. Chip labels are translated, and
-    //       "Teléfono o correo" is more than twice the width of "Codes" — a
-    //       row that fits in English says nothing about whether it fits at
-    //       all. Rendered with a lens on so the provenance line, which is a
-    //       full sentence, is measured too.
-    AppColors.setBrightness(Brightness.dark);
+    // 5-8. The remaining shipped languages. "Teléfono o correo" is more than
+    //      twice the width of "Codes", and a sheet that fits in English says
+    //      nothing about whether it fits at all.
     for (final (String code, String name) in <(String, String)>[
-      ('es', '7_spanish'),
-      ('fr', '8_french'),
-      ('hi', '9_hindi'),
-      ('ur', '10_urdu'),
+      ('es', '5_spanish'),
+      ('fr', '6_french'),
+      ('hi', '7_hindi'),
+      ('ur', '8_urdu'),
     ]) {
       await _shoot(
         tester,
-        wrap(
-          _case(
+        _wrap(
+          _sheetHost(
+            slot: code,
             locale: Locale(code),
-            filter: LibraryFilter.unsorted,
             lens: ContentTrait.contact,
             unreadCount: 87,
           ),
         ),
-        'library_filter_$name',
+        'library_sheet_$name',
+        target: sheet,
+        openSheet: true,
       );
     }
   }, skip: !autoUpdateGoldenFiles);

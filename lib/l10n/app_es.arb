@@ -719,6 +719,8 @@
   "librarySortNewest": "Más recientes primero",
   "librarySortOldest": "Más antiguas primero",
   "librarySortLabel": "Orden",
+  "libraryShowOnly": "Mostrar solo",
+  "libraryShowEverything": "Todo",
   "libraryScanPrompt": "Leer {count} capturas",
   "libraryScanning": "Leyendo…",
   "restoreClashTitle": "{count, plural, =1{1 carpeta ya existe aquí} other{{count} carpetas ya existen aquí}}",

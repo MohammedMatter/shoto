@@ -719,6 +719,8 @@
   "librarySortNewest": "Plus récentes d'abord",
   "librarySortOldest": "Plus anciennes d'abord",
   "librarySortLabel": "Ordre",
+  "libraryShowOnly": "Afficher uniquement",
+  "libraryShowEverything": "Tout",
   "libraryScanPrompt": "Lire {count} captures",
   "libraryScanning": "Lecture…",
   "restoreClashTitle": "{count, plural, =1{1 dossier existe déjà ici} other{{count} dossiers existent déjà ici}}",
