@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shoto/core/constants/v1_features.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
@@ -197,21 +198,22 @@ class SettingsPage extends StatelessWidget {
                               FadeSlidePageRoute(builder: (_) => BackupPage()),
                             ),
                           ),
-                          SettingsNavTile(
-                            icon: Icons.content_copy_rounded,
-                            label: context.l10n.settingsFindDuplicates,
-                            description: context.l10n.settingsDuplicatesHint,
-                            showProBadge: showProBadge,
-                            onTap: () async {
-                              if (!await ensurePremium(context)) return;
-                              if (!context.mounted) return;
-                              await Navigator.of(context).push(
-                                FadeSlidePageRoute(
-                                  builder: (_) => DuplicatesPage(),
-                                ),
-                              );
-                            },
-                          ),
+                          if (V1Features.duplicates)
+                            SettingsNavTile(
+                              icon: Icons.content_copy_rounded,
+                              label: context.l10n.settingsFindDuplicates,
+                              description: context.l10n.settingsDuplicatesHint,
+                              showProBadge: showProBadge,
+                              onTap: () async {
+                                if (!await ensurePremium(context)) return;
+                                if (!context.mounted) return;
+                                await Navigator.of(context).push(
+                                  FadeSlidePageRoute(
+                                    builder: (_) => DuplicatesPage(),
+                                  ),
+                                );
+                              },
+                            ),
                           SettingsClearCacheTile(),
                         ],
                       ),

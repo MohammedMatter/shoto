@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shoto/core/constants/subscription_constants.dart';
+import 'package:shoto/core/constants/v1_features.dart';
 import 'package:shoto/core/localization/l10n.dart';
 
 /// The single source of truth for what paying actually gets you.
@@ -73,6 +74,10 @@ class PremiumFeature {
   /// approve a feature that helpfully writes a *different, plausible* card
   /// number into a user's photo. Whatever is genuinely ours belongs at the
   /// top, because the first row is the one people read.
+  /// **Two entries are behind [V1Features].** Stitch and Find duplicates are
+  /// built and tested but not in version one, and a paywall that lists them
+  /// would be selling rows the app does not show — the same failure as the
+  /// filing rules above, arrived at from the other direction.
   static final List<PremiumFeature> all = [
     PremiumFeature(
       icon: Icons.shield_moon_rounded,
@@ -96,28 +101,30 @@ class PremiumFeature {
         (context) => context.l10n.featActionsPoint3,
       ],
     ),
-    PremiumFeature(
-      icon: Icons.photo_size_select_large_rounded,
-      title: (context) => context.l10n.featStitch,
-      description: (context) => context.l10n.featStitchBody,
-      how: (context) => context.l10n.featStitchHow,
-      points: [
-        (context) => context.l10n.featStitchPoint1,
-        (context) => context.l10n.featStitchPoint2,
-        (context) => context.l10n.featStitchPoint3,
-      ],
-    ),
-    PremiumFeature(
-      icon: Icons.content_copy_rounded,
-      title: (context) => context.l10n.featDuplicates,
-      description: (context) => context.l10n.featDuplicatesBody,
-      how: (context) => context.l10n.featDuplicatesHow,
-      points: [
-        (context) => context.l10n.featDuplicatesPoint1,
-        (context) => context.l10n.featDuplicatesPoint2,
-        (context) => context.l10n.featDuplicatesPoint3,
-      ],
-    ),
+    if (V1Features.stitch)
+      PremiumFeature(
+        icon: Icons.photo_size_select_large_rounded,
+        title: (context) => context.l10n.featStitch,
+        description: (context) => context.l10n.featStitchBody,
+        how: (context) => context.l10n.featStitchHow,
+        points: [
+          (context) => context.l10n.featStitchPoint1,
+          (context) => context.l10n.featStitchPoint2,
+          (context) => context.l10n.featStitchPoint3,
+        ],
+      ),
+    if (V1Features.duplicates)
+      PremiumFeature(
+        icon: Icons.content_copy_rounded,
+        title: (context) => context.l10n.featDuplicates,
+        description: (context) => context.l10n.featDuplicatesBody,
+        how: (context) => context.l10n.featDuplicatesHow,
+        points: [
+          (context) => context.l10n.featDuplicatesPoint1,
+          (context) => context.l10n.featDuplicatesPoint2,
+          (context) => context.l10n.featDuplicatesPoint3,
+        ],
+      ),
     PremiumFeature(
       icon: Icons.create_new_folder_rounded,
       title: (context) => context.l10n.featUnlimited,
