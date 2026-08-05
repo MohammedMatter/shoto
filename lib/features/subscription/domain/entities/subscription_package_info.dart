@@ -24,9 +24,23 @@ class SubscriptionPackageInfo {
 
   final bool isYearly;
 
+  /// How many days this product is free for before the first charge, or zero.
+  ///
+  /// **Read from the store, never from a constant.** Whether a trial exists at
+  /// all is configured in Play Console and App Store Connect; an app that
+  /// hardcodes "7 days free" prints that sentence whether or not the store
+  /// agrees, and the first person to find out is the one who gets charged on
+  /// day one. Zero here means the paywall says nothing about a trial, which is
+  /// the correct behaviour for a product that does not have one — including
+  /// today, before any store product exists.
+  final int freeTrialDays;
+
   const SubscriptionPackageInfo({
     required this.package,
     required this.priceString,
     required this.isYearly,
+    this.freeTrialDays = 0,
   });
+
+  bool get hasFreeTrial => freeTrialDays > 0;
 }

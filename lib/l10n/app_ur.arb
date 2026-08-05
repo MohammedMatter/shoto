@@ -1,5 +1,13 @@
 {
   "@@locale": "ur",
+  "paywallTrialCta": "{days, plural, =1{1 دن مفت شروع کریں} other{{days} دن مفت شروع کریں}}",
+  "@paywallTrialCta": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "paywallTrialNote": "{days, plural, =1{ایک دن مفت، پھر {price}۔ ختم ہونے سے پہلے کبھی بھی منسوخ کریں۔} other{{days} دن مفت، پھر {price}۔ ختم ہونے سے پہلے کبھی بھی منسوخ کریں۔}}",
+  "@paywallTrialNote": {
+    "placeholders": { "days": { "type": "int" }, "price": { "type": "String" } }
+  },
   "triageTitle": "پچھلی بار کے بعد",
   "triageBody": "جو SHOTO میں رکھنا ہے وہی رکھیں۔ باقی سب جہاں ہے وہیں رہے گا۔",
   "triageKeep": "رکھیں",

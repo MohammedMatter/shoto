@@ -38,6 +38,15 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+
+            // Named explicitly rather than left to the default, because the
+            // default is *not* to read `proguard-rules.pro` at all — the file
+            // sits there looking applied and does nothing. See that file for
+            // what stops working without it.
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }

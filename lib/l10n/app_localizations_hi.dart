@@ -9,6 +9,29 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String paywallTrialCta(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days दिन मुफ़्त शुरू करें',
+      one: '1 दिन मुफ़्त शुरू करें',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String paywallTrialNote(int days, String price) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other:
+          '$days दिन मुफ़्त, फिर $price। खत्म होने से पहले कभी भी रद्द करें।',
+      one: 'एक दिन मुफ़्त, फिर $price। खत्म होने से पहले कभी भी रद्द करें।',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get triageTitle => 'पिछली बार के बाद';
 
   @override

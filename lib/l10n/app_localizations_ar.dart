@@ -9,6 +9,33 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String paywallTrialCta(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'جرّب $days يوم مجاناً',
+      few: 'جرّب $days أيام مجاناً',
+      two: 'جرّب يومين مجاناً',
+      one: 'جرّب يوم مجاناً',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String paywallTrialNote(int days, String price) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other:
+          'مجاناً لـ $days يوم، وبعدها $price. فيك تلغي بأي وقت قبل ما تخلص.',
+      few: 'مجاناً لـ $days أيام، وبعدها $price. فيك تلغي بأي وقت قبل ما تخلص.',
+      two: 'مجاناً ليومين، وبعدها $price. فيك تلغي بأي وقت قبل ما تخلص.',
+      one: 'مجاناً ليوم، وبعدها $price. فيك تلغي بأي وقت قبل ما تخلص.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get triageTitle => 'من آخر مرة فتحت';
 
   @override

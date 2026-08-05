@@ -162,6 +162,12 @@ class _PaywallBody extends StatelessWidget {
         .cast<SubscriptionPackageInfo?>()
         .firstWhere((_) => true, orElse: () => null);
 
+    /// Whichever plan the button would actually buy. A trial belongs to a
+    /// *product*, so the offer named on the button has to follow the
+    /// selection rather than being a property of the screen — the two plans
+    /// can easily differ, and usually do.
+    final SubscriptionPackageInfo? selected = selectedYearly ? yearly : monthly;
+
     return Stack(
       children: [
         SingleChildScrollView(
@@ -239,6 +245,20 @@ class _PaywallBody extends StatelessWidget {
                 ],
               ],
               SizedBox(height: 20.h),
+              // Said once, in full, next to the price — never on the button
+              // alone. "Start 7 days free" with the charge unmentioned is how
+              // a trial becomes a complaint.
+              if (selected != null && selected.hasFreeTrial) ...[
+                Text(
+                  context.l10n.paywallTrialNote(
+                    selected.freeTrialDays,
+                    selected.priceString,
+                  ),
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.bodySmall,
+                ),
+                SizedBox(height: 12.h),
+              ],
               Text(
                 context.l10n.paywallLegal,
                 textAlign: TextAlign.center,
@@ -258,9 +278,13 @@ class _PaywallBody extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 PrimaryButton(
-                  label: offeringsLive
-                      ? context.l10n.paywallContinue
-                      : context.l10n.paywallUnavailable,
+                  label: !offeringsLive
+                      ? context.l10n.paywallUnavailable
+                      : (selected != null && selected.hasFreeTrial
+                            ? context.l10n.paywallTrialCta(
+                                selected.freeTrialDays,
+                              )
+                            : context.l10n.paywallContinue),
                   isLoading: isPurchasing,
                   onPressed: !offeringsLive
                       ? () => ScaffoldMessenger.of(context)

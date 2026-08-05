@@ -106,6 +106,18 @@ abstract class AppLocalizations {
     Locale('ur'),
   ];
 
+  /// No description provided for @paywallTrialCta.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Start 1 day free} other{Start {days} days free}}'**
+  String paywallTrialCta(int days);
+
+  /// No description provided for @paywallTrialNote.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Free for a day, then {price}. Cancel any time before it ends.} other{Free for {days} days, then {price}. Cancel any time before it ends.}}'**
+  String paywallTrialNote(int days, String price);
+
   /// No description provided for @triageTitle.
   ///
   /// In en, this message translates to:

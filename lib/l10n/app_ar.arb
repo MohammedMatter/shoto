@@ -1,5 +1,13 @@
 {
   "@@locale": "ar",
+  "paywallTrialCta": "{days, plural, =1{جرّب يوم مجاناً} =2{جرّب يومين مجاناً} few{جرّب {days} أيام مجاناً} other{جرّب {days} يوم مجاناً}}",
+  "@paywallTrialCta": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "paywallTrialNote": "{days, plural, =1{مجاناً ليوم، وبعدها {price}. فيك تلغي بأي وقت قبل ما تخلص.} =2{مجاناً ليومين، وبعدها {price}. فيك تلغي بأي وقت قبل ما تخلص.} few{مجاناً لـ {days} أيام، وبعدها {price}. فيك تلغي بأي وقت قبل ما تخلص.} other{مجاناً لـ {days} يوم، وبعدها {price}. فيك تلغي بأي وقت قبل ما تخلص.}}",
+  "@paywallTrialNote": {
+    "placeholders": { "days": { "type": "int" }, "price": { "type": "String" } }
+  },
   "triageTitle": "من آخر مرة فتحت",
   "triageBody": "خلّي يلي بينتمي لـ SHOTO. الباقي بيضل مكانه بالضبط.",
   "triageKeep": "خلّيها",

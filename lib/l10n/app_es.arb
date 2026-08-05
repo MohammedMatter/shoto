@@ -1,5 +1,13 @@
 {
   "@@locale": "es",
+  "paywallTrialCta": "{days, plural, =1{Empezar 1 día gratis} other{Empezar {days} días gratis}}",
+  "@paywallTrialCta": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "paywallTrialNote": "{days, plural, =1{Gratis un día y luego {price}. Cancela cuando quieras antes de que acabe.} other{Gratis {days} días y luego {price}. Cancela cuando quieras antes de que acabe.}}",
+  "@paywallTrialNote": {
+    "placeholders": { "days": { "type": "int" }, "price": { "type": "String" } }
+  },
   "triageTitle": "Desde la última vez",
   "triageBody": "Guarda lo que pertenece a SHOTO. Todo lo demás se queda donde está.",
   "triageKeep": "Guardar",

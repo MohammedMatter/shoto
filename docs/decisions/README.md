@@ -56,3 +56,15 @@ old?*
 
 - [home.md](home.md) — the Home tab: why it stopped being a gallery, and
   what the hero has been.
+- [accounts.md](accounts.md) — the sign-in wall, why it bought nobody
+  anything, and where the user's name went.
+- [library-intake.md](library-intake.md) — two reversals: the gallery mirror,
+  the empty room, and the inbox that answers both.
+- [onboarding.md](onboarding.md) — what the introduction used to describe, and
+  why it no longer ends on a price.
+- [v1-scope.md](v1-scope.md) — the two features built for an app that no
+  longer exists.
+- [ios.md](ios.md) — what a Share Extension actually costs, so "later" stops
+  being a sentence without a number.
+- [ml-models.md](ml-models.md) — the bundled models, the unbundled swap, and
+  what has to be tested on a device before taking it.

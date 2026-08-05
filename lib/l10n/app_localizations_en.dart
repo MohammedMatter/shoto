@@ -9,6 +9,29 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String paywallTrialCta(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Start $days days free',
+      one: 'Start 1 day free',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String paywallTrialNote(int days, String price) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other:
+          'Free for $days days, then $price. Cancel any time before it ends.',
+      one: 'Free for a day, then $price. Cancel any time before it ends.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get triageTitle => 'Since you last looked';
 
   @override

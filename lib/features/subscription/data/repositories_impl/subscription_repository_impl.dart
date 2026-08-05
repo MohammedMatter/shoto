@@ -89,7 +89,33 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
       package: package,
       priceString: package.storeProduct.priceString,
       isYearly: isYearly,
+      freeTrialDays: _freeTrialDays(package.storeProduct.introductoryPrice),
     );
+  }
+
+  /// An introductory offer is only a *free trial* if it costs nothing.
+  ///
+  /// Both stores use the same field for "first month at half price", and a
+  /// paywall that reads any introductory offer as a trial would promise free
+  /// where the store is going to charge — the one lie on that screen nobody
+  /// forgives.
+  ///
+  /// Expressed in days because that is how a trial is said out loud. `cycles`
+  /// multiplies the period: Play describes a two-week trial as either
+  /// one 14-day cycle or two 7-day ones, and reading only the period turns the
+  /// second into "7 days free".
+  static int _freeTrialDays(IntroductoryPrice? intro) {
+    if (intro == null || intro.price > 0) return 0;
+
+    final int perCycle = switch (intro.periodUnit) {
+      PeriodUnit.day => intro.periodNumberOfUnits,
+      PeriodUnit.week => intro.periodNumberOfUnits * 7,
+      PeriodUnit.month => intro.periodNumberOfUnits * 30,
+      PeriodUnit.year => intro.periodNumberOfUnits * 365,
+      PeriodUnit.unknown => 0,
+    };
+
+    return perCycle * (intro.cycles < 1 ? 1 : intro.cycles);
   }
 
   SubscriptionStatus _toStatus(CustomerInfo? info) {
