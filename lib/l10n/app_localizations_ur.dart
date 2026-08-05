@@ -473,13 +473,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get quickSaveFailedBody => 'دوبارہ شیئر کر کے دیکھیں۔';
 
   @override
-  String get quickSaveSignedOutTitle => 'پہلے SHOTO میں سائن ان کریں';
-
-  @override
-  String get quickSaveSignedOutBody =>
-      'آپ کی لائبریری آپ کے اکاؤنٹ سے جڑی ہے۔ SHOTO کھولیں، سائن ان کریں، پھر دوبارہ شیئر کریں۔';
-
-  @override
   String quickSaveSkipped(int count) {
     return 'صرف پہلے $count لیے گئے';
   }
@@ -921,7 +914,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get authSubtitle =>
-      'ہر اسکرین شاٹ ایک جگہ محفوظ، منظم اور تلاش کرنے کے لیے سائن ان کریں۔';
+      'SHOTO استعمال کرنے کے لیے اکاؤنٹ کی ضرورت نہیں۔ سائن ان صرف خریداری کو دوسرے فون پر منتقل کرنے کے لیے کریں۔';
 
   @override
   String get authGoogle => 'Google کے ساتھ جاری رکھیں';
@@ -1144,6 +1137,13 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get settingsSignOutHint => 'آپ کے اسکرین شاٹس اسی آلے پر رہیں گے';
+
+  @override
+  String get settingsSignIn => 'سائن ان';
+
+  @override
+  String get settingsSignInHint =>
+      'اختیاری۔ صرف خریداری کو دوسرے فون پر منتقل کرنے کے لیے درکار ہے۔';
 
   @override
   String get settingsCacheMeasuring => 'ماپا جا رہا ہے…';

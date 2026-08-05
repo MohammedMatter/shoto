@@ -12,7 +12,6 @@ import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/intent_picker_row.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 import 'package:shoto/features/folders/domain/use_cases/create_folder_use_case.dart';
 import 'package:shoto/features/folders/domain/use_cases/get_folders_use_case.dart';
@@ -33,7 +32,12 @@ class QuickSavePage extends StatefulWidget {
   State<QuickSavePage> createState() => _QuickSavePageState();
 }
 
-enum _Stage { loading, signedOut, ready, naming, saving, saved, failed }
+// `signedOut` is gone. It was a dead end that could only be escaped by
+// leaving the sheet, opening SHOTO, handing over a Google account and
+// sharing the image again — in front of the one flow whose entire value is
+// that it takes two seconds and never leaves the app you were in. There is
+// always a library to save into now.
+enum _Stage { loading, ready, naming, saving, saved, failed }
 
 class _QuickSavePageState extends State<QuickSavePage>
     with SingleTickerProviderStateMixin {
@@ -158,14 +162,6 @@ class _QuickSavePageState extends State<QuickSavePage>
           (shared?['images'] as List<Object?>?) ?? const [];
       if (raw.isEmpty) {
         if (mounted) setState(() => _stage = _Stage.failed);
-        return;
-      }
-
-      // A library belongs to an account. With nobody signed in there is no
-      // library to save into — the image would land in the gallery owned by
-      // no one and be invisible in the app, which is worse than saying so.
-      if (sl<AuthRepository>().currentUser == null) {
-        if (mounted) setState(() => _stage = _Stage.signedOut);
         return;
       }
 
@@ -498,15 +494,6 @@ class _QuickSavePageState extends State<QuickSavePage>
           tint: AppColors.error,
           title: context.l10n.quickSaveFailedTitle,
           subtitle: context.l10n.quickSaveFailedBody,
-        );
-
-      case _Stage.signedOut:
-        return _Status(
-          key: const ValueKey('signedOut'),
-          icon: Icons.lock_outline_rounded,
-          tint: AppColors.primary,
-          title: context.l10n.quickSaveSignedOutTitle,
-          subtitle: context.l10n.quickSaveSignedOutBody,
         );
 
       case _Stage.saved:

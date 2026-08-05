@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
-import 'package:shoto/features/screenshots/presentation/bloc/intent_catalog.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
 import 'package:shoto/core/routes/app_router.dart';
@@ -43,268 +42,289 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UserEntity? user = sl<AuthRepository>().currentUser;
-
     return BlocProvider(
       create: (_) => sl<AuthBloc>(),
-      child: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is AuthSignedOutState) {
-            context.goNamed(AppRouter.authPage);
-          }
-        },
-        child: ListenableBuilder(
-          // SettingsPage is kept alive inside MainShellPage's IndexedStack,
-          // so it doesn't automatically rebuild just because the theme
-          // toggle lives on this same page — without this, tapping
-          // Light/Dark updated the pill selector but left every
-          // AppColors.background/surface/border read on this page frozen at
-          // whatever brightness it was first built with.
-          // Merged rather than nested: both of these repaint the whole page,
-          // and two nested builders would rebuild it twice for one change.
-          // ProStatus is here because the PRO tags on the paid rows have to
-          // come down the moment a subscription lands, and the profile card
-          // below reads it too.
-          listenable: Listenable.merge([
-            sl<ThemeController>(),
-            sl<ProStatus>(),
-          ]),
-          builder: (context, _) {
-            // "This row is a paid feature" is not by itself a reason to show
-            // the tag — the tag is a price, and it has nothing left to say once
-            // the price is paid.
-            final bool showProBadge = !sl<ProStatus>().isPro;
+      // A builder rather than a listener, because signing out no longer
+      // navigates anywhere and so has nothing to *do* except redraw.
+      //
+      // It used to throw the user back to the sign-in wall, since being
+      // signed out meant being locked out of the app. Now an account is
+      // optional: signing out detaches it and leaves the library, the
+      // folders and every setting exactly where they are, because all of
+      // that belongs to the device. The profile card below is the only thing
+      // on this screen that has any reason to change.
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, authState) {
+          final UserEntity? user = sl<AuthRepository>().currentUser;
 
-            return Scaffold(
-              backgroundColor: AppColors.background,
-              body: SafeArea(
-                bottom: false,
-                child: ListView(
-                  padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 130.h),
-                  children: [
-                    Text(
-                      context.l10n.settingsTitle,
-                      style: AppTextStyles.headlineLarge,
-                    ),
-                    SizedBox(height: 18.h),
-                    _ProfileCard(user: user),
-                    SizedBox(height: 16.h),
-                    SubscriptionCard(),
+          return ListenableBuilder(
+            // SettingsPage is kept alive inside MainShellPage's IndexedStack,
+            // so it doesn't automatically rebuild just because the theme
+            // toggle lives on this same page — without this, tapping
+            // Light/Dark updated the pill selector but left every
+            // AppColors.background/surface/border read on this page frozen at
+            // whatever brightness it was first built with.
+            // Merged rather than nested: both of these repaint the whole page,
+            // and two nested builders would rebuild it twice for one change.
+            // ProStatus is here because the PRO tags on the paid rows have to
+            // come down the moment a subscription lands, and the profile card
+            // below reads it too.
+            listenable: Listenable.merge([
+              sl<ThemeController>(),
+              sl<ProStatus>(),
+            ]),
+            builder: (context, _) {
+              // "This row is a paid feature" is not by itself a reason to show
+              // the tag — the tag is a price, and it has nothing left to say once
+              // the price is paid.
+              final bool showProBadge = !sl<ProStatus>().isPro;
 
-                    // Appearance first: it is the setting people come here to
-                    // change, and the only one whose effect is visible the
-                    // instant they change it.
-                    SettingsGroup(
-                      title: context.l10n.settingsAppearance,
-                      children: [
-                        SettingsControlRow(
-                          icon: Icons.contrast_rounded,
-                          label: context.l10n.settingsTheme,
-                          control: ListenableBuilder(
-                            listenable: sl<ThemeController>(),
-                            builder: (context, _) => ThemeModeSelector(
-                              value: sl<ThemeController>().themeMode,
-                              onChanged: (mode) =>
-                                  sl<ThemeController>().setThemeMode(mode),
-                            ),
-                          ),
-                        ),
-                        SettingsControlRow(
-                          icon: Icons.grid_view_rounded,
-                          label: context.l10n.settingsGridDensity,
-                          control: ListenableBuilder(
-                            listenable: sl<GridDensityController>(),
-                            builder: (context, _) => GridDensitySelector(
-                              value: sl<GridDensityController>().columns,
-                              onChanged: (columns) =>
-                                  sl<GridDensityController>().setColumns(
-                                    columns,
-                                  ),
-                            ),
-                          ),
-                        ),
-                        // Language sits with theme rather than in its own
-                        // group: they are the two settings someone changes to
-                        // make the app feel like theirs, and separating them
-                        // makes the second one hard to find.
-                        ListenableBuilder(
-                          listenable: sl<LocaleController>(),
-                          builder: (context, _) {
-                            final LocaleController locales =
-                                sl<LocaleController>();
-                            return SettingsNavTile(
-                              icon: Icons.translate_rounded,
-                              label: context.l10n.settingsLanguage,
-                              description:
-                                  locales.language?.endonym ??
-                                  context.l10n.settingsLanguageSystem,
-                              onTap: () => showLanguageSheet(context),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+              return Scaffold(
+                backgroundColor: AppColors.background,
+                body: SafeArea(
+                  bottom: false,
+                  child: ListView(
+                    padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 130.h),
+                    children: [
+                      Text(
+                        context.l10n.settingsTitle,
+                        style: AppTextStyles.headlineLarge,
+                      ),
+                      SizedBox(height: 18.h),
+                      _ProfileCard(user: user),
+                      SizedBox(height: 16.h),
+                      SubscriptionCard(),
 
-                    ListenableBuilder(
-                      listenable: sl<AppPreferences>(),
-                      builder: (context, _) {
-                        final AppPreferences prefs = sl<AppPreferences>();
-                        return SettingsGroup(
-                          title: context.l10n.settingsBehaviour,
-                          children: [
-                            SettingsSwitchTile(
-                              icon: Icons.vibration_rounded,
-                              label: context.l10n.settingsHaptics,
-                              description: context.l10n.settingsHapticsHint,
-                              value: prefs.haptics,
-                              // Fires the buzz on the way *on*, ignoring the
-                              // preference it is in the middle of saving. A
-                              // toggle whose only effect happens somewhere else,
-                              // later, is one people assume is broken — which is
-                              // exactly how this setting was reported.
-                              onChanged: (bool value) {
-                                if (value) Haptics.demo();
-                                prefs.setHaptics(value);
-                              },
-                            ),
-                            SettingsSwitchTile(
-                              icon: Icons.shield_outlined,
-                              label: context.l10n.settingsConfirmDelete,
-                              description:
-                                  context.l10n.settingsConfirmDeleteHint,
-                              value: prefs.confirmBeforeDelete,
-                              onChanged: prefs.setConfirmBeforeDelete,
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-
-                    // "Find duplicates" used to sit alone under a heading
-                    // called Tools while "Clear cache" sat under Privacy. Both
-                    // are really the same job — reclaiming space — so they now
-                    // share a group that says so. Backup joined them because
-                    // it is the other thing you do *to* the library as a whole,
-                    // and a group of one row would have buried it worse.
-                    SettingsGroup(
-                      title: context.l10n.settingsStorage,
-                      children: [
-                        // First in the group, and ungated. This is the row that
-                        // matters most on the worst day somebody has with this
-                        // app, and a paywall in front of "don't lose
-                        // everything" is not a price, it is a hostage.
-                        SettingsNavTile(
-                          icon: Icons.backup_outlined,
-                          label: context.l10n.settingsBackup,
-                          description: context.l10n.settingsBackupHint,
-                          onTap: () => Navigator.of(context).push(
-                            FadeSlidePageRoute(builder: (_) => BackupPage()),
-                          ),
-                        ),
-                        SettingsNavTile(
-                          icon: Icons.content_copy_rounded,
-                          label: context.l10n.settingsFindDuplicates,
-                          description: context.l10n.settingsDuplicatesHint,
-                          showProBadge: showProBadge,
-                          onTap: () async {
-                            if (!await ensurePremium(context)) return;
-                            if (!context.mounted) return;
-                            await Navigator.of(context).push(
-                              FadeSlidePageRoute(
-                                builder: (_) => DuplicatesPage(),
+                      // Appearance first: it is the setting people come here to
+                      // change, and the only one whose effect is visible the
+                      // instant they change it.
+                      SettingsGroup(
+                        title: context.l10n.settingsAppearance,
+                        children: [
+                          SettingsControlRow(
+                            icon: Icons.contrast_rounded,
+                            label: context.l10n.settingsTheme,
+                            control: ListenableBuilder(
+                              listenable: sl<ThemeController>(),
+                              builder: (context, _) => ThemeModeSelector(
+                                value: sl<ThemeController>().themeMode,
+                                onChanged: (mode) =>
+                                    sl<ThemeController>().setThemeMode(mode),
                               ),
-                            );
-                          },
-                        ),
-                        SettingsClearCacheTile(),
-                      ],
-                    ),
-
-                    SettingsGroup(
-                      title: context.l10n.settingsPremium,
-                      children: [
-                        SettingsNavTile(
-                          icon: Icons.workspace_premium_outlined,
-                          label: context.l10n.settingsWhatsIncluded,
-                          description: context.l10n.settingsFeatureCount(
-                            PremiumFeature.all.length,
+                            ),
                           ),
-                          // Not gated. This row answers "what do I get?", and
-                          // gating it meant a subscriber's tap did nothing at
-                          // all while everyone else got a price instead of an
-                          // answer.
-                          onTap: () => openWhatsIncludedPage(context),
-                        ),
-                        SettingsNavTile(
-                          icon: Icons.ios_share_rounded,
-                          label: context.l10n.settingsShare,
-                          description: context.l10n.settingsShareHint,
-                          onTap: () => SharePlus.instance.share(
-                            ShareParams(text: context.l10n.settingsShareText),
+                          SettingsControlRow(
+                            icon: Icons.grid_view_rounded,
+                            label: context.l10n.settingsGridDensity,
+                            control: ListenableBuilder(
+                              listenable: sl<GridDensityController>(),
+                              builder: (context, _) => GridDensitySelector(
+                                value: sl<GridDensityController>().columns,
+                                onChanged: (columns) =>
+                                    sl<GridDensityController>().setColumns(
+                                      columns,
+                                    ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-
-                    // Above the privacy note and the account rows, because
-                    // "something is wrong and I need a human" is a more urgent
-                    // errand than either, and below the rest because it is not
-                    // what most visits to Settings are for.
-                    SettingsGroup(
-                      title: context.l10n.settingsHelp,
-                      children: const [ContactSupportTile()],
-                    ),
-
-                    // Not a group: this is the app's central promise, and a
-                    // claim that reads like a settings row reads like fine
-                    // print. It earns the space it takes.
-                    SizedBox(height: 26.h),
-                    const PrivacyNote(),
-
-                    SettingsGroup(
-                      title: context.l10n.settingsAccount,
-                      caption: user?.email,
-                      children: [
-                        Builder(
-                          builder: (context) => SettingsNavTile(
-                            icon: Icons.logout_rounded,
-                            label: context.l10n.settingsSignOut,
-                            description: context.l10n.settingsSignOutHint,
-                            isDestructive: true,
-                            onTap: () async {
-                              final bool confirmed = await showConfirmDialog(
-                                context,
-                                title: context.l10n.settingsSignOutTitle,
-                                message: context.l10n.settingsSignOutHint,
-                                confirmLabel: context.l10n.settingsSignOut,
-                                isDestructive: true,
+                          // Language sits with theme rather than in its own
+                          // group: they are the two settings someone changes to
+                          // make the app feel like theirs, and separating them
+                          // makes the second one hard to find.
+                          ListenableBuilder(
+                            listenable: sl<LocaleController>(),
+                            builder: (context, _) {
+                              final LocaleController locales =
+                                  sl<LocaleController>();
+                              return SettingsNavTile(
+                                icon: Icons.translate_rounded,
+                                label: context.l10n.settingsLanguage,
+                                description:
+                                    locales.language?.endonym ??
+                                    context.l10n.settingsLanguageSystem,
+                                onTap: () => showLanguageSheet(context),
                               );
-                              if (confirmed && context.mounted) {
-                                // Held in memory for the whole app session and
-                                // scoped to one account, so it has to be
-                                // dropped here or the next person to sign in on
-                                // this phone is offered the previous one's
-                                // verbs. Everything else per-account is read
-                                // fresh from the database on load.
-                                sl<IntentCatalog>().clear();
-                                context.read<AuthBloc>().add(
-                                  SignOutRequestedEvent(),
-                                );
-                              }
                             },
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
 
-                    SizedBox(height: 34.h),
-                    AppVersionBlock(),
-                  ],
+                      ListenableBuilder(
+                        listenable: sl<AppPreferences>(),
+                        builder: (context, _) {
+                          final AppPreferences prefs = sl<AppPreferences>();
+                          return SettingsGroup(
+                            title: context.l10n.settingsBehaviour,
+                            children: [
+                              SettingsSwitchTile(
+                                icon: Icons.vibration_rounded,
+                                label: context.l10n.settingsHaptics,
+                                description: context.l10n.settingsHapticsHint,
+                                value: prefs.haptics,
+                                // Fires the buzz on the way *on*, ignoring the
+                                // preference it is in the middle of saving. A
+                                // toggle whose only effect happens somewhere else,
+                                // later, is one people assume is broken — which is
+                                // exactly how this setting was reported.
+                                onChanged: (bool value) {
+                                  if (value) Haptics.demo();
+                                  prefs.setHaptics(value);
+                                },
+                              ),
+                              SettingsSwitchTile(
+                                icon: Icons.shield_outlined,
+                                label: context.l10n.settingsConfirmDelete,
+                                description:
+                                    context.l10n.settingsConfirmDeleteHint,
+                                value: prefs.confirmBeforeDelete,
+                                onChanged: prefs.setConfirmBeforeDelete,
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+
+                      // "Find duplicates" used to sit alone under a heading
+                      // called Tools while "Clear cache" sat under Privacy. Both
+                      // are really the same job — reclaiming space — so they now
+                      // share a group that says so. Backup joined them because
+                      // it is the other thing you do *to* the library as a whole,
+                      // and a group of one row would have buried it worse.
+                      SettingsGroup(
+                        title: context.l10n.settingsStorage,
+                        children: [
+                          // First in the group, and ungated. This is the row that
+                          // matters most on the worst day somebody has with this
+                          // app, and a paywall in front of "don't lose
+                          // everything" is not a price, it is a hostage.
+                          SettingsNavTile(
+                            icon: Icons.backup_outlined,
+                            label: context.l10n.settingsBackup,
+                            description: context.l10n.settingsBackupHint,
+                            onTap: () => Navigator.of(context).push(
+                              FadeSlidePageRoute(builder: (_) => BackupPage()),
+                            ),
+                          ),
+                          SettingsNavTile(
+                            icon: Icons.content_copy_rounded,
+                            label: context.l10n.settingsFindDuplicates,
+                            description: context.l10n.settingsDuplicatesHint,
+                            showProBadge: showProBadge,
+                            onTap: () async {
+                              if (!await ensurePremium(context)) return;
+                              if (!context.mounted) return;
+                              await Navigator.of(context).push(
+                                FadeSlidePageRoute(
+                                  builder: (_) => DuplicatesPage(),
+                                ),
+                              );
+                            },
+                          ),
+                          SettingsClearCacheTile(),
+                        ],
+                      ),
+
+                      SettingsGroup(
+                        title: context.l10n.settingsPremium,
+                        children: [
+                          SettingsNavTile(
+                            icon: Icons.workspace_premium_outlined,
+                            label: context.l10n.settingsWhatsIncluded,
+                            description: context.l10n.settingsFeatureCount(
+                              PremiumFeature.all.length,
+                            ),
+                            // Not gated. This row answers "what do I get?", and
+                            // gating it meant a subscriber's tap did nothing at
+                            // all while everyone else got a price instead of an
+                            // answer.
+                            onTap: () => openWhatsIncludedPage(context),
+                          ),
+                          SettingsNavTile(
+                            icon: Icons.ios_share_rounded,
+                            label: context.l10n.settingsShare,
+                            description: context.l10n.settingsShareHint,
+                            onTap: () => SharePlus.instance.share(
+                              ShareParams(text: context.l10n.settingsShareText),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Above the privacy note and the account rows, because
+                      // "something is wrong and I need a human" is a more urgent
+                      // errand than either, and below the rest because it is not
+                      // what most visits to Settings are for.
+                      SettingsGroup(
+                        title: context.l10n.settingsHelp,
+                        children: const [ContactSupportTile()],
+                      ),
+
+                      // Not a group: this is the app's central promise, and a
+                      // claim that reads like a settings row reads like fine
+                      // print. It earns the space it takes.
+                      SizedBox(height: 26.h),
+                      const PrivacyNote(),
+
+                      // Signed out is the ordinary state now, so this group
+                      // has two shapes rather than one. Offering "Sign out"
+                      // to somebody who never signed in was the giveaway
+                      // that the app assumed an account always existed.
+                      SettingsGroup(
+                        title: context.l10n.settingsAccount,
+                        caption: user?.email,
+                        children: [
+                          if (user == null)
+                            SettingsNavTile(
+                              icon: Icons.person_outline_rounded,
+                              label: context.l10n.settingsSignIn,
+                              description: context.l10n.settingsSignInHint,
+                              onTap: () =>
+                                  context.pushNamed(AppRouter.authPage),
+                            )
+                          else
+                            Builder(
+                              builder: (context) => SettingsNavTile(
+                                icon: Icons.logout_rounded,
+                                label: context.l10n.settingsSignOut,
+                                description: context.l10n.settingsSignOutHint,
+                                isDestructive: true,
+                                onTap: () async {
+                                  final bool
+                                  confirmed = await showConfirmDialog(
+                                    context,
+                                    title: context.l10n.settingsSignOutTitle,
+                                    message: context.l10n.settingsSignOutHint,
+                                    confirmLabel: context.l10n.settingsSignOut,
+                                    isDestructive: true,
+                                  );
+                                  if (confirmed && context.mounted) {
+                                    // The intent catalog is deliberately NOT
+                                    // cleared here any more. It used to be,
+                                    // because verbs were scoped to an account
+                                    // and the next person to sign in would
+                                    // otherwise inherit them. They are scoped
+                                    // to the device now, so dropping them on
+                                    // sign-out would delete work the same
+                                    // person is about to look for.
+                                    context.read<AuthBloc>().add(
+                                      SignOutRequestedEvent(),
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                        ],
+                      ),
+
+                      SizedBox(height: 34.h),
+                      AppVersionBlock(),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
+              );
+            },
+          );
+        },
       ),
     );
   }

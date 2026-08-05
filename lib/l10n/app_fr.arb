@@ -202,8 +202,6 @@
   },
   "quickSaveFailedTitle": "Impossible de lire cette image",
   "quickSaveFailedBody": "Essayez de la partager à nouveau.",
-  "quickSaveSignedOutTitle": "Connectez-vous d’abord à SHOTO",
-  "quickSaveSignedOutBody": "Votre bibliothèque appartient à votre compte. Ouvrez SHOTO, connectez-vous, puis partagez à nouveau.",
   "quickSaveSkipped": "Seules les {count} premières ont été prises",
   "@quickSaveSkipped": {
     "placeholders": {
@@ -430,7 +428,7 @@
     }
   },
   "authWelcome": "Bienvenue sur SHOTO",
-  "authSubtitle": "Connectez-vous pour enregistrer, organiser et retrouver toutes vos captures au même endroit.",
+  "authSubtitle": "Aucun compte n'est nécessaire pour utiliser SHOTO. Connectez-vous uniquement pour transférer un achat vers un autre téléphone.",
   "authGoogle": "Continuer avec Google",
   "authApple": "Continuer avec Apple",
   "authLegal": "En continuant, vous acceptez nos Conditions et notre Politique de confidentialité.",
@@ -560,6 +558,8 @@
   "settingsShareText": "SHOTO range mes captures tout seul — tout reste sur le téléphone.",
   "settingsAccount": "Compte",
   "settingsSignOutHint": "Vos captures restent sur cet appareil",
+  "settingsSignIn": "Se connecter",
+  "settingsSignInHint": "Facultatif. Sert uniquement à transférer un achat vers un autre téléphone.",
   "settingsCacheMeasuring": "Mesure…",
   "settingsCacheSize": "{size} de miniatures",
   "@settingsCacheSize": {

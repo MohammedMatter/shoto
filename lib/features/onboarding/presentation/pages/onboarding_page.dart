@@ -114,7 +114,10 @@ class _OnboardingPageState extends State<OnboardingPage>
     // the app, saw the intro and closed it has not been introduced to
     // anything.
     sl<AppPreferences>().markOnboardingSeen();
-    context.pushNamed(AppRouter.authPage);
+    // Straight into the app. This used to push the sign-in wall, which meant
+    // the reward for finishing the introduction was being asked for a Google
+    // account before seeing a single screen.
+    context.goNamed(AppRouter.homePage);
   }
 
   @override

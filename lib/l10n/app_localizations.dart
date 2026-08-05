@@ -940,18 +940,6 @@ abstract class AppLocalizations {
   /// **'Try sharing it again.'**
   String get quickSaveFailedBody;
 
-  /// No description provided for @quickSaveSignedOutTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in to SHOTO first'**
-  String get quickSaveSignedOutTitle;
-
-  /// No description provided for @quickSaveSignedOutBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Your library belongs to your account. Open SHOTO, sign in, then share this again.'**
-  String get quickSaveSignedOutBody;
-
   /// No description provided for @quickSaveSkipped.
   ///
   /// In en, this message translates to:
@@ -1693,7 +1681,7 @@ abstract class AppLocalizations {
   /// No description provided for @authSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Sign in to save, organize and find every screenshot in one place.'**
+  /// **'You don\'t need an account to use SHOTO. Sign in only to move a purchase to another phone.'**
   String get authSubtitle;
 
   /// No description provided for @authGoogle.
@@ -2055,6 +2043,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your screenshots stay on this device'**
   String get settingsSignOutHint;
+
+  /// No description provided for @settingsSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get settingsSignIn;
+
+  /// No description provided for @settingsSignInHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. Only needed to move a purchase to another phone.'**
+  String get settingsSignInHint;
 
   /// No description provided for @settingsCacheMeasuring.
   ///

@@ -471,13 +471,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickSaveFailedBody => 'Try sharing it again.';
 
   @override
-  String get quickSaveSignedOutTitle => 'Sign in to SHOTO first';
-
-  @override
-  String get quickSaveSignedOutBody =>
-      'Your library belongs to your account. Open SHOTO, sign in, then share this again.';
-
-  @override
   String quickSaveSkipped(int count) {
     return 'Only the first $count were taken';
   }
@@ -921,7 +914,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authSubtitle =>
-      'Sign in to save, organize and find every screenshot in one place.';
+      'You don\'t need an account to use SHOTO. Sign in only to move a purchase to another phone.';
 
   @override
   String get authGoogle => 'Continue with Google';
@@ -1144,6 +1137,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsSignOutHint => 'Your screenshots stay on this device';
+
+  @override
+  String get settingsSignIn => 'Sign in';
+
+  @override
+  String get settingsSignInHint =>
+      'Optional. Only needed to move a purchase to another phone.';
 
   @override
   String get settingsCacheMeasuring => 'Measuring…';

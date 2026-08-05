@@ -473,13 +473,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get quickSaveFailedBody => 'Prueba a compartirla otra vez.';
 
   @override
-  String get quickSaveSignedOutTitle => 'Inicia sesión en SHOTO primero';
-
-  @override
-  String get quickSaveSignedOutBody =>
-      'Tu biblioteca pertenece a tu cuenta. Abre SHOTO, inicia sesión y compártelo de nuevo.';
-
-  @override
   String quickSaveSkipped(int count) {
     return 'Solo se tomaron las primeras $count';
   }
@@ -922,7 +915,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get authSubtitle =>
-      'Inicia sesión para guardar, ordenar y encontrar cada captura en un solo sitio.';
+      'No necesitas una cuenta para usar SHOTO. Inicia sesión solo para pasar una compra a otro teléfono.';
 
   @override
   String get authGoogle => 'Continuar con Google';
@@ -1146,6 +1139,13 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get settingsSignOutHint =>
       'Tus capturas se quedan en este dispositivo';
+
+  @override
+  String get settingsSignIn => 'Iniciar sesión';
+
+  @override
+  String get settingsSignInHint =>
+      'Opcional. Solo hace falta para pasar una compra a otro teléfono.';
 
   @override
   String get settingsCacheMeasuring => 'Midiendo…';

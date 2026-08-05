@@ -468,13 +468,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quickSaveFailedBody => 'جرّب تشاركها مرة ثانية.';
 
   @override
-  String get quickSaveSignedOutTitle => 'سجّل دخولك أولاً';
-
-  @override
-  String get quickSaveSignedOutBody =>
-      'مكتبتك مربوطة بحسابك. افتح SHOTO، سجّل دخول، وبعدين شاركها من جديد.';
-
-  @override
   String quickSaveSkipped(int count) {
     return 'أخذنا أول $count بس';
   }
@@ -911,7 +904,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get authSubtitle =>
-      'سجّل دخولك لتحفظ وترتّب وتلاقي كل لقطاتك بمكان واحد.';
+      'ما بتحتاج حساب لتستخدم SHOTO. سجّل دخول بس إذا بدك تنقل اشتراكك لجهاز تاني.';
 
   @override
   String get authGoogle => 'تابع باستخدام Google';
@@ -1137,6 +1130,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsSignOutHint => 'لقطاتك بتضل على هالجهاز';
+
+  @override
+  String get settingsSignIn => 'تسجيل الدخول';
+
+  @override
+  String get settingsSignInHint => 'اختياري. بيلزم بس لنقل اشتراكك لجهاز تاني.';
 
   @override
   String get settingsCacheMeasuring => 'بنقيس…';

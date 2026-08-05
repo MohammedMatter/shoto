@@ -202,8 +202,6 @@
   },
   "quickSaveFailedTitle": "वह तस्वीर पढ़ी नहीं जा सकी",
   "quickSaveFailedBody": "इसे दोबारा साझा करके देखें।",
-  "quickSaveSignedOutTitle": "पहले SHOTO में साइन इन करें",
-  "quickSaveSignedOutBody": "आपकी लाइब्रेरी आपके खाते से जुड़ी है। SHOTO खोलें, साइन इन करें, फिर दोबारा साझा करें।",
   "quickSaveSkipped": "सिर्फ़ पहले {count} लिए गए",
   "@quickSaveSkipped": {
     "placeholders": {
@@ -430,7 +428,7 @@
     }
   },
   "authWelcome": "SHOTO में आपका स्वागत है",
-  "authSubtitle": "हर स्क्रीनशॉट एक जगह सहेजने, व्यवस्थित करने और ढूँढने के लिए साइन इन करें।",
+  "authSubtitle": "SHOTO इस्तेमाल करने के लिए खाते की ज़रूरत नहीं। साइन इन सिर्फ़ खरीद को दूसरे फ़ोन पर ले जाने के लिए करें।",
   "authGoogle": "Google से जारी रखें",
   "authApple": "Apple से जारी रखें",
   "authLegal": "जारी रखने पर आप हमारी शर्तें और गोपनीयता नीति स्वीकार करते हैं।",
@@ -560,6 +558,8 @@
   "settingsShareText": "SHOTO मेरे स्क्रीनशॉट खुद व्यवस्थित करता है — सब कुछ फ़ोन पर रहता है।",
   "settingsAccount": "खाता",
   "settingsSignOutHint": "आपके स्क्रीनशॉट इसी डिवाइस पर रहेंगे",
+  "settingsSignIn": "साइन इन",
+  "settingsSignInHint": "वैकल्पिक। सिर्फ़ खरीद को दूसरे फ़ोन पर ले जाने के लिए ज़रूरी है।",
   "settingsCacheMeasuring": "माप रहे हैं…",
   "settingsCacheSize": "{size} थंबनेल",
   "@settingsCacheSize": {

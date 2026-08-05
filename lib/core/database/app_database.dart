@@ -1,16 +1,25 @@
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
+import 'package:shoto/core/services/local_identity.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// Single shared sqflite connection for all locally-owned organization data
 /// (folders, favorites, folder assignment). The screenshots themselves are
 /// never duplicated here — only references to their gallery asset ids.
 ///
-/// Every row is scoped to the signed-in Firebase user (`user_id`), so two
-/// different accounts using the same device never see each other's data —
-/// see [LibraryOwnershipLocalDataSource] (which screenshots are even *in*
-/// your library), [ScreenshotMetadataLocalDataSource] and
-/// [FoldersLocalDataSource] for where that scoping is applied.
+/// Every row is scoped to a `user_id`, which as of v17 is the *device's*
+/// identity ([LocalIdentity]) rather than a Firebase uid. The column stays
+/// because the whole schema is keyed on it and because it still does a real
+/// job — it is what a restored backup is re-pointed at — but it no longer
+/// means "which account", and signing in or out never changes it. See
+/// [LibraryOwnershipLocalDataSource] (which screenshots are even *in* your
+/// library), [ScreenshotMetadataLocalDataSource] and [FoldersLocalDataSource]
+/// for where that scoping is applied.
 class AppDatabase {
+  final LocalIdentity _localIdentity;
+
+  AppDatabase(this._localIdentity);
+
   static const String folders = 'folders';
   static const String screenshotMeta = 'screenshot_meta';
 
@@ -59,11 +68,22 @@ class AppDatabase {
 
   Future<Database> get database async => _database ??= await _open();
 
-  Future<Database> _open() async {
-    final String path = join(await getDatabasesPath(), 'shoto.db');
+  Future<Database> _open() async =>
+      openAt(join(await getDatabasesPath(), 'shoto.db'));
+
+  /// Opens the database at an explicit [path], with the real schema and the
+  /// real migrations.
+  ///
+  /// Exists so the upgrade steps can be tested against a seeded file rather
+  /// than read carefully and hoped over — v17 rewrites the owner of every row
+  /// a user has, and a migration that silently misses a table is
+  /// indistinguishable, from the user's side, from the app losing their
+  /// library. The production path above is the only caller in `lib/`.
+  @visibleForTesting
+  Future<Database> openAt(String path) {
     return openDatabase(
       path,
-      version: 16,
+      version: 17,
       onCreate: (db, version) => _createTables(db),
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
@@ -187,6 +207,9 @@ class AppDatabase {
           // about.
           await _createCustomIntents(db);
         }
+        if (oldVersion < 17) {
+          await _adoptEverythingOntoThisDevice(db);
+        }
       },
       onConfigure: (db) async => db.execute('PRAGMA foreign_keys = ON'),
     );
@@ -297,5 +320,45 @@ class AppDatabase {
       'key': legacyLibraryAdoptedFlag,
       'value': '0',
     }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  /// Hands every row on this device to [LocalIdentity], whatever account it
+  /// was filed under before.
+  ///
+  /// Signing in is no longer how you get into SHOTO, so `user_id` can no
+  /// longer mean "which Google account". If it kept meaning that, the first
+  /// launch after this upgrade would show an empty library to somebody whose
+  /// screenshots are all still there — filed under a uid nothing asks for any
+  /// more — and signing out later would empty it again. The library belongs to
+  /// the phone now, and this is the one-time step that makes the stored data
+  /// agree with that.
+  ///
+  /// `UPDATE OR REPLACE` rather than a plain UPDATE because three of these
+  /// four tables have `user_id` in their primary key: on a device where two
+  /// accounts had both saved the same screenshot, re-pointing the second one
+  /// collides with the first. Replace resolves that by keeping one row, which
+  /// is the only sane answer — the two rows describe the same image on the
+  /// same phone, and there is now only one person for them to belong to.
+  ///
+  /// Folders are the exception and simply merge: their primary key is an
+  /// autoincrement id, so nothing collides. Two accounts that each had a
+  /// "Receipts" folder end up with two folders of that name, which is
+  /// recoverable by hand and better than silently dropping one of them.
+  Future<void> _adoptEverythingOntoThisDevice(Database db) async {
+    final String deviceId = _localIdentity.id;
+
+    await db.transaction((txn) async {
+      for (final String table in <String>[
+        folders,
+        screenshotMeta,
+        libraryAssets,
+        customIntents,
+      ]) {
+        await txn.rawUpdate(
+          'UPDATE OR REPLACE $table SET user_id = ? WHERE user_id != ?',
+          <Object?>[deviceId, deviceId],
+        );
+      }
+    });
   }
 }

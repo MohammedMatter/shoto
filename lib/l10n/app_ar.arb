@@ -202,8 +202,6 @@
   },
   "quickSaveFailedTitle": "ما قدرنا نقرأ الصورة",
   "quickSaveFailedBody": "جرّب تشاركها مرة ثانية.",
-  "quickSaveSignedOutTitle": "سجّل دخولك أولاً",
-  "quickSaveSignedOutBody": "مكتبتك مربوطة بحسابك. افتح SHOTO، سجّل دخول، وبعدين شاركها من جديد.",
   "quickSaveSkipped": "أخذنا أول {count} بس",
   "@quickSaveSkipped": {
     "placeholders": {
@@ -430,7 +428,7 @@
     }
   },
   "authWelcome": "أهلاً بك في SHOTO",
-  "authSubtitle": "سجّل دخولك لتحفظ وترتّب وتلاقي كل لقطاتك بمكان واحد.",
+  "authSubtitle": "ما بتحتاج حساب لتستخدم SHOTO. سجّل دخول بس إذا بدك تنقل اشتراكك لجهاز تاني.",
   "authGoogle": "تابع باستخدام Google",
   "authApple": "تابع باستخدام Apple",
   "authLegal": "بمتابعتك، بتوافق على شروط الخدمة وسياسة الخصوصية.",
@@ -560,6 +558,8 @@
   "settingsShareText": "SHOTO بيرتّب لقطاتي لحاله — وكل شي بيضل على الجوال.",
   "settingsAccount": "الحساب",
   "settingsSignOutHint": "لقطاتك بتضل على هالجهاز",
+  "settingsSignIn": "تسجيل الدخول",
+  "settingsSignInHint": "اختياري. بيلزم بس لنقل اشتراكك لجهاز تاني.",
   "settingsCacheMeasuring": "بنقيس…",
   "settingsCacheSize": "{size} من المصغّرات",
   "@settingsCacheSize": {

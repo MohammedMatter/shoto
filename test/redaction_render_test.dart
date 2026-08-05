@@ -274,6 +274,9 @@ class _NobodySignedIn implements AuthRepository {
   UserEntity? get currentUser => null;
 
   @override
+  String get userId => 'local:test';
+
+  @override
   Stream<UserEntity?> get authStateChanges => const Stream<UserEntity?>.empty();
 
   @override

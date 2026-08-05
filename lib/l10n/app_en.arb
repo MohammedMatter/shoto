@@ -226,8 +226,6 @@
   },
   "quickSaveFailedTitle": "Could not read that image",
   "quickSaveFailedBody": "Try sharing it again.",
-  "quickSaveSignedOutTitle": "Sign in to SHOTO first",
-  "quickSaveSignedOutBody": "Your library belongs to your account. Open SHOTO, sign in, then share this again.",
   "quickSaveSkipped": "Only the first {count} were taken",
   "@quickSaveSkipped": {
     "placeholders": {
@@ -454,7 +452,7 @@
     }
   },
   "authWelcome": "Welcome to SHOTO",
-  "authSubtitle": "Sign in to save, organize and find every screenshot in one place.",
+  "authSubtitle": "You don't need an account to use SHOTO. Sign in only to move a purchase to another phone.",
   "authGoogle": "Continue with Google",
   "authApple": "Continue with Apple",
   "authLegal": "By continuing, you agree to our Terms of Service and Privacy Policy.",
@@ -584,6 +582,8 @@
   "settingsShareText": "SHOTO keeps my screenshots organized on their own — everything stays on the phone.",
   "settingsAccount": "Account",
   "settingsSignOutHint": "Your screenshots stay on this device",
+  "settingsSignIn": "Sign in",
+  "settingsSignInHint": "Optional. Only needed to move a purchase to another phone.",
   "settingsCacheMeasuring": "Measuring…",
   "settingsCacheSize": "{size} of thumbnails",
   "@settingsCacheSize": {

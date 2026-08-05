@@ -123,8 +123,11 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
       _metadata.setFavorite(assetId, isFavorite);
 
   @override
-  Future<void> setIntent(String assetId, IntentRef? intent, {DateTime? doneAt}) =>
-      _metadata.setIntent(<String>[assetId], intent?.id, doneAt: doneAt);
+  Future<void> setIntent(
+    String assetId,
+    IntentRef? intent, {
+    DateTime? doneAt,
+  }) => _metadata.setIntent(<String>[assetId], intent?.id, doneAt: doneAt);
 
   @override
   Future<void> setIntents(List<String> assetIds, IntentRef? intent) =>
@@ -148,11 +151,8 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
     required String id,
     required String label,
     required String iconKey,
-  }) => _customIntents.updateCustomIntent(
-    id: id,
-    label: label,
-    iconKey: iconKey,
-  );
+  }) =>
+      _customIntents.updateCustomIntent(id: id, label: label, iconKey: iconKey);
 
   @override
   Future<void> deleteCustomIntent(String id) =>
@@ -172,24 +172,16 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
 
   @override
   Future<void> deleteScreenshots(List<String> assetIds) async {
-    // Leaving the library is always allowed; erasing the file is not. The
-    // image is one file in a shared gallery, so it is only really deleted
-    // once nobody else on this device still has it in their library.
-    //
     // Every file a library holds is one SHOTO wrote into its own album —
     // importing copies, it never claims a picture where it already sits — so
     // there is no case here where this reaches a file the app didn't create.
+    //
+    // This used to also check whether a *second account on the same phone*
+    // still had the image, and skip the file delete if so. There are no
+    // second accounts any more: the library belongs to the device, so
+    // leaving it and erasing the file are now the same decision.
     await _ownership.release(assetIds);
-    final Set<String> keptByOthers = await _ownership.ownedByOthers(assetIds);
-    final List<String> removable = assetIds
-        .where((id) => !keptByOthers.contains(id))
-        .toList();
-
-    if (removable.isNotEmpty) {
-      await _gallery.deleteAssets(removable);
-    }
-    // Always drops this account's rows, never anyone else's — deleteMeta is
-    // itself user-scoped.
+    await _gallery.deleteAssets(assetIds);
     await _metadata.deleteMeta(assetIds);
   }
 
@@ -310,18 +302,15 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
         .toList();
   }
 
-  /// Hands the images that predate ownership to the first account that opens
-  /// the library after upgrading.
+  /// Hands the images that predate ownership to this device's library.
   ///
   /// Those images were imported when nothing recorded who imported them, so
   /// there is no honest way to attribute them — and dropping them would look
   /// exactly like the app losing the user's library. Anything the migration
   /// could already attribute (favorited or filed, so `screenshot_meta` names
-  /// the account) is skipped, and the whole step runs at most once per
-  /// device: every later account starts with an empty library, which is the
-  /// behaviour this is all in aid of.
+  /// it) is skipped, and the whole step runs at most once per device.
   Future<void> _adoptLegacyLibrary(List<AssetEntity> albumAssets) async {
-    if (albumAssets.isEmpty || !_ownership.hasSignedInUser) return;
+    if (albumAssets.isEmpty) return;
     if (!await _ownership.hasPendingLegacyAdoption()) return;
 
     final Set<String> alreadyOwned = await _ownership

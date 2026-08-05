@@ -85,6 +85,9 @@ class _StubAuthRepository implements AuthRepository {
   UserEntity? get currentUser => null;
 
   @override
+  String get userId => 'local:test';
+
+  @override
   Stream<UserEntity?> get authStateChanges => const Stream.empty();
 
   @override

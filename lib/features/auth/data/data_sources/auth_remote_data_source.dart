@@ -6,15 +6,32 @@ import 'package:shoto/core/utils/nonce_generator.dart';
 import 'package:shoto/features/auth/data/models/user_model.dart';
 
 class AuthRemoteDataSource {
-  final fb.FirebaseAuth _firebaseAuth;
-  final GoogleSignIn _googleSignIn;
+  final fb.FirebaseAuth? _injectedFirebaseAuth;
+  final GoogleSignIn? _injectedGoogleSignIn;
   bool _googleSignInInitialized = false;
 
   AuthRemoteDataSource({
     fb.FirebaseAuth? firebaseAuth,
     GoogleSignIn? googleSignIn,
-  }) : _firebaseAuth = firebaseAuth ?? fb.FirebaseAuth.instance,
-       _googleSignIn = googleSignIn ?? GoogleSignIn.instance;
+  }) : _injectedFirebaseAuth = firebaseAuth,
+       _injectedGoogleSignIn = googleSignIn;
+
+  /// Resolved on use rather than in the constructor, because
+  /// `FirebaseAuth.instance` throws unless `Firebase.initializeApp` has
+  /// already completed.
+  ///
+  /// That single line was quietly forcing the share sheet to wait for
+  /// Firebase before it could draw: constructing this class is what building
+  /// the auth repository does, and the repository is what tells the sheet
+  /// which library to save into. Firebase is the slowest step in startup by
+  /// a wide margin, and the sheet — which appears over another app, mid
+  /// gesture — is the one screen that can least afford it. Nothing on the
+  /// quick-save path signs anybody in, so now nothing on it touches Firebase.
+  fb.FirebaseAuth get _firebaseAuth =>
+      _injectedFirebaseAuth ?? fb.FirebaseAuth.instance;
+
+  GoogleSignIn get _googleSignIn =>
+      _injectedGoogleSignIn ?? GoogleSignIn.instance;
 
   Future<void> _ensureGoogleSignInInitialized() async {
     if (_googleSignInInitialized) return;

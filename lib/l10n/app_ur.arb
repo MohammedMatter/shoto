@@ -202,8 +202,6 @@
   },
   "quickSaveFailedTitle": "یہ تصویر پڑھی نہیں جا سکی",
   "quickSaveFailedBody": "دوبارہ شیئر کر کے دیکھیں۔",
-  "quickSaveSignedOutTitle": "پہلے SHOTO میں سائن ان کریں",
-  "quickSaveSignedOutBody": "آپ کی لائبریری آپ کے اکاؤنٹ سے جڑی ہے۔ SHOTO کھولیں، سائن ان کریں، پھر دوبارہ شیئر کریں۔",
   "quickSaveSkipped": "صرف پہلے {count} لیے گئے",
   "@quickSaveSkipped": {
     "placeholders": {
@@ -430,7 +428,7 @@
     }
   },
   "authWelcome": "SHOTO میں خوش آمدید",
-  "authSubtitle": "ہر اسکرین شاٹ ایک جگہ محفوظ، منظم اور تلاش کرنے کے لیے سائن ان کریں۔",
+  "authSubtitle": "SHOTO استعمال کرنے کے لیے اکاؤنٹ کی ضرورت نہیں۔ سائن ان صرف خریداری کو دوسرے فون پر منتقل کرنے کے لیے کریں۔",
   "authGoogle": "Google کے ساتھ جاری رکھیں",
   "authApple": "Apple کے ساتھ جاری رکھیں",
   "authLegal": "جاری رکھنے سے آپ ہماری شرائط اور رازداری کی پالیسی سے متفق ہوتے ہیں۔",
@@ -560,6 +558,8 @@
   "settingsShareText": "SHOTO میرے اسکرین شاٹس خود ترتیب دیتا ہے — سب کچھ فون پر رہتا ہے۔",
   "settingsAccount": "اکاؤنٹ",
   "settingsSignOutHint": "آپ کے اسکرین شاٹس اسی آلے پر رہیں گے",
+  "settingsSignIn": "سائن ان",
+  "settingsSignInHint": "اختیاری۔ صرف خریداری کو دوسرے فون پر منتقل کرنے کے لیے درکار ہے۔",
   "settingsCacheMeasuring": "ماپا جا رہا ہے…",
   "settingsCacheSize": "تھمب نیلز کے {size}",
   "@settingsCacheSize": {
