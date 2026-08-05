@@ -1,5 +1,29 @@
 {
   "@@locale": "hi",
+  "triageTitle": "पिछली बार के बाद",
+  "triageBody": "जो SHOTO में रखना है वही रखिए। बाकी सब जहाँ है वहीं रहेगा।",
+  "triageKeep": "रखें",
+  "triageSkip": "छोड़ें",
+  "triageFinish": "हो गया",
+  "triageProgress": "{total} में से {index}",
+  "@triageProgress": {
+    "placeholders": { "index": { "type": "int" }, "total": { "type": "int" } }
+  },
+  "triageNewCount": "{count, plural, =1{1 नया स्क्रीनशॉट} other{{count} नए स्क्रीनशॉट}}",
+  "@triageNewCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageKept": "{count, plural, =0{कुछ नहीं रखा} =1{1 रखा गया} other{{count} रखे गए}}",
+  "@triageKept": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageReview": "देखें",
+  "triageInviteTitle": "आप जो कैप्चर करते हैं, दिखाएँ?",
+  "triageInviteBody": "SHOTO आपके लिए गए स्क्रीनशॉट सामने रख सकता है, ताकि आप एक बार में तय कर लें, न कि साल भर बाद ढूँढ़ें। यह अपने आप कुछ नहीं रखता, कुछ नहीं मिटाता, और सिर्फ़ आपका स्क्रीनशॉट एल्बम पढ़ता है।",
+  "triageInviteAccept": "नए स्क्रीनशॉट दिखाएँ",
+  "triageInviteDecline": "अभी नहीं",
+  "settingsTriage": "नए स्क्रीनशॉट दिखाएँ",
+  "settingsTriageHint": "जो आप कैप्चर करते हैं वह दिखाता है; अपने आप कुछ नहीं रखता",
   "settingsYourName": "आपका नाम",
   "settingsYourNameHint": "ताकि Safe Share इसे दिखने पर ढक सके",
   "settingsYourNameNotSet": "तय नहीं",

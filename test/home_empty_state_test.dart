@@ -13,6 +13,9 @@ import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_state.dart';
 import 'package:shoto/features/home/presentation/pages/home_page.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:shoto/features/screenshots/domain/repositories/screenshot_repository.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_new_captures_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/import_from_system_picker_use_case.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
@@ -50,6 +53,15 @@ class _FakeSubscriptionRepository implements SubscriptionRepository {
 
   @override
   Stream<SubscriptionStatus> get statusChanges => const Stream.empty();
+
+  @override
+  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _NoCaptures implements ScreenshotRepository {
+  @override
+  Future<List<AssetEntity>> getNewCaptures({required DateTime since}) async =>
+      const [];
 
   @override
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -100,6 +112,15 @@ void main() {
       sl.unregister<ImportFromSystemPickerUseCase>();
     }
     sl.registerSingleton<ImportFromSystemPickerUseCase>(import);
+
+    // Home asks this on mount. The preference it reads is off in a fresh
+    // install, so the answer is an empty list without any gallery being
+    // touched — but the *lookup* still has to resolve.
+    if (!sl.isRegistered<GetNewCapturesUseCase>()) {
+      sl.registerLazySingleton<GetNewCapturesUseCase>(
+        () => GetNewCapturesUseCase(_NoCaptures(), sl<AppPreferences>()),
+      );
+    }
   });
 
   Future<void> render(WidgetTester tester) async {

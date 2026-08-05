@@ -91,6 +91,34 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
   }
 
   @override
+  Future<List<AssetEntity>> getNewCaptures({required DateTime since}) {
+    return _gallery.getDeviceCaptures(since: since);
+  }
+
+  /// Keeping a capture is importing it, and it goes through exactly the same
+  /// path a picked file does — including the per-file failure handling, which
+  /// matters more here: a triage queue is a bulk action the user is watching,
+  /// and one unreadable capture must not end the review.
+  ///
+  /// The asset's file is resolved rather than its bytes read here, because
+  /// `importSharedFile` already owns what an import *is* — the copy, the
+  /// ownership row, the metadata. A second implementation of that, for a
+  /// second entry point, is how two entry points start disagreeing about what
+  /// is in the library.
+  @override
+  Future<int> keepCaptures(List<String> assetIds) async {
+    final List<AssetEntity> assets = await _gallery.getAssetsByIds(assetIds);
+
+    final List<String> paths = [];
+    for (final AssetEntity asset in assets) {
+      final File? file = await asset.originFile;
+      if (file != null) paths.add(file.path);
+    }
+
+    return importPickedFiles(paths);
+  }
+
+  @override
   Future<List<ScreenshotEntity>> getScreenshotsByFolder(int folderId) async {
     // The ids come from this account's own metadata rows, so they are already
     // its screenshots — but the intersection below still runs, so a stale

@@ -106,6 +106,96 @@ abstract class AppLocalizations {
     Locale('ur'),
   ];
 
+  /// No description provided for @triageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Since you last looked'**
+  String get triageTitle;
+
+  /// No description provided for @triageBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep what belongs in SHOTO. Everything else stays exactly where it is.'**
+  String get triageBody;
+
+  /// No description provided for @triageKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep'**
+  String get triageKeep;
+
+  /// No description provided for @triageSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get triageSkip;
+
+  /// No description provided for @triageFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get triageFinish;
+
+  /// No description provided for @triageProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{index} of {total}'**
+  String triageProgress(int index, int total);
+
+  /// No description provided for @triageNewCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 new screenshot} other{{count} new screenshots}}'**
+  String triageNewCount(int count);
+
+  /// No description provided for @triageKept.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing kept} =1{1 kept} other{{count} kept}}'**
+  String triageKept(int count);
+
+  /// No description provided for @triageReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get triageReview;
+
+  /// No description provided for @triageInviteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show you what you capture?'**
+  String get triageInviteTitle;
+
+  /// No description provided for @triageInviteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'SHOTO can offer the screenshots you take, so you decide about them once instead of finding them a year later. It keeps nothing on its own, deletes nothing, and reads only your Screenshots album.'**
+  String get triageInviteBody;
+
+  /// No description provided for @triageInviteAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer new screenshots'**
+  String get triageInviteAccept;
+
+  /// No description provided for @triageInviteDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get triageInviteDecline;
+
+  /// No description provided for @settingsTriage.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer new screenshots'**
+  String get settingsTriage;
+
+  /// No description provided for @settingsTriageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows what you capture; keeps nothing on its own'**
+  String get settingsTriageHint;
+
   /// No description provided for @settingsYourName.
   ///
   /// In en, this message translates to:

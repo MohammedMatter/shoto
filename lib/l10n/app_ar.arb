@@ -1,5 +1,29 @@
 {
   "@@locale": "ar",
+  "triageTitle": "من آخر مرة فتحت",
+  "triageBody": "خلّي يلي بينتمي لـ SHOTO. الباقي بيضل مكانه بالضبط.",
+  "triageKeep": "خلّيها",
+  "triageSkip": "تجاوز",
+  "triageFinish": "خلص",
+  "triageProgress": "{index} من {total}",
+  "@triageProgress": {
+    "placeholders": { "index": { "type": "int" }, "total": { "type": "int" } }
+  },
+  "triageNewCount": "{count, plural, =1{لقطة جديدة} =2{لقطتين جديدتين} few{{count} لقطات جديدة} other{{count} لقطة جديدة}}",
+  "@triageNewCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageKept": "{count, plural, =0{ما انحفظ شي} =1{انحفظت وحدة} =2{انحفظوا ثنتين} few{انحفظوا {count}} other{انحفظت {count}}}",
+  "@triageKept": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageReview": "راجعها",
+  "triageInviteTitle": "بدك نعرض عليك يلي بتصوّره؟",
+  "triageInviteBody": "SHOTO بيقدر يعرض عليك اللقطات يلي بتاخدها، فبتقرّر فيها مرة بدل ما تدوّر عليها بعد سنة. ما بيحتفظ بشي لحاله، ما بيحذف شي، وبيقرا بس ألبوم لقطات الشاشة.",
+  "triageInviteAccept": "اعرض اللقطات الجديدة",
+  "triageInviteDecline": "مش هلق",
+  "settingsTriage": "اعرض اللقطات الجديدة",
+  "settingsTriageHint": "بيعرض يلي بتصوّره، وما بيحتفظ بشي لحاله",
   "settingsYourName": "اسمك",
   "settingsYourNameHint": "عشان Safe Share يغطّيه لما يظهر بلقطة",
   "settingsYourNameNotSet": "مش محدّد",

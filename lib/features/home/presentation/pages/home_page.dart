@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:shoto/core/constants/v1_features.dart';
+import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
@@ -21,7 +23,10 @@ import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_state.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_new_captures_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/request_photo_permission_use_case.dart';
 import 'package:shoto/features/screenshots/presentation/pages/intent_page.dart';
+import 'package:shoto/features/screenshots/presentation/pages/open_triage_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/waiting_on_you.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
@@ -153,6 +158,25 @@ class _HomePageState extends State<HomePage>
                     child: _Gutter(child: _Greeting()),
                   ),
                   SizedBox(height: 18.h),
+                  // The inbox, and the invitation to have one.
+                  //
+                  // Above search and above the hero, because it is the only
+                  // thing on this screen with a deadline attached: what you
+                  // captured since you last looked is answerable now and
+                  // steadily less answerable later. It draws nothing at all
+                  // unless there is something to say — see [_Intake].
+                  //
+                  // It shares the search field's step in the entrance cascade
+                  // rather than taking one of its own: the steps and the
+                  // controller's total have to move together (see [_Enter]),
+                  // and adding a step for a section that is usually not there
+                  // would push the last one past the end of the clock on every
+                  // launch to pay for a beat that is almost never used.
+                  _Enter(
+                    parent: _entrance,
+                    index: 1,
+                    child: _Gutter(child: _Intake(hasLibrary: all.isNotEmpty)),
+                  ),
                   // **Second on the page, and the screen's only entry to
                   // search** — see `docs/decisions/home.md`.
                   //
@@ -296,6 +320,203 @@ class _HomePageState extends State<HomePage>
 
 /// The page margin, applied per section rather than by the scroll view, so
 /// the one section that is meant to break it can.
+/// The one place SHOTO ever mentions a screenshot it does not have.
+///
+/// It has three states and two of them draw nothing:
+///
+/// * **The invitation**, once, when there is already a library — so the
+///   question arrives after the app has shown what it is for, not on an empty
+///   first screen where it would read as a permission grab.
+/// * **The queue**, whenever captures are waiting.
+/// * **Nothing**, which is most of the time, and is why this is a widget
+///   rather than a section of the list: a card that says "0 new" is a card
+///   that has to be looked at every single launch to learn nothing.
+///
+/// The count is read once per mount rather than watched. A stream of gallery
+/// changes would repaint Home while somebody is taking screenshots in another
+/// app, which nobody is watching, and would keep a platform listener alive for
+/// the whole session for the sake of a number that is only acted on when the
+/// app is opened.
+class _Intake extends StatefulWidget {
+  final bool hasLibrary;
+
+  const _Intake({required this.hasLibrary});
+
+  @override
+  State<_Intake> createState() => _IntakeState();
+}
+
+class _IntakeState extends State<_Intake> {
+  int _waiting = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _count();
+  }
+
+  Future<void> _count() async {
+    final List<AssetEntity> captures = await sl<GetNewCapturesUseCase>()();
+    if (!mounted) return;
+    setState(() => _waiting = captures.length);
+  }
+
+  Future<void> _accept() async {
+    // The OS permission is asked for *after* the user has said yes to the
+    // idea, never before. A system dialog is not a way to ask a product
+    // question: it has two buttons the app did not write and no room for the
+    // sentence that makes the request reasonable.
+    final PermissionState permission = await sl<RequestPhotoPermissionUseCase>()();
+    if (!permission.hasAccess) {
+      if (!mounted) return;
+      await sl<AppPreferences>().setTriageEnabled(false);
+      return;
+    }
+
+    await sl<AppPreferences>().setTriageEnabled(true);
+    if (!mounted) return;
+    await openTriagePage(context);
+    if (!mounted) return;
+    await _count();
+  }
+
+  Future<void> _decline() async {
+    await sl<AppPreferences>().setTriageEnabled(false);
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _review() async {
+    await openTriagePage(context);
+    if (!mounted) return;
+    await _count();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: sl<AppPreferences>(),
+      builder: (context, _) {
+        final AppPreferences prefs = sl<AppPreferences>();
+
+        if (!prefs.triageAsked) {
+          if (!widget.hasLibrary) return const SizedBox.shrink();
+          return _IntakeInvite(onAccept: _accept, onDecline: _decline);
+        }
+
+        if (!prefs.triageEnabled || _waiting == 0) {
+          return const SizedBox.shrink();
+        }
+
+        return _IntakeQueue(count: _waiting, onTap: _review);
+      },
+    );
+  }
+}
+
+class _IntakeInvite extends StatelessWidget {
+  final VoidCallback onAccept;
+  final VoidCallback onDecline;
+
+  const _IntakeInvite({required this.onAccept, required this.onDecline});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 10.h),
+      margin: EdgeInsets.only(bottom: 8.h),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            context.l10n.triageInviteTitle,
+            style: AppTextStyles.titleLarge,
+          ),
+          SizedBox(height: 4.h),
+          // The whole of it, not a summary with a "learn more". This is the
+          // one place the app asks to look at something it does not own, and
+          // the answer to "what will you do with it" has to be on the same
+          // screen as the button that says yes.
+          Text(context.l10n.triageInviteBody, style: AppTextStyles.bodySmall),
+          SizedBox(height: 6.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              TextButton(
+                onPressed: onDecline,
+                child: Text(
+                  context.l10n.triageInviteDecline,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: onAccept,
+                child: Text(
+                  context.l10n.triageInviteAccept,
+                  style: AppTextStyles.bodyMedium.asMedium.copyWith(
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _IntakeQueue extends StatelessWidget {
+  final int count;
+  final VoidCallback onTap;
+
+  const _IntakeQueue({required this.count, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return PressableScale(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 13.h),
+        margin: EdgeInsets.only(bottom: 8.h),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(18.r),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.inbox_rounded,
+              size: 19.sp,
+              color: AppColors.textSecondary,
+            ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Text(
+                context.l10n.triageNewCount(count),
+                style: AppTextStyles.bodyMedium.asMedium,
+              ),
+            ),
+            Text(
+              context.l10n.triageReview,
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.primary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _Gutter extends StatelessWidget {
   final Widget child;
   const _Gutter({required this.child});

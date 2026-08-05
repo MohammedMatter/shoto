@@ -43,7 +43,23 @@ class AssetThumbnailImage extends StatelessWidget {
   /// it was meant to cover.
   final Color? background;
 
-  const AssetThumbnailImage({super.key, required this.asset, this.background});
+  /// How the thumbnail fills its box.
+  ///
+  /// Cover everywhere a screenshot appears *among others* — a grid of tiles
+  /// that are not the same shape is not a grid. [BoxFit.contain] is for the
+  /// one screen that shows a single capture and asks the user to judge it:
+  /// cropping a tall screenshot to a square there throws away most of what
+  /// the judgement depends on.
+  ///
+  /// It is not part of the cache key, so both fits share one decode.
+  final BoxFit fit;
+
+  const AssetThumbnailImage({
+    super.key,
+    required this.asset,
+    this.background,
+    this.fit = BoxFit.cover,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +71,7 @@ class AssetThumbnailImage extends StatelessWidget {
           isOriginal: false,
           thumbnailSize: size,
         ),
-        fit: BoxFit.cover,
+        fit: fit,
         width: double.infinity,
         height: double.infinity,
         // Holds the pixels already on screen while a new decode is in flight

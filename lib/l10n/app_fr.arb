@@ -1,5 +1,29 @@
 {
   "@@locale": "fr",
+  "triageTitle": "Depuis votre dernière visite",
+  "triageBody": "Gardez ce qui a sa place dans SHOTO. Tout le reste ne bouge pas.",
+  "triageKeep": "Garder",
+  "triageSkip": "Passer",
+  "triageFinish": "Terminé",
+  "triageProgress": "{index} sur {total}",
+  "@triageProgress": {
+    "placeholders": { "index": { "type": "int" }, "total": { "type": "int" } }
+  },
+  "triageNewCount": "{count, plural, =1{1 nouvelle capture} other{{count} nouvelles captures}}",
+  "@triageNewCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageKept": "{count, plural, =0{Rien de gardé} =1{1 gardée} other{{count} gardées}}",
+  "@triageKept": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageReview": "Passer en revue",
+  "triageInviteTitle": "Vous montrer ce que vous capturez ?",
+  "triageInviteBody": "SHOTO peut vous proposer les captures que vous prenez, pour décider une fois plutôt que de les retrouver un an après. Il ne garde rien de lui-même, ne supprime rien et ne lit que votre album de captures.",
+  "triageInviteAccept": "Proposer les nouvelles captures",
+  "triageInviteDecline": "Pas maintenant",
+  "settingsTriage": "Proposer les nouvelles captures",
+  "settingsTriageHint": "Montre ce que vous capturez ; ne garde rien de lui-même",
   "settingsYourName": "Votre nom",
   "settingsYourNameHint": "Pour que Safe Share le masque quand il apparaît",
   "settingsYourNameNotSet": "Non défini",

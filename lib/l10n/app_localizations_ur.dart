@@ -9,6 +9,73 @@ class AppLocalizationsUr extends AppLocalizations {
   AppLocalizationsUr([String locale = 'ur']) : super(locale);
 
   @override
+  String get triageTitle => 'پچھلی بار کے بعد';
+
+  @override
+  String get triageBody =>
+      'جو SHOTO میں رکھنا ہے وہی رکھیں۔ باقی سب جہاں ہے وہیں رہے گا۔';
+
+  @override
+  String get triageKeep => 'رکھیں';
+
+  @override
+  String get triageSkip => 'چھوڑیں';
+
+  @override
+  String get triageFinish => 'ہو گیا';
+
+  @override
+  String triageProgress(int index, int total) {
+    return '$total میں سے $index';
+  }
+
+  @override
+  String triageNewCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count نئے اسکرین شاٹ',
+      one: '1 نیا اسکرین شاٹ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String triageKept(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count رکھے گئے',
+      one: '1 رکھا گیا',
+      zero: 'کچھ نہیں رکھا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get triageReview => 'دیکھیں';
+
+  @override
+  String get triageInviteTitle => 'جو آپ کیپچر کرتے ہیں وہ دکھائیں؟';
+
+  @override
+  String get triageInviteBody =>
+      'SHOTO آپ کے لیے گئے اسکرین شاٹ سامنے رکھ سکتا ہے، تاکہ آپ ایک بار فیصلہ کر لیں، نہ کہ سال بعد انہیں ڈھونڈیں۔ یہ خود سے کچھ نہیں رکھتا، کچھ نہیں مٹاتا، اور صرف آپ کا اسکرین شاٹ البم پڑھتا ہے۔';
+
+  @override
+  String get triageInviteAccept => 'نئے اسکرین شاٹ دکھائیں';
+
+  @override
+  String get triageInviteDecline => 'ابھی نہیں';
+
+  @override
+  String get settingsTriage => 'نئے اسکرین شاٹ دکھائیں';
+
+  @override
+  String get settingsTriageHint =>
+      'جو آپ کیپچر کرتے ہیں دکھاتا ہے؛ خود سے کچھ نہیں رکھتا';
+
+  @override
   String get settingsYourName => 'آپ کا نام';
 
   @override

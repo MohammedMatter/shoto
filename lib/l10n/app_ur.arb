@@ -1,5 +1,29 @@
 {
   "@@locale": "ur",
+  "triageTitle": "پچھلی بار کے بعد",
+  "triageBody": "جو SHOTO میں رکھنا ہے وہی رکھیں۔ باقی سب جہاں ہے وہیں رہے گا۔",
+  "triageKeep": "رکھیں",
+  "triageSkip": "چھوڑیں",
+  "triageFinish": "ہو گیا",
+  "triageProgress": "{total} میں سے {index}",
+  "@triageProgress": {
+    "placeholders": { "index": { "type": "int" }, "total": { "type": "int" } }
+  },
+  "triageNewCount": "{count, plural, =1{1 نیا اسکرین شاٹ} other{{count} نئے اسکرین شاٹ}}",
+  "@triageNewCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageKept": "{count, plural, =0{کچھ نہیں رکھا} =1{1 رکھا گیا} other{{count} رکھے گئے}}",
+  "@triageKept": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageReview": "دیکھیں",
+  "triageInviteTitle": "جو آپ کیپچر کرتے ہیں وہ دکھائیں؟",
+  "triageInviteBody": "SHOTO آپ کے لیے گئے اسکرین شاٹ سامنے رکھ سکتا ہے، تاکہ آپ ایک بار فیصلہ کر لیں، نہ کہ سال بعد انہیں ڈھونڈیں۔ یہ خود سے کچھ نہیں رکھتا، کچھ نہیں مٹاتا، اور صرف آپ کا اسکرین شاٹ البم پڑھتا ہے۔",
+  "triageInviteAccept": "نئے اسکرین شاٹ دکھائیں",
+  "triageInviteDecline": "ابھی نہیں",
+  "settingsTriage": "نئے اسکرین شاٹ دکھائیں",
+  "settingsTriageHint": "جو آپ کیپچر کرتے ہیں دکھاتا ہے؛ خود سے کچھ نہیں رکھتا",
   "settingsYourName": "آپ کا نام",
   "settingsYourNameHint": "تاکہ Safe Share اسے ظاہر ہونے پر ڈھانپ سکے",
   "settingsYourNameNotSet": "مقرر نہیں",

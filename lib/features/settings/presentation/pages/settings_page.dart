@@ -159,6 +159,18 @@ class SettingsPage extends StatelessWidget {
                                 value: prefs.confirmBeforeDelete,
                                 onChanged: prefs.setConfirmBeforeDelete,
                               ),
+                              // Reachable here as well as from Home's
+                              // invitation, because a one-time card is a fine
+                              // way to *offer* something and a terrible way to
+                              // let somebody change their mind about it two
+                              // months later.
+                              SettingsSwitchTile(
+                                icon: Icons.inbox_outlined,
+                                label: context.l10n.settingsTriage,
+                                description: context.l10n.settingsTriageHint,
+                                value: prefs.triageEnabled,
+                                onChanged: prefs.setTriageEnabled,
+                              ),
                               // The app's only personal field, and it sits
                               // with the other two preferences rather than in
                               // a group of its own, because it is the same

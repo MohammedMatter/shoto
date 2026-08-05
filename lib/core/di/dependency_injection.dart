@@ -58,7 +58,9 @@ import 'package:shoto/features/screenshots/domain/use_cases/get_cached_visual_la
 import 'package:shoto/features/screenshots/domain/use_cases/get_managed_screenshot_count_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_by_folder_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_new_captures_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/import_from_system_picker_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/keep_captures_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/import_shared_screenshot_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/request_photo_permission_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_favorite_use_case.dart';
@@ -140,6 +142,8 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => WatchLibraryChangesUseCase(sl()));
   sl.registerLazySingleton(() => ImportSharedScreenshotUseCase(sl()));
   sl.registerLazySingleton(() => ImportFromSystemPickerUseCase(sl(), sl()));
+  sl.registerLazySingleton(() => GetNewCapturesUseCase(sl(), sl()));
+  sl.registerLazySingleton(() => KeepCapturesUseCase(sl()));
   sl.registerLazySingleton(() => GetCachedOcrTextUseCase(sl()));
   sl.registerLazySingleton(() => ExtractAndCacheTextUseCase(sl()));
   sl.registerLazySingleton(() => GetCachedVisualLabelsUseCase(sl()));

@@ -95,6 +95,23 @@ abstract class ScreenshotRepository {
   /// not take the rest of the batch down with it.
   Future<int> importPickedFiles(List<String> filePaths);
 
+  /// Screen captures taken since [since] that the user has not answered about
+  /// yet, oldest first — the triage queue.
+  ///
+  /// This is the one read in the app that looks outside SHOTO's own album, and
+  /// it *offers* rather than imports: nothing here is in the library until
+  /// [keepCaptures] is called with it. Only reached when the user has switched
+  /// the queue on. See `ScreenshotGalleryDataSource`.
+  Future<List<AssetEntity>> getNewCaptures({required DateTime since});
+
+  /// Brings the given device captures into the library.
+  ///
+  /// The same operation as importing a picked file, deliberately: a copy into
+  /// SHOTO's album, leaving the user's original screenshot exactly where it
+  /// was. Nothing in this app moves or deletes a picture the user did not put
+  /// here.
+  Future<int> keepCaptures(List<String> assetIds);
+
   /// Saves image bytes SHOTO produced itself (a stitched long screenshot,
   /// for instance) into the current account's library.
   Future<String> saveGeneratedImage(

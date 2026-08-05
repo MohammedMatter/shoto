@@ -13,11 +13,17 @@ class AppPreferences extends ChangeNotifier {
   static const String _confirmDeleteKey = 'pref_confirm_delete';
   static const String _seenOnboardingKey = 'pref_seen_onboarding';
   static const String _ownerNameKey = 'pref_owner_name';
+  static const String _triageEnabledKey = 'pref_triage_enabled';
+  static const String _triageAskedKey = 'pref_triage_asked';
+  static const String _triageSinceKey = 'pref_triage_since';
 
   bool _haptics = true;
   bool _confirmBeforeDelete = true;
   bool _hasSeenOnboarding = false;
   String _ownerName = '';
+  bool _triageEnabled = false;
+  bool _triageAsked = false;
+  int _triageSince = 0;
 
   /// Whether taps give physical feedback. Off is a genuine accessibility
   /// preference, and some people simply find it noisy.
@@ -48,13 +54,67 @@ class AppPreferences extends ChangeNotifier {
   /// optional, and never leaves the device.
   String get ownerName => _ownerName;
 
+  /// Whether SHOTO may look at the device's Screenshots album to *offer* what
+  /// is new.
+  ///
+  /// **Off until the user says otherwise, and it is asked as a question rather
+  /// than assumed.** The library is opt-in and stays opt-in: this permits
+  /// SHOTO to show you what you captured, not to keep any of it. Everything
+  /// still enters the library one deliberate decision at a time.
+  ///
+  /// It exists because opt-in on its own left a new install as an empty room,
+  /// and the people with four hundred unfindable screenshots are precisely
+  /// the people who will never curate them by hand.
+  bool get triageEnabled => _triageEnabled;
+
+  /// Whether the question above has been put to the user at all.
+  ///
+  /// Separate from the answer, because "no" and "not yet asked" are different
+  /// states and an app that cannot tell them apart either nags somebody who
+  /// declined or never offers at all.
+  bool get triageAsked => _triageAsked;
+
+  /// Everything captured before this has been decided about, one way or the
+  /// other. See `ScreenshotGalleryDataSource.getDeviceCaptures`.
+  DateTime get triageSince => DateTime.fromMillisecondsSinceEpoch(_triageSince);
+
   Future<void> load() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     _haptics = prefs.getBool(_hapticsKey) ?? true;
     _confirmBeforeDelete = prefs.getBool(_confirmDeleteKey) ?? true;
     _hasSeenOnboarding = prefs.getBool(_seenOnboardingKey) ?? false;
     _ownerName = prefs.getString(_ownerNameKey) ?? '';
+    _triageEnabled = prefs.getBool(_triageEnabledKey) ?? false;
+    _triageAsked = prefs.getBool(_triageAskedKey) ?? false;
+    // Defaults to *now* rather than to zero. A user switching this on today is
+    // asking what they have captured since; handing them every screenshot they
+    // have ever taken is the gallery-mirror this app deliberately is not.
+    _triageSince =
+        prefs.getInt(_triageSinceKey) ?? DateTime.now().millisecondsSinceEpoch;
     notifyListeners();
+  }
+
+  /// Records the answer to the triage question, whichever way it went.
+  Future<void> setTriageEnabled(bool value) async {
+    _triageEnabled = value;
+    _triageAsked = true;
+    notifyListeners();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_triageEnabledKey, value);
+    await prefs.setBool(_triageAskedKey, true);
+  }
+
+  /// Moves the watermark forward. Never backwards: a capture that has been
+  /// decided about must not come back because a later read arrived out of
+  /// order.
+  Future<void> advanceTriageSince(DateTime moment) async {
+    final int millis = moment.millisecondsSinceEpoch;
+    if (millis <= _triageSince) return;
+
+    _triageSince = millis;
+    notifyListeners();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_triageSinceKey, millis);
   }
 
   Future<void> setOwnerName(String value) async {

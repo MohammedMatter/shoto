@@ -1,5 +1,29 @@
 {
   "@@locale": "en",
+  "triageTitle": "Since you last looked",
+  "triageBody": "Keep what belongs in SHOTO. Everything else stays exactly where it is.",
+  "triageKeep": "Keep",
+  "triageSkip": "Skip",
+  "triageFinish": "Done",
+  "triageProgress": "{index} of {total}",
+  "@triageProgress": {
+    "placeholders": { "index": { "type": "int" }, "total": { "type": "int" } }
+  },
+  "triageNewCount": "{count, plural, =1{1 new screenshot} other{{count} new screenshots}}",
+  "@triageNewCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageKept": "{count, plural, =0{Nothing kept} =1{1 kept} other{{count} kept}}",
+  "@triageKept": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageReview": "Review",
+  "triageInviteTitle": "Show you what you capture?",
+  "triageInviteBody": "SHOTO can offer the screenshots you take, so you decide about them once instead of finding them a year later. It keeps nothing on its own, deletes nothing, and reads only your Screenshots album.",
+  "triageInviteAccept": "Offer new screenshots",
+  "triageInviteDecline": "Not now",
+  "settingsTriage": "Offer new screenshots",
+  "settingsTriageHint": "Shows what you capture; keeps nothing on its own",
   "settingsYourName": "Your name",
   "settingsYourNameHint": "So Safe Share can cover it when it appears",
   "settingsYourNameNotSet": "Not set",

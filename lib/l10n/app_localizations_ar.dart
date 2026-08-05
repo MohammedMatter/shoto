@@ -9,6 +9,76 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get triageTitle => 'من آخر مرة فتحت';
+
+  @override
+  String get triageBody =>
+      'خلّي يلي بينتمي لـ SHOTO. الباقي بيضل مكانه بالضبط.';
+
+  @override
+  String get triageKeep => 'خلّيها';
+
+  @override
+  String get triageSkip => 'تجاوز';
+
+  @override
+  String get triageFinish => 'خلص';
+
+  @override
+  String triageProgress(int index, int total) {
+    return '$index من $total';
+  }
+
+  @override
+  String triageNewCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count لقطة جديدة',
+      few: '$count لقطات جديدة',
+      two: 'لقطتين جديدتين',
+      one: 'لقطة جديدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String triageKept(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'انحفظت $count',
+      few: 'انحفظوا $count',
+      two: 'انحفظوا ثنتين',
+      one: 'انحفظت وحدة',
+      zero: 'ما انحفظ شي',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get triageReview => 'راجعها';
+
+  @override
+  String get triageInviteTitle => 'بدك نعرض عليك يلي بتصوّره؟';
+
+  @override
+  String get triageInviteBody =>
+      'SHOTO بيقدر يعرض عليك اللقطات يلي بتاخدها، فبتقرّر فيها مرة بدل ما تدوّر عليها بعد سنة. ما بيحتفظ بشي لحاله، ما بيحذف شي، وبيقرا بس ألبوم لقطات الشاشة.';
+
+  @override
+  String get triageInviteAccept => 'اعرض اللقطات الجديدة';
+
+  @override
+  String get triageInviteDecline => 'مش هلق';
+
+  @override
+  String get settingsTriage => 'اعرض اللقطات الجديدة';
+
+  @override
+  String get settingsTriageHint => 'بيعرض يلي بتصوّره، وما بيحتفظ بشي لحاله';
+
+  @override
   String get settingsYourName => 'اسمك';
 
   @override

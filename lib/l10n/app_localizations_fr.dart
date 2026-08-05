@@ -9,6 +9,73 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
+  String get triageTitle => 'Depuis votre dernière visite';
+
+  @override
+  String get triageBody =>
+      'Gardez ce qui a sa place dans SHOTO. Tout le reste ne bouge pas.';
+
+  @override
+  String get triageKeep => 'Garder';
+
+  @override
+  String get triageSkip => 'Passer';
+
+  @override
+  String get triageFinish => 'Terminé';
+
+  @override
+  String triageProgress(int index, int total) {
+    return '$index sur $total';
+  }
+
+  @override
+  String triageNewCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count nouvelles captures',
+      one: '1 nouvelle capture',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String triageKept(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gardées',
+      one: '1 gardée',
+      zero: 'Rien de gardé',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get triageReview => 'Passer en revue';
+
+  @override
+  String get triageInviteTitle => 'Vous montrer ce que vous capturez ?';
+
+  @override
+  String get triageInviteBody =>
+      'SHOTO peut vous proposer les captures que vous prenez, pour décider une fois plutôt que de les retrouver un an après. Il ne garde rien de lui-même, ne supprime rien et ne lit que votre album de captures.';
+
+  @override
+  String get triageInviteAccept => 'Proposer les nouvelles captures';
+
+  @override
+  String get triageInviteDecline => 'Pas maintenant';
+
+  @override
+  String get settingsTriage => 'Proposer les nouvelles captures';
+
+  @override
+  String get settingsTriageHint =>
+      'Montre ce que vous capturez ; ne garde rien de lui-même';
+
+  @override
   String get settingsYourName => 'Votre nom';
 
   @override

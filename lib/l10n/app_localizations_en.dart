@@ -9,6 +9,73 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get triageTitle => 'Since you last looked';
+
+  @override
+  String get triageBody =>
+      'Keep what belongs in SHOTO. Everything else stays exactly where it is.';
+
+  @override
+  String get triageKeep => 'Keep';
+
+  @override
+  String get triageSkip => 'Skip';
+
+  @override
+  String get triageFinish => 'Done';
+
+  @override
+  String triageProgress(int index, int total) {
+    return '$index of $total';
+  }
+
+  @override
+  String triageNewCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new screenshots',
+      one: '1 new screenshot',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String triageKept(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count kept',
+      one: '1 kept',
+      zero: 'Nothing kept',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get triageReview => 'Review';
+
+  @override
+  String get triageInviteTitle => 'Show you what you capture?';
+
+  @override
+  String get triageInviteBody =>
+      'SHOTO can offer the screenshots you take, so you decide about them once instead of finding them a year later. It keeps nothing on its own, deletes nothing, and reads only your Screenshots album.';
+
+  @override
+  String get triageInviteAccept => 'Offer new screenshots';
+
+  @override
+  String get triageInviteDecline => 'Not now';
+
+  @override
+  String get settingsTriage => 'Offer new screenshots';
+
+  @override
+  String get settingsTriageHint =>
+      'Shows what you capture; keeps nothing on its own';
+
+  @override
   String get settingsYourName => 'Your name';
 
   @override
