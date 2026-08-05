@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/intent_catalog.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
 import 'package:shoto/core/routes/app_router.dart';
@@ -26,8 +27,10 @@ import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 import 'package:shoto/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:shoto/features/auth/presentation/bloc/auth_event.dart';
 import 'package:shoto/features/auth/presentation/bloc/auth_state.dart';
+import 'package:shoto/features/backup/presentation/pages/backup_page.dart';
 import 'package:shoto/features/duplicates/presentation/pages/duplicates_page.dart';
 import 'package:shoto/features/settings/presentation/widgets/app_version_block.dart';
+import 'package:shoto/features/settings/presentation/widgets/contact_support_tile.dart';
 import 'package:shoto/features/settings/presentation/widgets/language_sheet.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_group.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_tiles.dart';
@@ -180,10 +183,24 @@ class SettingsPage extends StatelessWidget {
                     // "Find duplicates" used to sit alone under a heading
                     // called Tools while "Clear cache" sat under Privacy. Both
                     // are really the same job — reclaiming space — so they now
-                    // share a group that says so.
+                    // share a group that says so. Backup joined them because
+                    // it is the other thing you do *to* the library as a whole,
+                    // and a group of one row would have buried it worse.
                     SettingsGroup(
                       title: context.l10n.settingsStorage,
                       children: [
+                        // First in the group, and ungated. This is the row that
+                        // matters most on the worst day somebody has with this
+                        // app, and a paywall in front of "don't lose
+                        // everything" is not a price, it is a hostage.
+                        SettingsNavTile(
+                          icon: Icons.backup_outlined,
+                          label: context.l10n.settingsBackup,
+                          description: context.l10n.settingsBackupHint,
+                          onTap: () => Navigator.of(context).push(
+                            FadeSlidePageRoute(builder: (_) => BackupPage()),
+                          ),
+                        ),
                         SettingsNavTile(
                           icon: Icons.content_copy_rounded,
                           label: context.l10n.settingsFindDuplicates,
@@ -229,6 +246,15 @@ class SettingsPage extends StatelessWidget {
                       ],
                     ),
 
+                    // Above the privacy note and the account rows, because
+                    // "something is wrong and I need a human" is a more urgent
+                    // errand than either, and below the rest because it is not
+                    // what most visits to Settings are for.
+                    SettingsGroup(
+                      title: context.l10n.settingsHelp,
+                      children: const [ContactSupportTile()],
+                    ),
+
                     // Not a group: this is the app's central promise, and a
                     // claim that reads like a settings row reads like fine
                     // print. It earns the space it takes.
@@ -254,6 +280,13 @@ class SettingsPage extends StatelessWidget {
                                 isDestructive: true,
                               );
                               if (confirmed && context.mounted) {
+                                // Held in memory for the whole app session and
+                                // scoped to one account, so it has to be
+                                // dropped here or the next person to sign in on
+                                // this phone is offered the previous one's
+                                // verbs. Everything else per-account is read
+                                // fresh from the database on load.
+                                sl<IntentCatalog>().clear();
                                 context.read<AuthBloc>().add(
                                   SignOutRequestedEvent(),
                                 );

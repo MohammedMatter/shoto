@@ -4,8 +4,10 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_shapes.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/core/widgets/asset_thumbnail_image.dart';
 import 'package:shoto/core/widgets/photo_hero.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/intent_visuals.dart';
 
 /// One screenshot in the grid.
 ///
@@ -33,6 +35,17 @@ class ScreenshotThumbnail extends StatelessWidget {
   final VoidCallback onLongPress;
   final VoidCallback? onMoreTap;
 
+  /// What the user said they would do with this one, if anything.
+  ///
+  /// **This is the only place an intent is visible without opening
+  /// something**, and that is the point of it. Before this badge existed the
+  /// answer lived behind a quick-actions sheet behind a 18sp icon, which made
+  /// a feature about what you owe yourself invisible in the one screen where
+  /// you look at everything you have saved.
+  ///
+  /// Null for the great majority of screenshots, which show nothing.
+  final IntentState? intent;
+
   /// Pairs this tile with the same screenshot in the full-screen viewer, so
   /// opening one grows out of the tile that was tapped instead of appearing
   /// from nowhere over it.
@@ -55,6 +68,7 @@ class ScreenshotThumbnail extends StatelessWidget {
     required this.onTap,
     required this.onLongPress,
     this.onMoreTap,
+    this.intent,
     this.heroTag,
   });
 
@@ -157,6 +171,23 @@ class ScreenshotThumbnail extends StatelessWidget {
                 ),
               ),
             ],
+            // Bottom-left, the one corner nothing else claims: the tick is
+            // top-left, the heart top-right, the quick-actions button
+            // bottom-right. It also sits inside the scrim already drawn for
+            // that button, so it costs no extra darkening of the picture.
+            if (intent case final IntentState state)
+              Positioned(
+                left: 6.w,
+                bottom: 6.h,
+                child: IgnorePointer(
+                  child: AnimatedOpacity(
+                    opacity: selectionMode ? 0 : 1,
+                    duration: AppMotion.duration(context, AppMotion.instant),
+                    curve: AppMotion.standard,
+                    child: _IntentBadge(state: state),
+                  ),
+                ),
+              ),
             if (isFavorite)
               Positioned(
                 top: 6.h,
@@ -245,6 +276,85 @@ class ScreenshotThumbnail extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The intent mark on a tile: the verb's glyph while it is owed, and a tick
+/// once it is not.
+///
+/// **A glyph and not a label.** A tile is 110px across and shares its lower
+/// edge with the quick-actions button; "To compare" written there would be
+/// unreadable at that size in every language and unreadable at any size in
+/// the longer ones. The glyph says *there is something you meant to do here*,
+/// which is the whole job — what exactly, and whether to do it now, is a
+/// question for the sheet one tap away.
+///
+/// ## Finishing is the payoff, so it has to be visible on the picture
+///
+/// The first version marked done by going *quiet* — the same glyph at half
+/// opacity — on the theory that a finished task is not news. That was wrong
+/// about which moment this feature is for. Every other number in SHOTO only
+/// goes up; this is the one thing a person can complete, and a reward you
+/// have to squint at is not a reward. Worse, dimmed-glyph and lit-glyph are
+/// the same shape, so a grid told you nothing at a glance — the exact place a
+/// glance is all you get.
+///
+/// So the badge **becomes a tick**, on the palette's completion colour. Same
+/// object, same corner, same size: it is the mark transforming rather than one
+/// mark leaving and another arriving, which is what makes it read as *this got
+/// done* instead of as the tile having changed its mind. That is also the one
+/// place a hue is spent here, and `IntentVisuals.tint` reserves it precisely
+/// for this — waiting versus done is the only genuine state in the feature.
+class _IntentBadge extends StatelessWidget {
+  final IntentState state;
+
+  const _IntentBadge({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final bool isDone = state.isDone;
+
+    return AnimatedContainer(
+      duration: AppMotion.duration(context, AppMotion.normal),
+      curve: AppMotion.standard,
+      padding: EdgeInsets.all(5.w),
+      decoration: BoxDecoration(
+        // Waiting is black rather than a surface colour: it sits on a
+        // photograph, not on the app's own material, and a themed chip
+        // floating on somebody's screenshot of a chat reads as part of the
+        // screenshot. Done is allowed to be the app's colour, because by then
+        // saying so *is* the point.
+        color: isDone
+            ? AppColors.success
+            : Colors.black.withValues(alpha: 0.55),
+        shape: BoxShape.circle,
+      ),
+      child: AnimatedSwitcher(
+        duration: AppMotion.duration(context, AppMotion.normal),
+        switchInCurve: AppMotion.standard,
+        switchOutCurve: AppMotion.standard,
+        transitionBuilder: (Widget child, Animation<double> animation) =>
+            FadeTransition(
+              opacity: animation,
+              // The tick arrives a touch larger than it settles, which is the
+              // whole celebration this gets. Anything more on a grid tile
+              // would be a party thrown by a filing cabinet.
+              child: ScaleTransition(
+                scale: Tween<double>(begin: 0.6, end: 1).animate(animation),
+                child: child,
+              ),
+            ),
+        child: Icon(
+          isDone ? Icons.check_rounded : state.ref.icon,
+          // Keyed on the state, not the glyph: switching verbs on a waiting
+          // screenshot should not animate — nothing was completed — but
+          // crossing into done must.
+          key: ValueKey<bool>(isDone),
+          size: 13.sp,
+          color: Colors.white,
         ),
       ),
     );

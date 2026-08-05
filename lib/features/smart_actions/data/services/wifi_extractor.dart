@@ -84,7 +84,10 @@ abstract class WifiExtractor {
     caseSensitive: false,
   );
 
-  static final RegExp _qrSsid = RegExp(r'S:((?:\\.|[^;\\])*)', caseSensitive: true);
+  static final RegExp _qrSsid = RegExp(
+    r'S:((?:\\.|[^;\\])*)',
+    caseSensitive: true,
+  );
   static final RegExp _qrPassword = RegExp(
     r'P:((?:\\.|[^;\\])*)',
     caseSensitive: true,
@@ -173,9 +176,21 @@ abstract class WifiExtractor {
 
   /// Words that sit after "password:" on a screen that is not handing one out.
   static const Set<String> _notAKey = <String>{
-    'required', 'incorrect', 'invalid', 'changed', 'updated', 'forgotten',
-    'protected', 'hidden', 'saved', 'settings', 'manager', 'مطلوبة', 'خاطئة',
-    'محفوظة', 'مطلوب',
+    'required',
+    'incorrect',
+    'invalid',
+    'changed',
+    'updated',
+    'forgotten',
+    'protected',
+    'hidden',
+    'saved',
+    'settings',
+    'manager',
+    'مطلوبة',
+    'خاطئة',
+    'محفوظة',
+    'مطلوب',
   };
 
   /// A key is at least six characters, is not one of the words above, and is

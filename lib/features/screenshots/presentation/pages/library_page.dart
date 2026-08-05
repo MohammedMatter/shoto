@@ -8,10 +8,13 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/widgets/header_icon_button.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/library_sort.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/pages/search_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/import_screenshots_action.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/library_sort_sheet.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshots_body.dart';
 
 /// The full grid of every screenshot.
@@ -93,6 +96,43 @@ class LibraryPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 8.w),
+                    // Next to grid density on purpose: both answer "how do I
+                    // want to look at this", neither changes what is in the
+                    // library.
+                    //
+                    // It opens a sheet rather than toggling in place. This was
+                    // a bare ↓/↑ that flipped on tap, and the first person to
+                    // meet it asked what it filtered — which is the answer:
+                    // an unlabelled arrow says neither what it changes nor
+                    // what is currently on. See showLibrarySortSheet.
+                    BlocBuilder<ScreenshotsBloc, ScreenshotsState>(
+                      builder: (context, state) {
+                        if (state is! ScreenshotsLoadedState) {
+                          return const SizedBox.shrink();
+                        }
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            HeaderIconButton(
+                              // The conventional "reorder" glyph, and stable:
+                              // the sheet is where the current order is
+                              // stated, so the button only has to say what
+                              // tapping it is about.
+                              icon: Icons.swap_vert_rounded,
+                              tooltip: context.l10n.librarySortLabel,
+                              onTap: () => showLibrarySortSheet(
+                                context,
+                                current: state.sort,
+                                onSelected: (LibrarySort sort) => context
+                                    .read<ScreenshotsBloc>()
+                                    .add(SetLibrarySortEvent(sort)),
+                              ),
+                            ),
+                            SizedBox(width: 8.w),
+                          ],
+                        );
+                      },
+                    ),
                     Builder(
                       builder: (context) => HeaderIconButton(
                         icon: Icons.search_rounded,
@@ -109,6 +149,10 @@ class LibraryPage extends StatelessWidget {
                 child: ScreenshotsBody(
                   emptyTitle: context.l10n.libraryEmptyTitle,
                   emptyMessage: context.l10n.libraryEmptyMessage,
+                  // Only here. A folder holds one subject rather than one
+                  // stretch of time, so dated headings there would slice a
+                  // small, deliberately curated set into runs of one.
+                  groupByDate: true,
                 ),
               ),
             ],

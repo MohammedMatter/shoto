@@ -41,13 +41,19 @@ class FoldersLocalDataSource {
         .toList();
   }
 
+  /// [createdAt] exists for restores, which are re-creating a folder that was
+  /// made at some known point in the past. Left off everywhere else, so a
+  /// folder made by hand is still stamped with the moment it was made.
   Future<FolderModel> createFolder(
     String name,
     int color, {
     bool isPrivate = false,
+    DateTime? createdAt,
   }) async {
     final Database db = await _appDatabase.database;
-    final int now = DateTime.now().millisecondsSinceEpoch;
+    final int now =
+        createdAt?.millisecondsSinceEpoch ??
+        DateTime.now().millisecondsSinceEpoch;
     final int id = await db.insert(AppDatabase.folders, {
       'user_id': _userId,
       'name': name,

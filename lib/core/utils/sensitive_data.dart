@@ -332,8 +332,33 @@ abstract class SensitiveData {
   // Checksum-backed detections
   // -------------------------------------------------------------------
 
+  /// **A run following a `+` is a phone number, never a card.**
+  ///
+  /// Luhn passes about one run in ten by chance, and international numbers sit
+  /// squarely in the 13-19 digit band a card occupies — `+49 151 12345678` is
+  /// thirteen digits and does pass. It was being claimed as a card, which both
+  /// lost the phone number and put a false detection into the one trait whose
+  /// whole claim is that it is certain. No card is ever written with a leading
+  /// plus, so refusing that one character costs nothing and closes the hole.
   static final RegExp _cardCandidate = RegExp(
-    r'(?<![0-9])(?:[0-9][ -]?){12,19}(?![0-9])',
+    r'(?<![0-9+])(?:[0-9][ -]?){12,19}(?![0-9])',
+  );
+
+  /// A card printed as four groups of four, wrapped onto a second line.
+  ///
+  /// Narrow-field forms and receipts wrap, and OCR reports the wrap as a
+  /// newline — `4539 1488\n0343 6467` was going unrecognised, which for the
+  /// redaction screen means an unredacted card number in a shared image.
+  ///
+  /// **Every group must be exactly four digits, and that is what makes the
+  /// newline safe.** Allowing a line break as a general separator would let
+  /// this weld the tail of one line to the head of the next, and a run that
+  /// long passes Luhn by chance about one time in ten — turning the only
+  /// checksum-certain trait in the app into a guessing one. Card grouping is
+  /// 4-4-4-4; the account numbers and reference runs that sit on adjacent
+  /// lines in a real screenshot are not.
+  static final RegExp _wrappedCardCandidate = RegExp(
+    r'(?<![0-9+])[0-9]{4}(?:[ \-\n\r]{1,2}[0-9]{4}){3}(?![0-9])',
   );
 
   /// A 13-19 digit run that passes the Luhn checksum.
@@ -342,11 +367,14 @@ abstract class SensitiveData {
   /// same length: roughly nine in ten random runs fail it, so flagging one
   /// that passes is a near-certainty rather than a guess.
   static void _claimCard(String source, List<SensitiveMatch> found) {
-    for (final RegExpMatch match in _cardCandidate.allMatches(source)) {
+    for (final RegExpMatch match in <RegExpMatch>[
+      ..._cardCandidate.allMatches(source),
+      ..._wrappedCardCandidate.allMatches(source),
+    ]) {
       final String raw = match.group(0)!;
       final String digits = raw.replaceAll(_nonDigit, '');
       if (digits.length < 13 || digits.length > 19) continue;
-      if (!_passesLuhn(digits)) continue;
+      if (!passesLuhn(digits)) continue;
 
       // The candidate pattern allows a trailing separator, which would
       // otherwise be swallowed into the replaced span and delete a space that
@@ -363,7 +391,13 @@ abstract class SensitiveData {
 
   static bool _isDigit(int unit) => unit >= 0x30 && unit <= 0x39;
 
-  static bool _passesLuhn(String digits) {
+  /// The card checksum, shared rather than reimplemented.
+  ///
+  /// Public because [ActionExtractor] needs the same test: a Luhn-valid run
+  /// must be claimed before its phone rule sees it, or a screenshot of card
+  /// numbers is reported as a screen full of phone numbers to dial. A checksum
+  /// copied into two files is a checksum that will eventually differ in one.
+  static bool passesLuhn(String digits) {
     int sum = 0;
     bool doubleIt = false;
     for (int i = digits.length - 1; i >= 0; i--) {

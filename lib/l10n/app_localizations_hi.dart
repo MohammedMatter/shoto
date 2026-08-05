@@ -141,6 +141,49 @@ class AppLocalizationsHi extends AppLocalizations {
   String get libraryFilterFavorites => 'पसंदीदा';
 
   @override
+  String get libraryTraitSensitive => 'संवेदनशील';
+
+  @override
+  String get libraryTraitLink => 'लिंक';
+
+  @override
+  String get libraryTraitContact => 'फ़ोन या ईमेल';
+
+  @override
+  String get libraryTraitCode => 'कोड';
+
+  @override
+  String get libraryTraitEvent => 'तारीख़ें';
+
+  @override
+  String get libraryCertaintyVerified => 'चेकसम से सत्यापित';
+
+  @override
+  String get libraryCertaintyRead => 'आपके स्क्रीनशॉट के टेक्स्ट से पढ़ा गया';
+
+  @override
+  String libraryLensNoteWithUnread(String basis, int count) {
+    return '$basis · $count अभी तक नहीं पढ़े गए';
+  }
+
+  @override
+  String libraryNoTraitTitle(String trait) {
+    return '$trait वाला कोई स्क्रीनशॉट नहीं';
+  }
+
+  @override
+  String get libraryNoTraitMessage =>
+      'पढ़े गए किसी भी स्क्रीनशॉट में यह नहीं है।';
+
+  @override
+  String libraryNoTraitUnreadMessage(int count) {
+    return 'पढ़े गए में कुछ नहीं मिला। $count स्क्रीनशॉट कभी नहीं पढ़े गए, इसलिए वे अभी मैच नहीं हो सकते।';
+  }
+
+  @override
+  String get libraryShowAll => 'सभी दिखाएँ';
+
+  @override
   String get libraryFilterUnsorted => 'बिना क्रम के';
 
   @override
@@ -300,6 +343,15 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get foldersPrivate => 'निजी (चेहरा या फ़िंगरप्रिंट लॉक)';
+
+  @override
+  String get foldersPrivateFace => 'निजी (चेहरा लॉक)';
+
+  @override
+  String get foldersPrivateFingerprint => 'निजी (फ़िंगरप्रिंट लॉक)';
+
+  @override
+  String get foldersPrivateGeneric => 'निजी (लॉक)';
 
   @override
   String get foldersOptions => 'फ़ोल्डर विकल्प';
@@ -697,13 +749,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get proWelcomeAction => 'शुरू करें';
 
   @override
-  String get featRules => 'नियम जो आपके लिए फ़ाइल करें';
-
-  @override
-  String get featRulesBody =>
-      'एक बार नियम लिखें और हर साझा किया स्क्रीनशॉट खुद फ़ाइल हो जाए। नियम आपने लिखा है, इसलिए वजह हमेशा पता होती है।';
-
-  @override
   String get featSearch => 'स्क्रीनशॉट के अंदर खोजें';
 
   @override
@@ -744,22 +789,6 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get featUnlimitedBody =>
       'मुफ़्त संस्करण कुछ ही फ़ोल्डर और स्क्रीनशॉट पर रुक जाता है। Pro दोनों सीमाएँ हटा देता है।';
-
-  @override
-  String get featRulesHow =>
-      'नियम एक वाक्य है जो आप खुद लिखते हैं: जब स्क्रीनशॉट ऐसा दिखे, उसे उस फ़ोल्डर में रखो। हर नया स्क्रीनशॉट आते ही आपके नियमों से जाँचा जाता है, इसलिए फ़ाइल करना याद रखने वाला काम नहीं रह जाता।';
-
-  @override
-  String get featRulesPoint1 =>
-      'तस्वीर के भीतर छपे शब्दों पर, तस्वीर में जो दिख रहा है उस पर, या उसमें कोई संवेदनशील जानकारी है या नहीं — इन पर मिलान करें।';
-
-  @override
-  String get featRulesPoint2 =>
-      'अपनी सभी शर्तें माँगें या उनमें से कोई एक, और किसी भी शर्त को उलट सकते हैं।';
-
-  @override
-  String get featRulesPoint3 =>
-      'कुछ भी अंदाज़े से नहीं होता। नियम आपने लिखा है, इसलिए आपको हमेशा पता रहता है कि स्क्रीनशॉट वहाँ क्यों गया।';
 
   @override
   String get featSearchHow =>
@@ -1371,4 +1400,437 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get searchWorking => 'आपके स्क्रीनशॉट पढ़े जा रहे हैं…';
+
+  @override
+  String get settingsBackup => 'बैकअप और पुनर्स्थापना';
+
+  @override
+  String get settingsBackupHint => 'अपनी लाइब्रेरी की एक कॉपी फ़ाइल में रखें';
+
+  @override
+  String get backupTitle => 'बैकअप';
+
+  @override
+  String get backupIntro =>
+      'आपकी लाइब्रेरी सिर्फ़ इसी फ़ोन में है, और कहीं नहीं। फ़ोन खो जाए तो बैकअप ही बचता है।';
+
+  @override
+  String get backupCreateTitle => 'बैकअप बनाएँ';
+
+  @override
+  String get backupCreateBody =>
+      'हर स्क्रीनशॉट, फ़ोल्डर और लेबल को एक फ़ाइल में समेटता है, फिर आप तय करते हैं कि उसे कहाँ रखना है।';
+
+  @override
+  String get backupCreateAction => 'बैकअप बनाएँ';
+
+  @override
+  String get backupWorking => 'आपकी लाइब्रेरी समेटी जा रही है…';
+
+  @override
+  String backupDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots स्क्रीनशॉट',
+      one: '1 स्क्रीनशॉट',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders फ़ोल्डर',
+      one: '1 फ़ोल्डर',
+    );
+    return '$_temp0 और $_temp1 का बैकअप बना';
+  }
+
+  @override
+  String backupDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots स्क्रीनशॉट',
+      one: '1 स्क्रीनशॉट',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped पढ़े नहीं जा सके',
+      one: '1 पढ़ा नहीं जा सका',
+    );
+    return '$_temp0 का बैकअप बना। $_temp1।';
+  }
+
+  @override
+  String get backupFailed => 'बैकअप पूरा नहीं हो सका';
+
+  @override
+  String get backupPrivacyNote =>
+      'फ़ाइल इसी फ़ोन पर बनती है और सिर्फ़ वहीं जाती है जहाँ आप भेजते हैं। कुछ भी अपलोड नहीं होता।';
+
+  @override
+  String get restoreTitle => 'बैकअप से लौटाएँ';
+
+  @override
+  String get restoreBody =>
+      'बैकअप फ़ाइल की हर चीज़ इस लाइब्रेरी में जोड़ता है। जो पहले से है वह हटता नहीं।';
+
+  @override
+  String get restoreAction => 'पुनर्स्थापित करें';
+
+  @override
+  String get restoreWorking => 'आपकी लाइब्रेरी लौटाई जा रही है…';
+
+  @override
+  String get restoreConfirmTitle => 'यह बैकअप लौटाएँ?';
+
+  @override
+  String get restoreConfirmMessage =>
+      'फ़ाइल की हर चीज़ आपकी लाइब्रेरी में जुड़ जाएगी। आपके मौजूदा स्क्रीनशॉट जैसे हैं वैसे ही रहेंगे।';
+
+  @override
+  String restoreDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots स्क्रीनशॉट',
+      one: '1 स्क्रीनशॉट',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders फ़ोल्डर',
+      one: '1 फ़ोल्डर',
+    );
+    return '$_temp0 और $_temp1 लौटाए गए';
+  }
+
+  @override
+  String restoreDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots स्क्रीनशॉट',
+      one: '1 स्क्रीनशॉट',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped छोड़े गए',
+      one: '1 छोड़ा गया',
+    );
+    return '$_temp0 लौटाए गए। $_temp1।';
+  }
+
+  @override
+  String get restoreNotABackup => 'यह फ़ाइल SHOTO का बैकअप नहीं है';
+
+  @override
+  String get restoreFailed => 'पुनर्स्थापना पूरी नहीं हो सकी';
+
+  @override
+  String get settingsHelp => 'सहायता';
+
+  @override
+  String get settingsContactSupport => 'सहायता से संपर्क करें';
+
+  @override
+  String get supportSubject => 'SHOTO सहायता';
+
+  @override
+  String get supportNoMailApp =>
+      'कोई ईमेल ऐप नहीं मिला। पता कॉपी कर दिया गया है।';
+
+  @override
+  String get supportGreeting => 'नमस्ते SHOTO टीम,';
+
+  @override
+  String get dateToday => 'आज';
+
+  @override
+  String get dateYesterday => 'कल';
+
+  @override
+  String get dateThisWeek => 'इस हफ़्ते';
+
+  @override
+  String get dateThisMonth => 'इस महीने';
+
+  @override
+  String get librarySortNewest => 'नई पहले';
+
+  @override
+  String get librarySortOldest => 'पुरानी पहले';
+
+  @override
+  String get librarySortLabel => 'क्रम';
+
+  @override
+  String libraryScanPrompt(int count) {
+    return '$count स्क्रीनशॉट पढ़ें';
+  }
+
+  @override
+  String get libraryScanning => 'पढ़ा जा रहा है…';
+
+  @override
+  String restoreClashTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count फ़ोल्डर यहाँ पहले से हैं',
+      one: '1 फ़ोल्डर यहाँ पहले से है',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get restoreClashBody =>
+      'ये नाम आपकी लाइब्रेरी में और बैकअप में दोनों जगह हैं। एक ही नाम हमेशा एक ही फ़ोल्डर नहीं होता, इसलिए यह फ़ैसला आपका है।';
+
+  @override
+  String restoreClashMore(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'और $count अन्य',
+      one: 'और 1 अन्य',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get restoreClashMerge => 'इन्हें मिला दें';
+
+  @override
+  String get restoreClashMergeBody =>
+      'स्क्रीनशॉट आपके मौजूदा फ़ोल्डरों में जाएँगे।';
+
+  @override
+  String get restoreClashSeparate => 'अलग रखें';
+
+  @override
+  String get restoreClashSeparateBody =>
+      'उसी नाम का दूसरा फ़ोल्डर बनता है। मौजूदा कुछ भी नहीं बदलता।';
+
+  @override
+  String get intentBuy => 'खरीदें';
+
+  @override
+  String get intentRead => 'पढ़ें';
+
+  @override
+  String get intentReply => 'जवाब दें';
+
+  @override
+  String get intentTry => 'आज़माएँ';
+
+  @override
+  String get intentVisit => 'जाएँ';
+
+  @override
+  String get intentBuyWaiting => 'खरीदने के लिए';
+
+  @override
+  String get intentReadWaiting => 'पढ़ने के लिए';
+
+  @override
+  String get intentReplyWaiting => 'जवाब देने के लिए';
+
+  @override
+  String get intentTryWaiting => 'आज़माने के लिए';
+
+  @override
+  String get intentVisitWaiting => 'जाने के लिए';
+
+  @override
+  String get intentWatch => 'देखें';
+
+  @override
+  String get intentListen => 'सुनें';
+
+  @override
+  String get intentCook => 'पकाएँ';
+
+  @override
+  String get intentBook => 'बुक करें';
+
+  @override
+  String get intentPay => 'भुगतान करें';
+
+  @override
+  String get intentSend => 'भेजें';
+
+  @override
+  String get intentDownload => 'डाउनलोड करें';
+
+  @override
+  String get intentApply => 'आवेदन करें';
+
+  @override
+  String get intentCompare => 'तुलना करें';
+
+  @override
+  String get intentFix => 'ठीक करें';
+
+  @override
+  String get intentWatchWaiting => 'देखने के लिए';
+
+  @override
+  String get intentListenWaiting => 'सुनने के लिए';
+
+  @override
+  String get intentCookWaiting => 'पकाने के लिए';
+
+  @override
+  String get intentBookWaiting => 'बुक करने के लिए';
+
+  @override
+  String get intentPayWaiting => 'भुगतान के लिए';
+
+  @override
+  String get intentSendWaiting => 'भेजने के लिए';
+
+  @override
+  String get intentDownloadWaiting => 'डाउनलोड के लिए';
+
+  @override
+  String get intentApplyWaiting => 'आवेदन के लिए';
+
+  @override
+  String get intentCompareWaiting => 'तुलना के लिए';
+
+  @override
+  String get intentFixWaiting => 'ठीक करने के लिए';
+
+  @override
+  String get intentMore => 'और';
+
+  @override
+  String get intentSectionCommon => 'पहले से मौजूद';
+
+  @override
+  String get intentSectionYours => 'आपके';
+
+  @override
+  String get intentYoursEmpty =>
+      'आपका लिखा हुआ शब्द भी ऊपर वालों जैसा ही काम करता है।';
+
+  @override
+  String get intentNewAction => 'अपना लिखें';
+
+  @override
+  String get intentNewTitle => 'इसे अपना नाम दें';
+
+  @override
+  String get intentEditTitle => 'इसे बदलें';
+
+  @override
+  String get intentNameLabel => 'क्रिया';
+
+  @override
+  String get intentNameHint => 'वापस करें, रद्द करें, फ़ोन करें…';
+
+  @override
+  String get intentIconLabel => 'आइकॉन';
+
+  @override
+  String intentDeleteTitle(String label) {
+    return '\"$label\" हटाएँ?';
+  }
+
+  @override
+  String get intentDeleteMessage =>
+      'स्क्रीनशॉट जहाँ हैं वहीं रहेंगे। बस किसी चीज़ का इंतज़ार करना बंद कर देंगे।';
+
+  @override
+  String get intentSelectionAction => 'इस रूप में चिह्नित करें';
+
+  @override
+  String intentSelectionApplied(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count स्क्रीनशॉट चिह्नित',
+      one: '1 स्क्रीनशॉट चिह्नित',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get intentPrompt => 'इसका क्या करेंगे?';
+
+  @override
+  String get intentSkip => 'कुछ ख़ास नहीं';
+
+  @override
+  String get intentWaitingTitle => 'आपका इंतज़ार';
+
+  @override
+  String get intentNothingWaiting => 'कुछ भी बाक़ी नहीं';
+
+  @override
+  String get intentAllDone => 'बाद के लिए सहेजा सब कुछ पूरा हो गया।';
+
+  @override
+  String get intentMarkDone => 'हो गया';
+
+  @override
+  String get intentUndo => 'वापस रखें';
+
+  @override
+  String get intentDoneToast => 'पूरा हुआ';
+
+  @override
+  String get intentChange => 'बदलें कि यह किसलिए है';
+
+  @override
+  String get intentClear => 'किसी काम के लिए नहीं';
+
+  @override
+  String intentEmptyOne(String verb) {
+    return 'यहाँ $verb को कुछ नहीं';
+  }
+
+  @override
+  String get intentEmptyBody =>
+      'आपके चिह्नित स्क्रीनशॉट यहाँ रहेंगे जब तक आप उन्हें पूरा न करें।';
+
+  @override
+  String intentDoneCount(int count) {
+    return '$count पूरे';
+  }
+
+  @override
+  String dateDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count दिन पहले',
+      one: '1 दिन पहले',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateWeeksAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count हफ़्ते पहले',
+      one: '1 हफ़्ता पहले',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateMonthsAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count महीने पहले',
+      one: '1 महीना पहले',
+    );
+    return '$_temp0';
+  }
 }

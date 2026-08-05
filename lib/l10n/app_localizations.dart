@@ -358,6 +358,78 @@ abstract class AppLocalizations {
   /// **'Favorites'**
   String get libraryFilterFavorites;
 
+  /// No description provided for @libraryTraitSensitive.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitive'**
+  String get libraryTraitSensitive;
+
+  /// No description provided for @libraryTraitLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Links'**
+  String get libraryTraitLink;
+
+  /// No description provided for @libraryTraitContact.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone or email'**
+  String get libraryTraitContact;
+
+  /// No description provided for @libraryTraitCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Codes'**
+  String get libraryTraitCode;
+
+  /// No description provided for @libraryTraitEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Dates'**
+  String get libraryTraitEvent;
+
+  /// No description provided for @libraryCertaintyVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified by checksum'**
+  String get libraryCertaintyVerified;
+
+  /// No description provided for @libraryCertaintyRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read from the text in your screenshots'**
+  String get libraryCertaintyRead;
+
+  /// No description provided for @libraryLensNoteWithUnread.
+  ///
+  /// In en, this message translates to:
+  /// **'{basis} · {count} not read yet'**
+  String libraryLensNoteWithUnread(String basis, int count);
+
+  /// No description provided for @libraryNoTraitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No screenshots with {trait}'**
+  String libraryNoTraitTitle(String trait);
+
+  /// No description provided for @libraryNoTraitMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Every screenshot that has been read carries none of these.'**
+  String get libraryNoTraitMessage;
+
+  /// No description provided for @libraryNoTraitUnreadMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing found in what has been read. {count} screenshots have never been read, so they can\'t be matched yet.'**
+  String libraryNoTraitUnreadMessage(int count);
+
+  /// No description provided for @libraryShowAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all'**
+  String get libraryShowAll;
+
   /// No description provided for @libraryFilterUnsorted.
   ///
   /// In en, this message translates to:
@@ -645,6 +717,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Private (face or fingerprint lock)'**
   String get foldersPrivate;
+
+  /// No description provided for @foldersPrivateFace.
+  ///
+  /// In en, this message translates to:
+  /// **'Private (face lock)'**
+  String get foldersPrivateFace;
+
+  /// No description provided for @foldersPrivateFingerprint.
+  ///
+  /// In en, this message translates to:
+  /// **'Private (fingerprint lock)'**
+  String get foldersPrivateFingerprint;
+
+  /// No description provided for @foldersPrivateGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Private (locked)'**
+  String get foldersPrivateGeneric;
 
   /// No description provided for @foldersOptions.
   ///
@@ -1324,18 +1414,6 @@ abstract class AppLocalizations {
   /// **'Start using it'**
   String get proWelcomeAction;
 
-  /// No description provided for @featRules.
-  ///
-  /// In en, this message translates to:
-  /// **'Rules that file for you'**
-  String get featRules;
-
-  /// No description provided for @featRulesBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Write a rule once and every screenshot you share in files itself. You wrote the rule, so you always know why something landed where it did.'**
-  String get featRulesBody;
-
   /// No description provided for @featSearch.
   ///
   /// In en, this message translates to:
@@ -1407,30 +1485,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The free tier stops at a few folders and screenshots. Pro removes both caps.'**
   String get featUnlimitedBody;
-
-  /// No description provided for @featRulesHow.
-  ///
-  /// In en, this message translates to:
-  /// **'A rule is one sentence you write yourself: when a screenshot looks like this, put it in that folder. Every new screenshot is checked against your rules the moment it arrives, so filing stops being something you have to remember to do.'**
-  String get featRulesHow;
-
-  /// No description provided for @featRulesPoint1.
-  ///
-  /// In en, this message translates to:
-  /// **'Match on words printed inside the image, on what the picture shows, or on whether it holds something sensitive.'**
-  String get featRulesPoint1;
-
-  /// No description provided for @featRulesPoint2.
-  ///
-  /// In en, this message translates to:
-  /// **'Ask for all of your conditions or any of them, and turn any condition into its opposite.'**
-  String get featRulesPoint2;
-
-  /// No description provided for @featRulesPoint3.
-  ///
-  /// In en, this message translates to:
-  /// **'Nothing is guessed. You wrote the rule, so you always know why a screenshot landed where it did.'**
-  String get featRulesPoint3;
 
   /// No description provided for @featSearchHow.
   ///
@@ -2409,6 +2463,624 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reading your screenshots…'**
   String get searchWorking;
+
+  /// No description provided for @settingsBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up & restore'**
+  String get settingsBackup;
+
+  /// No description provided for @settingsBackupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep a copy of your library in a file'**
+  String get settingsBackupHint;
+
+  /// No description provided for @backupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get backupTitle;
+
+  /// No description provided for @backupIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Your library lives on this phone and nowhere else. A backup is the copy that survives losing it.'**
+  String get backupIntro;
+
+  /// No description provided for @backupCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a backup'**
+  String get backupCreateTitle;
+
+  /// No description provided for @backupCreateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Packs every screenshot, folder and label into one file, then lets you choose where to keep it.'**
+  String get backupCreateBody;
+
+  /// No description provided for @backupCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create backup'**
+  String get backupCreateAction;
+
+  /// No description provided for @backupWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Packing your library…'**
+  String get backupWorking;
+
+  /// No description provided for @backupDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{screenshots, plural, =1{Backed up 1 screenshot} other{Backed up {screenshots} screenshots}} and {folders, plural, =1{1 folder} other{{folders} folders}}'**
+  String backupDone(int screenshots, int folders);
+
+  /// No description provided for @backupDoneWithSkips.
+  ///
+  /// In en, this message translates to:
+  /// **'Backed up {screenshots, plural, =1{1 screenshot} other{{screenshots} screenshots}}. {skipped, plural, =1{1 could not be read} other{{skipped} could not be read}}.'**
+  String backupDoneWithSkips(int screenshots, int skipped);
+
+  /// No description provided for @backupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The backup could not be finished'**
+  String get backupFailed;
+
+  /// No description provided for @backupPrivacyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The file is built on this phone and goes only where you send it. Nothing is uploaded.'**
+  String get backupPrivacyNote;
+
+  /// No description provided for @restoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore a backup'**
+  String get restoreTitle;
+
+  /// No description provided for @restoreBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Adds everything from a backup file to this library. Nothing already here is removed.'**
+  String get restoreBody;
+
+  /// No description provided for @restoreAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get restoreAction;
+
+  /// No description provided for @restoreWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Putting your library back…'**
+  String get restoreWorking;
+
+  /// No description provided for @restoreConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore this backup?'**
+  String get restoreConfirmTitle;
+
+  /// No description provided for @restoreConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything in the file is added to your library. Your current screenshots stay exactly as they are.'**
+  String get restoreConfirmMessage;
+
+  /// No description provided for @restoreDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{screenshots, plural, =1{Restored 1 screenshot} other{Restored {screenshots} screenshots}} and {folders, plural, =1{1 folder} other{{folders} folders}}'**
+  String restoreDone(int screenshots, int folders);
+
+  /// No description provided for @restoreDoneWithSkips.
+  ///
+  /// In en, this message translates to:
+  /// **'Restored {screenshots, plural, =1{1 screenshot} other{{screenshots} screenshots}}. {skipped, plural, =1{1 was skipped} other{{skipped} were skipped}}.'**
+  String restoreDoneWithSkips(int screenshots, int skipped);
+
+  /// No description provided for @restoreNotABackup.
+  ///
+  /// In en, this message translates to:
+  /// **'That file is not a SHOTO backup'**
+  String get restoreNotABackup;
+
+  /// No description provided for @restoreFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The restore could not be finished'**
+  String get restoreFailed;
+
+  /// No description provided for @settingsHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get settingsHelp;
+
+  /// No description provided for @settingsContactSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact support'**
+  String get settingsContactSupport;
+
+  /// No description provided for @supportSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'SHOTO support'**
+  String get supportSubject;
+
+  /// No description provided for @supportNoMailApp.
+  ///
+  /// In en, this message translates to:
+  /// **'No email app found. The address is copied instead.'**
+  String get supportNoMailApp;
+
+  /// No description provided for @supportGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Hi SHOTO team,'**
+  String get supportGreeting;
+
+  /// No description provided for @dateToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get dateToday;
+
+  /// No description provided for @dateYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get dateYesterday;
+
+  /// No description provided for @dateThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier this week'**
+  String get dateThisWeek;
+
+  /// No description provided for @dateThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Earlier this month'**
+  String get dateThisMonth;
+
+  /// No description provided for @librarySortNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first'**
+  String get librarySortNewest;
+
+  /// No description provided for @librarySortOldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest first'**
+  String get librarySortOldest;
+
+  /// No description provided for @librarySortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Order'**
+  String get librarySortLabel;
+
+  /// No description provided for @libraryScanPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Read {count} screenshots'**
+  String libraryScanPrompt(int count);
+
+  /// No description provided for @libraryScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading…'**
+  String get libraryScanning;
+
+  /// No description provided for @restoreClashTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 folder already exists here} other{{count} folders already exist here}}'**
+  String restoreClashTitle(int count);
+
+  /// No description provided for @restoreClashBody.
+  ///
+  /// In en, this message translates to:
+  /// **'These names are in your library and in the backup. Same name does not always mean same folder, so this one is yours to decide.'**
+  String get restoreClashBody;
+
+  /// No description provided for @restoreClashMore.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{and 1 more} other{and {count} more}}'**
+  String restoreClashMore(int count);
+
+  /// No description provided for @restoreClashMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Put them together'**
+  String get restoreClashMerge;
+
+  /// No description provided for @restoreClashMergeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshots go into the folders you already have.'**
+  String get restoreClashMergeBody;
+
+  /// No description provided for @restoreClashSeparate.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep them apart'**
+  String get restoreClashSeparate;
+
+  /// No description provided for @restoreClashSeparateBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Makes a second folder with the same name. Nothing existing is touched.'**
+  String get restoreClashSeparateBody;
+
+  /// No description provided for @intentBuy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy'**
+  String get intentBuy;
+
+  /// No description provided for @intentRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Read'**
+  String get intentRead;
+
+  /// No description provided for @intentReply.
+  ///
+  /// In en, this message translates to:
+  /// **'Reply'**
+  String get intentReply;
+
+  /// No description provided for @intentTry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try'**
+  String get intentTry;
+
+  /// No description provided for @intentVisit.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit'**
+  String get intentVisit;
+
+  /// No description provided for @intentBuyWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To buy'**
+  String get intentBuyWaiting;
+
+  /// No description provided for @intentReadWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To read'**
+  String get intentReadWaiting;
+
+  /// No description provided for @intentReplyWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To reply'**
+  String get intentReplyWaiting;
+
+  /// No description provided for @intentTryWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To try'**
+  String get intentTryWaiting;
+
+  /// No description provided for @intentVisitWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To visit'**
+  String get intentVisitWaiting;
+
+  /// No description provided for @intentWatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch'**
+  String get intentWatch;
+
+  /// No description provided for @intentListen.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen'**
+  String get intentListen;
+
+  /// No description provided for @intentCook.
+  ///
+  /// In en, this message translates to:
+  /// **'Cook'**
+  String get intentCook;
+
+  /// No description provided for @intentBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get intentBook;
+
+  /// No description provided for @intentPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay'**
+  String get intentPay;
+
+  /// No description provided for @intentSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get intentSend;
+
+  /// No description provided for @intentDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get intentDownload;
+
+  /// No description provided for @intentApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get intentApply;
+
+  /// No description provided for @intentCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get intentCompare;
+
+  /// No description provided for @intentFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Fix'**
+  String get intentFix;
+
+  /// No description provided for @intentWatchWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To watch'**
+  String get intentWatchWaiting;
+
+  /// No description provided for @intentListenWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To listen to'**
+  String get intentListenWaiting;
+
+  /// No description provided for @intentCookWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To cook'**
+  String get intentCookWaiting;
+
+  /// No description provided for @intentBookWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To book'**
+  String get intentBookWaiting;
+
+  /// No description provided for @intentPayWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To pay'**
+  String get intentPayWaiting;
+
+  /// No description provided for @intentSendWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To send'**
+  String get intentSendWaiting;
+
+  /// No description provided for @intentDownloadWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To download'**
+  String get intentDownloadWaiting;
+
+  /// No description provided for @intentApplyWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To apply for'**
+  String get intentApplyWaiting;
+
+  /// No description provided for @intentCompareWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To compare'**
+  String get intentCompareWaiting;
+
+  /// No description provided for @intentFixWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'To fix'**
+  String get intentFixWaiting;
+
+  /// No description provided for @intentMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get intentMore;
+
+  /// No description provided for @intentSectionCommon.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready-made'**
+  String get intentSectionCommon;
+
+  /// No description provided for @intentSectionYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Yours'**
+  String get intentSectionYours;
+
+  /// No description provided for @intentYoursEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'A verb you write yourself works exactly like the ones above.'**
+  String get intentYoursEmpty;
+
+  /// No description provided for @intentNewAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Write your own'**
+  String get intentNewAction;
+
+  /// No description provided for @intentNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Name it yourself'**
+  String get intentNewTitle;
+
+  /// No description provided for @intentEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit this one'**
+  String get intentEditTitle;
+
+  /// No description provided for @intentNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'The verb'**
+  String get intentNameLabel;
+
+  /// No description provided for @intentNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Return it, cancel it, call them…'**
+  String get intentNameHint;
+
+  /// No description provided for @intentIconLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon'**
+  String get intentIconLabel;
+
+  /// No description provided for @intentDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{label}\"?'**
+  String intentDeleteTitle(String label);
+
+  /// No description provided for @intentDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'The screenshots stay where they are. They just stop waiting for anything.'**
+  String get intentDeleteMessage;
+
+  /// No description provided for @intentSelectionAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as'**
+  String get intentSelectionAction;
+
+  /// No description provided for @intentSelectionApplied.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 screenshot marked} other{{count} screenshots marked}}'**
+  String intentSelectionApplied(int count);
+
+  /// No description provided for @intentPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'What will you do with it?'**
+  String get intentPrompt;
+
+  /// No description provided for @intentSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in particular'**
+  String get intentSkip;
+
+  /// No description provided for @intentWaitingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting on you'**
+  String get intentWaitingTitle;
+
+  /// No description provided for @intentNothingWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing waiting on you'**
+  String get intentNothingWaiting;
+
+  /// No description provided for @intentAllDone.
+  ///
+  /// In en, this message translates to:
+  /// **'You have finished everything you saved for later.'**
+  String get intentAllDone;
+
+  /// No description provided for @intentMarkDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get intentMarkDone;
+
+  /// No description provided for @intentUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Put it back'**
+  String get intentUndo;
+
+  /// No description provided for @intentDoneToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticked off'**
+  String get intentDoneToast;
+
+  /// No description provided for @intentChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change what this is for'**
+  String get intentChange;
+
+  /// No description provided for @intentClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Not for anything'**
+  String get intentClear;
+
+  /// No description provided for @intentEmptyOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here to {verb}'**
+  String intentEmptyOne(String verb);
+
+  /// No description provided for @intentEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshots you mark land here until you tick them off.'**
+  String get intentEmptyBody;
+
+  /// No description provided for @intentDoneCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} finished'**
+  String intentDoneCount(int count);
+
+  /// No description provided for @dateDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day ago} other{{count} days ago}}'**
+  String dateDaysAgo(int count);
+
+  /// No description provided for @dateWeeksAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 week ago} other{{count} weeks ago}}'**
+  String dateWeeksAgo(int count);
+
+  /// No description provided for @dateMonthsAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 month ago} other{{count} months ago}}'**
+  String dateMonthsAgo(int count);
 }
 
 class _AppLocalizationsDelegate

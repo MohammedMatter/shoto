@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
+import 'package:shoto/core/services/haptics.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
@@ -17,6 +19,8 @@ import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dar
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/intent_full_picker_sheet.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/intent_visuals.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_actions.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_limit_gate.dart';
 import 'package:shoto/features/safe_share/presentation/pages/safe_share_page.dart';
@@ -307,14 +311,27 @@ class _ScreenshotDetailPageState extends State<ScreenshotDetailPage> {
                   _Chrome(
                     visible: _chromeVisible,
                     alignment: Alignment.bottomCenter,
-                    child: _ActionBar(
-                      item: current,
-                      onFavorite: () => _toggleFavorite(context, current),
-                      onActions: () => showSmartActionsSheet(context, current),
-                      onSafeShare: () => _safeShare(context, current),
-                      onShare: () => shareScreenshot(current),
-                      onMove: () => _move(context, current),
-                      onDelete: () => _delete(context, current),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        // Above the verbs, not among them. Everything in the
+                        // bar below *does* something to the screenshot right
+                        // now; this states what the user means to do about it
+                        // later, and a seventh icon in that row would read as
+                        // a seventh thing to trigger — the same reason it sits
+                        // above the actions in the quick-actions sheet.
+                        _IntentBar(item: current),
+                        _ActionBar(
+                          item: current,
+                          onFavorite: () => _toggleFavorite(context, current),
+                          onActions: () =>
+                              showSmartActionsSheet(context, current),
+                          onSafeShare: () => _safeShare(context, current),
+                          onShare: () => shareScreenshot(current),
+                          onMove: () => _move(context, current),
+                          onDelete: () => _delete(context, current),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -591,6 +608,126 @@ class _TopBar extends StatelessWidget {
 /// keeps the screenshot readable right to the edge of the screen while the
 /// controls stay legible over whatever is behind them. Same material as the
 /// tab bar, so the app feels like one piece.
+/// What this screenshot is for, on the screen where you are actually looking
+/// at it.
+///
+/// **This viewer used to be the one surface that could not answer the
+/// question**, which was exactly backwards: the grid shows you a wall of
+/// thumbnails, and this shows you the thing itself, full size, which is when a
+/// person can tell whether the receipt still needs paying.
+///
+/// It opens the full picker directly rather than carrying the five-chip row.
+/// A row of chips over somebody's photograph is chrome competing with the
+/// picture, and this surface is the one place the picture wins every argument.
+class _IntentBar extends StatelessWidget {
+  final ScreenshotEntity item;
+
+  const _IntentBar({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final IntentState? state = item.intent;
+    final bool isDone = state?.isDone ?? false;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 10.h),
+      child: Row(
+        children: <Widget>[
+          Flexible(
+            child: GlassLayer(
+              radius: 20.r,
+              sigma: AppBlur.panel,
+              child: PressableScale(
+                scale: 0.97,
+                onTap: () => _pick(context),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 14.w,
+                    vertical: 9.h,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.r),
+                    gradient: _ChromePalette.barFill,
+                    border: Border.all(color: _ChromePalette.rim),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(
+                        state?.ref.icon ?? Icons.add_rounded,
+                        size: 16.sp,
+                        color: Colors.white.withValues(
+                          alpha: isDone ? 0.55 : 0.95,
+                        ),
+                      ),
+                      SizedBox(width: 9.w),
+                      Flexible(
+                        child: Text(
+                          // With nothing set, the prompt itself is the label —
+                          // the control has to say what it is for before it
+                          // has anything to report.
+                          state?.ref.label(context) ?? context.l10n.intentPrompt,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.bodySmall.asMedium.copyWith(
+                            color: Colors.white.withValues(
+                              alpha: isDone ? 0.55 : 0.95,
+                            ),
+                            decoration: isDone
+                                ? TextDecoration.lineThrough
+                                : null,
+                            decorationColor: Colors.white.withValues(
+                              alpha: 0.55,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // The tick is a separate target from the label, because they are
+          // opposite actions: one changes what you owe, the other says you
+          // have paid it. Merged into one pill, every attempt to correct a
+          // mistaken verb would risk marking it finished instead.
+          if (state != null) ...<Widget>[
+            SizedBox(width: 8.w),
+            _GlassCircle(
+              icon: isDone
+                  ? Icons.check_rounded
+                  : Icons.radio_button_unchecked_rounded,
+              // Filled, not merely tinted — the same green the badge on the
+              // thumbnail turns and the same green the sheet's button fills
+              // with, so finishing something looks like one event no matter
+              // which of the three surfaces you happened to be on.
+              fill: isDone ? AppColors.success : null,
+              tint: Colors.white,
+              onTap: () {
+                Haptics.confirm();
+                context.read<ScreenshotsBloc>().add(
+                  SetIntentDoneEvent(item.id, !isDone),
+                );
+              },
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pick(BuildContext context) async {
+    final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
+    final IntentPickerResult? result = await showIntentFullPickerSheet(
+      context,
+      selected: item.intent?.ref,
+    );
+    if (result == null) return;
+    bloc.add(SetIntentEvent(item.id, result.intent));
+  }
+}
+
 class _ActionBar extends StatelessWidget {
   final ScreenshotEntity item;
   final VoidCallback onFavorite;
@@ -788,7 +925,19 @@ class _GlassCircle extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
 
-  const _GlassCircle({required this.icon, required this.onTap});
+  /// White everywhere except on the intent tick, which is the one control in
+  /// this chrome with a state worth colouring — see `IntentVisuals.tint`.
+  final Color? tint;
+
+  /// Replaces the glass fill, for the same one exception.
+  final Color? fill;
+
+  const _GlassCircle({
+    required this.icon,
+    required this.onTap,
+    this.tint,
+    this.fill,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -798,16 +947,38 @@ class _GlassCircle extends StatelessWidget {
       child: GlassLayer(
         radius: 999,
         sigma: AppBlur.bar,
-        child: Container(
+        child: AnimatedContainer(
+          duration: AppMotion.duration(context, AppMotion.normal),
+          curve: AppMotion.standard,
           width: 40.w,
           height: 40.w,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _ChromePalette.circleFill,
-            border: Border.all(color: _ChromePalette.rim),
+            color: fill ?? _ChromePalette.circleFill,
+            border: Border.all(
+              color: fill == null ? _ChromePalette.rim : Colors.transparent,
+            ),
           ),
-          child: Icon(icon, color: Colors.white, size: 16.sp),
+          child: AnimatedSwitcher(
+            duration: AppMotion.duration(context, AppMotion.normal),
+            switchInCurve: AppMotion.standard,
+            switchOutCurve: AppMotion.standard,
+            transitionBuilder:
+                (Widget child, Animation<double> animation) => FadeTransition(
+                  opacity: animation,
+                  child: ScaleTransition(
+                    scale: Tween<double>(begin: 0.6, end: 1).animate(animation),
+                    child: child,
+                  ),
+                ),
+            child: Icon(
+              icon,
+              key: ValueKey<IconData>(icon),
+              color: tint ?? Colors.white,
+              size: 16.sp,
+            ),
+          ),
         ),
       ),
     );

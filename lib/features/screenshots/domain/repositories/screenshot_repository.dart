@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:photo_manager/photo_manager.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 
 /// Everything here is scoped to the signed-in account.
@@ -22,6 +23,49 @@ abstract class ScreenshotRepository {
   Stream<void> get onLibraryChanged;
   Future<void> setFavorite(String assetId, bool isFavorite);
   Future<void> assignFolder(List<String> assetIds, int? folderId);
+
+  /// Records what the user said they would do with a screenshot, or clears it
+  /// when [intent] is null. Setting one resets its done state unless [doneAt]
+  /// says otherwise.
+  ///
+  /// [doneAt] is for restores, which are re-creating an intent that was ticked
+  /// off at a known point in the past. Everywhere a person sets an intent by
+  /// hand it is omitted, and the intent starts waiting.
+  Future<void> setIntent(String assetId, IntentRef? intent, {DateTime? doneAt});
+
+  /// The same answer given to many screenshots at once, in one write.
+  Future<void> setIntents(List<String> assetIds, IntentRef? intent);
+
+  /// Ticks an intent off, or puts it back on the waiting list.
+  Future<void> setIntentDone(String assetId, bool isDone);
+
+  /// The verbs this account wrote for itself, in picker order.
+  Future<List<CustomIntent>> getCustomIntents();
+
+  /// How many there are, for the free-tier cap — cheaper than reading them all
+  /// when the labels are not wanted.
+  Future<int> getCustomIntentCount();
+
+  /// Adds one and returns it, id and all, so the caller can file a screenshot
+  /// under it immediately.
+  Future<CustomIntent> createCustomIntent({
+    required String label,
+    required String iconKey,
+  });
+
+  Future<void> updateCustomIntent({
+    required String id,
+    required String label,
+    required String iconKey,
+  });
+
+  /// Removes one and clears it off every screenshot carrying it. Those
+  /// screenshots keep everything else and simply have no intent again.
+  Future<void> deleteCustomIntent(String id);
+
+  /// Intent ids in the order this account last used them, most recent first.
+  /// Decides which five the picker offers without configuration.
+  Future<List<String>> getIntentIdsByRecentUse();
 
   Future<void> deleteScreenshots(List<String> assetIds);
 
@@ -56,6 +100,10 @@ abstract class ScreenshotRepository {
   Future<String> saveGeneratedImage(
     Uint8List bytes, {
     required String filename,
+
+    /// When the picture was originally captured, for images that are being
+    /// put back rather than made. Omitted, the gallery dates it now.
+    DateTime? createdAt,
   });
 
   /// The id of the screenshot the *current account's* library already holds

@@ -31,6 +31,32 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
   /// the stale name until you navigate away and back.
   late FolderEntity _folder = widget.folder;
 
+  /// Only used to pick the glyph on the Unlock button, so the fingerprint
+  /// default is safe: it is what the button showed unconditionally before,
+  /// and it is replaced the moment the device reports a face instead.
+  BiometricKind _lockKind = BiometricKind.fingerprint;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.folder.isPrivate) _loadLockKind();
+  }
+
+  Future<void> _loadLockKind() async {
+    final BiometricKind kind = await sl<BiometricAuthService>().enrolledKind();
+    if (!mounted) return;
+    setState(() => _lockKind = kind);
+  }
+
+  /// A fingerprint glyph on a phone that unlocks by face is a small lie about
+  /// what the next tap will ask for, so the face-only case gets its own.
+  /// Everything else keeps the fingerprint: it is the one gesture the button
+  /// can promise when both are enrolled, and the honest fallback when Android
+  /// declines to name the modality at all.
+  IconData get _unlockIcon => _lockKind == BiometricKind.face
+      ? Icons.face_rounded
+      : Icons.fingerprint_rounded;
+
   void _showActions() {
     showFolderActionsSheet(
       context,
@@ -87,7 +113,7 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
                 SizedBox(height: 24.h),
                 PrimaryButton(
                   label: context.l10n.commonUnlock,
-                  icon: Icons.fingerprint_rounded,
+                  icon: _unlockIcon,
                   isLoading: _authenticating,
                   onPressed: _authenticate,
                 ),

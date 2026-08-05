@@ -139,6 +139,49 @@ class AppLocalizationsEs extends AppLocalizations {
   String get libraryFilterFavorites => 'Favoritas';
 
   @override
+  String get libraryTraitSensitive => 'Sensible';
+
+  @override
+  String get libraryTraitLink => 'Enlaces';
+
+  @override
+  String get libraryTraitContact => 'Teléfono o correo';
+
+  @override
+  String get libraryTraitCode => 'Códigos';
+
+  @override
+  String get libraryTraitEvent => 'Fechas';
+
+  @override
+  String get libraryCertaintyVerified => 'Verificado por suma de control';
+
+  @override
+  String get libraryCertaintyRead => 'Leído del texto de tus capturas';
+
+  @override
+  String libraryLensNoteWithUnread(String basis, int count) {
+    return '$basis · $count sin leer aún';
+  }
+
+  @override
+  String libraryNoTraitTitle(String trait) {
+    return 'Ninguna captura con $trait';
+  }
+
+  @override
+  String get libraryNoTraitMessage =>
+      'Ninguna de las capturas leídas contiene esto.';
+
+  @override
+  String libraryNoTraitUnreadMessage(int count) {
+    return 'No se encontró nada en lo leído. $count capturas nunca se han leído, así que aún no pueden coincidir.';
+  }
+
+  @override
+  String get libraryShowAll => 'Mostrar todo';
+
+  @override
   String get libraryFilterUnsorted => 'Sin ordenar';
 
   @override
@@ -299,6 +342,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get foldersPrivate => 'Privada (bloqueo facial o huella)';
+
+  @override
+  String get foldersPrivateFace => 'Privada (bloqueo facial)';
+
+  @override
+  String get foldersPrivateFingerprint => 'Privada (bloqueo por huella)';
+
+  @override
+  String get foldersPrivateGeneric => 'Privada (bloqueada)';
 
   @override
   String get foldersOptions => 'Opciones de carpeta';
@@ -697,13 +749,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proWelcomeAction => 'Empezar';
 
   @override
-  String get featRules => 'Reglas que archivan por ti';
-
-  @override
-  String get featRulesBody =>
-      'Escribe una regla una vez y cada captura que compartas se archiva sola. Tú escribiste la regla, así que siempre sabes por qué.';
-
-  @override
   String get featSearch => 'Busca dentro de tus capturas';
 
   @override
@@ -744,22 +789,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get featUnlimitedBody =>
       'El plan gratuito se detiene en unas pocas carpetas y capturas. Pro elimina ambos límites.';
-
-  @override
-  String get featRulesHow =>
-      'Una regla es una frase que escribes tú: cuando una captura sea así, guárdala en esa carpeta. Cada captura nueva se comprueba con tus reglas al llegar, así que archivar deja de ser algo que tengas que recordar.';
-
-  @override
-  String get featRulesPoint1 =>
-      'Coincide por las palabras impresas dentro de la imagen, por lo que muestra la foto o por si contiene algo sensible.';
-
-  @override
-  String get featRulesPoint2 =>
-      'Pide que se cumplan todas tus condiciones o cualquiera de ellas, y puedes invertir cualquier condición.';
-
-  @override
-  String get featRulesPoint3 =>
-      'No se adivina nada. La regla la escribiste tú, así que siempre sabes por qué una captura acabó donde acabó.';
 
   @override
   String get featSearchHow =>
@@ -1373,4 +1402,438 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get searchWorking => 'Leyendo tus capturas…';
+
+  @override
+  String get settingsBackup => 'Copia y restauración';
+
+  @override
+  String get settingsBackupHint => 'Guarda tu biblioteca en un archivo';
+
+  @override
+  String get backupTitle => 'Copia de seguridad';
+
+  @override
+  String get backupIntro =>
+      'Tu biblioteca vive en este teléfono y en ningún otro sitio. La copia es lo que queda si lo pierdes.';
+
+  @override
+  String get backupCreateTitle => 'Crear una copia';
+
+  @override
+  String get backupCreateBody =>
+      'Reúne cada captura, carpeta y etiqueta en un archivo, y luego eliges dónde guardarlo.';
+
+  @override
+  String get backupCreateAction => 'Crear copia';
+
+  @override
+  String get backupWorking => 'Empaquetando tu biblioteca…';
+
+  @override
+  String backupDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: 'Se copiaron $screenshots capturas',
+      one: 'Se copió 1 captura',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders carpetas',
+      one: '1 carpeta',
+    );
+    return '$_temp0 y $_temp1';
+  }
+
+  @override
+  String backupDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: 'Se copiaron $screenshots capturas',
+      one: 'Se copió 1 captura',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: 'No se pudieron leer $skipped',
+      one: 'No se pudo leer 1',
+    );
+    return '$_temp0. $_temp1.';
+  }
+
+  @override
+  String get backupFailed => 'No se pudo terminar la copia';
+
+  @override
+  String get backupPrivacyNote =>
+      'El archivo se crea en este teléfono y solo va a donde tú lo envíes. No se sube nada.';
+
+  @override
+  String get restoreTitle => 'Restaurar una copia';
+
+  @override
+  String get restoreBody =>
+      'Añade todo lo del archivo a esta biblioteca. No se quita nada de lo que ya tienes.';
+
+  @override
+  String get restoreAction => 'Restaurar';
+
+  @override
+  String get restoreWorking => 'Devolviendo tu biblioteca…';
+
+  @override
+  String get restoreConfirmTitle => '¿Restaurar esta copia?';
+
+  @override
+  String get restoreConfirmMessage =>
+      'Todo lo del archivo se añade a tu biblioteca. Tus capturas actuales se quedan tal cual.';
+
+  @override
+  String restoreDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: 'Se restauraron $screenshots capturas',
+      one: 'Se restauró 1 captura',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders carpetas',
+      one: '1 carpeta',
+    );
+    return '$_temp0 y $_temp1';
+  }
+
+  @override
+  String restoreDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: 'Se restauraron $screenshots capturas',
+      one: 'Se restauró 1 captura',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: 'Se omitieron $skipped',
+      one: 'Se omitió 1',
+    );
+    return '$_temp0. $_temp1.';
+  }
+
+  @override
+  String get restoreNotABackup => 'Ese archivo no es una copia de SHOTO';
+
+  @override
+  String get restoreFailed => 'No se pudo terminar la restauración';
+
+  @override
+  String get settingsHelp => 'Ayuda';
+
+  @override
+  String get settingsContactSupport => 'Contactar con soporte';
+
+  @override
+  String get supportSubject => 'Soporte de SHOTO';
+
+  @override
+  String get supportNoMailApp =>
+      'No hay ninguna app de correo. Se copió la dirección.';
+
+  @override
+  String get supportGreeting => 'Hola, equipo de SHOTO:';
+
+  @override
+  String get dateToday => 'Hoy';
+
+  @override
+  String get dateYesterday => 'Ayer';
+
+  @override
+  String get dateThisWeek => 'Esta semana';
+
+  @override
+  String get dateThisMonth => 'Este mes';
+
+  @override
+  String get librarySortNewest => 'Más recientes primero';
+
+  @override
+  String get librarySortOldest => 'Más antiguas primero';
+
+  @override
+  String get librarySortLabel => 'Orden';
+
+  @override
+  String libraryScanPrompt(int count) {
+    return 'Leer $count capturas';
+  }
+
+  @override
+  String get libraryScanning => 'Leyendo…';
+
+  @override
+  String restoreClashTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count carpetas ya existen aquí',
+      one: '1 carpeta ya existe aquí',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get restoreClashBody =>
+      'Estos nombres están en tu biblioteca y en la copia. El mismo nombre no siempre es la misma carpeta, así que esto lo decides tú.';
+
+  @override
+  String restoreClashMore(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'y $count más',
+      one: 'y 1 más',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get restoreClashMerge => 'Juntarlas';
+
+  @override
+  String get restoreClashMergeBody =>
+      'Las capturas van a las carpetas que ya tienes.';
+
+  @override
+  String get restoreClashSeparate => 'Mantenerlas aparte';
+
+  @override
+  String get restoreClashSeparateBody =>
+      'Crea una segunda carpeta con el mismo nombre. No se toca nada existente.';
+
+  @override
+  String get intentBuy => 'Comprar';
+
+  @override
+  String get intentRead => 'Leer';
+
+  @override
+  String get intentReply => 'Responder';
+
+  @override
+  String get intentTry => 'Probar';
+
+  @override
+  String get intentVisit => 'Visitar';
+
+  @override
+  String get intentBuyWaiting => 'Por comprar';
+
+  @override
+  String get intentReadWaiting => 'Por leer';
+
+  @override
+  String get intentReplyWaiting => 'Por responder';
+
+  @override
+  String get intentTryWaiting => 'Por probar';
+
+  @override
+  String get intentVisitWaiting => 'Por visitar';
+
+  @override
+  String get intentWatch => 'Ver';
+
+  @override
+  String get intentListen => 'Escuchar';
+
+  @override
+  String get intentCook => 'Cocinar';
+
+  @override
+  String get intentBook => 'Reservar';
+
+  @override
+  String get intentPay => 'Pagar';
+
+  @override
+  String get intentSend => 'Enviar';
+
+  @override
+  String get intentDownload => 'Descargar';
+
+  @override
+  String get intentApply => 'Postular';
+
+  @override
+  String get intentCompare => 'Comparar';
+
+  @override
+  String get intentFix => 'Arreglar';
+
+  @override
+  String get intentWatchWaiting => 'Por ver';
+
+  @override
+  String get intentListenWaiting => 'Por escuchar';
+
+  @override
+  String get intentCookWaiting => 'Por cocinar';
+
+  @override
+  String get intentBookWaiting => 'Por reservar';
+
+  @override
+  String get intentPayWaiting => 'Por pagar';
+
+  @override
+  String get intentSendWaiting => 'Por enviar';
+
+  @override
+  String get intentDownloadWaiting => 'Por descargar';
+
+  @override
+  String get intentApplyWaiting => 'Por postular';
+
+  @override
+  String get intentCompareWaiting => 'Por comparar';
+
+  @override
+  String get intentFixWaiting => 'Por arreglar';
+
+  @override
+  String get intentMore => 'Más';
+
+  @override
+  String get intentSectionCommon => 'Listas para usar';
+
+  @override
+  String get intentSectionYours => 'Tuyas';
+
+  @override
+  String get intentYoursEmpty =>
+      'Un verbo que escribas tú funciona igual que los de arriba.';
+
+  @override
+  String get intentNewAction => 'Escribe el tuyo';
+
+  @override
+  String get intentNewTitle => 'Ponle tu nombre';
+
+  @override
+  String get intentEditTitle => 'Editar esta';
+
+  @override
+  String get intentNameLabel => 'El verbo';
+
+  @override
+  String get intentNameHint => 'Devolverlo, cancelarlo, llamarlos…';
+
+  @override
+  String get intentIconLabel => 'Icono';
+
+  @override
+  String intentDeleteTitle(String label) {
+    return '¿Eliminar \"$label\"?';
+  }
+
+  @override
+  String get intentDeleteMessage =>
+      'Las capturas se quedan donde están. Solo dejan de esperar algo.';
+
+  @override
+  String get intentSelectionAction => 'Marcar como';
+
+  @override
+  String intentSelectionApplied(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count capturas marcadas',
+      one: '1 captura marcada',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get intentPrompt => '¿Qué vas a hacer con esto?';
+
+  @override
+  String get intentSkip => 'Nada en particular';
+
+  @override
+  String get intentWaitingTitle => 'Te espera';
+
+  @override
+  String get intentNothingWaiting => 'Nada te espera';
+
+  @override
+  String get intentAllDone =>
+      'Has terminado todo lo que guardaste para después.';
+
+  @override
+  String get intentMarkDone => 'Hecho';
+
+  @override
+  String get intentUndo => 'Devolver';
+
+  @override
+  String get intentDoneToast => 'Marcado';
+
+  @override
+  String get intentChange => 'Cambiar para qué es';
+
+  @override
+  String get intentClear => 'Para nada en concreto';
+
+  @override
+  String intentEmptyOne(String verb) {
+    return 'Nada que $verb aquí';
+  }
+
+  @override
+  String get intentEmptyBody =>
+      'Las capturas que marques aparecen aquí hasta que las taches.';
+
+  @override
+  String intentDoneCount(int count) {
+    return '$count terminadas';
+  }
+
+  @override
+  String dateDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'hace $count días',
+      one: 'hace 1 día',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateWeeksAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'hace $count semanas',
+      one: 'hace 1 semana',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateMonthsAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'hace $count meses',
+      one: 'hace 1 mes',
+    );
+    return '$_temp0';
+  }
 }

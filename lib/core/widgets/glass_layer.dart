@@ -33,6 +33,16 @@ abstract class AppBlur {
   static const double bar = 14;
   static const double panel = 16;
   static const double dialog = 12;
+
+  /// For sheets that cover most of the screen.
+  ///
+  /// Blur cost scales with area, and a near-full-screen panel re-blurs that
+  /// area on every frame of its entrance — so the surfaces that can least
+  /// afford [panel] are exactly the ones large enough to make it visible.
+  /// Frosting reads by *proportion* to the surface it sits on, and at this
+  /// size a lighter sigma is indistinguishable in a still while being
+  /// distinctly cheaper in motion.
+  static const double tallSheet = 10;
 }
 
 /// A frosted region: the clip and the blur, and nothing else.

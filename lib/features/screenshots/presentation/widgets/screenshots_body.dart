@@ -1,6 +1,8 @@
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/features/safe_share/presentation/pages/safe_share_page.dart';
+import 'package:shoto/core/widgets/app_snack_bar.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/intent_full_picker_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,12 +12,18 @@ import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/photo_viewer_route.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
+import 'package:shoto/core/utils/date_sections.dart';
 import 'package:shoto/core/widgets/animated_id_grid.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/widgets/confirm_dialog.dart';
+import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/core/widgets/empty_state.dart';
+import 'package:shoto/core/widgets/premium_gate.dart';
 import 'package:shoto/core/widgets/primary_button.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/content_trait_visuals.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/date_section_header.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/lens_provenance_note.dart';
 import 'package:shoto/features/folders/presentation/widgets/move_to_folder_sheet.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
@@ -37,6 +45,9 @@ class ScreenshotsBody extends StatefulWidget {
   final String emptyMessage;
   final bool showFavoritesFilter;
 
+  /// Whether to break the grid under dated headings.
+  final bool groupByDate;
+
   /// Namespace for this grid's shared-element tags.
   ///
   /// Hero tags have to be unique within a route, and the Library tab and a
@@ -50,6 +61,7 @@ class ScreenshotsBody extends StatefulWidget {
     required this.emptyTitle,
     required this.emptyMessage,
     this.showFavoritesFilter = true,
+    this.groupByDate = false,
     this.heroPrefix = 'grid',
   });
 
@@ -186,9 +198,38 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                       onSelect: (filter) => context.read<ScreenshotsBloc>().add(
                         SetLibraryFilterEvent(filter),
                       ),
+                      lens: loaded.lens,
+                      onSelectLens: (lens) => context
+                          .read<ScreenshotsBloc>()
+                          .add(SetLibraryLensEvent(lens)),
+                      traitCounts: <ContentTrait, int>{
+                        for (final ContentTrait trait in ContentTrait.values)
+                          trait: loaded.traitCount(trait),
+                      },
+                      traitsReady: loaded.traitsReady,
+                      unreadCount: loaded.unreadCount,
+                      isScanning: loaded.isScanning,
+                      onScan: () async {
+                        // Recognition is the paid feature behind every trait,
+                        // so the gate belongs on the thing that starts it, not
+                        // on the chips it eventually fills in.
+                        if (!await ensurePremium(context)) return;
+                        if (!context.mounted) return;
+                        context.read<ScreenshotsBloc>().add(
+                          ScanUnreadForTraitsEvent(),
+                        );
+                      },
                     )
                   : const SizedBox.shrink(key: ValueKey<String>('none')),
             ),
+            // Outside the switcher above: selection mode replaces the filter
+            // strip, and a note explaining a lens has no business sitting
+            // under a delete button.
+            if (!loaded.isSelectionMode && showFavoritesFilter)
+              LensProvenanceNote(
+                lens: loaded.lens,
+                unreadCount: loaded.unreadCount,
+              ),
             Expanded(
               child: AnimatedSwitcher(
                 duration: AppMotion.normal,
@@ -208,35 +249,62 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                   ),
                 ),
                 child: KeyedSubtree(
-                  key: ValueKey<LibraryFilter>(loaded.filter),
+                  // Keyed on both axes, or narrowing by content would swap the
+                  // grid's contents with no transition at all while changing
+                  // status cross-fades — two ways of doing the same thing.
+                  key: ValueKey<String>('${loaded.filter}-${loaded.lens}'),
                   child: items.isEmpty
-                      ? EmptyState(
-                          // An empty filter is not an empty library, and the
-                          // three cases have nothing useful in common: an
-                          // empty inbox is the app's best possible outcome,
-                          // no favorites is a feature nobody has used yet,
-                          // and nothing at all is a first run. One shared
-                          // sentence for all three would be wrong twice.
-                          icon: switch (loaded.filter) {
-                            LibraryFilter.unsorted =>
-                              Icons.check_circle_outline_rounded,
-                            _ => Icons.image_search_rounded,
-                          },
-                          title: switch (loaded.filter) {
-                            LibraryFilter.unsorted =>
-                              context.l10n.libraryNoUnsortedTitle,
-                            LibraryFilter.favorites =>
-                              context.l10n.libraryNoFavoritesTitle,
-                            LibraryFilter.all => emptyTitle,
-                          },
-                          message: switch (loaded.filter) {
-                            LibraryFilter.unsorted =>
-                              context.l10n.libraryNoUnsortedMessage,
-                            LibraryFilter.favorites =>
-                              context.l10n.libraryNoFavoritesMessage,
-                            LibraryFilter.all => emptyMessage,
-                          },
-                        )
+                      ? loaded.lens != null
+                            // A lens that matched nothing is its own case, and
+                            // the honest wording depends on whether anything
+                            // is still unread: "you have none of these" and
+                            // "nothing that has been read has these" are
+                            // different claims, and only one of them is
+                            // usually true.
+                            ? EmptyState(
+                                icon: loaded.lens!.icon,
+                                title: context.l10n.libraryNoTraitTitle(
+                                  loaded.lens!.label(context),
+                                ),
+                                message: loaded.unreadCount > 0
+                                    ? context.l10n.libraryNoTraitUnreadMessage(
+                                        loaded.unreadCount,
+                                      )
+                                    : context.l10n.libraryNoTraitMessage,
+                                action: PrimaryButton(
+                                  label: context.l10n.libraryShowAll,
+                                  onPressed: () => context
+                                      .read<ScreenshotsBloc>()
+                                      .add(SetLibraryLensEvent(null)),
+                                ),
+                              )
+                            : EmptyState(
+                                // An empty filter is not an empty library, and the
+                                // three cases have nothing useful in common: an
+                                // empty inbox is the app's best possible outcome,
+                                // no favorites is a feature nobody has used yet,
+                                // and nothing at all is a first run. One shared
+                                // sentence for all three would be wrong twice.
+                                icon: switch (loaded.filter) {
+                                  LibraryFilter.unsorted =>
+                                    Icons.check_circle_outline_rounded,
+                                  _ => Icons.image_search_rounded,
+                                },
+                                title: switch (loaded.filter) {
+                                  LibraryFilter.unsorted =>
+                                    context.l10n.libraryNoUnsortedTitle,
+                                  LibraryFilter.favorites =>
+                                    context.l10n.libraryNoFavoritesTitle,
+                                  LibraryFilter.all => emptyTitle,
+                                },
+                                message: switch (loaded.filter) {
+                                  LibraryFilter.unsorted =>
+                                    context.l10n.libraryNoUnsortedMessage,
+                                  LibraryFilter.favorites =>
+                                    context.l10n.libraryNoFavoritesMessage,
+                                  LibraryFilter.all => emptyMessage,
+                                },
+                              )
                       : RefreshIndicator(
                           color: AppColors.primary,
                           backgroundColor: AppColors.surface,
@@ -259,20 +327,10 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                             // scrolling a grid that is mid-delete — is not
                             // something tapping through the app reliably
                             // reaches.
-                            builder: (context, _) => AnimatedIdGrid<ScreenshotEntity>(
+                            builder: (context, _) => _buildGrid(
+                              context,
                               items: items,
-                              idOf: (item) => item.id,
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                20.w,
-                                4.h,
-                                20.w,
-                                120.h,
-                              ),
-                              // Roughly two extra rows built ahead of the
-                              // viewport, so a thumbnail has already decoded by
-                              // the time it scrolls into sight instead of
-                              // popping in after it.
-                              cacheExtent: 600,
+                              loaded: loaded,
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount:
@@ -281,87 +339,6 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                                     crossAxisSpacing: 10.w,
                                     childAspectRatio: 1,
                                   ),
-                              itemBuilder: (context, item, index, animation) {
-                                // Isolates each tile's raster layer, so one
-                                // thumbnail finishing decoding doesn't repaint
-                                // every other tile on screen with it.
-                                return RepaintBoundary(
-                                  // Scale rather than a fade alone: a tile that
-                                  // only fades leaves a hole the same size
-                                  // behind it, so the grid still looks like it
-                                  // snapped shut. From 0.85 — never from zero.
-                                  child: FadeTransition(
-                                    opacity: animation,
-                                    child: ScaleTransition(
-                                      scale: Tween<double>(begin: 0.85, end: 1)
-                                          .animate(
-                                            CurvedAnimation(
-                                              parent: animation,
-                                              curve: AppMotion.standard,
-                                            ),
-                                          ),
-                                      // Entrance for the first few tiles on first
-                                      // paint only — see EntranceStagger for why
-                                      // it refuses to run on a recycled item.
-                                      child: EntranceStagger(
-                                        index: index,
-                                        since: _openedAt,
-                                        child: ScreenshotThumbnail(
-                                          asset: item.asset,
-                                          heroTag:
-                                              '${widget.heroPrefix}-${item.id}',
-                                          isFavorite: item.isFavorite,
-                                          isSelected: loaded.selectedIds
-                                              .contains(item.id),
-                                          selectionMode: loaded.isSelectionMode,
-                                          onTap: () {
-                                            if (loaded.isSelectionMode) {
-                                              context
-                                                  .read<ScreenshotsBloc>()
-                                                  .add(
-                                                    ToggleSelectItemEvent(
-                                                      item.id,
-                                                    ),
-                                                  );
-                                            } else {
-                                              Navigator.of(context).push(
-                                                PhotoViewerRoute(
-                                                  builder: (_) =>
-                                                      BlocProvider.value(
-                                                        value: context
-                                                            .read<
-                                                              ScreenshotsBloc
-                                                            >(),
-                                                        child:
-                                                            ScreenshotDetailPage(
-                                                              screenshots:
-                                                                  items,
-                                                              initialIndex:
-                                                                  index,
-                                                              heroPrefix: widget
-                                                                  .heroPrefix,
-                                                            ),
-                                                      ),
-                                                ),
-                                              );
-                                            }
-                                          },
-                                          onLongPress: () => context
-                                              .read<ScreenshotsBloc>()
-                                              .add(
-                                                ToggleSelectItemEvent(item.id),
-                                              ),
-                                          onMoreTap: () =>
-                                              showScreenshotQuickActionsSheet(
-                                                context,
-                                                item,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
                             ),
                           ),
                         ),
@@ -371,6 +348,146 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
           ],
         );
       },
+    );
+  }
+
+  /// The grid itself, sectioned or flat.
+  ///
+  /// Both take the same tile builder, so the two modes cannot drift apart in
+  /// how a screenshot looks or what tapping it does — the only difference is
+  /// whether headings break the run.
+  Widget _buildGrid(
+    BuildContext context, {
+    required List<ScreenshotEntity> items,
+    required ScreenshotsLoadedState loaded,
+    required SliverGridDelegate gridDelegate,
+  }) {
+    final EdgeInsetsGeometry padding = EdgeInsetsDirectional.fromSTEB(
+      20.w,
+      4.h,
+      20.w,
+      120.h,
+    );
+
+    Widget tile(
+      BuildContext context,
+      ScreenshotEntity item,
+      int index,
+      Animation<double> animation,
+    ) => _tile(context, item, index, animation, items: items, loaded: loaded);
+
+    if (!widget.groupByDate) {
+      return AnimatedIdGrid<ScreenshotEntity>(
+        items: items,
+        idOf: (item) => item.id,
+        padding: padding,
+        cacheExtent: 600,
+        gridDelegate: gridDelegate,
+        itemBuilder: tile,
+      );
+    }
+
+    // Grouped fresh on every build rather than cached in the state: it is one
+    // pass over a list already in memory, and the alternative is a cache that
+    // has to be invalidated when the clock crosses midnight.
+    final List<DatedGroup<ScreenshotEntity>> groups =
+        groupByDate<ScreenshotEntity>(
+          items,
+          dateOf: (item) => item.asset.createDateTime,
+          now: DateTime.now(),
+        );
+
+    return SectionedIdGrid<ScreenshotEntity>(
+      idOf: (item) => item.id,
+      padding: padding,
+      cacheExtent: 600,
+      headerExtent: DateSectionHeader.extent,
+      gridDelegate: gridDelegate,
+      itemBuilder: tile,
+      sections: [
+        for (final DatedGroup<ScreenshotEntity> group in groups)
+          GridSection<ScreenshotEntity>(
+            id: group.section.id,
+            header: DateSectionHeader(section: group.section),
+            items: group.items,
+          ),
+      ],
+    );
+  }
+
+  /// One thumbnail.
+  ///
+  /// [index] addresses into [items] — the whole visible list, across every
+  /// section — because that is what the detail page pages through.
+  Widget _tile(
+    BuildContext context,
+    ScreenshotEntity item,
+    int index,
+    Animation<double> animation, {
+    required List<ScreenshotEntity> items,
+    required ScreenshotsLoadedState loaded,
+  }) {
+    // Isolates each tile's raster layer, so one thumbnail finishing decoding
+    // doesn't repaint every other tile on screen with it.
+    return RepaintBoundary(
+      // Scale rather than a fade alone: a tile that only fades leaves a hole
+      // the same size behind it, so the grid still looks like it snapped shut.
+      // From 0.85 — never from zero.
+      child: FadeTransition(
+        opacity: animation,
+        child: ScaleTransition(
+          scale: Tween<double>(begin: 0.85, end: 1).animate(
+            CurvedAnimation(parent: animation, curve: AppMotion.standard),
+          ),
+          // Entrance for the first few tiles on first paint only — see
+          // EntranceStagger for why it refuses to run on a recycled item.
+          child: EntranceStagger(
+            index: index,
+            since: _openedAt,
+            child: ScreenshotThumbnail(
+              asset: item.asset,
+              heroTag: '${widget.heroPrefix}-${item.id}',
+              isFavorite: item.isFavorite,
+              intent: item.intent,
+              isSelected: loaded.selectedIds.contains(item.id),
+              selectionMode: loaded.isSelectionMode,
+              onTap: () {
+                if (loaded.isSelectionMode) {
+                  context.read<ScreenshotsBloc>().add(
+                    ToggleSelectItemEvent(item.id),
+                  );
+                  return;
+                }
+                // Looked up by id rather than trusting the index handed in.
+                // Sectioned mode composes the index from a section offset plus
+                // a position inside it, and for the frame where a deletion is
+                // still animating out those two disagree by one — which would
+                // open the neighbouring screenshot.
+                final int at = items.indexWhere(
+                  (ScreenshotEntity s) => s.id == item.id,
+                );
+                if (at < 0) return;
+                Navigator.of(context).push(
+                  PhotoViewerRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<ScreenshotsBloc>(),
+                      child: ScreenshotDetailPage(
+                        screenshots: items,
+                        initialIndex: at,
+                        heroPrefix: widget.heroPrefix,
+                      ),
+                    ),
+                  ),
+                );
+              },
+              onLongPress: () => context.read<ScreenshotsBloc>().add(
+                ToggleSelectItemEvent(item.id),
+              ),
+              onMoreTap: () => showScreenshotQuickActionsSheet(context, item),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -504,6 +621,35 @@ class _SelectionToolbar extends StatelessWidget {
           // the two is destructive, which is not a thing to put under the
           // thumb of a person who came here to do something else.
           if (!intent.isGuided) ...[
+            // **The only way an existing library ever gets answered.**
+            //
+            // Intents were reachable one screenshot at a time, from a sheet
+            // behind a small icon — which is fine for the ones taken from now
+            // on and useless for the two thousand already there. Nobody opens
+            // two thousand sheets. Here, forty at a time, "what are all of
+            // these for" is a question with an answer.
+            //
+            // Not gated by the free-tier cap, unlike Move: an intent brings
+            // nothing under management. It files no screenshot into anything
+            // and stars nothing — it records a sentence about pictures the
+            // user already has.
+            _ToolbarAction(
+              icon: Icons.checklist_rtl_rounded,
+              iconColor: AppColors.secondary,
+              label: context.l10n.intentSelectionAction,
+              onTap: () async {
+                final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
+                final IntentPickerResult? result =
+                    await showIntentFullPickerSheet(context, selected: null);
+                if (result == null) return;
+                bloc.add(SetIntentForSelectionEvent(result.intent));
+                if (!context.mounted) return;
+                showAppSnackBar(
+                  context,
+                  context.l10n.intentSelectionApplied(count),
+                );
+              },
+            ),
             _ToolbarAction(
               icon: Icons.drive_file_move_rounded,
               iconColor: AppColors.secondary,

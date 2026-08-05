@@ -51,11 +51,11 @@ class _PaywallPageState extends State<PaywallPage> {
           if (state is SubscriptionPurchaseSuccessState) {
             // Celebrated **here**, in the paywall itself, rather than at the
             // places that open it. The paywall is pushed from `ensurePremium`
-            // — which is called from the folder cap, the screenshot cap, Rules,
+            // — which is called from the folder cap, the screenshot cap,
             // Duplicates and Settings — so hanging the welcome screen off each
-            // caller would mean remembering it at six sites and getting it
-            // wrong at one. This is the single point every purchase passes
-            // through.
+            // caller would mean remembering it at every one of them and
+            // getting it wrong at one. This is the single point every purchase
+            // passes through.
             _celebrate(context);
           } else if (state is SubscriptionLoadedState &&
               state.errorMessage != null) {

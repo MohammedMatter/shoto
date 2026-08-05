@@ -140,6 +140,49 @@ class AppLocalizationsUr extends AppLocalizations {
   String get libraryFilterFavorites => 'پسندیدہ';
 
   @override
+  String get libraryTraitSensitive => 'حساس';
+
+  @override
+  String get libraryTraitLink => 'لنکس';
+
+  @override
+  String get libraryTraitContact => 'فون یا ای میل';
+
+  @override
+  String get libraryTraitCode => 'کوڈز';
+
+  @override
+  String get libraryTraitEvent => 'تاریخیں';
+
+  @override
+  String get libraryCertaintyVerified => 'چیک سم سے تصدیق شدہ';
+
+  @override
+  String get libraryCertaintyRead => 'آپ کے اسکرین شاٹس کے متن سے پڑھا گیا';
+
+  @override
+  String libraryLensNoteWithUnread(String basis, int count) {
+    return '$basis · $count ابھی تک نہیں پڑھے گئے';
+  }
+
+  @override
+  String libraryNoTraitTitle(String trait) {
+    return '$trait والا کوئی اسکرین شاٹ نہیں';
+  }
+
+  @override
+  String get libraryNoTraitMessage =>
+      'پڑھے گئے کسی بھی اسکرین شاٹ میں یہ نہیں ہے۔';
+
+  @override
+  String libraryNoTraitUnreadMessage(int count) {
+    return 'پڑھے گئے میں کچھ نہیں ملا۔ $count اسکرین شاٹس کبھی نہیں پڑھے گئے، اس لیے وہ ابھی میچ نہیں ہو سکتے۔';
+  }
+
+  @override
+  String get libraryShowAll => 'سب دکھائیں';
+
+  @override
   String get libraryFilterUnsorted => 'غیر ترتیب شدہ';
 
   @override
@@ -299,6 +342,15 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get foldersPrivate => 'نجی (چہرہ یا فنگر پرنٹ لاک)';
+
+  @override
+  String get foldersPrivateFace => 'نجی (چہرے کا لاک)';
+
+  @override
+  String get foldersPrivateFingerprint => 'نجی (فنگر پرنٹ لاک)';
+
+  @override
+  String get foldersPrivateGeneric => 'نجی (مقفل)';
 
   @override
   String get foldersOptions => 'فولڈر کے اختیارات';
@@ -696,13 +748,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get proWelcomeAction => 'شروع کریں';
 
   @override
-  String get featRules => 'قواعد جو آپ کے لیے فائل کریں';
-
-  @override
-  String get featRulesBody =>
-      'ایک بار قاعدہ لکھیں اور ہر شیئر کیا گیا اسکرین شاٹ خود فائل ہو جائے۔ قاعدہ آپ نے لکھا ہے، اس لیے وجہ ہمیشہ معلوم ہوتی ہے۔';
-
-  @override
   String get featSearch => 'اسکرین شاٹس کے اندر تلاش';
 
   @override
@@ -743,22 +788,6 @@ class AppLocalizationsUr extends AppLocalizations {
   @override
   String get featUnlimitedBody =>
       'مفت درجہ چند فولڈرز اور اسکرین شاٹس پر رک جاتا ہے۔ Pro دونوں حدیں ہٹا دیتا ہے۔';
-
-  @override
-  String get featRulesHow =>
-      'قاعدہ ایک جملہ ہے جو آپ خود لکھتے ہیں: جب اسکرین شاٹ ایسا ہو، اسے اُس فولڈر میں رکھو۔ ہر نیا اسکرین شاٹ آتے ہی آپ کے قواعد پر پرکھا جاتا ہے، سو ترتیب دینا یاد رکھنے والا کام نہیں رہتا۔';
-
-  @override
-  String get featRulesPoint1 =>
-      'تصویر کے اندر لکھے الفاظ پر، تصویر میں جو دکھ رہا ہے اُس پر، یا اس میں کوئی حساس معلومات ہے یا نہیں — اِن پر مماثلت رکھیں۔';
-
-  @override
-  String get featRulesPoint2 =>
-      'اپنی تمام شرائط طلب کریں یا اُن میں سے کوئی ایک، اور کسی بھی شرط کو الٹ سکتے ہیں۔';
-
-  @override
-  String get featRulesPoint3 =>
-      'کچھ بھی اندازے سے نہیں ہوتا۔ قاعدہ آپ نے لکھا ہے، اس لیے آپ ہمیشہ جانتے ہیں کہ اسکرین شاٹ وہاں کیوں گیا۔';
 
   @override
   String get featSearchHow =>
@@ -1369,4 +1398,437 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get searchWorking => 'آپ کے اسکرین شاٹس پڑھے جا رہے ہیں…';
+
+  @override
+  String get settingsBackup => 'بیک اپ اور بحالی';
+
+  @override
+  String get settingsBackupHint => 'اپنی لائبریری کی ایک نقل فائل میں رکھیں';
+
+  @override
+  String get backupTitle => 'بیک اپ';
+
+  @override
+  String get backupIntro =>
+      'آپ کی لائبریری صرف اسی فون میں ہے، اور کہیں نہیں۔ فون گم ہو جائے تو بیک اپ ہی بچتا ہے۔';
+
+  @override
+  String get backupCreateTitle => 'بیک اپ بنائیں';
+
+  @override
+  String get backupCreateBody =>
+      'ہر اسکرین شاٹ، فولڈر اور لیبل کو ایک فائل میں سمیٹتا ہے، پھر آپ طے کرتے ہیں کہ اسے کہاں رکھنا ہے۔';
+
+  @override
+  String get backupCreateAction => 'بیک اپ بنائیں';
+
+  @override
+  String get backupWorking => 'آپ کی لائبریری سمیٹی جا رہی ہے…';
+
+  @override
+  String backupDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots اسکرین شاٹس',
+      one: '1 اسکرین شاٹ',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders فولڈرز',
+      one: '1 فولڈر',
+    );
+    return '$_temp0 اور $_temp1 کا بیک اپ بن گیا';
+  }
+
+  @override
+  String backupDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots اسکرین شاٹس',
+      one: '1 اسکرین شاٹ',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped پڑھے نہ جا سکے',
+      one: '1 پڑھا نہ جا سکا',
+    );
+    return '$_temp0 کا بیک اپ بنا۔ $_temp1۔';
+  }
+
+  @override
+  String get backupFailed => 'بیک اپ مکمل نہ ہو سکا';
+
+  @override
+  String get backupPrivacyNote =>
+      'فائل اسی فون پر بنتی ہے اور صرف وہیں جاتی ہے جہاں آپ بھیجیں۔ کچھ بھی اپ لوڈ نہیں ہوتا۔';
+
+  @override
+  String get restoreTitle => 'بیک اپ سے بحال کریں';
+
+  @override
+  String get restoreBody =>
+      'بیک اپ فائل کی ہر چیز اس لائبریری میں شامل کرتا ہے۔ جو پہلے سے موجود ہے وہ نہیں ہٹتا۔';
+
+  @override
+  String get restoreAction => 'بحال کریں';
+
+  @override
+  String get restoreWorking => 'آپ کی لائبریری واپس رکھی جا رہی ہے…';
+
+  @override
+  String get restoreConfirmTitle => 'یہ بیک اپ بحال کریں؟';
+
+  @override
+  String get restoreConfirmMessage =>
+      'فائل کی ہر چیز آپ کی لائبریری میں شامل ہو جائے گی۔ آپ کے موجودہ اسکرین شاٹس جوں کے توں رہیں گے۔';
+
+  @override
+  String restoreDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots اسکرین شاٹس',
+      one: '1 اسکرین شاٹ',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders فولڈرز',
+      one: '1 فولڈر',
+    );
+    return '$_temp0 اور $_temp1 بحال ہوئے';
+  }
+
+  @override
+  String restoreDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots اسکرین شاٹس',
+      one: '1 اسکرین شاٹ',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped چھوڑ دیے گئے',
+      one: '1 چھوڑ دیا گیا',
+    );
+    return '$_temp0 بحال ہوئے۔ $_temp1۔';
+  }
+
+  @override
+  String get restoreNotABackup => 'یہ فائل SHOTO کا بیک اپ نہیں ہے';
+
+  @override
+  String get restoreFailed => 'بحالی مکمل نہ ہو سکی';
+
+  @override
+  String get settingsHelp => 'مدد';
+
+  @override
+  String get settingsContactSupport => 'سپورٹ سے رابطہ کریں';
+
+  @override
+  String get supportSubject => 'SHOTO سپورٹ';
+
+  @override
+  String get supportNoMailApp =>
+      'کوئی ای میل ایپ نہیں ملی۔ پتہ کاپی کر دیا گیا ہے۔';
+
+  @override
+  String get supportGreeting => 'السلام علیکم SHOTO ٹیم،';
+
+  @override
+  String get dateToday => 'آج';
+
+  @override
+  String get dateYesterday => 'کل';
+
+  @override
+  String get dateThisWeek => 'اس ہفتے';
+
+  @override
+  String get dateThisMonth => 'اس مہینے';
+
+  @override
+  String get librarySortNewest => 'نئی پہلے';
+
+  @override
+  String get librarySortOldest => 'پرانی پہلے';
+
+  @override
+  String get librarySortLabel => 'ترتیب';
+
+  @override
+  String libraryScanPrompt(int count) {
+    return '$count اسکرین شاٹس پڑھیں';
+  }
+
+  @override
+  String get libraryScanning => 'پڑھا جا رہا ہے…';
+
+  @override
+  String restoreClashTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count فولڈرز یہاں پہلے سے موجود ہیں',
+      one: '1 فولڈر یہاں پہلے سے موجود ہے',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get restoreClashBody =>
+      'یہ نام آپ کی لائبریری میں بھی ہیں اور بیک اپ میں بھی۔ ایک ہی نام ہمیشہ ایک ہی فولڈر نہیں ہوتا، اس لیے یہ فیصلہ آپ کا ہے۔';
+
+  @override
+  String restoreClashMore(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'اور $count مزید',
+      one: 'اور 1 مزید',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get restoreClashMerge => 'انہیں ملا دیں';
+
+  @override
+  String get restoreClashMergeBody =>
+      'اسکرین شاٹس آپ کے موجودہ فولڈرز میں جائیں گے۔';
+
+  @override
+  String get restoreClashSeparate => 'الگ رکھیں';
+
+  @override
+  String get restoreClashSeparateBody =>
+      'اسی نام کا دوسرا فولڈر بنتا ہے۔ موجودہ کچھ بھی نہیں بدلتا۔';
+
+  @override
+  String get intentBuy => 'خریدیں';
+
+  @override
+  String get intentRead => 'پڑھیں';
+
+  @override
+  String get intentReply => 'جواب دیں';
+
+  @override
+  String get intentTry => 'آزمائیں';
+
+  @override
+  String get intentVisit => 'جائیں';
+
+  @override
+  String get intentBuyWaiting => 'خریدنے کے لیے';
+
+  @override
+  String get intentReadWaiting => 'پڑھنے کے لیے';
+
+  @override
+  String get intentReplyWaiting => 'جواب دینے کے لیے';
+
+  @override
+  String get intentTryWaiting => 'آزمانے کے لیے';
+
+  @override
+  String get intentVisitWaiting => 'جانے کے لیے';
+
+  @override
+  String get intentWatch => 'دیکھیں';
+
+  @override
+  String get intentListen => 'سنیں';
+
+  @override
+  String get intentCook => 'پکائیں';
+
+  @override
+  String get intentBook => 'بک کریں';
+
+  @override
+  String get intentPay => 'ادائیگی کریں';
+
+  @override
+  String get intentSend => 'بھیجیں';
+
+  @override
+  String get intentDownload => 'ڈاؤن لوڈ کریں';
+
+  @override
+  String get intentApply => 'درخواست دیں';
+
+  @override
+  String get intentCompare => 'موازنہ کریں';
+
+  @override
+  String get intentFix => 'ٹھیک کریں';
+
+  @override
+  String get intentWatchWaiting => 'دیکھنے کے لیے';
+
+  @override
+  String get intentListenWaiting => 'سننے کے لیے';
+
+  @override
+  String get intentCookWaiting => 'پکانے کے لیے';
+
+  @override
+  String get intentBookWaiting => 'بک کرنے کے لیے';
+
+  @override
+  String get intentPayWaiting => 'ادائیگی کے لیے';
+
+  @override
+  String get intentSendWaiting => 'بھیجنے کے لیے';
+
+  @override
+  String get intentDownloadWaiting => 'ڈاؤن لوڈ کے لیے';
+
+  @override
+  String get intentApplyWaiting => 'درخواست کے لیے';
+
+  @override
+  String get intentCompareWaiting => 'موازنے کے لیے';
+
+  @override
+  String get intentFixWaiting => 'ٹھیک کرنے کے لیے';
+
+  @override
+  String get intentMore => 'مزید';
+
+  @override
+  String get intentSectionCommon => 'پہلے سے موجود';
+
+  @override
+  String get intentSectionYours => 'آپ کے';
+
+  @override
+  String get intentYoursEmpty =>
+      'آپ کا لکھا ہوا لفظ بھی اوپر والوں جیسا ہی کام کرتا ہے۔';
+
+  @override
+  String get intentNewAction => 'اپنا لکھیں';
+
+  @override
+  String get intentNewTitle => 'اسے اپنا نام دیں';
+
+  @override
+  String get intentEditTitle => 'اسے بدلیں';
+
+  @override
+  String get intentNameLabel => 'فعل';
+
+  @override
+  String get intentNameHint => 'واپس کریں، منسوخ کریں، فون کریں…';
+
+  @override
+  String get intentIconLabel => 'آئیکن';
+
+  @override
+  String intentDeleteTitle(String label) {
+    return '\"$label\" حذف کریں؟';
+  }
+
+  @override
+  String get intentDeleteMessage =>
+      'اسکرین شاٹس اپنی جگہ رہیں گے۔ بس کسی چیز کا انتظار کرنا چھوڑ دیں گے۔';
+
+  @override
+  String get intentSelectionAction => 'اس طور نشان زد کریں';
+
+  @override
+  String intentSelectionApplied(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count اسکرین شاٹس نشان زد',
+      one: '1 اسکرین شاٹ نشان زد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get intentPrompt => 'اس کا کیا کریں گے؟';
+
+  @override
+  String get intentSkip => 'کچھ خاص نہیں';
+
+  @override
+  String get intentWaitingTitle => 'آپ کا انتظار';
+
+  @override
+  String get intentNothingWaiting => 'کچھ باقی نہیں';
+
+  @override
+  String get intentAllDone => 'بعد کے لیے محفوظ کیا سب کچھ مکمل ہو گیا۔';
+
+  @override
+  String get intentMarkDone => 'ہو گیا';
+
+  @override
+  String get intentUndo => 'واپس رکھیں';
+
+  @override
+  String get intentDoneToast => 'مکمل';
+
+  @override
+  String get intentChange => 'بدلیں کہ یہ کس لیے ہے';
+
+  @override
+  String get intentClear => 'کسی کام کے لیے نہیں';
+
+  @override
+  String intentEmptyOne(String verb) {
+    return 'یہاں $verb کے لیے کچھ نہیں';
+  }
+
+  @override
+  String get intentEmptyBody =>
+      'آپ کے نشان زد اسکرین شاٹس یہاں رہیں گے جب تک آپ انہیں مکمل نہ کریں۔';
+
+  @override
+  String intentDoneCount(int count) {
+    return '$count مکمل';
+  }
+
+  @override
+  String dateDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count دن پہلے',
+      one: '1 دن پہلے',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateWeeksAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ہفتے پہلے',
+      one: '1 ہفتہ پہلے',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateMonthsAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مہینے پہلے',
+      one: '1 مہینہ پہلے',
+    );
+    return '$_temp0';
+  }
 }

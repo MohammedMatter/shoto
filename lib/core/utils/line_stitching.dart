@@ -158,10 +158,7 @@ abstract class LineStitcher {
     if (upper.blockId != lower.blockId) return false;
     if (upper.text.trim().isEmpty || lower.text.trim().isEmpty) return false;
 
-    final double height = math.max(
-      upper.bounds.height,
-      lower.bounds.height,
-    );
+    final double height = math.max(upper.bounds.height, lower.bounds.height);
     if (height <= 0) return false;
 
     // Stacked, not side by side: the lower line has to start below the upper

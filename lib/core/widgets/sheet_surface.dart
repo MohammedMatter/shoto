@@ -34,7 +34,21 @@ import 'package:shoto/core/widgets/glass_layer.dart';
 class SheetSurface extends StatelessWidget {
   final Widget child;
 
-  const SheetSurface({super.key, required this.child});
+  /// Overrides the blur strength for the few sheets that are simply too big to
+  /// pay [AppBlur.panel] for.
+  ///
+  /// A blur costs by area, and the area is the whole thing being animated: a
+  /// sheet that covers four fifths of the screen re-blurs four fifths of the
+  /// screen on every frame of its entrance, on the frames the user is watching
+  /// most closely. The frosting is an identity worth keeping, so the answer is
+  /// to spend less of it where it costs most rather than to drop it — at this
+  /// size the difference between sigma 16 and sigma 10 is invisible in a
+  /// still and the difference in frames is not.
+  ///
+  /// Left alone by every ordinary sheet. See [AppBlur.tallSheet].
+  final double? sigma;
+
+  const SheetSurface({super.key, required this.child, this.sigma});
 
   /// Only the top two corners are cut, and by more than a card is: a sheet is
   /// the largest surface the app raises, and a radius that reads as generous at
@@ -49,6 +63,7 @@ class SheetSurface extends StatelessWidget {
 
     return GlassLayer(
       borderRadius: shape,
+      sigma: sigma ?? AppBlur.panel,
       child: GlassRim(
         borderRadius: shape,
         child: DecoratedBox(

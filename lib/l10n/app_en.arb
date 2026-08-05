@@ -42,6 +42,42 @@
   "libraryNoFavoritesMessage": "Tap the heart on a screenshot to save it here.",
   "libraryFilterAll": "All",
   "libraryFilterFavorites": "Favorites",
+  "libraryTraitSensitive": "Sensitive",
+  "libraryTraitLink": "Links",
+  "libraryTraitContact": "Phone or email",
+  "libraryTraitCode": "Codes",
+  "libraryTraitEvent": "Dates",
+  "libraryCertaintyVerified": "Verified by checksum",
+  "libraryCertaintyRead": "Read from the text in your screenshots",
+  "libraryLensNoteWithUnread": "{basis} · {count} not read yet",
+  "@libraryLensNoteWithUnread": {
+    "placeholders": {
+      "basis": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryNoTraitTitle": "No screenshots with {trait}",
+  "@libraryNoTraitTitle": {
+    "placeholders": {
+      "trait": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryNoTraitMessage": "Every screenshot that has been read carries none of these.",
+  "libraryNoTraitUnreadMessage": "Nothing found in what has been read. {count} screenshots have never been read, so they can't be matched yet.",
+  "@libraryNoTraitUnreadMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryShowAll": "Show all",
   "libraryFilterUnsorted": "Unsorted",
   "libraryNoUnsortedTitle": "Everything is filed",
   "libraryNoUnsortedMessage": "Nothing is waiting on you. New screenshots land here until you file or star them.",
@@ -111,6 +147,9 @@
   "foldersNameLabel": "Folder name",
   "foldersNameHint": "Receipts, Recipes, Work…",
   "foldersPrivate": "Private (face or fingerprint lock)",
+  "foldersPrivateFace": "Private (face lock)",
+  "foldersPrivateFingerprint": "Private (fingerprint lock)",
+  "foldersPrivateGeneric": "Private (locked)",
   "foldersOptions": "Folder options",
   "foldersDelete": "Delete folder",
   "foldersDeleteKept": "Screenshots inside are kept",
@@ -359,8 +398,6 @@
   "proWelcomeTitle": "You are on Pro",
   "proWelcomeBody": "Every feature is unlocked. There is nothing else to set up.",
   "proWelcomeAction": "Start using it",
-  "featRules": "Rules that file for you",
-  "featRulesBody": "Write a rule once and every screenshot you share in files itself. You wrote the rule, so you always know why something landed where it did.",
   "featSearch": "Search inside your screenshots",
   "featSearchBody": "Find any screenshot by the words written in it, in Arabic or English. Nothing is uploaded — the reading happens on your phone.",
   "featSafeShare": "Safe share",
@@ -373,10 +410,6 @@
   "featStitchBody": "Join a scrolling capture back into one tall image, with the overlap found and removed automatically.",
   "featUnlimited": "Unlimited folders and screenshots",
   "featUnlimitedBody": "The free tier stops at a few folders and screenshots. Pro removes both caps.",
-  "featRulesHow": "A rule is one sentence you write yourself: when a screenshot looks like this, put it in that folder. Every new screenshot is checked against your rules the moment it arrives, so filing stops being something you have to remember to do.",
-  "featRulesPoint1": "Match on words printed inside the image, on what the picture shows, or on whether it holds something sensitive.",
-  "featRulesPoint2": "Ask for all of your conditions or any of them, and turn any condition into its opposite.",
-  "featRulesPoint3": "Nothing is guessed. You wrote the rule, so you always know why a screenshot landed where it did.",
   "featSearchHow": "SHOTO reads the text printed inside every screenshot and remembers it, so one word you remember seeing is enough to find the picture again — no file names, no folders, no scrolling.",
   "featSearchPoint1": "Reads Arabic and English, and still matches when the spelling differs slightly.",
   "featSearchPoint2": "Also finds by what the picture shows — try \"receipt\", \"cat\" or \"food\".",
@@ -691,5 +724,218 @@
   "importFailed": "Could not save those screenshots",
   "homeToolImportSubtitle": "Pick from your phone — your gallery is never read",
   "importPickerUnavailable": "The photo picker could not open",
-  "searchWorking": "Reading your screenshots…"
+  "searchWorking": "Reading your screenshots…",
+  "settingsBackup": "Back up & restore",
+  "settingsBackupHint": "Keep a copy of your library in a file",
+  "backupTitle": "Backup",
+  "backupIntro": "Your library lives on this phone and nowhere else. A backup is the copy that survives losing it.",
+  "backupCreateTitle": "Create a backup",
+  "backupCreateBody": "Packs every screenshot, folder and label into one file, then lets you choose where to keep it.",
+  "backupCreateAction": "Create backup",
+  "backupWorking": "Packing your library…",
+  "backupDone": "{screenshots, plural, =1{Backed up 1 screenshot} other{Backed up {screenshots} screenshots}} and {folders, plural, =1{1 folder} other{{folders} folders}}",
+  "@backupDone": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "folders": {
+        "type": "int"
+      }
+    }
+  },
+  "backupDoneWithSkips": "Backed up {screenshots, plural, =1{1 screenshot} other{{screenshots} screenshots}}. {skipped, plural, =1{1 could not be read} other{{skipped} could not be read}}.",
+  "@backupDoneWithSkips": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "backupFailed": "The backup could not be finished",
+  "backupPrivacyNote": "The file is built on this phone and goes only where you send it. Nothing is uploaded.",
+  "restoreTitle": "Restore a backup",
+  "restoreBody": "Adds everything from a backup file to this library. Nothing already here is removed.",
+  "restoreAction": "Restore",
+  "restoreWorking": "Putting your library back…",
+  "restoreConfirmTitle": "Restore this backup?",
+  "restoreConfirmMessage": "Everything in the file is added to your library. Your current screenshots stay exactly as they are.",
+  "restoreDone": "{screenshots, plural, =1{Restored 1 screenshot} other{Restored {screenshots} screenshots}} and {folders, plural, =1{1 folder} other{{folders} folders}}",
+  "@restoreDone": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "folders": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreDoneWithSkips": "Restored {screenshots, plural, =1{1 screenshot} other{{screenshots} screenshots}}. {skipped, plural, =1{1 was skipped} other{{skipped} were skipped}}.",
+  "@restoreDoneWithSkips": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreNotABackup": "That file is not a SHOTO backup",
+  "restoreFailed": "The restore could not be finished",
+  "settingsHelp": "Help",
+  "settingsContactSupport": "Contact support",
+  "supportSubject": "SHOTO support",
+  "supportNoMailApp": "No email app found. The address is copied instead.",
+  "supportGreeting": "Hi SHOTO team,",
+  "dateToday": "Today",
+  "dateYesterday": "Yesterday",
+  "dateThisWeek": "Earlier this week",
+  "dateThisMonth": "Earlier this month",
+  "librarySortNewest": "Newest first",
+  "librarySortOldest": "Oldest first",
+  "librarySortLabel": "Order",
+  "libraryScanPrompt": "Read {count} screenshots",
+  "libraryScanning": "Reading…",
+  "@libraryScanPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashTitle": "{count, plural, =1{1 folder already exists here} other{{count} folders already exist here}}",
+  "@restoreClashTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashBody": "These names are in your library and in the backup. Same name does not always mean same folder, so this one is yours to decide.",
+  "restoreClashMore": "{count, plural, =1{and 1 more} other{and {count} more}}",
+  "@restoreClashMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashMerge": "Put them together",
+  "restoreClashMergeBody": "Screenshots go into the folders you already have.",
+  "restoreClashSeparate": "Keep them apart",
+  "restoreClashSeparateBody": "Makes a second folder with the same name. Nothing existing is touched.",
+  "intentBuy": "Buy",
+  "intentRead": "Read",
+  "intentReply": "Reply",
+  "intentTry": "Try",
+  "intentVisit": "Visit",
+  "intentBuyWaiting": "To buy",
+  "intentReadWaiting": "To read",
+  "intentReplyWaiting": "To reply",
+  "intentTryWaiting": "To try",
+  "intentVisitWaiting": "To visit",
+  "intentWatch": "Watch",
+  "intentListen": "Listen",
+  "intentCook": "Cook",
+  "intentBook": "Book",
+  "intentPay": "Pay",
+  "intentSend": "Send",
+  "intentDownload": "Download",
+  "intentApply": "Apply",
+  "intentCompare": "Compare",
+  "intentFix": "Fix",
+  "intentWatchWaiting": "To watch",
+  "intentListenWaiting": "To listen to",
+  "intentCookWaiting": "To cook",
+  "intentBookWaiting": "To book",
+  "intentPayWaiting": "To pay",
+  "intentSendWaiting": "To send",
+  "intentDownloadWaiting": "To download",
+  "intentApplyWaiting": "To apply for",
+  "intentCompareWaiting": "To compare",
+  "intentFixWaiting": "To fix",
+  "intentMore": "More",
+  "intentSectionCommon": "Ready-made",
+  "intentSectionYours": "Yours",
+  "intentYoursEmpty": "A verb you write yourself works exactly like the ones above.",
+  "intentNewAction": "Write your own",
+  "intentNewTitle": "Name it yourself",
+  "intentEditTitle": "Edit this one",
+  "intentNameLabel": "The verb",
+  "intentNameHint": "Return it, cancel it, call them…",
+  "intentIconLabel": "Icon",
+  "intentDeleteTitle": "Delete \"{label}\"?",
+  "@intentDeleteTitle": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "intentDeleteMessage": "The screenshots stay where they are. They just stop waiting for anything.",
+  "intentSelectionAction": "Mark as",
+  "intentSelectionApplied": "{count, plural, =1{1 screenshot marked} other{{count} screenshots marked}}",
+  "@intentSelectionApplied": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "intentPrompt": "What will you do with it?",
+  "intentSkip": "Nothing in particular",
+  "intentWaitingTitle": "Waiting on you",
+  "intentNothingWaiting": "Nothing waiting on you",
+  "intentAllDone": "You have finished everything you saved for later.",
+  "intentMarkDone": "Done",
+  "intentUndo": "Put it back",
+  "intentDoneToast": "Ticked off",
+  "intentChange": "Change what this is for",
+  "intentClear": "Not for anything",
+  "intentEmptyOne": "Nothing here to {verb}",
+  "@intentEmptyOne": {
+    "placeholders": {
+      "verb": {
+        "type": "String"
+      }
+    }
+  },
+  "intentEmptyBody": "Screenshots you mark land here until you tick them off.",
+  "intentDoneCount": "{count} finished",
+  "@intentDoneCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateDaysAgo": "{count, plural, =1{1 day ago} other{{count} days ago}}",
+  "@dateDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateWeeksAgo": "{count, plural, =1{1 week ago} other{{count} weeks ago}}",
+  "@dateWeeksAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateMonthsAgo": "{count, plural, =1{1 month ago} other{{count} months ago}}",
+  "@dateMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

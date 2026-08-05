@@ -1,5 +1,8 @@
+import 'package:shoto/core/utils/content_traits.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/library_sort.dart';
 
 class ScreenshotsEvent {}
 
@@ -67,3 +70,71 @@ class SetLibraryFilterEvent extends ScreenshotsEvent {
   final LibraryFilter filter;
   SetLibraryFilterEvent(this.filter);
 }
+
+/// Flips the grid between newest-first and oldest-first.
+///
+/// Its own event for the same reason the lens has one: order is independent of
+/// which slice and which contents are showing, so folding it into either would
+/// make the caller re-state a choice it has no opinion about.
+class SetLibrarySortEvent extends ScreenshotsEvent {
+  final LibrarySort sort;
+  SetLibrarySortEvent(this.sort);
+}
+
+/// Narrows the grid to screenshots whose contents carry [lens], or clears the
+/// narrowing when null.
+///
+/// Separate from [SetLibraryFilterEvent] because the two axes are independent:
+/// status and content can both be on, so one event carrying both would have to
+/// re-state the other axis on every tap.
+class SetLibraryLensEvent extends ScreenshotsEvent {
+  final ContentTrait? lens;
+  SetLibraryLensEvent(this.lens);
+}
+
+/// Runs text recognition over screenshots nobody has read yet, so the content
+/// filters have something to work from.
+///
+/// Budgeted rather than exhaustive — see [ScreenshotsBloc.scanBudget].
+class ScanUnreadForTraitsEvent extends ScreenshotsEvent {}
+
+/// Records what the user says they will do with a screenshot, or clears it
+/// with a null [intent].
+class SetIntentEvent extends ScreenshotsEvent {
+  final String assetId;
+  final IntentRef? intent;
+  SetIntentEvent(this.assetId, this.intent);
+}
+
+/// The same answer for everything currently selected, or clears it with a null
+/// [intent].
+///
+/// The only way a library that predates the question ever gets answered: doing
+/// it one screenshot at a time is a thousand sheets, so nobody does it and the
+/// waiting list stays a feature that only applies to screenshots taken from
+/// now on.
+class SetIntentForSelectionEvent extends ScreenshotsEvent {
+  final IntentRef? intent;
+  SetIntentForSelectionEvent(this.intent);
+}
+
+/// Re-reads the library after a custom intent was renamed or deleted.
+///
+/// Deleting one clears it off every screenshot that carried it, in the
+/// database, underneath the loaded state — so the state has to be rebuilt
+/// rather than patched, or the grid keeps showing a verb that no longer
+/// exists.
+class CustomIntentsChangedEvent extends ScreenshotsEvent {}
+
+/// Ticks an intent off, or puts it back on the waiting list.
+class SetIntentDoneEvent extends ScreenshotsEvent {
+  final String assetId;
+  final bool isDone;
+  SetIntentDoneEvent(this.assetId, this.isDone);
+}
+
+/// Derives content traits for the loaded library from already-cached OCR text.
+///
+/// Its own event rather than part of the load, because it is far too slow to
+/// sit in front of the grid — see [ScreenshotsBloc.traitChunkSize].
+class ComputeTraitsEvent extends ScreenshotsEvent {}

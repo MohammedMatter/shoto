@@ -2,6 +2,7 @@ import 'dart:ui' show PlatformDispatcher;
 
 import 'package:hijri/hijri_calendar.dart';
 
+import 'package:shoto/core/utils/text_cues.dart';
 import 'package:shoto/features/smart_actions/data/services/extraction.dart';
 import 'package:shoto/features/smart_actions/domain/entities/action_details.dart';
 import 'package:shoto/features/smart_actions/domain/entities/detected_action.dart';
@@ -48,11 +49,7 @@ abstract class EventExtractor {
 
   /// [now] and [dayFirst] exist so this is testable without a clock or a
   /// device region. In the app both are left null.
-  static List<Extraction> findIn(
-    String text, {
-    DateTime? now,
-    bool? dayFirst,
-  }) {
+  static List<Extraction> findIn(String text, {DateTime? now, bool? dayFirst}) {
     if (text.length < 6) return const [];
 
     final DateTime reference = now ?? DateTime.now();
@@ -128,7 +125,10 @@ abstract class EventExtractor {
 
       final int titleLine = _titleLineFor(lines, lineIndex);
       final String display = text
-          .substring(hit.start, time == null ? hit.end : _maxOf(hit.end, time.end))
+          .substring(
+            hit.start,
+            time == null ? hit.end : _maxOf(hit.end, time.end),
+          )
           .trim();
 
       found.add(
@@ -254,7 +254,9 @@ abstract class EventExtractor {
       for (final RegExpMatch m in pattern.allMatches(text)) {
         if (_claims(hits, m.start, m.end)) continue;
         final int first = int.parse(m.group(1)!);
-        final int second = int.parse(separatorIsCaptured ? m.group(3)! : m.group(2)!);
+        final int second = int.parse(
+          separatorIsCaptured ? m.group(3)! : m.group(2)!,
+        );
         final int rawYear = int.parse(
           separatorIsCaptured ? m.group(4)! : m.group(3)!,
         );
@@ -265,7 +267,8 @@ abstract class EventExtractor {
         // marker to prove it: a four-digit year in the fourteen-hundreds
         // cannot be a Gregorian date this feature would accept, since the
         // ceiling is three years from today.
-        final (int, int, int)? hijri = year >= _minHijriYear && year <= _maxHijriYear
+        final (int, int, int)? hijri =
+            year >= _minHijriYear && year <= _maxHijriYear
             ? _toGregorian(year, month, day)
             : null;
 
@@ -414,10 +417,11 @@ abstract class EventExtractor {
 
   /// Longest first, so "september" is never matched as "sep" with a stray
   /// "tember" left behind, and "تشرين الثاني" beats nothing at all.
-  static final String _monthAlternation = (_monthNumbers.keys.toList()
-        ..sort((String a, String b) => b.length.compareTo(a.length)))
-      .map((String name) => name.replaceAll(' ', '\\s+'))
-      .join('|');
+  static final String _monthAlternation =
+      (_monthNumbers.keys.toList()
+            ..sort((String a, String b) => b.length.compareTo(a.length)))
+          .map((String name) => name.replaceAll(' ', '\\s+'))
+          .join('|');
 
   static String _normalizeMonth(String raw) =>
       raw.toLowerCase().replaceAll(RegExp(r'\s+'), ' ').trim();
@@ -487,30 +491,65 @@ abstract class EventExtractor {
   /// joined and separated. Any one of those missing is a whole class of
   /// invitation that silently does nothing.
   static const Map<String, int> _hijriMonthNumbers = <String, int>{
-    'محرم': 1, 'المحرم': 1, 'muharram': 1,
-    'صفر': 2, 'safar': 2,
-    'ربيع الاول': 3, 'ربيع الأول': 3, 'ربيع اول': 3, 'ربيع1': 3,
-    'rabi al-awwal': 3, 'rabi i': 3,
-    'ربيع الثاني': 4, 'ربيع الآخر': 4, 'ربيع الاخر': 4, 'ربيع ثاني': 4,
-    'rabi al-thani': 4, 'rabi ii': 4,
-    'جمادى الاولى': 5, 'جمادى الأولى': 5, 'جمادى الاول': 5, 'جماد الاول': 5,
-    'jumada al-awwal': 5, 'jumada i': 5,
-    'جمادى الثانية': 6, 'جمادى الآخرة': 6, 'جمادى الاخرة': 6,
-    'جمادى الثاني': 6, 'jumada al-thani': 6, 'jumada ii': 6,
-    'رجب': 7, 'rajab': 7,
-    'شعبان': 8, 'shaaban': 8, 'shaban': 8,
-    'رمضان': 9, 'ramadan': 9, 'ramadhan': 9,
-    'شوال': 10, 'شوّال': 10, 'shawwal': 10,
-    'ذو القعدة': 11, 'ذو القعده': 11, 'ذي القعدة': 11, 'ذوالقعدة': 11,
-    'ذو القعدة الحرام': 11, 'dhu al-qidah': 11,
-    'ذو الحجة': 12, 'ذو الحجه': 12, 'ذي الحجة': 12, 'ذوالحجة': 12,
-    'ذو الحجة الحرام': 12, 'dhu al-hijjah': 12,
+    'محرم': 1,
+    'المحرم': 1,
+    'muharram': 1,
+    'صفر': 2,
+    'safar': 2,
+    'ربيع الاول': 3,
+    'ربيع الأول': 3,
+    'ربيع اول': 3,
+    'ربيع1': 3,
+    'rabi al-awwal': 3,
+    'rabi i': 3,
+    'ربيع الثاني': 4,
+    'ربيع الآخر': 4,
+    'ربيع الاخر': 4,
+    'ربيع ثاني': 4,
+    'rabi al-thani': 4,
+    'rabi ii': 4,
+    'جمادى الاولى': 5,
+    'جمادى الأولى': 5,
+    'جمادى الاول': 5,
+    'جماد الاول': 5,
+    'jumada al-awwal': 5,
+    'jumada i': 5,
+    'جمادى الثانية': 6,
+    'جمادى الآخرة': 6,
+    'جمادى الاخرة': 6,
+    'جمادى الثاني': 6,
+    'jumada al-thani': 6,
+    'jumada ii': 6,
+    'رجب': 7,
+    'rajab': 7,
+    'شعبان': 8,
+    'shaaban': 8,
+    'shaban': 8,
+    'رمضان': 9,
+    'ramadan': 9,
+    'ramadhan': 9,
+    'شوال': 10,
+    'شوّال': 10,
+    'shawwal': 10,
+    'ذو القعدة': 11,
+    'ذو القعده': 11,
+    'ذي القعدة': 11,
+    'ذوالقعدة': 11,
+    'ذو القعدة الحرام': 11,
+    'dhu al-qidah': 11,
+    'ذو الحجة': 12,
+    'ذو الحجه': 12,
+    'ذي الحجة': 12,
+    'ذوالحجة': 12,
+    'ذو الحجة الحرام': 12,
+    'dhu al-hijjah': 12,
   };
 
-  static final String _hijriAlternation = (_hijriMonthNumbers.keys.toList()
-        ..sort((String a, String b) => b.length.compareTo(a.length)))
-      .map((String name) => name.replaceAll(' ', '\\s+'))
-      .join('|');
+  static final String _hijriAlternation =
+      (_hijriMonthNumbers.keys.toList()
+            ..sort((String a, String b) => b.length.compareTo(a.length)))
+          .map((String name) => name.replaceAll(' ', '\\s+'))
+          .join('|');
 
   /// The span of Hijri years worth converting.
   ///
@@ -702,16 +741,71 @@ abstract class EventExtractor {
   // -------------------------------------------------------------------
 
   /// Words that mean a date on this screen is a plan rather than a record.
+  ///
+  /// A trailing `*` is a deliberate stem, matched from the start of a word and
+  /// allowed to run on — `invit*` has to reach invitation, invited and
+  /// inviting, and `schedul*` both "schedule" and "scheduled". Everything else
+  /// is matched as a whole word by [TextCues], which is what keeps `event` out
+  /// of "eventually", `exam` out of "example", `session` out of "possession"
+  /// and the Spanish `cita` out of "citación".
   static const List<String> _cues = <String>[
-    'invit', 'rsvp', 'meeting', 'appointment', 'event', 'reserv', 'booking',
-    'booked', 'ceremony', 'seminar', 'webinar', 'conference', 'session',
-    'interview', 'wedding', 'birthday', 'deadline', 'due date', 'agenda',
-    'schedule', 'starts at', 'exam', 'departure', 'check-in', 'boarding',
-    'دعوة', 'دعوه', 'مدعو', 'موعد', 'اجتماع', 'حجز', 'محجوز', 'مناسبة',
-    'مناسبه', 'حفل', 'ندوة', 'مؤتمر', 'جلسة', 'مقابلة', 'زفاف', 'عرس',
-    'امتحان', 'المغادرة', 'الرحلة', 'تسليم', 'موعدك',
-    'réunion', 'rendez-vous', 'invitation', 'événement', 'reunión', 'cita',
-    'invitación', 'evento', 'निमंत्रण', 'बैठक', 'कार्यक्रम',
+    'invit*',
+    'rsvp',
+    'meeting',
+    'appointment',
+    'event',
+    'reserv*',
+    'booking',
+    'booked',
+    'ceremony',
+    'seminar',
+    'webinar',
+    'conference',
+    'session',
+    'interview',
+    'wedding',
+    'birthday',
+    'deadline',
+    'due date',
+    'agenda',
+    'schedul*',
+    'starts at',
+    'exam',
+    'departure',
+    'check-in',
+    'boarding',
+    'دعوة',
+    'دعوه',
+    'مدعو',
+    'موعد',
+    'اجتماع',
+    'حجز',
+    'محجوز',
+    'مناسبة',
+    'مناسبه',
+    'حفل',
+    'ندوة',
+    'مؤتمر',
+    'جلسة',
+    'مقابلة',
+    'زفاف',
+    'عرس',
+    'امتحان',
+    'المغادرة',
+    'الرحلة',
+    'تسليم',
+    'موعدك',
+    'réunion',
+    'rendez-vous',
+    'invitation',
+    'événement',
+    'reunión',
+    'cita',
+    'invitación',
+    'evento',
+    'निमंत्रण',
+    'बैठक',
+    'कार्यक्रम',
   ];
 
   /// How far either side of the date a cue may sit. Wider than the time
@@ -719,12 +813,8 @@ abstract class EventExtractor {
   /// lines above the date it belongs to.
   static const int _cueWindow = 160;
 
-  static bool _hasCueNear(String haystack, int start, int end) {
-    final int from = (start - _cueWindow).clamp(0, haystack.length);
-    final int to = (end + _cueWindow).clamp(0, haystack.length);
-    final String window = haystack.substring(from, to);
-    return _cues.any(window.contains);
-  }
+  static bool _hasCueNear(String haystack, int start, int end) =>
+      TextCues.anyNear(haystack, start, end, _cueWindow, _cues);
 
   static final RegExp _venueLabel = RegExp(
     r'(?:location|venue|address|place|where|'
@@ -851,7 +941,10 @@ abstract class EventExtractor {
   }
 
   static bool _isBreak(int unit) =>
-      unit == 0x20 || unit == 0x09 || unit == 0x0A || unit == 0x0D ||
+      unit == 0x20 ||
+      unit == 0x09 ||
+      unit == 0x0A ||
+      unit == 0x0D ||
       unit == 0x00A0;
 
   static bool _claims(List<_DateHit> hits, int start, int end) {

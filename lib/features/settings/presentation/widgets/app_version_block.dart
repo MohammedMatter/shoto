@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shoto/core/constants/app_info.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/services/dev_access.dart';
@@ -94,7 +95,7 @@ class _AppVersionBlockState extends State<AppVersionBlock> {
                   Text('SHOTO', style: AppTextStyles.overline),
                   SizedBox(height: 3.h),
                   Text(
-                    context.l10n.appVersion('1.0.0'),
+                    context.l10n.appVersion(AppInfo.version),
                     style: AppTextStyles.caption,
                   ),
                   if (unlocked) ...[

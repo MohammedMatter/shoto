@@ -1,3 +1,5 @@
+import 'package:shoto/core/utils/sensitive_data.dart';
+import 'package:shoto/core/utils/text_cues.dart';
 import 'package:shoto/features/smart_actions/data/services/event_extractor.dart';
 import 'package:shoto/features/smart_actions/data/services/extraction.dart';
 import 'package:shoto/features/smart_actions/data/services/place_extractor.dart';
@@ -79,6 +81,19 @@ abstract class ActionExtractor {
     _collect(text, _emailPattern, claimed, found, _buildEmail);
     _collect(text, _urlPattern, claimed, found, _buildLink);
     _collect(text, _ibanPattern, claimed, found, _buildIban);
+
+    // Cards are claimed but never offered, which is the point: there is no
+    // useful action to take on somebody's card number, and every rule after
+    // this one would otherwise misread it. The code rule sees 4-digit groups
+    // and the phone rule sees a long run of digits with separators — a
+    // screenshot listing card numbers came back as a screen full of numbers
+    // to *dial*.
+    //
+    // Luhn is what makes claiming safe. Roughly nine in ten same-length
+    // reference numbers fail it, so this removes cards without quietly
+    // swallowing order numbers that a person might still want.
+    _claimCards(text, claimed);
+
     _collectCodes(text, claimed, found);
     _collect(text, _phonePattern, claimed, found, _buildPhone);
 
@@ -118,10 +133,39 @@ abstract class ActionExtractor {
   // Patterns
   // -------------------------------------------------------------------
 
+  /// **Spaces around the `@` are tolerated, because OCR puts them there.**
+  ///
+  /// A real screenshot of a sign-in screen came back as
+  /// `wikihowseth @gmail.com` — the recogniser reads the isolated glyph with
+  /// gaps either side often enough that refusing it loses ordinary addresses.
+  /// The space is dropped from the value in [_buildEmail], so what the app
+  /// acts on is still a valid address.
+  ///
+  /// Bounded to spaces and tabs rather than `\s`: crossing a newline would
+  /// weld a word at the end of one line to a domain at the start of the next,
+  /// which is exactly the mistake the phone pattern was making.
   static final RegExp _emailPattern = RegExp(
-    r'[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}',
+    r'[a-z0-9._%+\-]+[ \t]{0,2}@[ \t]{0,2}[a-z0-9.\-]+\.[a-z]{2,}',
     caseSensitive: false,
   );
+
+  /// A local part has to contain a letter.
+  ///
+  /// Without it the relaxed spacing turns "see page 3 @ site.com" into an
+  /// address belonging to "3". Every real local part has a letter in it.
+  static final RegExp _emailLocalHasLetter = RegExp(
+    r'[a-z]',
+    caseSensitive: false,
+  );
+
+  /// Shortest local part accepted **when the match contains a space**.
+  ///
+  /// `a@b.com` is a legal address and is accepted written normally. Allowing
+  /// the same two characters either side of a *spaced* `@` is what turns
+  /// "meet me @ home.com" into somebody's address — so the relaxed form, which
+  /// exists only to survive OCR, asks for a little more evidence that it is
+  /// reading an address at all.
+  static const int _minSpacedLocalPart = 3;
 
   /// Explicit URLs, plus bare domains restricted to a known TLD list.
   ///
@@ -137,7 +181,22 @@ abstract class ActionExtractor {
     "'"
     r']+)'
     r'|([a-z0-9][a-z0-9\-]*(\.[a-z0-9\-]+)*\.'
+    // The country entries were Gulf-and-Levant plus tr/uk/de, which quietly
+    // meant a bare domain only resolved for two of the app's six languages —
+    // ejemplo.es, exemple.fr, udaharan.in and misal.pk all read as plain text.
+    // Anything carrying a scheme or www. was always fine; this list only
+    // governs bare domains.
     r'(com|net|org|io|co|me|app|dev|sa|ae|jo|eg|ps|qa|kw|bh|om|tr|uk|de'
+    r'|es|fr|in|pk|it|nl|pt|be|ch|se|br|mx|ar|ma|dz|tn|lb|iq|ly|ye|sd|sy'
+    // Measured rather than guessed: a spread of forty real bare domains
+    // only resolved for twenty-five, and every miss was a country or a
+    // modern gTLD absent from this list. It is the one part of link
+    // detection that fails by omission, so it is worth being generous —
+    // the list exists to stop \"version 2.5.reboot\" reading as a domain,
+    // and none of these collide with that.
+    r'|ru|cn|jp|kr|au|ca|pl|gr|il|ir|ng|ke|za|ua|cz|ro|hu|at|dk|fi|no'
+    r'|ie|nz|sg|my|id|th|vn|ph|cl|pe|ve|uy|ec|bo|py|do|gt|cr|pa'
+    r'|news|blog|tech|life|world|space|club|live|studio|design|agency'
     r'|gov|edu|info|store|shop|online|site|link|xyz|tv|ai|cloud)'
     r'(/[^\s<>"'
     "'"
@@ -162,8 +221,37 @@ abstract class ActionExtractor {
 
   /// A run of digits with optional separators. Deliberately loose, because
   /// [_buildPhone] is where the real filtering happens.
+  ///
+  /// **Separators are spaces, not whitespace.** `\s` includes the newline, so
+  /// this used to reach across a line break and weld the tail of one line to
+  /// the head of the next — on a real screenshot of a numbers table it
+  /// produced "76350000\n159759" and called it a phone number. Worse than the
+  /// bogus match itself is that the greedy span then swallowed a genuine
+  /// number sitting alone on one of those lines.
+  /// **Letters on either end disqualify it.** Without the boundaries this
+  /// pattern happily started inside a word: an IBAN printed as
+  /// `ABNA0417164300` on a reference page produced `0417164300`, and the app
+  /// offered to dial it. Nothing writes a phone number welded to letters, so
+  /// demanding a clear edge costs nothing and removes a whole class of account
+  /// and reference numbers.
   static final RegExp _phonePattern = RegExp(
-    r'\+?[0-9][0-9\s\-().]{5,20}[0-9]',
+    r'(?<![0-9A-Za-z])\+?[0-9][0-9 \-().]{5,20}[0-9](?![0-9A-Za-z])',
+  );
+
+  /// A 12-19 digit run, separators allowed — the shape of a bank card.
+  ///
+  /// Matches `SensitiveData`'s candidate pattern deliberately; the two must
+  /// agree on what a card looks like or one of them will claim a span the
+  /// other does not.
+  static final RegExp _cardCandidate = RegExp(
+    r'(?<![0-9+])(?:[0-9][ -]?){12,19}(?![0-9])',
+  );
+
+  /// The wrapped 4-4-4-4 spelling, matching `SensitiveData`. Claimed here for
+  /// the same reason the unwrapped one is: without it the code and phone rules
+  /// read the halves of a card number as two numbers of their own.
+  static final RegExp _wrappedCardCandidate = RegExp(
+    r'(?<![0-9+])[0-9]{4}(?:[ \-\n\r]{1,2}[0-9]{4}){3}(?![0-9])',
   );
 
   static final RegExp _standaloneNumber = RegExp(r'\b[0-9]{4,8}\b');
@@ -177,6 +265,10 @@ abstract class ActionExtractor {
 
   /// Words that turn a bare number into a verification code. Without one of
   /// these nearby, four to eight digits is just a number.
+  ///
+  /// Matched as whole words via [TextCues] — `code` inside "barcode" and `pin`
+  /// inside "shipping" were both turning ordinary numbers into codes, the
+  /// former on a real screenshot from the test device.
   static const List<String> _codeCues = [
     'code',
     'otp',
@@ -190,20 +282,54 @@ abstract class ActionExtractor {
     'التحقق',
     'تحقق',
     'السري',
+    // The app ships in six languages and this list held only two of them, so
+    // a Spanish, Hindi or Urdu one-time password was never recognised as one.
+    // French needs no entry of its own: "code" is the same word.
+    'código',
+    'codigo',
+    'verificación',
+    'verificacion',
+    'contraseña',
+    'vérification',
+    'कोड',
+    'सत्यापन',
+    'ओटीपी',
+    'کوڈ',
+    'تصدیقی',
+    'پاس ورڈ',
   ];
 
   /// How far either side of a number the cue may sit.
   static const int _cueWindow = 40;
+
+  /// Line breaks allowed between a code and the word naming it.
+  ///
+  /// One, not zero: "Your verification code is" followed by the digits on the
+  /// next line is how most one-time-password messages are laid out.
+  static const int _maxCodeLineGap = 1;
 
   // -------------------------------------------------------------------
   // Builders — each returns null to reject a shaped-but-invalid match
   // -------------------------------------------------------------------
 
   static DetectedAction? _buildEmail(String match) {
+    final String cleaned = match.replaceAll(RegExp(r'[ 	]'), '');
+    final int at = cleaned.indexOf('@');
+    if (at <= 0) return null;
+
+    final String local = cleaned.substring(0, at);
+    if (!_emailLocalHasLetter.hasMatch(local)) return null;
+    if (cleaned.length != match.trim().length &&
+        local.length < _minSpacedLocalPart) {
+      return null;
+    }
+
     return DetectedAction(
       kind: DetectedActionKind.email,
-      value: match.toLowerCase(),
-      display: match,
+      value: cleaned.toLowerCase(),
+      // The original spelling, so the sheet shows what is on the screenshot
+      // rather than a tidied version the user cannot find by looking.
+      display: match.trim(),
     );
   }
 
@@ -270,6 +396,26 @@ abstract class ActionExtractor {
 
     final String digits = match.replaceAll(RegExp(r'[^0-9]'), '');
     if (digits.length < 7 || digits.length > 15) return null;
+
+    // **Twelve or more digits without a country code is not a phone number.**
+    //
+    // E.164 allows up to fifteen, but a number that long is by definition
+    // international, and an international number written for a human to use
+    // carries its `+` (or a 00 prefix, which normalises to the same length
+    // with a leading zero). What actually turns up at twelve-plus bare digits
+    // is reference numbers, account numbers and meter readings — every single
+    // false positive on the test device's library was one of these.
+    //
+    // Local numbers are untouched: the longest national formats here are
+    // eleven digits.
+    // `00` is the international prefix everywhere the `+` is not typed, and a
+    // number carrying it is exactly as self-identifying — "00962791234567"
+    // was being thrown away by the twelve-digit rule below for want of one
+    // character it spells differently.
+    final String trimmed0 = match.trim();
+    final bool international =
+        trimmed0.startsWith('+') || trimmed0.startsWith('00');
+    if (!international && digits.length >= 12) return null;
 
     // A number wrapped in brackets that never close, or littered with more
     // punctuation than digits, is layout noise rather than a phone number.
@@ -346,11 +492,20 @@ abstract class ActionExtractor {
     for (final RegExpMatch match in _standaloneNumber.allMatches(text)) {
       if (_overlaps(claimed, match.start, match.end)) continue;
 
-      final int from = (match.start - _cueWindow).clamp(0, haystack.length);
-      final int to = (match.end + _cueWindow).clamp(0, haystack.length);
-      final String context = haystack.substring(from, to);
-
-      if (!_codeCues.any(context.contains)) continue;
+      if (!TextCues.anyNear(
+        haystack,
+        match.start,
+        match.end,
+        _cueWindow,
+        _codeCues,
+        // A code and the word announcing it are written together — same line,
+        // or the line straight after when the sender breaks it. Anything
+        // further apart is a heading that happens to be nearby, which is what
+        // a page about barcode formats is made of.
+        maxLineGap: _maxCodeLineGap,
+      )) {
+        continue;
+      }
 
       final String digits = match.group(0)!;
       claimed.add(_Span(match.start, match.end));
@@ -363,6 +518,32 @@ abstract class ActionExtractor {
       );
     }
   }
+
+  /// Marks Luhn-valid card runs as spoken for, producing no action.
+  ///
+  /// The trailing-separator trim mirrors `SensitiveData._claimCard`: the
+  /// candidate pattern allows a run to end on a space or dash, and claiming
+  /// that character would hide a separator the next rule needs to see.
+  static void _claimCards(String text, List<_Span> claimed) {
+    for (final RegExpMatch match in <RegExpMatch>[
+      ..._cardCandidate.allMatches(text),
+      ..._wrappedCardCandidate.allMatches(text),
+    ]) {
+      if (_overlaps(claimed, match.start, match.end)) continue;
+
+      final String digits = match.group(0)!.replaceAll(RegExp(r'[^0-9]'), '');
+      if (digits.length < 13 || digits.length > 19) continue;
+      if (!SensitiveData.passesLuhn(digits)) continue;
+
+      int end = match.end;
+      while (end > match.start && !_isAsciiDigit(text.codeUnitAt(end - 1))) {
+        end--;
+      }
+      claimed.add(_Span(match.start, end));
+    }
+  }
+
+  static bool _isAsciiDigit(int unit) => unit >= 0x30 && unit <= 0x39;
 
   static bool _overlaps(List<_Span> claimed, int start, int end) {
     for (final _Span span in claimed) {

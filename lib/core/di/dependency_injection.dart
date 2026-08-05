@@ -20,7 +20,13 @@ import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/features/safe_share/data/services/redaction_service.dart';
+import 'package:shoto/core/services/backup_file_service.dart';
 import 'package:shoto/core/services/cache_service.dart';
+import 'package:shoto/features/backup/data/repositories_impl/backup_repository_impl.dart';
+import 'package:shoto/features/backup/domain/repositories/backup_repository.dart';
+import 'package:shoto/features/backup/domain/use_cases/create_backup_use_case.dart';
+import 'package:shoto/features/backup/domain/use_cases/preview_backup_use_case.dart';
+import 'package:shoto/features/backup/domain/use_cases/restore_backup_use_case.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
@@ -61,6 +67,17 @@ import 'package:shoto/features/screenshots/domain/use_cases/import_from_system_p
 import 'package:shoto/features/screenshots/domain/use_cases/import_shared_screenshot_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/request_photo_permission_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_favorite_use_case.dart';
+import 'package:shoto/features/screenshots/data/data_sources/custom_intents_local_data_source.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/create_custom_intent_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/delete_custom_intent_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_custom_intent_count_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_custom_intents_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_intent_ids_by_recent_use_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/set_intent_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/set_intents_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/set_intent_done_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/update_custom_intent_use_case.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/intent_catalog.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/watch_library_changes_use_case.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
 import 'package:shoto/features/subscription/data/data_sources/revenue_cat_data_source.dart';
@@ -100,11 +117,12 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => ScreenshotGalleryDataSource());
   sl.registerLazySingleton(() => SystemPhotoPickerDataSource());
   sl.registerLazySingleton(() => ScreenshotMetadataLocalDataSource(sl(), sl()));
+  sl.registerLazySingleton(() => CustomIntentsLocalDataSource(sl(), sl()));
   sl.registerLazySingleton(() => LibraryOwnershipLocalDataSource(sl(), sl()));
   sl.registerLazySingleton(() => TextRecognitionDataSource());
   sl.registerLazySingleton(() => ImageLabelingDataSource());
   sl.registerLazySingleton<ScreenshotRepository>(
-    () => ScreenshotRepositoryImpl(sl(), sl(), sl(), sl(), sl()),
+    () => ScreenshotRepositoryImpl(sl(), sl(), sl(), sl(), sl(), sl()),
   );
   sl.registerLazySingleton(() => RequestPhotoPermissionUseCase(sl()));
   sl.registerLazySingleton(() => CheckPhotoPermissionUseCase(sl()));
@@ -112,6 +130,27 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => GetScreenshotsByFolderUseCase(sl()));
   sl.registerLazySingleton(() => SetFavoriteUseCase(sl()));
   sl.registerLazySingleton(() => AssignFolderUseCase(sl()));
+  sl.registerLazySingleton(() => SetIntentUseCase(sl()));
+  sl.registerLazySingleton(() => SetIntentsUseCase(sl()));
+  sl.registerLazySingleton(() => SetIntentDoneUseCase(sl()));
+  sl.registerLazySingleton(() => GetCustomIntentsUseCase(sl()));
+  sl.registerLazySingleton(() => GetCustomIntentCountUseCase(sl()));
+  sl.registerLazySingleton(() => CreateCustomIntentUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateCustomIntentUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteCustomIntentUseCase(sl()));
+  sl.registerLazySingleton(() => GetIntentIdsByRecentUseUseCase(sl()));
+  // A singleton, not a factory: every picker in the app reads the same
+  // catalog, and two copies would disagree the moment one of them created an
+  // intent.
+  sl.registerLazySingleton(
+    () => IntentCatalog(
+      getCustomIntentsUseCase: sl(),
+      getIntentIdsByRecentUseUseCase: sl(),
+      createCustomIntentUseCase: sl(),
+      updateCustomIntentUseCase: sl(),
+      deleteCustomIntentUseCase: sl(),
+    ),
+  );
   sl.registerLazySingleton(() => DeleteScreenshotsUseCase(sl()));
   sl.registerLazySingleton(() => WatchLibraryChangesUseCase(sl()));
   sl.registerLazySingleton(() => ImportSharedScreenshotUseCase(sl()));
@@ -128,9 +167,15 @@ void setupServiceLocator() {
       getScreenshotsUseCase: sl(),
       getScreenshotsByFolderUseCase: sl(),
       setFavoriteUseCase: sl(),
+      setIntentUseCase: sl(),
+      setIntentsUseCase: sl(),
+      setIntentDoneUseCase: sl(),
       assignFolderUseCase: sl(),
       deleteScreenshotsUseCase: sl(),
       watchLibraryChangesUseCase: sl(),
+      getCachedOcrTextUseCase: sl(),
+      extractAndCacheTextUseCase: sl(),
+      intentCatalog: sl(),
     ),
   );
 
@@ -192,6 +237,17 @@ void setupServiceLocator() {
 
 
   sl.registerLazySingleton(() => RedactionService(sl(), sl()));
+
+  // Backup reads through the screenshot repository rather than the gallery
+  // directly, so an archive holds exactly the library the app shows — not
+  // every picture on the phone.
+  sl.registerLazySingleton(() => BackupFileService());
+  sl.registerLazySingleton<BackupRepository>(
+    () => BackupRepositoryImpl(sl(), sl(), sl()),
+  );
+  sl.registerLazySingleton(() => CreateBackupUseCase(sl()));
+  sl.registerLazySingleton(() => RestoreBackupUseCase(sl()));
+  sl.registerLazySingleton(() => PreviewBackupUseCase(sl()));
 
   sl.registerLazySingleton(() => ImageStitchService());
   sl.registerLazySingleton<StitchRepository>(

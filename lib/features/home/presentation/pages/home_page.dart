@@ -18,6 +18,9 @@ import 'package:shoto/features/duplicates/presentation/pages/duplicates_page.dar
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_state.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
+import 'package:shoto/features/screenshots/presentation/pages/intent_page.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/waiting_on_you.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
@@ -181,6 +184,33 @@ class _HomePageState extends State<HomePage>
                     ),
                   ),
                   SizedBox(height: 16.h),
+                  // Directly under the hero, and above the totals. The hero is
+                  // what has piled up; this is what the user themselves said
+                  // they would do about some of it, and putting a shrinking
+                  // number below the static ones would bury the only figure on
+                  // this screen anybody can finish.
+                  if (loaded != null && loaded.waitingByIntent.isNotEmpty) ...[
+                    _Enter(
+                      parent: _entrance,
+                      index: 3,
+                      child: _Gutter(
+                        child: WaitingOnYou(
+                          waiting: loaded.waitingByIntent,
+                          onOpen: (IntentRef intent) => Navigator.of(
+                            context,
+                          ).push(
+                            FadeSlidePageRoute(
+                              builder: (_) => BlocProvider<ScreenshotsBloc>.value(
+                                value: context.read<ScreenshotsBloc>(),
+                                child: IntentPage(intent: intent),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 22.h),
+                  ],
                   _Enter(
                     parent: _entrance,
                     index: 3,

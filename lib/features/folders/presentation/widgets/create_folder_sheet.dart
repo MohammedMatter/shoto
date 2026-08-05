@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/app_sheet.dart';
+import 'package:shoto/core/services/biometric_auth_service.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
@@ -34,6 +36,35 @@ class _CreateFolderSheetContentState extends State<_CreateFolderSheetContent> {
   final TextEditingController _controller = TextEditingController();
   int _selectedColor = kFolderColors.first;
   bool _isPrivate = false;
+
+  /// Starts at the widest claim and narrows once the device answers. The
+  /// lookup is a platform round-trip, so the row would otherwise pop from
+  /// blank to text a frame later; naming both and then dropping one is the
+  /// quieter correction.
+  BiometricKind _lockKind = BiometricKind.faceAndFingerprint;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLockKind();
+  }
+
+  Future<void> _loadLockKind() async {
+    final BiometricKind kind = await sl<BiometricAuthService>().enrolledKind();
+    if (!mounted) return;
+    setState(() => _lockKind = kind);
+  }
+
+  /// Says only what this phone can actually do. The label used to promise
+  /// "face or fingerprint" everywhere, which reads as a bug on the many
+  /// Androids whose face unlock never reaches BiometricPrompt — you turn the
+  /// switch on, and the prompt that appears has no face in it.
+  String get _privateLabel => switch (_lockKind) {
+    BiometricKind.faceAndFingerprint => context.l10n.foldersPrivate,
+    BiometricKind.face => context.l10n.foldersPrivateFace,
+    BiometricKind.fingerprint => context.l10n.foldersPrivateFingerprint,
+    BiometricKind.unknown => context.l10n.foldersPrivateGeneric,
+  };
 
   @override
   void dispose() {
@@ -208,7 +239,7 @@ class _CreateFolderSheetContentState extends State<_CreateFolderSheetContent> {
                       SizedBox(width: 12.w),
                       Expanded(
                         child: Text(
-                          context.l10n.foldersPrivate,
+                          _privateLabel,
                           // bodyLarge, matching every other switch row in the
                           // app — this one was a step smaller for no reason.
                           style: AppTextStyles.bodyLarge,

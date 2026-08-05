@@ -1,15 +1,31 @@
 import 'package:photo_manager/photo_manager.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
 
 class ScreenshotEntity {
   final AssetEntity asset;
   final bool isFavorite;
   final int? folderId;
 
+  /// What the user said they would do with this, and whether they have.
+  ///
+  /// Null for the great majority: an intent is a deliberate one-tap answer,
+  /// not something every screenshot acquires by existing.
+  final IntentState? intent;
+
   const ScreenshotEntity({
     required this.asset,
     required this.isFavorite,
     required this.folderId,
+    this.intent,
   });
+
+  /// An intent the user has set and not yet ticked off.
+  ///
+  /// The app's only shrinking number is built on this, so it is defined once
+  /// here for the same reason [isUnsorted] is — Home, the intent screens and
+  /// the counts all have to agree, and two hand-written copies of the
+  /// condition is how they stop agreeing.
+  bool get isWaiting => intent?.isWaiting ?? false;
 
   String get id => asset.id;
 
@@ -25,11 +41,14 @@ class ScreenshotEntity {
     bool? isFavorite,
     int? folderId,
     bool clearFolder = false,
+    IntentState? intent,
+    bool clearIntent = false,
   }) {
     return ScreenshotEntity(
       asset: asset,
       isFavorite: isFavorite ?? this.isFavorite,
       folderId: clearFolder ? null : (folderId ?? this.folderId),
+      intent: clearIntent ? null : (intent ?? this.intent),
     );
   }
 }

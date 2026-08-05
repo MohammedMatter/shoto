@@ -63,8 +63,8 @@ class ProBadgeIfSubscribed extends StatelessWidget {
 // There is deliberately no `ProLockBadge` here — no widget that hides itself
 // once you have paid.
 //
-// It existed for one commit and was the wrong shape. The settings rows for
-// Rules and Find duplicates need the badge taken down once the feature is paid
+// It existed for one commit and was the wrong shape. A settings row like Find
+// duplicates needs the badge taken down once the feature is paid
 // for (it is a price tag, not a crown, and leaving it up labelled a
 // subscriber's own purchases as locked) — but a *row* deciding that for itself
 // means every row reaching into the service locator, which is how a plain

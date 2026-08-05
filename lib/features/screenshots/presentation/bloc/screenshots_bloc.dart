@@ -1,6 +1,9 @@
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:shoto/core/localization/app_message.dart';
+import 'package:shoto/core/utils/content_traits.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/extract_and_cache_text_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_cached_ocr_text_use_case.dart';
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +16,12 @@ import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_by_f
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/request_photo_permission_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_favorite_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/set_intent_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/set_intents_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/set_intent_done_use_case.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/watch_library_changes_use_case.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/intent_catalog.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 
@@ -23,13 +31,32 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   final GetScreenshotsUseCase getScreenshotsUseCase;
   final GetScreenshotsByFolderUseCase getScreenshotsByFolderUseCase;
   final SetFavoriteUseCase setFavoriteUseCase;
+  final SetIntentUseCase setIntentUseCase;
+  final SetIntentsUseCase setIntentsUseCase;
+  final SetIntentDoneUseCase setIntentDoneUseCase;
   final AssignFolderUseCase assignFolderUseCase;
   final DeleteScreenshotsUseCase deleteScreenshotsUseCase;
   final WatchLibraryChangesUseCase watchLibraryChangesUseCase;
+  final GetCachedOcrTextUseCase getCachedOcrTextUseCase;
+  final ExtractAndCacheTextUseCase extractAndCacheTextUseCase;
+
+  /// Watched, not read: the catalog is what the pickers edit, and a deletion
+  /// there changes rows this bloc has already loaded. Nothing else about the
+  /// catalog concerns the library — see [IntentCatalog.deletions].
+  final IntentCatalog intentCatalog;
 
   StreamSubscription<void>? _librarySubscription;
   Timer? _refreshDebounce;
   int? _folderId;
+
+  /// Traits already derived, keyed by asset id.
+  ///
+  /// Survives refreshes, which is what makes the cost a one-off. A screenshot's
+  /// recognised text never changes once cached — OCR is run once and stored —
+  /// so a result computed for an id stays correct for as long as the bloc
+  /// lives, and every resume-triggered reload after the first is free.
+  final Map<String, Set<ContentTrait>> _traitCache =
+      <String, Set<ContentTrait>>{};
 
   /// How long a burst of gallery change notifications is allowed to settle
   /// before the library is re-read.
@@ -47,16 +74,45 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   /// to look back at the app, long enough that a burst collapses into one read.
   static const Duration _refreshWindow = Duration(milliseconds: 400);
 
+  /// How many screenshots the trait pass derives before yielding the isolate.
+  ///
+  /// Deriving traits costs ~700µs each (measured over realistic OCR text), so
+  /// a 300-screenshot library is a fifth of a second of solid work. Run in one
+  /// go that is a fifth of a second in which the grid cannot scroll and no
+  /// frame is produced — on the *first* screen the user sees.
+  ///
+  /// 25 keeps each burst near 17ms, close to a frame budget, and the `await`
+  /// between bursts lets pending frames and taps through. The whole pass still
+  /// finishes in well under a second, and only ever once per library.
+  static const int traitChunkSize = 25;
+
+  /// How many screenshots one tap of "read them" will recognise.
+  ///
+  /// Recognition is the expensive thing in this app — hundreds of milliseconds
+  /// per image, against microseconds for everything else — so an unbounded
+  /// pass over a large library is a progress bar the user watches for minutes
+  /// and cannot cancel. A budget turns it into a short, repeatable job: each
+  /// run picks up where the last stopped, and the control stays on screen with
+  /// a smaller number beside it until there is nothing left to read.
+  static const int scanBudget = 40;
+
   ScreenshotsBloc({
     required this.requestPhotoPermissionUseCase,
     required this.checkPhotoPermissionUseCase,
     required this.getScreenshotsUseCase,
     required this.getScreenshotsByFolderUseCase,
     required this.setFavoriteUseCase,
+    required this.setIntentUseCase,
+    required this.setIntentsUseCase,
+    required this.setIntentDoneUseCase,
     required this.assignFolderUseCase,
     required this.deleteScreenshotsUseCase,
     required this.watchLibraryChangesUseCase,
+    required this.getCachedOcrTextUseCase,
+    required this.extractAndCacheTextUseCase,
+    required this.intentCatalog,
   }) : super(ScreenshotsInitialState()) {
+    intentCatalog.deletions.addListener(_onCustomIntentDeleted);
     on<LoadScreenshotsEvent>(_onLoad);
     on<RecheckPermissionEvent>(_onRecheckPermission);
     on<RefreshScreenshotsEvent>(_onRefresh);
@@ -70,6 +126,14 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     on<StartGuidedSelectionEvent>(_onStartGuidedSelection);
     on<SelectAllEvent>(_onSelectAll);
     on<SetLibraryFilterEvent>(_onSetLibraryFilter);
+    on<SetLibraryLensEvent>(_onSetLibraryLens);
+    on<SetLibrarySortEvent>(_onSetLibrarySort);
+    on<ComputeTraitsEvent>(_onComputeTraits);
+    on<ScanUnreadForTraitsEvent>(_onScanUnread);
+    on<SetIntentEvent>(_onSetIntent);
+    on<SetIntentForSelectionEvent>(_onSetIntentForSelection);
+    on<SetIntentDoneEvent>(_onSetIntentDone);
+    on<CustomIntentsChangedEvent>(_onCustomIntentsChanged);
   }
 
   Future<void> _onLoad(
@@ -88,6 +152,12 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
       return;
     }
     await _loadAndEmit(emit);
+    // Re-read here rather than inside the pickers. The front row is ordered by
+    // what this person used most recently, and recomputing that at the moment
+    // a sheet opens would reshuffle the chips under a thumb already on its way
+    // down. Loading the library is the natural seam: it happens before any
+    // picker can be reached, and never while one is open.
+    unawaited(intentCatalog.refresh());
     _watchLibrary();
   }
 
@@ -153,6 +223,9 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
 
       if (previous is! ScreenshotsLoadedState) {
         emit(ScreenshotsLoadedState(screenshots: screenshots));
+        // Traits are derived after the grid is on screen, never before it —
+        // see [traitChunkSize].
+        add(ComputeTraitsEvent());
         return;
       }
 
@@ -171,8 +244,21 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
           screenshots: screenshots,
           selectedIds: previous.selectedIds,
           filter: previous.filter,
+          // Carried forward rather than recomputed. The cache is keyed by
+          // asset id, so what survives here is still correct for every
+          // screenshot that survived the reload; the pass below only has to
+          // catch up on ids that are new.
+          traits: previous.traits,
+          lens: previous.lens,
+          traitsReady: previous.traitsReady,
+          // Carried like every other choice on this screen. Left off, a
+          // refresh — which fires on app resume and on any gallery change —
+          // silently put the grid back to newest-first while the header
+          // button still claimed the order the user had picked.
+          sort: previous.sort,
         ),
       );
+      add(ComputeTraitsEvent());
     } catch (error) {
       emit(ScreenshotsErrorState(AppMessage.loadScreenshots));
     }
@@ -390,10 +476,279 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     emit(current.copyWith(filter: event.filter, selectedIds: {}));
   }
 
+  /// **Selection survives a sort**, unlike the filter and the lens.
+  ///
+  /// Re-ordering does not remove anything from the grid — every selected tile
+  /// is still there, just somewhere else — so clearing the selection here
+  /// would throw away work the user had done for no reason.
+  void _onSetLibrarySort(
+    SetLibrarySortEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+    if (current.sort == event.sort) return;
+    emit(current.copyWith(sort: event.sort));
+  }
+
+  /// Same contract as the status filter: the visible set changes, so anything
+  /// picked is dropped rather than left selected off-screen.
+  void _onSetLibraryLens(
+    SetLibraryLensEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+    if (current.lens == event.lens) return;
+    emit(
+      current.copyWith(
+        lens: event.lens,
+        clearLens: event.lens == null,
+        selectedIds: {},
+      ),
+    );
+  }
+
+  /// Both intent handlers write the state *before* awaiting the database.
+  ///
+  /// The tick is the one gesture in this app whose entire purpose is a number
+  /// going down, and a round trip to sqflite before the number moves makes it
+  /// feel like the tap missed. The write cannot fail in a way the user could
+  /// act on anyway — there is no retry for "could not save that you bought a
+  /// pair of shoes" — so the optimistic order is honest here.
+  Future<void> _onSetIntent(
+    SetIntentEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+
+    final IntentRef? intent = event.intent;
+    emit(
+      current.copyWith(
+        screenshots: current.screenshots
+            .map(
+              (ScreenshotEntity s) => s.id != event.assetId
+                  ? s
+                  // Changing the intent drops any completion with it: having
+                  // ticked off "reply" says nothing about whether you have
+                  // bought the thing.
+                  : s.copyWith(
+                      intent: intent == null ? null : IntentState(ref: intent),
+                      clearIntent: intent == null,
+                    ),
+            )
+            .toList(),
+      ),
+    );
+    await setIntentUseCase(event.assetId, intent);
+  }
+
+  /// Answers the question for everything selected at once.
+  ///
+  /// The selection is cleared afterwards, like every other bulk action here:
+  /// the answer has been given, and leaving forty screenshots lit invites the
+  /// next tap to overwrite what was just set.
+  Future<void> _onSetIntentForSelection(
+    SetIntentForSelectionEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState || current.selectedIds.isEmpty) {
+      return;
+    }
+
+    final List<String> ids = current.selectedIds.toList();
+    final IntentRef? intent = event.intent;
+    await setIntentsUseCase(ids, intent);
+    emit(
+      current.copyWith(
+        screenshots: current.screenshots
+            .map(
+              (ScreenshotEntity s) => !current.selectedIds.contains(s.id)
+                  ? s
+                  : s.copyWith(
+                      intent: intent == null ? null : IntentState(ref: intent),
+                      clearIntent: intent == null,
+                    ),
+            )
+            .toList(),
+        selectedIds: <String>{},
+      ),
+    );
+  }
+
+  Future<void> _onSetIntentDone(
+    SetIntentDoneEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+
+    emit(
+      current.copyWith(
+        screenshots: current.screenshots.map((ScreenshotEntity s) {
+          final IntentState? existing = s.intent;
+          if (s.id != event.assetId || existing == null) return s;
+          return s.copyWith(
+            intent: IntentState(
+              ref: existing.ref,
+              doneAt: event.isDone ? DateTime.now() : null,
+            ),
+          );
+        }).toList(),
+      ),
+    );
+    await setIntentDoneUseCase(event.assetId, event.isDone);
+  }
+
+  /// Rebuilds the library after the user edited their own verbs.
+  ///
+  /// A full reload rather than a patch, because a deletion has already changed
+  /// rows this state cannot see: clearing the intent off every screenshot that
+  /// carried it happens inside the database, in one transaction, and guessing
+  /// at which screenshots those were is how the grid and the table start
+  /// disagreeing.
+  Future<void> _onCustomIntentsChanged(
+    CustomIntentsChangedEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    if (state is! ScreenshotsLoadedState) return;
+    await _loadAndEmit(emit);
+  }
+
+  /// Reads text out of screenshots nobody has read yet, so the content
+  /// filters stop being empty.
+  ///
+  /// **The filters cannot see anything until this has run.** Every trait is
+  /// derived from cached OCR text, and text is only cached when some feature
+  /// pays to extract it — so a library that has never been searched has no
+  /// traits at all, and used to answer that by hiding the whole row. The row
+  /// now asks for this instead.
+  ///
+  /// Failures are swallowed per screenshot on purpose: one image the
+  /// recogniser chokes on must not end a pass over thirty-nine others.
+  Future<void> _onScanUnread(
+    ScanUnreadForTraitsEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState || current.isScanning) return;
+
+    final Map<String, String> known = await getCachedOcrTextUseCase();
+    final List<ScreenshotEntity> unread = <ScreenshotEntity>[
+      for (final ScreenshotEntity shot in current.screenshots)
+        if (!known.containsKey(shot.id)) shot,
+    ];
+    if (unread.isEmpty) return;
+
+    emit(current.copyWith(isScanning: true));
+
+    final List<ScreenshotEntity> batch = unread.take(scanBudget).toList();
+    for (final ScreenshotEntity shot in batch) {
+      if (isClosed) return;
+      try {
+        final String text = await extractAndCacheTextUseCase(shot);
+        _traitCache[shot.id] = ContentTraits.of(text);
+      } catch (_) {
+        // Recorded as read-and-empty rather than left absent. Absent means
+        // "never looked", and a screenshot the recogniser cannot handle would
+        // otherwise be retried on every scan forever, holding the control on
+        // screen with a count that never reaches zero.
+        _traitCache[shot.id] = const <ContentTrait>{};
+      }
+
+      current = state;
+      if (current is! ScreenshotsLoadedState) return;
+      emit(
+        current.copyWith(
+          traits: Map<String, Set<ContentTrait>>.unmodifiable(_traitCache),
+          traitsReady: true,
+        ),
+      );
+    }
+
+    current = state;
+    if (current is! ScreenshotsLoadedState) return;
+    emit(current.copyWith(isScanning: false));
+  }
+
+  /// Derives content traits for anything not already in [_traitCache],
+  /// emitting as it goes so counts fill in progressively.
+  ///
+  /// Reads the OCR cache and nothing else — it never *runs* recognition. That
+  /// is what keeps it safe to trigger on every load: for a library nobody has
+  /// searched there is simply no text to read, and the pass costs one query
+  /// and finishes. Screenshots with no cached text are deliberately left out
+  /// of the map entirely so [ScreenshotsLoadedState.unreadCount] can tell
+  /// "found nothing" from "never looked".
+  Future<void> _onComputeTraits(
+    ComputeTraitsEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+
+    final Map<String, String> textByAssetId = await getCachedOcrTextUseCase();
+
+    // Ids whose text exists but whose traits are not derived yet. Restricted
+    // to the loaded library so a huge cache from another folder's session
+    // cannot make this pass longer than the screen it serves.
+    final List<String> pending = <String>[
+      for (final ScreenshotEntity shot in current.screenshots)
+        if (!_traitCache.containsKey(shot.id) &&
+            textByAssetId.containsKey(shot.id))
+          shot.id,
+    ];
+
+    if (pending.isEmpty) {
+      // Still publish: the map may have grown on a previous pass, and the
+      // first load has to flip `traitsReady` even for a library with no
+      // recognised text at all — otherwise the trait row never appears and
+      // the user is given no way to learn why.
+      if (!current.traitsReady || current.traits.length != _traitCache.length) {
+        emit(
+          current.copyWith(
+            traits: Map<String, Set<ContentTrait>>.unmodifiable(_traitCache),
+            traitsReady: true,
+          ),
+        );
+      }
+      return;
+    }
+
+    for (int start = 0; start < pending.length; start += traitChunkSize) {
+      final int end = (start + traitChunkSize).clamp(0, pending.length);
+      for (final String assetId in pending.sublist(start, end)) {
+        _traitCache[assetId] = ContentTraits.of(textByAssetId[assetId]);
+      }
+
+      // Hands the isolate back between bursts so frames and taps get through.
+      // Without it this is one long block on the first screen the user sees.
+      await Future<void>.delayed(Duration.zero);
+      if (isClosed) return;
+
+      current = state;
+      if (current is! ScreenshotsLoadedState) return;
+      emit(
+        current.copyWith(
+          traits: Map<String, Set<ContentTrait>>.unmodifiable(_traitCache),
+          traitsReady: end == pending.length,
+        ),
+      );
+    }
+  }
+
   @override
   Future<void> close() {
     _refreshDebounce?.cancel();
     _librarySubscription?.cancel();
+    intentCatalog.deletions.removeListener(_onCustomIntentDeleted);
     return super.close();
   }
+
+  /// A deleted verb has already been cleared off its screenshots in the
+  /// database, so the loaded state is now describing rows that no longer say
+  /// what it thinks they say.
+  void _onCustomIntentDeleted() => add(CustomIntentsChangedEvent());
 }

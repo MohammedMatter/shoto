@@ -39,9 +39,7 @@ abstract class TrackingExtractor {
     _claimLabelled(text, named, found);
 
     found.sort((Extraction a, Extraction b) => a.start.compareTo(b.start));
-    return found.length <= _maxNumbers
-        ? found
-        : found.sublist(0, _maxNumbers);
+    return found.length <= _maxNumbers ? found : found.sublist(0, _maxNumbers);
   }
 
   // -------------------------------------------------------------------
@@ -153,8 +151,14 @@ abstract class TrackingExtractor {
         ShipmentCarrier.jt: <String>['j&t', 'jt express', 'جي اند تي'],
         ShipmentCarrier.bosta: <String>['bosta', 'بوسطة', 'بوسطه'],
         ShipmentCarrier.post: <String>[
-          'saudi post', 'splonline', 'egypt post', 'jordan post',
-          'emirates post', 'البريد السعودي', 'البريد المصري', 'بريد الاردن',
+          'saudi post',
+          'splonline',
+          'egypt post',
+          'jordan post',
+          'emirates post',
+          'البريد السعودي',
+          'البريد المصري',
+          'بريد الاردن',
         ],
       };
 
@@ -164,9 +168,7 @@ abstract class TrackingExtractor {
         in _aliases.entries) {
       for (final String alias in entry.value) {
         if (alias.length <= 3) {
-          if (RegExp(
-            '(?<![A-Za-z])$alias(?![A-Za-z])',
-          ).hasMatch(haystack)) {
+          if (RegExp('(?<![A-Za-z])$alias(?![A-Za-z])').hasMatch(haystack)) {
             return entry.key;
           }
         } else if (haystack.contains(alias)) {

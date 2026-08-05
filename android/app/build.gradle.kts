@@ -42,6 +42,25 @@ android {
     }
 }
 
+dependencies {
+    // local_auth_android pins androidx.biometric 1.1.0, which predates
+    // Android 12's rework of BiometricPrompt. On 1.1.0 the prompt routes
+    // class-2 (weak) biometrics through a legacy path, and face unlock — which
+    // is class 2 on nearly every phone that has it — is the casualty: the
+    // prompt comes up fingerprint-only even where a face is enrolled and the
+    // app asked for BIOMETRIC_WEAK.
+    //
+    // Declaring a newer version here wins the conflict resolution against the
+    // plugin's transitive 1.1.0 without forking the plugin. 1.2.0-alpha05 is
+    // the last published release of this artifact and is API-compatible with
+    // everything local_auth_android calls.
+    //
+    // Note this cannot conjure face unlock onto a phone whose skin implements
+    // it outside the biometric framework (see BiometricAuthService) — there is
+    // no sensor for the prompt to offer. It fixes the phones that do have one.
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+}
+
 flutter {
     source = "../.."
 }

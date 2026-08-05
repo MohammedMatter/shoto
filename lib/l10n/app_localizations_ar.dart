@@ -137,6 +137,49 @@ class AppLocalizationsAr extends AppLocalizations {
   String get libraryFilterFavorites => 'المفضّلة';
 
   @override
+  String get libraryTraitSensitive => 'حساسة';
+
+  @override
+  String get libraryTraitLink => 'روابط';
+
+  @override
+  String get libraryTraitContact => 'رقم أو إيميل';
+
+  @override
+  String get libraryTraitCode => 'رموز';
+
+  @override
+  String get libraryTraitEvent => 'مواعيد';
+
+  @override
+  String get libraryCertaintyVerified => 'مؤكدة بخوارزمية تحقق';
+
+  @override
+  String get libraryCertaintyRead => 'مقروءة من النص داخل صورك';
+
+  @override
+  String libraryLensNoteWithUnread(String basis, int count) {
+    return '$basis · $count لم تُقرأ بعد';
+  }
+
+  @override
+  String libraryNoTraitTitle(String trait) {
+    return 'ما في صور فيها $trait';
+  }
+
+  @override
+  String get libraryNoTraitMessage =>
+      'كل الصور المقروءة ما فيها ولا وحدة من هدول.';
+
+  @override
+  String libraryNoTraitUnreadMessage(int count) {
+    return 'ما لقينا شي بالمقروء. في $count صورة ما انقرأت أبداً، فما بنقدر نطابقها بعد.';
+  }
+
+  @override
+  String get libraryShowAll => 'اعرض الكل';
+
+  @override
   String get libraryFilterUnsorted => 'غير مرتّبة';
 
   @override
@@ -298,6 +341,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get foldersPrivate => 'خاص (قفل بالوجه أو البصمة)';
+
+  @override
+  String get foldersPrivateFace => 'خاص (قفل بالوجه)';
+
+  @override
+  String get foldersPrivateFingerprint => 'خاص (قفل بالبصمة)';
+
+  @override
+  String get foldersPrivateGeneric => 'خاص (مقفل)';
 
   @override
   String get foldersOptions => 'خيارات المجلد';
@@ -690,13 +742,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get proWelcomeAction => 'يلا نبلش';
 
   @override
-  String get featRules => 'قواعد بترتّب عنك';
-
-  @override
-  String get featRulesBody =>
-      'اكتب قاعدة مرة، وكل لقطة بتشاركها بترتّب حالها. إنت كاتب القاعدة، فدايماً بتعرف ليش راح الشي لهناك.';
-
-  @override
   String get featSearch => 'بحث جوّا لقطاتك';
 
   @override
@@ -737,22 +782,6 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get featUnlimitedBody =>
       'النسخة المجانية بتوقف عند كم مجلد وكم سكرين شوت. Pro بتشيل الحدين.';
-
-  @override
-  String get featRulesHow =>
-      'القاعدة جملة إنت بتكتبها بنفسك: لما تكون اللقطة هيك، حطها بهالمجلد. كل لقطة جديدة بتتفحص على قواعدك أول ما توصل، فالترتيب بيبطّل إشي لازم تتذكره.';
-
-  @override
-  String get featRulesPoint1 =>
-      'طابق على كلمات مكتوبة جوّا الصورة، أو على شو ظاهر فيها، أو على وجود بيانات حساسة.';
-
-  @override
-  String get featRulesPoint2 =>
-      'اطلب تتحقق كل شروطك أو أي واحد منها، وتقدر تعكس أي شرط.';
-
-  @override
-  String get featRulesPoint3 =>
-      'ما في تخمين. إنت كاتب القاعدة، فدايماً بتعرف ليش راحت اللقطة لهناك.';
 
   @override
   String get featSearchHow =>
@@ -1365,4 +1394,459 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get searchWorking => 'عم يقرأ لقطاتك…';
+
+  @override
+  String get settingsBackup => 'نسخة احتياطية واسترجاع';
+
+  @override
+  String get settingsBackupHint => 'خلّي نسخة من مكتبتك بملف';
+
+  @override
+  String get backupTitle => 'النسخة الاحتياطية';
+
+  @override
+  String get backupIntro =>
+      'مكتبتك موجودة بهالتلفون وبس. النسخة الاحتياطية هي النسخة يلي بتضل معك إذا ضاع.';
+
+  @override
+  String get backupCreateTitle => 'اعمل نسخة احتياطية';
+
+  @override
+  String get backupCreateBody =>
+      'بيجمع كل اللقطات والمجلدات والتسميات بملف واحد، وبعدين بتختار وين بتحفظه.';
+
+  @override
+  String get backupCreateAction => 'اعمل نسخة';
+
+  @override
+  String get backupWorking => 'عم يجمّع مكتبتك…';
+
+  @override
+  String backupDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots لقطة',
+      few: '$screenshots لقطات',
+      two: 'لقطتين',
+      one: 'لقطة وحدة',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders مجلد',
+      few: '$folders مجلدات',
+      two: 'مجلدين',
+      one: 'مجلد واحد',
+    );
+    return 'انحفظ $_temp0 و$_temp1';
+  }
+
+  @override
+  String backupDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots لقطة',
+      few: '$screenshots لقطات',
+      two: 'لقطتين',
+      one: 'لقطة وحدة',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped ما انقرأت',
+      few: '$skipped ما انقرأوا',
+      two: 'تنتين ما انقرأوا',
+      one: 'وحدة ما انقرأت',
+    );
+    return 'انحفظ $_temp0. في $_temp1.';
+  }
+
+  @override
+  String get backupFailed => 'ما قدر يكمّل النسخة الاحتياطية';
+
+  @override
+  String get backupPrivacyNote =>
+      'الملف بينعمل بهالتلفون وبيروح بس لوين ما تبعتو. ما في شي بينرفع.';
+
+  @override
+  String get restoreTitle => 'استرجاع نسخة';
+
+  @override
+  String get restoreBody =>
+      'بيضيف كل شي من ملف النسخة لمكتبتك. ما بينشال شي موجود.';
+
+  @override
+  String get restoreAction => 'استرجاع';
+
+  @override
+  String get restoreWorking => 'عم يرجّع مكتبتك…';
+
+  @override
+  String get restoreConfirmTitle => 'ترجّع هالنسخة؟';
+
+  @override
+  String get restoreConfirmMessage =>
+      'كل شي بالملف بينضاف لمكتبتك. لقطاتك الحالية بتضل متل ما هي بالظبط.';
+
+  @override
+  String restoreDone(int screenshots, int folders) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots لقطة',
+      few: '$screenshots لقطات',
+      two: 'لقطتين',
+      one: 'لقطة وحدة',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      folders,
+      locale: localeName,
+      other: '$folders مجلد',
+      few: '$folders مجلدات',
+      two: 'مجلدين',
+      one: 'مجلد واحد',
+    );
+    return 'انسترجع $_temp0 و$_temp1';
+  }
+
+  @override
+  String restoreDoneWithSkips(int screenshots, int skipped) {
+    String _temp0 = intl.Intl.pluralLogic(
+      screenshots,
+      locale: localeName,
+      other: '$screenshots لقطة',
+      few: '$screenshots لقطات',
+      two: 'لقطتين',
+      one: 'لقطة وحدة',
+    );
+    String _temp1 = intl.Intl.pluralLogic(
+      skipped,
+      locale: localeName,
+      other: '$skipped انتخطّت',
+      few: '$skipped انتخطّوا',
+      two: 'تنتين انتخطّوا',
+      one: 'وحدة انتخطّت',
+    );
+    return 'انسترجع $_temp0. في $_temp1.';
+  }
+
+  @override
+  String get restoreNotABackup => 'هالملف مش نسخة احتياطية من SHOTO';
+
+  @override
+  String get restoreFailed => 'ما قدر يكمّل الاسترجاع';
+
+  @override
+  String get settingsHelp => 'المساعدة';
+
+  @override
+  String get settingsContactSupport => 'تواصل مع الدعم';
+
+  @override
+  String get supportSubject => 'دعم SHOTO';
+
+  @override
+  String get supportNoMailApp => 'ما في تطبيق إيميل. اننسخ العنوان بدالو.';
+
+  @override
+  String get supportGreeting => 'مرحبا فريق SHOTO،';
+
+  @override
+  String get dateToday => 'اليوم';
+
+  @override
+  String get dateYesterday => 'مبارح';
+
+  @override
+  String get dateThisWeek => 'هالأسبوع';
+
+  @override
+  String get dateThisMonth => 'هالشهر';
+
+  @override
+  String get librarySortNewest => 'الأحدث أولاً';
+
+  @override
+  String get librarySortOldest => 'الأقدم أولاً';
+
+  @override
+  String get librarySortLabel => 'الترتيب';
+
+  @override
+  String libraryScanPrompt(int count) {
+    return 'اقرأ $count صورة';
+  }
+
+  @override
+  String get libraryScanning => 'عم نقرأ…';
+
+  @override
+  String restoreClashTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'في $count مجلد موجود عندك أصلاً',
+      few: 'في $count مجلدات موجودة عندك أصلاً',
+      two: 'في مجلدين موجودين عندك أصلاً',
+      one: 'في مجلد موجود عندك أصلاً',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get restoreClashBody =>
+      'هاي الأسماء موجودة بمكتبتك وبالنسخة. نفس الاسم مش دايماً نفس المجلد، فالقرار إلك إنت.';
+
+  @override
+  String restoreClashMore(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'و $count غيرهم',
+      few: 'و $count غيرهم',
+      two: 'واثنين غيرهم',
+      one: 'وواحد غيره',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get restoreClashMerge => 'اجمعهم مع بعض';
+
+  @override
+  String get restoreClashMergeBody => 'الصور بتروح للمجلدات الموجودة عندك.';
+
+  @override
+  String get restoreClashSeparate => 'خليهم منفصلين';
+
+  @override
+  String get restoreClashSeparateBody =>
+      'بيعمل مجلد تاني بنفس الاسم. ولا شي موجود بينمس.';
+
+  @override
+  String get intentBuy => 'أشتري';
+
+  @override
+  String get intentRead => 'أقرأ';
+
+  @override
+  String get intentReply => 'أرد';
+
+  @override
+  String get intentTry => 'أجرّب';
+
+  @override
+  String get intentVisit => 'أزور';
+
+  @override
+  String get intentBuyWaiting => 'للشراء';
+
+  @override
+  String get intentReadWaiting => 'للقراءة';
+
+  @override
+  String get intentReplyWaiting => 'للرد';
+
+  @override
+  String get intentTryWaiting => 'للتجربة';
+
+  @override
+  String get intentVisitWaiting => 'للزيارة';
+
+  @override
+  String get intentWatch => 'أشاهد';
+
+  @override
+  String get intentListen => 'أسمع';
+
+  @override
+  String get intentCook => 'أطبخ';
+
+  @override
+  String get intentBook => 'أحجز';
+
+  @override
+  String get intentPay => 'أدفع';
+
+  @override
+  String get intentSend => 'أبعت';
+
+  @override
+  String get intentDownload => 'أنزّل';
+
+  @override
+  String get intentApply => 'أقدّم';
+
+  @override
+  String get intentCompare => 'أقارن';
+
+  @override
+  String get intentFix => 'أصلّح';
+
+  @override
+  String get intentWatchWaiting => 'للمشاهدة';
+
+  @override
+  String get intentListenWaiting => 'للاستماع';
+
+  @override
+  String get intentCookWaiting => 'للطبخ';
+
+  @override
+  String get intentBookWaiting => 'للحجز';
+
+  @override
+  String get intentPayWaiting => 'للدفع';
+
+  @override
+  String get intentSendWaiting => 'للإرسال';
+
+  @override
+  String get intentDownloadWaiting => 'للتنزيل';
+
+  @override
+  String get intentApplyWaiting => 'للتقديم';
+
+  @override
+  String get intentCompareWaiting => 'للمقارنة';
+
+  @override
+  String get intentFixWaiting => 'للتصليح';
+
+  @override
+  String get intentMore => 'المزيد';
+
+  @override
+  String get intentSectionCommon => 'جاهزة';
+
+  @override
+  String get intentSectionYours => 'تبعك';
+
+  @override
+  String get intentYoursEmpty =>
+      'أي كلمة بتكتبها بإيدك بتشتغل تمامًا زي اللي فوق.';
+
+  @override
+  String get intentNewAction => 'اكتب وحدة بإيدك';
+
+  @override
+  String get intentNewTitle => 'سمّيها بإيدك';
+
+  @override
+  String get intentEditTitle => 'عدّل هاي';
+
+  @override
+  String get intentNameLabel => 'الفعل';
+
+  @override
+  String get intentNameHint => 'أرجّعها، ألغيها، أتصل فيهم…';
+
+  @override
+  String get intentIconLabel => 'الأيقونة';
+
+  @override
+  String intentDeleteTitle(String label) {
+    return 'تحذف \"$label\"؟';
+  }
+
+  @override
+  String get intentDeleteMessage => 'الصور بتضل مكانها. بس بتبطّل تستنى إشي.';
+
+  @override
+  String get intentSelectionAction => 'حدّد ليش';
+
+  @override
+  String intentSelectionApplied(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count صور تحددت',
+      one: 'صورة وحدة تحددت',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get intentPrompt => 'شو رح تعمل فيها؟';
+
+  @override
+  String get intentSkip => 'ولا إشي محدد';
+
+  @override
+  String get intentWaitingTitle => 'مستني منك';
+
+  @override
+  String get intentNothingWaiting => 'ما في إشي مستني';
+
+  @override
+  String get intentAllDone => 'خلّصت كل اللي حفظته لبعدين.';
+
+  @override
+  String get intentMarkDone => 'خلص';
+
+  @override
+  String get intentUndo => 'رجّعها';
+
+  @override
+  String get intentDoneToast => 'تم';
+
+  @override
+  String get intentChange => 'غيّر ليش حافظها';
+
+  @override
+  String get intentClear => 'مش لإشي';
+
+  @override
+  String intentEmptyOne(String verb) {
+    return 'ما في إشي هون $verb';
+  }
+
+  @override
+  String get intentEmptyBody => 'الصور اللي بتحددها بتيجي هون لحد ما تشطّبها.';
+
+  @override
+  String intentDoneCount(int count) {
+    return '$count خلصت';
+  }
+
+  @override
+  String dateDaysAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'من $count يوم',
+      few: 'من $count أيام',
+      two: 'من يومين',
+      one: 'من يوم',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateWeeksAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'من $count أسبوع',
+      few: 'من $count أسابيع',
+      two: 'من أسبوعين',
+      one: 'من أسبوع',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String dateMonthsAgo(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'من $count شهر',
+      few: 'من $count شهور',
+      two: 'من شهرين',
+      one: 'من شهر',
+    );
+    return '$_temp0';
+  }
 }

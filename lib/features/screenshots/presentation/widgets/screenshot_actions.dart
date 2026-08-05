@@ -15,6 +15,7 @@ import 'package:shoto/features/folders/presentation/widgets/move_to_folder_sheet
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/intent_section.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_limit_gate.dart';
 
 /// Shared "share to another app" action, used by both the detail viewer and
@@ -43,6 +44,20 @@ Future<void> showScreenshotQuickActionsSheet(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // **Above the actions, because it is not one.**
+              //
+              // Everything below this row does something to the screenshot now
+              // — share it, move it, delete it. This records what the user
+              // intends to do with it later, and mixing a statement of intent
+              // into a list of verbs would make it read as a sixth thing to
+              // trigger. It also stays open after a tap, since changing your
+              // mind twice is normal and closing the sheet to reopen it is not.
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(20.w, 8.h, 20.w, 14.h),
+                child: IntentSection(item: item, bloc: bloc),
+              ),
+              Divider(height: 1, color: AppColors.border),
+              SizedBox(height: 6.h),
               _QuickActionTile(
                 icon: item.isFavorite
                     ? Icons.favorite_rounded
