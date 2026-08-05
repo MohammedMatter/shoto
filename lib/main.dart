@@ -10,6 +10,7 @@ import 'package:shoto/core/localization/locale_controller.dart';
 import 'package:shoto/core/routes/app_router.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
+import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/services/local_identity.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/core/theme/app_colors.dart';
@@ -67,6 +68,13 @@ void main() async {
       sl<LocaleController>().load(),
       sl<ThemeController>().load(),
       sl<AppPreferences>().load(),
+      // The share sheet is the *primary* way screenshots enter the library,
+      // so leaving it out here would mean the activation step was only ever
+      // counted on the rarer path through the app's own picker. It is one
+      // more read of a SharedPreferences instance the three loads above have
+      // already warmed, so it costs nothing on the path that can least
+      // afford anything.
+      sl<FunnelLog>().load(),
     ]);
     runApp(QuickSaveApp());
     return;
@@ -89,6 +97,11 @@ void main() async {
     // Before the subscription repository is asked anything — every premium
     // gate reads its answer from there, and it consults this.
     sl<DevAccess>().load(),
+    // Records "installed" on the first launch that reaches this line, which
+    // is every first launch: nothing above it can fail without the app
+    // failing too. A denominator counted anywhere later would quietly be
+    // measuring something narrower than installs.
+    sl<FunnelLog>().load(),
   ]);
 
   // Safe to await even with no RevenueCat project configured yet — it

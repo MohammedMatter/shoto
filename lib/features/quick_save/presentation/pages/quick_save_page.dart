@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/services/haptics.dart';
 import 'package:shoto/core/theme/app_colors.dart';
@@ -291,6 +292,11 @@ class _QuickSavePageState extends State<QuickSavePage>
         }
       }
 
+      // Activation, and the only step in the funnel that changes what the
+      // user owns. Recorded after the writes rather than on the tap, so it
+      // counts screenshots that actually landed.
+      sl<FunnelLog>().record(FunnelStep.screenshotSaved);
+
       if (!mounted) return;
       Haptics.confirm();
       setState(() => _stage = _Stage.saved);
@@ -343,6 +349,7 @@ class _QuickSavePageState extends State<QuickSavePage>
       name,
       _newFolderColor,
     );
+    sl<FunnelLog>().record(FunnelStep.folderCreated);
     if (!mounted) return;
     // Drop straight back into the save flow with the new folder already
     // chosen — making someone pick it again right after naming it would be

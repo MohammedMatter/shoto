@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/core/routes/photo_viewer_route.dart';
@@ -40,6 +41,11 @@ Future<void> openSearchPage(
   BuildContext context, {
   ScreenshotsBloc? bloc,
 }) async {
+  // Now that this is free, the number finally means something: it measures
+  // whether people want search, rather than how many were willing to pay to
+  // find out whether they wanted it.
+  sl<FunnelLog>().record(FunnelStep.searchUsed);
+
   final ScreenshotsBloc resolvedBloc =
       bloc ?? (sl<ScreenshotsBloc>()..add(LoadScreenshotsEvent()));
   Navigator.of(context).push(

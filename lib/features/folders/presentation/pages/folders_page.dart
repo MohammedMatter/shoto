@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/core/theme/app_colors.dart';
@@ -146,6 +147,13 @@ class _FoldersPageState extends State<FoldersPage> {
     showCreateFolderSheet(
       context,
       onCreate: (name, color, isPrivate) {
+        // Counted at the two presentation call sites — here and the share
+        // sheet's inline "new folder" — rather than inside the bloc or the
+        // use case. Both of those are handed their collaborators through the
+        // constructor and reach for nothing else; a service-locator lookup in
+        // either would be the first exception to that in the codebase, for a
+        // counter.
+        sl<FunnelLog>().record(FunnelStep.folderCreated);
         bloc.add(CreateFolderEvent(name, color, isPrivate: isPrivate));
       },
     );

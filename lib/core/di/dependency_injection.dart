@@ -18,6 +18,7 @@ import 'package:shoto/features/smart_actions/domain/use_cases/get_screenshot_act
 import 'package:shoto/core/services/biometric_auth_service.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
+import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/services/local_identity.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/features/safe_share/data/services/redaction_service.dart';
@@ -116,6 +117,7 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => CacheService());
   sl.registerLazySingleton(() => AppPreferences());
   sl.registerLazySingleton(() => DevAccess());
+  sl.registerLazySingleton(() => FunnelLog());
   sl.registerLazySingleton(() => BiometricAuthService());
 
   sl.registerLazySingleton(() => ScreenshotGalleryDataSource());

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/app_router.dart';
 import 'package:shoto/core/services/app_preferences.dart';
@@ -114,6 +115,10 @@ class _OnboardingPageState extends State<OnboardingPage>
     // the app, saw the intro and closed it has not been introduced to
     // anything.
     sl<AppPreferences>().markOnboardingSeen();
+    // Recorded here rather than on the last stage being *shown*: reaching the
+    // final card and closing the app is not finishing the introduction, and
+    // the gap between those two numbers is the thing worth being able to see.
+    sl<FunnelLog>().record(FunnelStep.onboardingCompleted);
     // Straight into the app. This used to push the sign-in wall, which meant
     // the reward for finishing the introduction was being asked for a Google
     // account before seeing a single screen.
