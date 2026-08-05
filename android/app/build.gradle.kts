@@ -51,12 +51,21 @@ android {
     }
 }
 
-// EXPERIMENT — unbundled OCR. See docs/decisions/ml-models.md.
+// Unbundled OCR — the model lives in Google Play services, not in the APK.
 //
 // The text-recognition plugin depends on `com.google.mlkit:text-recognition`,
-// which carries the model inside the APK. `play-services-mlkit-text-recognition`
-// exposes the identical `com.google.mlkit.vision.text` API and keeps the model
-// in Google Play services instead.
+// which carries the model inside the app. `play-services-mlkit-text-recognition`
+// exposes the identical `com.google.mlkit.vision.text` API and fetches the
+// model instead, which is 122.6 MB of release APK down to 93.5.
+//
+// Verified on a device rather than assumed, because the failure mode is at
+// runtime and looks like an app that works but finds nothing. See
+// `docs/decisions/ml-models.md` for the log that proves the unbundled path
+// actually ran, and for the one case still untested.
+//
+// Image labelling stays bundled: its plugin compiles against
+// `image-labeling-custom`, so excluding the bundled artifact breaks the build
+// rather than swapping the model.
 configurations.all {
     exclude(group = "com.google.mlkit", module = "text-recognition")
 }

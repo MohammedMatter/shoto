@@ -1,75 +1,73 @@
 # The machine-learning models
 
-## What ships today
+## What ships
 
-Two ML Kit models are compiled into the APK:
+Two ML Kit capabilities are used, and they are now shipped differently:
 
-- `com.google.mlkit:text-recognition` — OCR. Behind search (free) and Safe
-  Share (paid).
-- `com.google.mlkit:image-labeling` (plus `image-labeling-custom` and
-  `linkfirebase`) — the visual vocabulary behind content filters.
+- **Text recognition — unbundled.** The model lives in Google Play services
+  and is fetched rather than carried. Behind search (free) and Safe Share
+  (paid).
+- **Image labelling — bundled.** The visual vocabulary behind content filters,
+  weights and all, inside the APK.
 
-Both are the **bundled** variants: the model weights are inside the app, so the
-first scan works offline and instantly. Every user carries them whether or not
-they ever run a scan.
+## Why one and not the other
 
-**What it costs, measured.** In a release APK containing all three ABIs
-(122.6 MB), ML Kit's native libraries are about 60 MB compressed —
-`libmlkit_google_ocr_pipeline.so` and `libmlkitcommonpipeline.so` are the two
-largest entries in the file after Flutter's own engine. A single-ABI download
-carries roughly a third of that, so the real per-user figure is nearer 20 MB.
-That is still the largest single thing in the app that most free users will
-never use.
+The image-labelling plugin depends on `image-labeling-custom` and compiles its
+Kotlin against classes that exist only in the bundled artifact. Excluding it
+does not swap the model, it breaks the build. Swapping it needs a patched
+plugin, which is a fork to maintain for a smaller saving than the OCR one.
 
-## The unbundled alternative
+Text recognition has no such problem: `play-services-mlkit-text-recognition`
+exposes the identical `com.google.mlkit.vision.text` API, so the plugin
+compiles unchanged.
 
-Google ships a second variant of each artifact that keeps the model in Google
-Play services and downloads it on first use:
+## What it saved, measured
 
-```kotlin
-// android/app/build.gradle.kts
-configurations.all {
-    exclude(group = "com.google.mlkit", module = "text-recognition")
-    exclude(group = "com.google.mlkit", module = "image-labeling")
-}
-dependencies {
-    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1")
-    implementation("com.google.android.gms:play-services-mlkit-image-labeling:16.0.8")
-}
+| | release APK, all three ABIs |
+|---|---|
+| bundled OCR | 122.6 MB |
+| unbundled OCR | 93.5 MB |
+
+About 29 MB, or roughly 10 MB per single-ABI download — and it is paid by every
+free user, most of whom never run a scan.
+
+## Why it was verified on a device rather than reasoned about
+
+The swap cannot be trusted from a build that compiles. Its failure modes are
+all at runtime — Play services too old, absent entirely (a real share of
+Android has no Google Play), or the model not yet downloaded when the first
+scan runs — and every one of them produces an app that looks fine and finds
+nothing.
+
+It also cannot be verified by searching and seeing results: the OCR text of
+every screenshot already in the library is cached in sqlite, so a search can
+succeed without any recognizer running at all. The evidence has to come from
+the log.
+
+Installed on a Xiaomi 23021RAAEG, search run, `adb logcat`:
+
+```
+W DynamiteModule: Local module descriptor class for
+    com.google.mlkit.dynamite.text.latin not found.
+D DecoupledTextDelegate: Start loading thin OCR module.
+I DynamiteModule: Selected remote version of
+    com.google.android.gms.vision.ocr, version >= 262833001
+D nativeloader: Load .../libmlkit_google_ocr_pipeline_gms.so ... ok
+I native  : Resizing Thread Pool: ocr_det_0 to 3
 ```
 
-```xml
-<!-- AndroidManifest.xml, inside <application> -->
-<meta-data android:name="com.google.mlkit.vision.DEPENDENCIES" android:value="ocr,ica" />
-```
+Line one is the bundled model being genuinely absent. The rest is the model
+being loaded out of Play services and the detector actually running. Both
+halves matter: either alone proves nothing.
 
-The Java API is the same in both variants, so the plugins' Kotlin compiles
-against either.
+## What is still untested
 
-## Why it is not done
+**A device with no Google Play services, or offline on first run.** The
+`com.google.mlkit.vision.DEPENDENCIES` meta-data asks Play to fetch the model
+at install time, which covers the ordinary case, but the app has no handling
+for "the recognizer is not available" — it would surface as a scan that
+returns nothing rather than as a message.
 
-**The swap cannot be verified without running OCR on a real device**, and OCR
-is the engine under search, content filters and Safe Share — the three things
-this release is about. A build that compiles proves nothing here: the failure
-mode of the unbundled variant is at *runtime*, on a device where Play services
-is old, or missing (no Google Play — a real share of Android), or the model
-download has not finished when the first scan runs. All three produce an app
-that looks fine and finds nothing.
-
-It also changes the promise. Bundled, the first scan works on a plane. Unbundled,
-the first scan needs a network and a wait, on a screen that currently says
-"reading this screenshot" and means it.
-
-## What would have to happen first
-
-1. The swap, on a branch.
-2. On device: OCR a screenshot **with the app freshly installed and offline**,
-   and confirm the failure is a message rather than an empty result.
-3. The same with Play services present but the model not yet downloaded — the
-   `ModuleInstall` API can be asked directly rather than waiting for the first
-   scan to trigger it.
-4. A decision about the first-run experience, because there now is one.
-
-Deferred rather than dropped. The saving is real and it is paid by every free
-user; it is simply not a change to make blind, and it is not what stands
-between this app and a release.
+That is the next thing to fix if this ships to a wide audience, and it is
+cheap: `MlKitContext` can be asked whether the module is present, and the one
+place that needs to know is the screen that says "reading this screenshot".

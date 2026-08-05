@@ -85,9 +85,10 @@
             </intent-filter>
         </activity>
 
-        <!-- EXPERIMENT — see docs/decisions/ml-models.md. Asks Play services
-             to fetch the OCR model at install time rather than on first
-             scan, which is what makes an unbundled model tolerable. -->
+        <!-- Asks Play services to fetch the OCR model at install time rather
+             than on the first scan, which is what makes an unbundled model
+             tolerable: without it the first search a user ever runs is the
+             one that waits for a download. See docs/decisions/ml-models.md. -->
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="ocr" />
