@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SHOTO — Never lose a screenshot again</title>
-<meta name="description" content="SHOTO organizes, searches and protects your screenshots — and everything stays on your phone.">
+<title>SHOTO — The screenshot you can actually send</title>
+<meta name="description" content="SHOTO swaps the card number in your screenshot for a different, equally valid one — same length, same place, no black bar. It also saves, sorts and searches everything you keep, all on your phone.">
 <meta name="theme-color" content="#ffffff">
-<meta property="og:title" content="SHOTO — Never lose a screenshot again">
-<meta property="og:description" content="Save it, find it in seconds, keep it private. A screenshot app that never leaves your phone.">
+<meta property="og:title" content="SHOTO — The screenshot you can actually send">
+<meta property="og:description" content="A card number becomes a different card number. Same length, same place, still valid — nobody can tell it was edited. And nothing ever leaves your phone.">
 <meta property="og:type" content="website">
 
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='116' fill='%232F5CFF'/><rect x='150' y='108' width='198' height='232' rx='22' fill='%23A9E6D6' transform='rotate(-8 249 340)'/><rect x='176' y='102' width='198' height='232' rx='22' fill='%23F4636F' transform='rotate(-3 275 334)'/><rect x='202' y='112' width='210' height='232' rx='22' fill='%23F4F6FA'/><path d='M72 296a24 24 0 0 1 24-24h96c26 0 30 58 64 58s38-58 64-58h96a24 24 0 0 1 24 24v96a56 56 0 0 1-56 56H128a56 56 0 0 1-56-56z' fill='%231E42D6'/></svg>">
@@ -170,43 +170,44 @@ h1{font-size:clamp(38px,5.2vw,60px);margin-bottom:20px}
   width:74px;height:5px;border-radius:3px;background:#E9EDF5;
 }
 .screen{height:100%;background:var(--soft);border-radius:24px;padding:26px 14px 14px;overflow:hidden}
-.s-search{
-  display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);
-  border-radius:11px;padding:10px 12px;font-size:13.5px;color:var(--ink3);
-  box-shadow:0 1px 3px rgba(12,18,32,.05);
-}
-.s-search svg{width:15px;height:15px;color:var(--blue);flex:none}
-.s-search b{color:var(--ink);font-weight:500}
-.s-cursor{width:1.5px;height:14px;background:var(--blue);border-radius:1px;animation:blink 1.1s steps(1) infinite}
-@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+.s-label{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin:0 0 9px}
 
-.s-label{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin:18px 0 9px}
-.s-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
-.s-item{
-  aspect-ratio:1/1.28;border-radius:11px;background:#fff;border:1px solid var(--line);
-  padding:9px;display:flex;flex-direction:column;gap:6px;
+/* The screenshot being cleaned, drawn as a document rather than a photo:
+   the point is the two numbers, and a picture behind them would only
+   compete with the one thing this mockup exists to show. */
+.s-doc{
+  background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 13px;
+  display:flex;flex-direction:column;gap:9px;
   box-shadow:0 1px 3px rgba(12,18,32,.05);
-  opacity:0;transform:translateY(8px);
-  animation:pop .5s var(--ease) forwards;
 }
-.s-item:nth-child(1){animation-delay:.15s}
-.s-item:nth-child(2){animation-delay:.25s}
-.s-item:nth-child(3){animation-delay:.35s}
-.s-item:nth-child(4){animation-delay:.45s}
-.s-item:nth-child(5){animation-delay:.55s}
-.s-item:nth-child(6){animation-delay:.65s}
+.s-line{height:8px;border-radius:4px;background:var(--soft)}
+.s-line--w75{width:75%}
+.s-line--w60{width:60%}
+.s-line--w50{width:50%}
+.s-line--w40{width:40%}
+
+.s-swap{display:flex;flex-direction:column;gap:5px;margin:3px 0}
+.s-num{
+  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:12.5px;letter-spacing:.02em;
+}
+/* Struck through rather than greyed: grey reads as "disabled", and this
+   value is not disabled — it is gone. */
+.s-num--was{color:var(--ink3);text-decoration:line-through}
+.s-num--now{
+  color:var(--ink);font-weight:600;
+  opacity:0;animation:pop .5s var(--ease) .5s forwards;
+}
 @keyframes pop{to{opacity:1;transform:none}}
-.s-item .th{flex:1;border-radius:7px;background:linear-gradient(150deg,#E7EDFB,#D9E3FA)}
-.s-item:nth-child(2) .th{background:linear-gradient(150deg,#FBEDE7,#F7DED4)}
-.s-item:nth-child(3) .th{background:linear-gradient(150deg,#E7F7EF,#D3F0E2)}
-.s-item:nth-child(4) .th{background:linear-gradient(150deg,#F1E9FB,#E4D6F8)}
-.s-item:nth-child(5) .th{background:linear-gradient(150deg,#FCF3E2,#F7E7C6)}
-.s-item:nth-child(6) .th{background:linear-gradient(150deg,#E4F3FA,#CFE9F6)}
-.s-item span{font-size:10.5px;color:var(--ink2);font-weight:500}
-.s-item em{
-  font-style:normal;font-size:9px;font-weight:600;color:var(--blue);
-  background:var(--blue-soft);border-radius:5px;padding:2px 5px;align-self:flex-start;
+
+.s-badge{
+  display:inline-flex;align-items:center;gap:7px;margin-top:12px;
+  background:var(--blue-soft);color:var(--blue-deep);
+  border-radius:999px;padding:7px 12px;font-size:12px;
+  opacity:0;animation:pop .5s var(--ease) .75s forwards;
 }
+.s-badge svg{width:15px;height:15px;flex:none}
+.s-badge b{font-weight:600}
 
 @media (max-width:880px){
   .hero{padding-top:44px}
@@ -395,10 +396,12 @@ h2{font-size:clamp(28px,3.6vw,42px);margin-bottom:14px}
         </svg>
 
         <span class="pill"><i></i> Coming soon to iOS &amp; Android</span>
-        <h1>Never lose a screenshot again.</h1>
+        <h1>The screenshot you can actually send.</h1>
         <p class="hero__sub">
-          SHOTO saves, sorts and searches your screenshots — so you find any one of
-          them in seconds. And nothing ever leaves your phone.
+          SHOTO swaps the card number in your screenshot for a different one —
+          same length, same place, still valid. Nobody can tell it was edited.
+          It also saves, sorts and searches everything you keep, and none of it
+          ever leaves your phone.
         </p>
 
         <form class="form" data-join novalidate>
@@ -419,19 +422,34 @@ h2{font-size:clamp(28px,3.6vw,42px);margin-bottom:14px}
 
       <div class="shot">
         <div class="phone" aria-hidden="true">
+          <!--
+            Shows the substitution, not a search.
+
+            This used to be a search field typing "dog" over a grid of six
+            results — the commodity half of the product, and the one the
+            phone's own gallery already does for free. The page now leads with
+            the thing neither Google Photos nor Apple Photos will ever ship,
+            so the picture beside the headline has to be that thing.
+
+            Both numbers are fake and both pass a Luhn check, which is the
+            actual claim: the stand-in is not a row of asterisks, it is a
+            number as ordinary as the one it replaced.
+          -->
           <div class="screen">
-            <div class="s-search">
-              <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="2"/><path d="m16 16 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              <b>dog</b><span class="s-cursor"></span>
+            <p class="s-label">About to send</p>
+            <div class="s-doc">
+              <span class="s-line s-line--w60"></span>
+              <span class="s-line s-line--w40"></span>
+              <div class="s-swap">
+                <span class="s-num s-num--was">4539 1488 0343 6467</span>
+                <span class="s-num s-num--now">4716 2093 5518 4021</span>
+              </div>
+              <span class="s-line s-line--w75"></span>
+              <span class="s-line s-line--w50"></span>
             </div>
-            <p class="s-label">6 results</p>
-            <div class="s-grid">
-              <div class="s-item"><span class="th"></span><em>Dog</em><span>saved from a story</span></div>
-              <div class="s-item"><span class="th"></span><em>Dog</em><span>vet reminder</span></div>
-              <div class="s-item"><span class="th"></span><em>Dog</em><span>park photo</span></div>
-              <div class="s-item"><span class="th"></span><em>Dog</em><span>food label</span></div>
-              <div class="s-item"><span class="th"></span><em>Dog</em><span>groomer hours</span></div>
-              <div class="s-item"><span class="th"></span><em>Dog</em><span>a friend sent this</span></div>
+            <div class="s-badge">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 3v6c0 4.4-3 8.1-7 9-4-.9-7-4.6-7-9V6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <b>Safe to send</b>
             </div>
           </div>
         </div>
@@ -444,10 +462,22 @@ h2{font-size:clamp(28px,3.6vw,42px);margin-bottom:14px}
     <div class="wrap">
       <div class="sec__head" data-r>
         <h2>Everything your screenshots were missing</h2>
-        <p>Six things SHOTO does the moment a screenshot lands in your library.</p>
+        <p>Five things SHOTO does the moment a screenshot lands in your library.</p>
       </div>
 
       <div class="grid">
+        <!--
+          Safe share is first because it is the only one of these the phone
+          cannot already do. Both platforms read and index every screenshot
+          for free; neither will ever ship a feature that writes a different,
+          plausible card number into a user's photo.
+        -->
+        <article class="f" data-r>
+          <span class="f__ic"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="9" width="17" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7.5 9V6.5a4.5 4.5 0 0 1 9 0V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 14.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          <h3>Swaps private details out</h3>
+          <p>A card number becomes a different card number — same length, same place, and it still passes the same checks. A black bar announces there was something to hide. A replacement announces nothing.</p>
+        </article>
+
         <article class="f" data-r>
           <span class="f__ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L8 8m4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
           <h3>Save in one tap</h3>
@@ -460,12 +490,14 @@ h2{font-size:clamp(28px,3.6vw,42px);margin-bottom:14px}
           <p>SHOTO reads the text in every screenshot and recognises what's pictured. Type “dog” and find the dog — even with no text at all.</p>
         </article>
 
-        <article class="f" data-r>
-          <span class="f__ic"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4L10.5 8h9A1.5 1.5 0 0 1 21 9.5v8A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5v-10Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
-          <h3>Sorts itself</h3>
-          <p>Set simple rules once — “anything with a phone number goes to Contacts” — and new screenshots file themselves automatically.</p>
-        </article>
-
+        <!--
+          "Sorts itself" lived here, promising rules that file new screenshots
+          automatically. Filing rules were built and removed in v13; Smart
+          Albums were built and removed before them. The page went on selling
+          both for three releases. Nothing describing automatic filing may
+          appear here again — SHOTO files what you tell it to, at the moment
+          you save it, and that is the whole premise.
+        -->
         <article class="f" data-r>
           <span class="f__ic"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="11" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 20h9a3 3 0 0 0 3-3V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
           <h3>Clears duplicates</h3>
@@ -478,11 +510,6 @@ h2{font-size:clamp(28px,3.6vw,42px);margin-bottom:14px}
           <p>Captured a long chat or article in pieces? SHOTO stitches them back into one clean, continuous image.</p>
         </article>
 
-        <article class="f" data-r>
-          <span class="f__ic"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="9" width="17" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M7.5 9V6.5a4.5 4.5 0 0 1 9 0V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 14.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-          <h3>Hides private data</h3>
-          <p>Before you share, SHOTO spots card numbers, IBANs and codes and covers them — so you never leak them by accident.</p>
-        </article>
       </div>
     </div>
   </section>
@@ -499,7 +526,7 @@ h2{font-size:clamp(28px,3.6vw,42px);margin-bottom:14px}
         <ul class="checks">
           <li><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.25" stroke="currentColor" stroke-width="1.8"/><path d="m8 12.4 2.6 2.6L16 9.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> No cloud storage, no servers, no uploads</li>
           <li><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.25" stroke="currentColor" stroke-width="1.8"/><path d="m8 12.4 2.6 2.6L16 9.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Search and recognition run offline, on your device</li>
-          <li><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.25" stroke="currentColor" stroke-width="1.8"/><path d="m8 12.4 2.6 2.6L16 9.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Each account keeps its own private library</li>
+          <li><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.25" stroke="currentColor" stroke-width="1.8"/><path d="m8 12.4 2.6 2.6L16 9.6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> No account needed — the library belongs to the phone</li>
         </ul>
       </div>
 

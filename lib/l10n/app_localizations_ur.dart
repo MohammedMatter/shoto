@@ -48,11 +48,14 @@ class AppLocalizationsUr extends AppLocalizations {
   String get homeGreetingEvening => 'شام بخیر';
 
   @override
-  String get homeInboxEmpty => 'کچھ محفوظ نہیں';
+  String get homeInboxEmpty => 'ابھی کچھ محفوظ نہیں ہوا';
 
   @override
   String get homeInboxEmptySubtitle =>
-      'شروع کرنے کے لیے کوئی اسکرین شاٹ SHOTO میں شیئر کریں';
+      'ابھی اپنے فون سے کچھ منتخب کریں، یا کسی بھی ایپ سے اسکرین شاٹ SHOTO میں شیئر کریں۔';
+
+  @override
+  String get homeEmptyImportCta => 'میرے فون سے منتخب کریں';
 
   @override
   String get homeInboxClear => 'سب ترتیب میں ہے';
@@ -74,7 +77,10 @@ class AppLocalizationsUr extends AppLocalizations {
   String get homeStatFolders => 'فولڈرز';
 
   @override
-  String get homeToolsTitle => 'SHOTO کیا کر سکتا ہے';
+  String get homeToolsTitle => 'ٹولز';
+
+  @override
+  String get homeToolsTitleEmpty => 'یہاں سے شروع کریں';
 
   @override
   String get homeToolSafeShare => 'محفوظ اشتراک';
@@ -112,9 +118,6 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get libraryActionProtect => 'محفوظ کریں';
-
-  @override
-  String get homeToolsTitleShort => 'کچھ کریں';
 
   @override
   String get homeSeeAll => 'سب دیکھیں';
@@ -473,13 +476,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get quickSaveFailedBody => 'دوبارہ شیئر کر کے دیکھیں۔';
 
   @override
-  String get quickSaveSignedOutTitle => 'پہلے SHOTO میں سائن ان کریں';
-
-  @override
-  String get quickSaveSignedOutBody =>
-      'آپ کی لائبریری آپ کے اکاؤنٹ سے جڑی ہے۔ SHOTO کھولیں، سائن ان کریں، پھر دوبارہ شیئر کریں۔';
-
-  @override
   String quickSaveSkipped(int count) {
     return 'صرف پہلے $count لیے گئے';
   }
@@ -748,13 +744,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get proWelcomeAction => 'شروع کریں';
 
   @override
-  String get featSearch => 'اسکرین شاٹس کے اندر تلاش';
-
-  @override
-  String get featSearchBody =>
-      'اس میں لکھے الفاظ سے کوئی بھی اسکرین شاٹ ڈھونڈیں، عربی یا انگریزی میں۔ کچھ اپ لوڈ نہیں ہوتا — پڑھنا آپ کے فون پر ہوتا ہے۔';
-
-  @override
   String get featSafeShare => 'محفوظ اشتراک';
 
   @override
@@ -783,27 +772,12 @@ class AppLocalizationsUr extends AppLocalizations {
       'اسکرول کی گئی تصویریں دوبارہ ایک لمبی تصویر میں جوڑیں، اوورلیپ خود ڈھونڈ کر ہٹا دیا جاتا ہے۔';
 
   @override
-  String get featUnlimited => 'لامحدود فولڈر اور اسکرین شاٹس';
+  String get featUnlimited => 'آپ کی لائبریری پر کوئی حد نہیں';
 
   @override
-  String get featUnlimitedBody =>
-      'مفت درجہ چند فولڈرز اور اسکرین شاٹس پر رک جاتا ہے۔ Pro دونوں حدیں ہٹا دیتا ہے۔';
-
-  @override
-  String get featSearchHow =>
-      'SHOTO ہر اسکرین شاٹ کے اندر لکھا متن پڑھ کر یاد رکھتا ہے، سو یاد آیا ہوا ایک لفظ ہی تصویر دوبارہ ڈھونڈنے کے لیے کافی ہے — نہ فائل کے نام، نہ فولڈر، نہ اسکرول۔';
-
-  @override
-  String get featSearchPoint1 =>
-      'عربی اور انگریزی پڑھتا ہے، اور املا تھوڑا مختلف ہو تب بھی مماثلت پا لیتا ہے۔';
-
-  @override
-  String get featSearchPoint2 =>
-      'تصویر میں جو دکھ رہا ہے اُس سے بھی ڈھونڈتا ہے — «رسید»، «بلی» یا «کھانا» آزمائیں۔';
-
-  @override
-  String get featSearchPoint3 =>
-      'پڑھنے کا کام آپ کے فون پر ہوتا ہے۔ کچھ اپ لوڈ نہیں ہوتا، اس لیے آف لائن بھی چلتا ہے۔';
+  String featUnlimitedBody(Object count) {
+    return 'مفت ورژن $count اسکرین شاٹس منظم کرتا ہے۔ پرو یہ حد ہٹا دیتا ہے۔';
+  }
 
   @override
   String get featSafeShareHow =>
@@ -871,19 +845,19 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get featUnlimitedHow =>
-      'مفت درجہ ایک حقیقی، قابلِ استعمال ایپ ہے، آزمائش نہیں — بس اس کی ایک حد ہے۔ Pro وہ حد ہٹا دیتا ہے، اور جو کچھ آپ پہلے ترتیب دے چکے ہیں وہ بالکل اپنی جگہ رہتا ہے۔';
+      'مفت ورژن ایک حقیقی، قابلِ استعمال ایپ ہے: محفوظ کرنا، فولڈرز، پسندیدہ اور مکمل تلاش — بغیر اکاؤنٹ کے اور بغیر کچھ اپ لوڈ کیے۔ اس میں صرف ایک حد ہے — کتنے اسکرین شاٹس منظم ہوتے ہیں — اور پرو اسے ہٹا دیتا ہے۔ جو کچھ آپ پہلے سے منظم کر چکے ہیں وہ ویسے ہی رہتا ہے۔';
 
   @override
   String get featUnlimitedPoint1 =>
-      'آپ کی لائبریری کو جتنے فولڈر واقعی چاہئیں، اُتنے۔';
+      'مفت ورژن میں فولڈرز لامحدود ہیں، جیسا کہ ہونا چاہیے۔';
 
   @override
   String get featUnlimitedPoint2 =>
-      'آپ کتنے اسکرین شاٹس ترتیب دیتے اور پسندیدہ بناتے ہیں، اس پر کوئی حد نہیں۔';
+      'اسکرین شاٹ کس لیے ہے، یہ نام دینا بھی مفت اور لامحدود ہے۔';
 
   @override
   String get featUnlimitedPoint3 =>
-      'محفوظ کرنا، فولڈرز، پسندیدہ اور تلاش کی تاریخ دونوں صورتوں میں آپ کے پاس رہتے ہیں۔';
+      'حد تک پہنچنے کا مطلب ہے SHOTO وہ جگہ بن گیا جہاں آپ چیزیں رکھتے ہیں۔ تب کچھ بھی حذف نہیں ہوتا۔';
 
   @override
   String get includedSubtitle => 'ہر Pro فیچر، وضاحت کے ساتھ۔';
@@ -909,11 +883,11 @@ class AppLocalizationsUr extends AppLocalizations {
       'پڑھیں کہ ہر خوبی اصل میں کیا کرتی ہے، پھر فیصلہ کریں۔';
 
   @override
-  String get includedFreeTitle => 'مفت درجہ آپ کو کیا دیتا ہے';
+  String get includedFreeTitle => 'مفت ورژن میں کیا ملتا ہے';
 
   @override
-  String includedFreeBody(int folders, int count) {
-    return '$folders فولڈرز اور $count ترتیب شدہ اسکرین شاٹس — ساتھ محفوظ کرنا، پسندیدہ اور گیلری، ہمیشہ کے لیے مفت۔';
+  String includedFreeBody(int count) {
+    return '$count منظم اسکرین شاٹس، لامحدود فولڈرز، اور مکمل تلاش — ہمیشہ کے لیے مفت۔';
   }
 
   @override
@@ -921,7 +895,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get authSubtitle =>
-      'ہر اسکرین شاٹ ایک جگہ محفوظ، منظم اور تلاش کرنے کے لیے سائن ان کریں۔';
+      'SHOTO استعمال کرنے کے لیے اکاؤنٹ کی ضرورت نہیں۔ سائن ان صرف خریداری کو دوسرے فون پر منتقل کرنے کے لیے کریں۔';
 
   @override
   String get authGoogle => 'Google کے ساتھ جاری رکھیں';
@@ -1146,6 +1120,13 @@ class AppLocalizationsUr extends AppLocalizations {
   String get settingsSignOutHint => 'آپ کے اسکرین شاٹس اسی آلے پر رہیں گے';
 
   @override
+  String get settingsSignIn => 'سائن ان';
+
+  @override
+  String get settingsSignInHint =>
+      'اختیاری۔ صرف خریداری کو دوسرے فون پر منتقل کرنے کے لیے درکار ہے۔';
+
+  @override
   String get settingsCacheMeasuring => 'ماپا جا رہا ہے…';
 
   @override
@@ -1350,16 +1331,11 @@ class AppLocalizationsUr extends AppLocalizations {
       'سکرین شاٹ میں لکھے الفاظ، اور تصویر میں جو دکھ رہا ہے۔ لکھیں ”رسید“ یا ”کتا“۔';
 
   @override
-  String get onbProTitle => 'SHOTO Pro';
+  String get onbSafeShareTitle => 'وہ اسکرین شاٹ جو آپ واقعی بھیج سکتے ہیں';
 
   @override
-  String get onbProBody =>
-      'قواعد آپ کے نئے سکرین شاٹ خود فائل کرتے ہیں، اور نیچے سب کچھ ساتھ آتا ہے۔';
-
-  @override
-  String onbProMore(int count) {
-    return 'اور $count مزید';
-  }
+  String get onbSafeShareBody =>
+      'کارڈ نمبر ایک مختلف کارڈ نمبر بن جاتا ہے — وہی لمبائی، وہی جگہ، پھر بھی درست۔ کسی کو پتہ نہیں چلتا کہ تبدیل ہوا۔';
 
   @override
   String get onbFolderExample => 'رسیدیں';
@@ -1562,6 +1538,12 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get librarySortLabel => 'ترتیب';
+
+  @override
+  String get libraryShowOnly => 'صرف دکھائیں';
+
+  @override
+  String get libraryShowEverything => 'سب کچھ';
 
   @override
   String libraryScanPrompt(int count) {

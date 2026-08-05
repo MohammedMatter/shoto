@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/theme/app_colors.dart';
@@ -176,6 +177,11 @@ class _SafeSharePageState extends State<SafeSharePage> {
           '${DateTime.now().millisecondsSinceEpoch}.png',
         );
         await out.writeAsBytes(bytes);
+        // Only the protected branch counts. Sending the original from this
+        // screen means the user looked at what Safe Share found and decided
+        // it did not need to do anything — a legitimate outcome, and not the
+        // same event as the headline feature actually being used.
+        sl<FunnelLog>().record(FunnelStep.safeShareCompleted);
       } else {
         out = _file!;
       }

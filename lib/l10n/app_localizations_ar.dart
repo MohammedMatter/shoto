@@ -48,10 +48,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeGreetingEvening => 'مساء الخير';
 
   @override
-  String get homeInboxEmpty => 'ما في شي محفوظ';
+  String get homeInboxEmpty => 'لسا ما في شي محفوظ';
 
   @override
-  String get homeInboxEmptySubtitle => 'شارك لقطة مع SHOTO لتبدأ';
+  String get homeInboxEmptySubtitle =>
+      'اختار كم وحدة من جهازك هلق، أو شارك أي لقطة مع SHOTO من أي تطبيق.';
+
+  @override
+  String get homeEmptyImportCta => 'اختار من جهازي';
 
   @override
   String get homeInboxClear => 'كله مرتّب';
@@ -72,7 +76,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeStatFolders => 'مجلدات';
 
   @override
-  String get homeToolsTitle => 'شو بيقدر يعمل SHOTO';
+  String get homeToolsTitle => 'أدوات';
+
+  @override
+  String get homeToolsTitleEmpty => 'ابدأ من هون';
 
   @override
   String get homeToolSafeShare => 'مشاركة آمنة';
@@ -109,9 +116,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get libraryActionProtect => 'احمِ';
-
-  @override
-  String get homeToolsTitleShort => 'اعمل شي';
 
   @override
   String get homeSeeAll => 'عرض الكل';
@@ -468,13 +472,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get quickSaveFailedBody => 'جرّب تشاركها مرة ثانية.';
 
   @override
-  String get quickSaveSignedOutTitle => 'سجّل دخولك أولاً';
-
-  @override
-  String get quickSaveSignedOutBody =>
-      'مكتبتك مربوطة بحسابك. افتح SHOTO، سجّل دخول، وبعدين شاركها من جديد.';
-
-  @override
   String quickSaveSkipped(int count) {
     return 'أخذنا أول $count بس';
   }
@@ -742,13 +739,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get proWelcomeAction => 'يلا نبلش';
 
   @override
-  String get featSearch => 'بحث جوّا لقطاتك';
-
-  @override
-  String get featSearchBody =>
-      'لاقي أي لقطة من الكلمات المكتوبة فيها، بالعربي أو الإنجليزي. ولا شي بينرفع — القراءة بتصير على جهازك.';
-
-  @override
   String get featSafeShare => 'مشاركة آمنة';
 
   @override
@@ -777,27 +767,12 @@ class AppLocalizationsAr extends AppLocalizations {
       'ارجع اجمع لقطات التمرير بصورة وحدة طويلة، والتداخل بينلاقى وبينشال تلقائياً.';
 
   @override
-  String get featUnlimited => 'مجلدات ولقطات بلا حدود';
+  String get featUnlimited => 'بلا سقف لمكتبتك';
 
   @override
-  String get featUnlimitedBody =>
-      'النسخة المجانية بتوقف عند كم مجلد وكم سكرين شوت. Pro بتشيل الحدين.';
-
-  @override
-  String get featSearchHow =>
-      'SHOTO بيقرأ النص المكتوب جوّا كل لقطة وبيحفظه، فكلمة وحدة متذكّرها بتكفي تلاقي الصورة من جديد — بدون أسماء ملفات ولا مجلدات ولا تمرير.';
-
-  @override
-  String get featSearchPoint1 =>
-      'بيقرأ عربي وإنجليزي، وبيطابق حتى لو الإملاء اختلف شوي.';
-
-  @override
-  String get featSearchPoint2 =>
-      'كمان بتلاقي حسب شو ظاهر بالصورة — جرّب «فاتورة» أو «قطة» أو «أكل».';
-
-  @override
-  String get featSearchPoint3 =>
-      'القراءة بتصير على جهازك. ولا شي بينرفع، فبتشتغل حتى بدون إنترنت.';
+  String featUnlimitedBody(Object count) {
+    return 'المجاني بيرتّب $count لقطة. برو بيشيل الرقم كلياً.';
+  }
 
   @override
   String get featSafeShareHow =>
@@ -864,18 +839,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get featUnlimitedHow =>
-      'النسخة المجانية تطبيق حقيقي بينشتغل فيه، مش تجربة — بس إله سقف. Pro بتشيل السقف، وكل شي رتبته بيضل مكانه بالظبط.';
+      'النسخة المجانية تطبيق حقيقي بيشتغل: حفظ، مجلدات، مفضلة، وبحث كامل، بدون حساب وبدون ما يطلع إشي من جهازك. في سقف واحد بس — كم لقطة بيرتّب — وبرو بيشيله. وكل شي رتّبته بيضل مكانه بالضبط.';
 
   @override
-  String get featUnlimitedPoint1 => 'مجلدات قد ما مكتبتك بتحتاج فعلياً.';
+  String get featUnlimitedPoint1 =>
+      'المجلدات بلا حدود بالمجاني، وهيك المفروض تكون من البداية.';
 
   @override
   String get featUnlimitedPoint2 =>
-      'ما في حد لعدد اللقطات اللي بترتبها وبتحطها بالمفضلة.';
+      'وتسمية شو الهدف من اللقطة كمان مجانية وبلا عدد.';
 
   @override
   String get featUnlimitedPoint3 =>
-      'الحفظ والمجلدات والمفضلة وسجل البحث بيضلوا إلك بالحالتين.';
+      'لما توصل للسقف يعني SHOTO صار المكان اللي بتحفظ فيه. وما بينحذف إشي وقتها.';
 
   @override
   String get includedSubtitle => 'كل ميزة بـ Pro، مشروحة.';
@@ -902,8 +878,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get includedFreeTitle => 'شو بيعطيك المجاني';
 
   @override
-  String includedFreeBody(int folders, int count) {
-    return '$folders مجلدات و$count لقطة مرتّبة — وكمان الحفظ والمفضلة والمعرض، مجاناً للأبد.';
+  String includedFreeBody(int count) {
+    return '$count لقطة مرتّبة، مجلدات بلا حدود، والبحث كامل — مجاناً للأبد.';
   }
 
   @override
@@ -911,7 +887,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get authSubtitle =>
-      'سجّل دخولك لتحفظ وترتّب وتلاقي كل لقطاتك بمكان واحد.';
+      'ما بتحتاج حساب لتستخدم SHOTO. سجّل دخول بس إذا بدك تنقل اشتراكك لجهاز تاني.';
 
   @override
   String get authGoogle => 'تابع باستخدام Google';
@@ -1139,6 +1115,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsSignOutHint => 'لقطاتك بتضل على هالجهاز';
 
   @override
+  String get settingsSignIn => 'تسجيل الدخول';
+
+  @override
+  String get settingsSignInHint => 'اختياري. بيلزم بس لنقل اشتراكك لجهاز تاني.';
+
+  @override
   String get settingsCacheMeasuring => 'بنقيس…';
 
   @override
@@ -1345,16 +1327,11 @@ class AppLocalizationsAr extends AppLocalizations {
       'الكلمات المكتوبة داخل اللقطة، وكمان اللي الصورة بتوريه. اكتب «فاتورة»، أو «قطة».';
 
   @override
-  String get onbProTitle => '‏SHOTO Pro';
+  String get onbSafeShareTitle => 'اللقطة اللي فعلاً بتقدر تبعتها';
 
   @override
-  String get onbProBody =>
-      'قواعد بترتّب اللقطات الجديدة عنك، وكل اللي تحت بيجي معها.';
-
-  @override
-  String onbProMore(int count) {
-    return 'و$count غيرها';
-  }
+  String get onbSafeShareBody =>
+      'رقم البطاقة بيصير رقم بطاقة تاني — نفس الطول، نفس المكان، وبيضل صالح. ما حدا بيعرف إنها تعدّلت.';
 
   @override
   String get onbFolderExample => 'فواتير';
@@ -1573,6 +1550,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get librarySortLabel => 'الترتيب';
+
+  @override
+  String get libraryShowOnly => 'اعرض بس';
+
+  @override
+  String get libraryShowEverything => 'كل شي';
 
   @override
   String libraryScanPrompt(int count) {

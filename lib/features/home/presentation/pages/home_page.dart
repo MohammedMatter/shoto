@@ -13,6 +13,7 @@ import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/widgets/asset_thumbnail_image.dart';
 import 'package:shoto/core/widgets/photo_hero.dart';
 import 'package:shoto/core/widgets/premium_gate.dart';
+import 'package:shoto/core/widgets/primary_button.dart';
 import 'package:shoto/core/widgets/pro_badge.dart';
 import 'package:shoto/features/duplicates/presentation/pages/duplicates_page.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
@@ -151,26 +152,20 @@ class _HomePageState extends State<HomePage>
                     child: _Gutter(child: _Greeting()),
                   ),
                   SizedBox(height: 18.h),
-                  // **Second on the page, and that is the whole point.**
+                  // **Second on the page, and the screen's only entry to
+                  // search** — see `docs/decisions/home.md`.
                   //
-                  // Search used to be a 44px circle in the top-right corner —
-                  // the least reachable point on a tall phone held in one
-                  // hand, for the single most valuable action in an app whose
-                  // entire purpose is finding a screenshot again. It was also
-                  // duplicated as a row at the bottom of the tools list, so
-                  // the app had two entry points to its best feature and both
-                  // were awkward.
-                  //
-                  // A full-width field is reachable, unmistakable, and does a
-                  // second job for free: its placeholder says the app searches
-                  // *what a picture shows*, which is the one capability people
-                  // never guess a screenshot app has.
-                  _Enter(
-                    parent: _entrance,
-                    index: 1,
-                    child: _Gutter(child: _SearchField()),
-                  ),
-                  SizedBox(height: 26.h),
+                  // Not shown before there is anything to search. A control
+                  // that cannot succeed is worse than no control: it reads as
+                  // the app not knowing its own state.
+                  if (all.isNotEmpty) ...[
+                    _Enter(
+                      parent: _entrance,
+                      index: 1,
+                      child: _Gutter(child: _SearchField()),
+                    ),
+                    SizedBox(height: 26.h),
+                  ],
                   _Enter(
                     parent: _entrance,
                     index: 2,
@@ -180,6 +175,10 @@ class _HomePageState extends State<HomePage>
                         hasLibrary: all.isNotEmpty,
                         isLoading: loaded == null,
                         onTap: widget.onOpenLibrary,
+                        onImport: () => importScreenshots(
+                          context,
+                          bloc: context.read<ScreenshotsBloc>(),
+                        ),
                       ),
                     ),
                   ),
@@ -196,33 +195,37 @@ class _HomePageState extends State<HomePage>
                       child: _Gutter(
                         child: WaitingOnYou(
                           waiting: loaded.waitingByIntent,
-                          onOpen: (IntentRef intent) => Navigator.of(
-                            context,
-                          ).push(
-                            FadeSlidePageRoute(
-                              builder: (_) => BlocProvider<ScreenshotsBloc>.value(
-                                value: context.read<ScreenshotsBloc>(),
-                                child: IntentPage(intent: intent),
+                          onOpen: (IntentRef intent) =>
+                              Navigator.of(context).push(
+                                FadeSlidePageRoute(
+                                  builder: (_) =>
+                                      BlocProvider<ScreenshotsBloc>.value(
+                                        value: context.read<ScreenshotsBloc>(),
+                                        child: IntentPage(intent: intent),
+                                      ),
+                                ),
                               ),
-                            ),
-                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: 22.h),
                   ],
-                  _Enter(
-                    parent: _entrance,
-                    index: 3,
-                    child: _Gutter(
-                      child: _StatLine(
-                        total: all.length,
-                        favorites: all.where((s) => s.isFavorite).length,
-                        onOpenLibrary: widget.onOpenLibrary,
-                        onOpenFolders: widget.onOpenFolders,
+                  // Three zeros are not three facts. The counts appear when
+                  // there is something to count — the same rule the search
+                  // field above follows.
+                  if (all.isNotEmpty)
+                    _Enter(
+                      parent: _entrance,
+                      index: 3,
+                      child: _Gutter(
+                        child: _StatLine(
+                          total: all.length,
+                          favorites: all.where((s) => s.isFavorite).length,
+                          onOpenLibrary: widget.onOpenLibrary,
+                          onOpenFolders: widget.onOpenFolders,
+                        ),
                       ),
                     ),
-                  ),
                   if (all.isNotEmpty) ...[
                     SizedBox(height: 34.h),
                     _Enter(
@@ -255,13 +258,24 @@ class _HomePageState extends State<HomePage>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // "What SHOTO can do" is a brochure heading — it
-                          // describes the software to you. Every row under it
-                          // is now something you can actually start from here,
-                          // so the heading says so.
-                          _SectionTitle(context.l10n.homeToolsTitleShort),
+                          // Two headings, because the list answers two
+                          // different questions — where to begin, versus what
+                          // is available. See `docs/decisions/home.md`.
+                          _SectionTitle(
+                            all.isEmpty
+                                ? context.l10n.homeToolsTitleEmpty
+                                : context.l10n.homeToolsTitle,
+                          ),
                           SizedBox(height: 4.h),
                           _ToolList(
+                            // The hero above already carries this action on a
+                            // fresh install, and a screen that offers the same
+                            // thing twice is not twice as discoverable — it is
+                            // the argument this file already makes about
+                            // search having lived both in the header and in
+                            // this list. It also redirects every remaining
+                            // row while there is nothing to use them on.
+                            hasLibrary: all.isNotEmpty,
                             onOpenLibraryForIntent:
                                 widget.onOpenLibraryForIntent,
                           ),
@@ -515,31 +529,25 @@ class _SearchField extends StatelessWidget {
 /// The screen's one hero. Everything else here is secondary to the question
 /// "is there anything for me to do?".
 ///
-/// **It is not a card, and that is the whole point.**
-///
-/// This began as a slab of accent colour with a glow under it, became a
-/// bordered surface with a coloured rule, and is now nothing at all — a
-/// figure, a line of text, and the page behind it. Each step removed a
-/// container, and the screen got better each time, which is the argument:
-/// what made Home read as generated was that every piece of information on
-/// it had been put in a box, and seven boxes stacked vertically is the shape
-/// of a template regardless of what is written in them.
-///
-/// A 58px numeral in the display face outranks anything a border can do. It
-/// needs no fill to be the first thing you see, it costs one text node
-/// instead of a decorated container, and it lets the count be *read* rather
-/// than presented.
+/// **It is not a card, and it must not become one** — the figure carries the
+/// screen on type size alone. See `docs/decisions/home.md` for the three
+/// shapes this went through and why each container came off.
 class _UnsortedHeadline extends StatelessWidget {
   final int unsortedCount;
   final bool hasLibrary;
   final bool isLoading;
   final ValueChanged<LibraryFilter> onTap;
 
+  /// Opens the OS picker. Only ever used by the empty state — see the button
+  /// in that branch for why the hero has an action at all.
+  final VoidCallback onImport;
+
   const _UnsortedHeadline({
     required this.unsortedCount,
     required this.hasLibrary,
     required this.isLoading,
     required this.onTap,
+    required this.onImport,
   });
 
   @override
@@ -609,6 +617,33 @@ class _UnsortedHeadline extends StatelessWidget {
                 color: AppColors.textSecondary,
               ),
             ),
+
+            // **The empty room's way out, in the largest slot on the screen.**
+            //
+            // A brand-new library said "Nothing saved" and "Share a
+            // screenshot into SHOTO to start", and stopped there. That is an
+            // instruction to *leave*: the only route it named requires
+            // switching to another app, finding a screenshot, opening its
+            // share sheet and coming back. On the one screen where somebody
+            // has just arrived and is deciding whether this was worth
+            // installing, the app had nothing for them to do in it.
+            //
+            // The picker fixes that in one tap, and it does not cost the
+            // opt-in premise a thing: it is the operating system's own
+            // multi-select picker, running outside the app, which hands back
+            // only what was chosen. SHOTO still never enumerates a gallery —
+            // see [SystemPhotoPickerDataSource], which exists for exactly
+            // this distinction.
+            //
+            // Only in the empty state. Once there is a library the hero has a
+            // number to show and importing is a tool row like any other.
+            if (!hasLibrary) ...[
+              SizedBox(height: 16.h),
+              PrimaryButton(
+                label: context.l10n.homeEmptyImportCta,
+                onPressed: onImport,
+              ),
+            ],
           ],
         ),
       );
@@ -841,7 +876,38 @@ class _SectionTitle extends StatelessWidget {
 class _ToolList extends StatelessWidget {
   final ValueChanged<LibraryIntent> onOpenLibraryForIntent;
 
-  const _ToolList({required this.onOpenLibraryForIntent});
+  /// Whether there is anything for these tools to work on.
+  ///
+  /// Governs two things: the import row is dropped while this is false
+  /// (the hero directly above is already offering it), and every remaining
+  /// row is redirected — see [_orImportFirst].
+  final bool hasLibrary;
+
+  const _ToolList({
+    required this.onOpenLibraryForIntent,
+    required this.hasLibrary,
+  });
+
+  /// What a tool row does when there is nothing to do it to.
+  ///
+  /// On a fresh install all three of these rows were dead ends. Safe share
+  /// and Merge opened the Library in selection mode with nothing to select,
+  /// and Find duplicates was worse than a dead end — it went straight to the
+  /// paywall, so the app's answer to "what does this do?" on an empty
+  /// library was to ask for money for a scan of nothing.
+  ///
+  /// They are not hidden, because these rows are how somebody learns Safe
+  /// Share exists, and Safe Share is what the product now leads with —
+  /// making it invisible until the user has already succeeded would be
+  /// backwards. Instead each one answers with the single step that has to
+  /// happen first anyway. This is the same principle as the tool rows that
+  /// stopped printing "long-press two screenshots, then tap Merge": a row
+  /// that looks like a button performs the step rather than describing it.
+  VoidCallback _orImportFirst(BuildContext context, VoidCallback whenReady) {
+    if (hasLibrary) return whenReady;
+    return () =>
+        importScreenshots(context, bloc: context.read<ScreenshotsBloc>());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -861,17 +927,18 @@ class _ToolList extends StatelessWidget {
       // this the one row that matters on the day the app is installed — and Home
       // is where somebody lands with nothing in it. Library has the same action
       // in its header; both call the same function, so the two can't drift.
-      _Tool(
-        icon: Icons.add_photo_alternate_outlined,
-        // Neutral. Adding a screenshot is not information, not completion and
-        // not destruction, and the palette's rule is that anything with no job
-        // to encode stays colourless.
-        tint: AppColors.marker,
-        title: context.l10n.importTitle,
-        subtitle: context.l10n.homeToolImportSubtitle,
-        onTap: () =>
-            importScreenshots(context, bloc: context.read<ScreenshotsBloc>()),
-      ),
+      if (hasLibrary)
+        _Tool(
+          icon: Icons.add_photo_alternate_outlined,
+          // Neutral. Adding a screenshot is not information, not completion and
+          // not destruction, and the palette's rule is that anything with no job
+          // to encode stays colourless.
+          tint: AppColors.marker,
+          title: context.l10n.importTitle,
+          subtitle: context.l10n.homeToolImportSubtitle,
+          onTap: () =>
+              importScreenshots(context, bloc: context.read<ScreenshotsBloc>()),
+        ),
       _Tool(
         icon: Icons.shield_moon_rounded,
         // Hiding something before you send it is a protective, informational
@@ -884,7 +951,10 @@ class _ToolList extends StatelessWidget {
         // Now it opens the Library already in selection mode, asking for the
         // one screenshot it needs. The app performs the step it used to
         // narrate.
-        onTap: () => onOpenLibraryForIntent(LibraryIntent.protect),
+        onTap: _orImportFirst(
+          context,
+          () => onOpenLibraryForIntent(LibraryIntent.protect),
+        ),
       ),
       _Tool(
         icon: Icons.content_copy_rounded,
@@ -892,13 +962,16 @@ class _ToolList extends StatelessWidget {
         tint: AppColors.error,
         title: context.l10n.homeToolDuplicates,
         subtitle: context.l10n.homeToolDuplicatesSubtitle,
-        onTap: () async {
+        // The paywall sits *inside* the ready branch, so an empty library
+        // never reaches it. Asking somebody to pay to scan nothing for
+        // duplicates was the single worst interaction on the first screen.
+        onTap: _orImportFirst(context, () async {
           if (!await ensurePremium(context)) return;
           if (!context.mounted) return;
           await Navigator.of(
             context,
           ).push(FadeSlidePageRoute(builder: (_) => DuplicatesPage()));
-        },
+        }),
       ),
       // Search is **not** in this list any more.
       //
@@ -915,7 +988,10 @@ class _ToolList extends StatelessWidget {
         // Was: "Long-press two or more screenshots in your library, then tap
         // Merge." Three instructions, one of them a gesture with no visual
         // affordance, on a screen the user had to find first.
-        onTap: () => onOpenLibraryForIntent(LibraryIntent.merge),
+        onTap: _orImportFirst(
+          context,
+          () => onOpenLibraryForIntent(LibraryIntent.merge),
+        ),
       ),
     ];
 

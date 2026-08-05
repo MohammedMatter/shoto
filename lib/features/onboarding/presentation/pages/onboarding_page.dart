@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/app_router.dart';
 import 'package:shoto/core/services/app_preferences.dart';
@@ -114,7 +115,14 @@ class _OnboardingPageState extends State<OnboardingPage>
     // the app, saw the intro and closed it has not been introduced to
     // anything.
     sl<AppPreferences>().markOnboardingSeen();
-    context.pushNamed(AppRouter.authPage);
+    // Recorded here rather than on the last stage being *shown*: reaching the
+    // final card and closing the app is not finishing the introduction, and
+    // the gap between those two numbers is the thing worth being able to see.
+    sl<FunnelLog>().record(FunnelStep.onboardingCompleted);
+    // Straight into the app. This used to push the sign-in wall, which meant
+    // the reward for finishing the introduction was being asked for a Google
+    // account before seeing a single screen.
+    context.goNamed(AppRouter.homePage);
   }
 
   @override
@@ -349,8 +357,8 @@ const List<CardPose> _found = [
 
 /// **Stage five — Pro.** The cards retreat to a tidy fan at the top and hand
 /// the screen to the paid list. One of them is covering a card number, which
-/// is the single most concrete thing Pro does and the last thing seen before
-/// the button.
+/// is the single most concrete thing SHOTO does and the last thing seen
+/// before the button.
 const List<CardPose> _pro = [
   CardPose(x: -1.9, y: -0.9, opacity: 0, scale: 0.8),
   CardPose(x: -0.48, y: -0.5, turns: -0.05, scale: 0.72, opacity: 0.9),
@@ -386,10 +394,19 @@ List<OnboardingStage> _stages(BuildContext context) => [
     poses: _found,
     prop: StageProp.search,
   ),
+  // Last, and no longer a price list.
+  //
+  // This stage used to pitch the subscription — six paid features shown to
+  // somebody who had not yet saved a single screenshot, as the final thing
+  // before the button that lets them start. Its copy also still promised
+  // rules that file screenshots for you, three releases after filing rules
+  // were deleted.
+  //
+  // It now ends on the one thing the phone's own gallery will never do.
   OnboardingStage(
-    title: (context) => context.l10n.onbProTitle,
-    body: (context) => context.l10n.onbProBody,
+    title: (context) => context.l10n.onbSafeShareTitle,
+    body: (context) => context.l10n.onbSafeShareBody,
     poses: _pro,
-    prop: StageProp.premium,
+    prop: StageProp.safeShare,
   ),
 ];

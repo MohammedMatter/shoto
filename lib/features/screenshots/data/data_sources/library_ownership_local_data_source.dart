@@ -2,14 +2,13 @@ import 'package:sqflite/sqflite.dart';
 import 'package:shoto/core/database/app_database.dart';
 import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 
-/// Answers the one question the device gallery cannot: *whose* library is
-/// this screenshot in.
+/// Answers the one question the device gallery cannot: is this screenshot
+/// actually *in* SHOTO's library.
 ///
 /// SHOTO keeps its images in a single album on the device, `Pictures/SHOTO`.
-/// A folder on disk has no notion of accounts, so listing that album meant
-/// every account signing in on the same phone inherited every other
-/// account's screenshots. Membership is therefore recorded here, per user,
-/// and the album is only ever read *through* it.
+/// A folder on disk cannot distinguish an image the user deliberately saved
+/// from one that merely landed there, so membership is recorded here and the
+/// album is only ever read *through* it.
 ///
 /// Note this is about visibility inside SHOTO, not secrecy: the files still
 /// sit in the shared gallery, where the phone's own photo app can show them
@@ -22,32 +21,20 @@ class LibraryOwnershipLocalDataSource {
 
   LibraryOwnershipLocalDataSource(this._appDatabase, this._authRepository);
 
-  /// Null while nobody is signed in. Reads treat that as an empty library
-  /// rather than throwing — the share sheet can legitimately run before the
-  /// user has ever opened the app. Writes require a real account, because
-  /// claiming an image for nobody would file it where no one can reach it.
-  String? get _userId => _authRepository.currentUser?.id;
+  /// Always present. This used to be the signed-in account's uid and was
+  /// therefore nullable, which made every read below carry an "empty library"
+  /// branch and every write a StateError it could throw. The device's own
+  /// identity exists from first launch and never goes away, so all of that
+  /// is gone: there is no state in which SHOTO does not know whose library
+  /// this is.
+  String get _userId => _authRepository.userId;
 
-  /// Whether there is an account to attribute anything to. Callers that are
-  /// about to write check this rather than letting [_requireUserId] throw.
-  bool get hasSignedInUser => _userId != null;
-
-  String get _requireUserId {
-    final String? id = _userId;
-    if (id == null) {
-      throw StateError('Cannot change library ownership while signed out.');
-    }
-    return id;
-  }
-
-  /// Every asset id the signed-in account has in its library.
+  /// Every asset id in this device's library.
   ///
   /// Returned as a set because the caller's job is always an intersection
   /// against the album's contents, and the album can hold hundreds of items.
   Future<Set<String>> getOwnedAssetIds() async {
-    final String? userId = _userId;
-    if (userId == null) return <String>{};
-
+    final String userId = _userId;
     final Database db = await _appDatabase.database;
     final List<Map<String, Object?>> rows = await db.query(
       AppDatabase.libraryAssets,
@@ -59,9 +46,7 @@ class LibraryOwnershipLocalDataSource {
   }
 
   Future<bool> owns(String assetId) async {
-    final String? userId = _userId;
-    if (userId == null) return false;
-
+    final String userId = _userId;
     final Database db = await _appDatabase.database;
     final List<Map<String, Object?>> rows = await db.query(
       AppDatabase.libraryAssets,
@@ -73,16 +58,16 @@ class LibraryOwnershipLocalDataSource {
     return rows.isNotEmpty;
   }
 
-  /// Adds [assetIds] to the signed-in account's library.
+  /// Adds [assetIds] to this device's library.
   ///
   /// Idempotent — claiming something already claimed is a no-op, which is
-  /// what lets an image that is physically in the album be adopted by a
-  /// second account without copying the file.
+  /// what lets an image that is physically in the album be re-imported
+  /// without copying the file.
   Future<void> claim(Iterable<String> assetIds) async {
     final List<String> ids = assetIds.toList();
     if (ids.isEmpty) return;
 
-    final String userId = _requireUserId;
+    final String userId = _userId;
     final Database db = await _appDatabase.database;
     final int now = DateTime.now().millisecondsSinceEpoch;
 
@@ -97,13 +82,12 @@ class LibraryOwnershipLocalDataSource {
     });
   }
 
-  /// Removes [assetIds] from the signed-in account's library, leaving other
-  /// accounts' claims on the same image untouched.
+  /// Removes [assetIds] from this device's library.
   Future<void> release(Iterable<String> assetIds) async {
     final List<String> ids = assetIds.toList();
     if (ids.isEmpty) return;
 
-    final String userId = _requireUserId;
+    final String userId = _userId;
     final Database db = await _appDatabase.database;
     final String placeholders = List.filled(ids.length, '?').join(',');
     await db.delete(
@@ -111,27 +95,6 @@ class LibraryOwnershipLocalDataSource {
       where: 'user_id = ? AND asset_id IN ($placeholders)',
       whereArgs: [userId, ...ids],
     );
-  }
-
-  /// Which of [assetIds] some *other* account still has in its library.
-  ///
-  /// Deleting is the one operation that touches the file itself, and the file
-  /// is shared. Removing a screenshot from your library must not take it out
-  /// of somebody else's, so the actual delete is limited to what this returns
-  /// nothing for.
-  Future<Set<String>> ownedByOthers(Iterable<String> assetIds) async {
-    final List<String> ids = assetIds.toList();
-    if (ids.isEmpty) return <String>{};
-
-    final Database db = await _appDatabase.database;
-    final String placeholders = List.filled(ids.length, '?').join(',');
-    final List<Map<String, Object?>> rows = await db.query(
-      AppDatabase.libraryAssets,
-      columns: ['asset_id'],
-      where: 'asset_id IN ($placeholders) AND user_id != ?',
-      whereArgs: [...ids, _userId ?? ''],
-    );
-    return {for (final row in rows) row['asset_id'] as String};
   }
 
   /// Asset ids claimed by anyone at all, used only by the legacy adoption

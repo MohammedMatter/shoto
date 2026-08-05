@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/app_preferences.dart';
+import 'package:shoto/core/services/biometric_auth_service.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_theme.dart';
 import 'package:shoto/features/folders/presentation/widgets/create_folder_sheet.dart';
@@ -25,11 +26,27 @@ import 'support/test_fonts.dart';
 /// committed baseline, never fails a normal run.
 void main() {
   /// [PressableScale] buzzes on tap, and `Haptics` reads the user's preference
-  /// out of the service locator to decide whether to. Nothing else in this
-  /// test needs DI, so only that one registration is made.
+  /// out of the service locator to decide whether to.
+  ///
+  /// [BiometricAuthService] is here because the sheet asks it, in `initState`,
+  /// which biometric this phone actually offers so the switch can name it.
+  /// That dependency was added to the sheet without this registration, and
+  /// because every test in this file is `skip: !autoUpdateGoldenFiles`, the
+  /// resulting GetIt error was invisible on a normal `flutter test` run — the
+  /// file had been failing outright for anyone who passed `--update-goldens`,
+  /// which is the only way it ever executes.
+  ///
+  /// The real service is safe to use under test: it has no platform channel
+  /// to talk to, `availableBiometrics` catches that and returns an empty
+  /// list, so the switch renders its device-agnostic label.
   setUpAll(() {
     if (!sl.isRegistered<AppPreferences>()) {
       sl.registerLazySingleton<AppPreferences>(() => AppPreferences());
+    }
+    if (!sl.isRegistered<BiometricAuthService>()) {
+      sl.registerLazySingleton<BiometricAuthService>(
+        () => BiometricAuthService(),
+      );
     }
   });
 

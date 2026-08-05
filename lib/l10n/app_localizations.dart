@@ -187,14 +187,20 @@ abstract class AppLocalizations {
   /// No description provided for @homeInboxEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Nothing saved'**
+  /// **'Nothing saved yet'**
   String get homeInboxEmpty;
 
   /// No description provided for @homeInboxEmptySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Share a screenshot into SHOTO to start'**
+  /// **'Pick a few from your phone now, or share a screenshot into SHOTO from any app.'**
   String get homeInboxEmptySubtitle;
+
+  /// No description provided for @homeEmptyImportCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from my phone'**
+  String get homeEmptyImportCta;
 
   /// No description provided for @homeInboxClear.
   ///
@@ -235,8 +241,14 @@ abstract class AppLocalizations {
   /// No description provided for @homeToolsTitle.
   ///
   /// In en, this message translates to:
-  /// **'What SHOTO can do'**
+  /// **'Tools'**
   String get homeToolsTitle;
+
+  /// No description provided for @homeToolsTitleEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Start here'**
+  String get homeToolsTitleEmpty;
 
   /// No description provided for @homeToolSafeShare.
   ///
@@ -309,12 +321,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Protect'**
   String get libraryActionProtect;
-
-  /// No description provided for @homeToolsTitleShort.
-  ///
-  /// In en, this message translates to:
-  /// **'Do something'**
-  String get homeToolsTitleShort;
 
   /// No description provided for @homeSeeAll.
   ///
@@ -940,18 +946,6 @@ abstract class AppLocalizations {
   /// **'Try sharing it again.'**
   String get quickSaveFailedBody;
 
-  /// No description provided for @quickSaveSignedOutTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign in to SHOTO first'**
-  String get quickSaveSignedOutTitle;
-
-  /// No description provided for @quickSaveSignedOutBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Your library belongs to your account. Open SHOTO, sign in, then share this again.'**
-  String get quickSaveSignedOutBody;
-
   /// No description provided for @quickSaveSkipped.
   ///
   /// In en, this message translates to:
@@ -1414,18 +1408,6 @@ abstract class AppLocalizations {
   /// **'Start using it'**
   String get proWelcomeAction;
 
-  /// No description provided for @featSearch.
-  ///
-  /// In en, this message translates to:
-  /// **'Search inside your screenshots'**
-  String get featSearch;
-
-  /// No description provided for @featSearchBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Find any screenshot by the words written in it, in Arabic or English. Nothing is uploaded — the reading happens on your phone.'**
-  String get featSearchBody;
-
   /// No description provided for @featSafeShare.
   ///
   /// In en, this message translates to:
@@ -1477,38 +1459,14 @@ abstract class AppLocalizations {
   /// No description provided for @featUnlimited.
   ///
   /// In en, this message translates to:
-  /// **'Unlimited folders and screenshots'**
+  /// **'No ceiling on your library'**
   String get featUnlimited;
 
   /// No description provided for @featUnlimitedBody.
   ///
   /// In en, this message translates to:
-  /// **'The free tier stops at a few folders and screenshots. Pro removes both caps.'**
-  String get featUnlimitedBody;
-
-  /// No description provided for @featSearchHow.
-  ///
-  /// In en, this message translates to:
-  /// **'SHOTO reads the text printed inside every screenshot and remembers it, so one word you remember seeing is enough to find the picture again — no file names, no folders, no scrolling.'**
-  String get featSearchHow;
-
-  /// No description provided for @featSearchPoint1.
-  ///
-  /// In en, this message translates to:
-  /// **'Reads Arabic and English, and still matches when the spelling differs slightly.'**
-  String get featSearchPoint1;
-
-  /// No description provided for @featSearchPoint2.
-  ///
-  /// In en, this message translates to:
-  /// **'Also finds by what the picture shows — try \"receipt\", \"cat\" or \"food\".'**
-  String get featSearchPoint2;
-
-  /// No description provided for @featSearchPoint3.
-  ///
-  /// In en, this message translates to:
-  /// **'The reading happens on your phone. Nothing is uploaded, so it works offline too.'**
-  String get featSearchPoint3;
+  /// **'The free tier organizes {count} screenshots. Pro takes the number away.'**
+  String featUnlimitedBody(Object count);
 
   /// No description provided for @featSafeShareHow.
   ///
@@ -1609,25 +1567,25 @@ abstract class AppLocalizations {
   /// No description provided for @featUnlimitedHow.
   ///
   /// In en, this message translates to:
-  /// **'The free tier is a real, usable app rather than a trial — it just has a ceiling. Pro takes the ceiling off, and everything you already organized stays exactly where it is.'**
+  /// **'The free tier is a real, usable app: saving, folders, favourites and full search, with no account and nothing uploaded. It has exactly one ceiling — how many screenshots it organizes — and Pro removes it. Everything you already organized stays exactly where it is.'**
   String get featUnlimitedHow;
 
   /// No description provided for @featUnlimitedPoint1.
   ///
   /// In en, this message translates to:
-  /// **'As many folders as your library actually needs.'**
+  /// **'Folders are unlimited on the free tier, and always were meant to be.'**
   String get featUnlimitedPoint1;
 
   /// No description provided for @featUnlimitedPoint2.
   ///
   /// In en, this message translates to:
-  /// **'No cap on how many screenshots you file and favourite.'**
+  /// **'Naming what a screenshot is for is free and uncapped too.'**
   String get featUnlimitedPoint2;
 
   /// No description provided for @featUnlimitedPoint3.
   ///
   /// In en, this message translates to:
-  /// **'Saving, folders, favourites and search history stay yours either way.'**
+  /// **'Hitting the ceiling means SHOTO became where you keep things. Nothing is deleted when you do.'**
   String get featUnlimitedPoint3;
 
   /// No description provided for @includedSubtitle.
@@ -1681,8 +1639,8 @@ abstract class AppLocalizations {
   /// No description provided for @includedFreeBody.
   ///
   /// In en, this message translates to:
-  /// **'{folders} folders and {count} organized screenshots — plus saving, favourites and the gallery, free for good.'**
-  String includedFreeBody(int folders, int count);
+  /// **'{count} organized screenshots, unlimited folders, and full search — free for good.'**
+  String includedFreeBody(int count);
 
   /// No description provided for @authWelcome.
   ///
@@ -1693,7 +1651,7 @@ abstract class AppLocalizations {
   /// No description provided for @authSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Sign in to save, organize and find every screenshot in one place.'**
+  /// **'You don\'t need an account to use SHOTO. Sign in only to move a purchase to another phone.'**
   String get authSubtitle;
 
   /// No description provided for @authGoogle.
@@ -2056,6 +2014,18 @@ abstract class AppLocalizations {
   /// **'Your screenshots stay on this device'**
   String get settingsSignOutHint;
 
+  /// No description provided for @settingsSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get settingsSignIn;
+
+  /// No description provided for @settingsSignInHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. Only needed to move a purchase to another phone.'**
+  String get settingsSignInHint;
+
   /// No description provided for @settingsCacheMeasuring.
   ///
   /// In en, this message translates to:
@@ -2392,23 +2362,17 @@ abstract class AppLocalizations {
   /// **'The words printed in a screenshot, and what the picture shows. Type “receipt”, or “dog”.'**
   String get onbFindBody;
 
-  /// No description provided for @onbProTitle.
+  /// No description provided for @onbSafeShareTitle.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO Pro'**
-  String get onbProTitle;
+  /// **'The screenshot you can actually send'**
+  String get onbSafeShareTitle;
 
-  /// No description provided for @onbProBody.
+  /// No description provided for @onbSafeShareBody.
   ///
   /// In en, this message translates to:
-  /// **'Rules file new screenshots for you, and everything below comes with them.'**
-  String get onbProBody;
-
-  /// No description provided for @onbProMore.
-  ///
-  /// In en, this message translates to:
-  /// **'and {count} more'**
-  String onbProMore(int count);
+  /// **'A card number becomes a different card number — same length, same place, still valid. Nobody can tell it was edited.'**
+  String get onbSafeShareBody;
 
   /// No description provided for @onbFolderExample.
   ///
@@ -2667,6 +2631,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Order'**
   String get librarySortLabel;
+
+  /// No description provided for @libraryShowOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Show only'**
+  String get libraryShowOnly;
+
+  /// No description provided for @libraryShowEverything.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything'**
+  String get libraryShowEverything;
 
   /// No description provided for @libraryScanPrompt.
   ///

@@ -13,15 +13,17 @@
   "homeGreetingMorning": "Buenos días",
   "homeGreetingAfternoon": "Buenas tardes",
   "homeGreetingEvening": "Buenas noches",
-  "homeInboxEmpty": "Nada guardado",
-  "homeInboxEmptySubtitle": "Comparte una captura con SHOTO para empezar",
+  "homeInboxEmpty": "Todavía no hay nada guardado",
+  "homeInboxEmptySubtitle": "Elige algunas de tu teléfono ahora, o comparte una captura en SHOTO desde cualquier app.",
+  "homeEmptyImportCta": "Elegir desde mi teléfono",
   "homeInboxClear": "Todo archivado",
   "homeInboxClearSubtitle": "No queda nada por ordenar",
   "homeInboxCountSubtitle": "Capturas que aún no has archivado",
   "homeStatScreenshots": "Capturas",
   "homeStatFavorites": "Favoritas",
   "homeStatFolders": "Carpetas",
-  "homeToolsTitle": "Qué puede hacer SHOTO",
+  "homeToolsTitle": "Herramientas",
+  "homeToolsTitleEmpty": "Empieza aquí",
   "homeToolSafeShare": "Compartir seguro",
   "homeToolSafeShareSubtitle": "Oculta antes los datos privados",
   "homeToolDuplicates": "Buscar duplicados",
@@ -34,7 +36,6 @@
   "libraryPickForMerge": "Elige dos o más capturas de la misma página",
   "libraryPickForProtect": "Elige la captura que quieres proteger",
   "libraryActionProtect": "Proteger",
-  "homeToolsTitleShort": "Haz algo",
   "homeSeeAll": "Ver todo",
   "libraryEmptyTitle": "Aún no hay nada guardado",
   "libraryEmptyMessage": "Comparte una captura con SHOTO o añádela con el botón +. Tu galería nunca se lee: solo se guarda lo que entregas.",
@@ -202,8 +203,6 @@
   },
   "quickSaveFailedTitle": "No se pudo leer esa imagen",
   "quickSaveFailedBody": "Prueba a compartirla otra vez.",
-  "quickSaveSignedOutTitle": "Inicia sesión en SHOTO primero",
-  "quickSaveSignedOutBody": "Tu biblioteca pertenece a tu cuenta. Abre SHOTO, inicia sesión y compártelo de nuevo.",
   "quickSaveSkipped": "Solo se tomaron las primeras {count}",
   "@quickSaveSkipped": {
     "placeholders": {
@@ -374,8 +373,6 @@
   "proWelcomeTitle": "Ya tienes Pro",
   "proWelcomeBody": "Todas las funciones están desbloqueadas. No hay nada más que configurar.",
   "proWelcomeAction": "Empezar",
-  "featSearch": "Busca dentro de tus capturas",
-  "featSearchBody": "Encuentra cualquier captura por las palabras escritas en ella, en árabe o inglés. No se sube nada: la lectura ocurre en tu teléfono.",
   "featSafeShare": "Compartir seguro",
   "featSafeShareBody": "Cambia números de tarjeta, direcciones, nombres y datos de contacto por sustitutos realistas: misma longitud, mismo formato, mismo sitio. La copia que envías no parece editada.",
   "featActions": "Convierte capturas en acciones",
@@ -384,12 +381,8 @@
   "featDuplicatesBody": "Detecta capturas casi idénticas que guardaste dos veces y elimínalas, siempre con una revisión previa.",
   "featStitch": "Unir capturas largas",
   "featStitchBody": "Une una captura con scroll en una sola imagen alta, detectando y quitando el solapamiento automáticamente.",
-  "featUnlimited": "Carpetas y capturas ilimitadas",
-  "featUnlimitedBody": "El plan gratuito se detiene en unas pocas carpetas y capturas. Pro elimina ambos límites.",
-  "featSearchHow": "SHOTO lee el texto impreso dentro de cada captura y lo recuerda, así que una sola palabra que recuerdes basta para volver a encontrar la imagen: sin nombres de archivo, sin carpetas, sin desplazarte.",
-  "featSearchPoint1": "Lee árabe e inglés, y sigue encontrando resultados aunque la escritura varíe un poco.",
-  "featSearchPoint2": "También busca por lo que muestra la imagen: prueba «recibo», «gato» o «comida».",
-  "featSearchPoint3": "La lectura ocurre en tu teléfono. No se sube nada, así que también funciona sin conexión.",
+  "featUnlimited": "Sin límite para tu biblioteca",
+  "featUnlimitedBody": "La versión gratuita organiza {count} capturas. Pro elimina el número.",
   "featSafeShareHow": "Detectar lo privado de una captura es gratis y sin límite. Lo que se paga es convertir esos hallazgos en una copia limpia: cada dato se redibuja con los colores de la propia captura como otro valor igual de corriente.",
   "featSafeSharePoint1": "Las tarjetas se verifican con Luhn y los IBAN con mod-97, y los sustitutos superan las mismas comprobaciones, así que nada parece inventado.",
   "featSafeSharePoint2": "También detecta nombres, direcciones, números de pedido, códigos de verificación, teléfonos y correos.",
@@ -406,10 +399,10 @@
   "featDuplicatesPoint1": "Agrupa lo que se parece y sugiere la copia que conviene conservar.",
   "featDuplicatesPoint2": "Muestra cuánto espacio libera cada grupo antes de que decidas nada.",
   "featDuplicatesPoint3": "No se borra nada hasta que revisas el grupo y lo confirmas.",
-  "featUnlimitedHow": "El plan gratuito es una app real y utilizable, no una prueba: solo tiene un techo. Pro quita ese techo, y todo lo que ya organizaste se queda exactamente donde está.",
-  "featUnlimitedPoint1": "Tantas carpetas como realmente necesite tu biblioteca.",
-  "featUnlimitedPoint2": "Sin límite de capturas que archivas y marcas como favoritas.",
-  "featUnlimitedPoint3": "Guardar, carpetas, favoritos y el historial de búsqueda siguen siendo tuyos en cualquier caso.",
+  "featUnlimitedHow": "La versión gratuita es una app real y usable: guardar, carpetas, favoritos y búsqueda completa, sin cuenta y sin subir nada. Tiene un único límite —cuántas capturas organiza— y Pro lo quita. Todo lo que ya organizaste se queda donde está.",
+  "featUnlimitedPoint1": "Las carpetas son ilimitadas en la versión gratuita, como debe ser.",
+  "featUnlimitedPoint2": "Nombrar para qué es una captura también es gratis e ilimitado.",
+  "featUnlimitedPoint3": "Llegar al límite significa que SHOTO ya es donde guardas las cosas. Nada se borra al llegar.",
   "includedSubtitle": "Cada función Pro, explicada.",
   "includedHint": "Toca una función para ver cómo funciona",
   "includedHowLabel": "Cómo funciona",
@@ -417,20 +410,17 @@
   "includedActiveBody": "Todo lo de abajo está desbloqueado en esta cuenta.",
   "includedLockedTitle": "Aún sin desbloquear",
   "includedLockedBody": "Lee qué hace cada una en realidad y luego decide.",
-  "includedFreeTitle": "Lo que te da el plan gratis",
-  "includedFreeBody": "{folders} carpetas y {count} capturas organizadas, además de guardar, favoritos y la galería, gratis para siempre.",
+  "includedFreeTitle": "Lo que te da la versión gratuita",
+  "includedFreeBody": "{count} capturas organizadas, carpetas ilimitadas y búsqueda completa: gratis para siempre.",
   "@includedFreeBody": {
     "placeholders": {
-      "folders": {
-        "type": "int"
-      },
       "count": {
         "type": "int"
       }
     }
   },
   "authWelcome": "Bienvenido a SHOTO",
-  "authSubtitle": "Inicia sesión para guardar, ordenar y encontrar cada captura en un solo sitio.",
+  "authSubtitle": "No necesitas una cuenta para usar SHOTO. Inicia sesión solo para pasar una compra a otro teléfono.",
   "authGoogle": "Continuar con Google",
   "authApple": "Continuar con Apple",
   "authLegal": "Al continuar, aceptas nuestros Términos y la Política de privacidad.",
@@ -560,6 +550,8 @@
   "settingsShareText": "SHOTO ordena mis capturas solo, y todo se queda en el teléfono.",
   "settingsAccount": "Cuenta",
   "settingsSignOutHint": "Tus capturas se quedan en este dispositivo",
+  "settingsSignIn": "Iniciar sesión",
+  "settingsSignInHint": "Opcional. Solo hace falta para pasar una compra a otro teléfono.",
   "settingsCacheMeasuring": "Midiendo…",
   "settingsCacheSize": "{size} de miniaturas",
   "@settingsCacheSize": {
@@ -665,16 +657,8 @@
   "onbFileBody": "Elige una carpeta desde el propio menú de compartir. La app ni se abre.",
   "onbFindTitle": "Busca lo que hay dentro",
   "onbFindBody": "Las palabras escritas en la captura, y lo que muestra la imagen. Escribe «recibo» o «perro».",
-  "onbProTitle": "SHOTO Pro",
-  "onbProBody": "Las reglas archivan tus capturas nuevas por ti, y todo lo de abajo viene incluido.",
-  "onbProMore": "y {count} más",
-  "@onbProMore": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
+  "onbSafeShareTitle": "La captura que sí puedes enviar",
+  "onbSafeShareBody": "Un número de tarjeta se convierte en otro: mismo largo, mismo sitio, igual de válido. Nadie nota que se editó.",
   "onbFolderExample": "Recibos",
   "onbSearchExample": "recibo",
   "importTitle": "Añadir capturas",
@@ -735,6 +719,8 @@
   "librarySortNewest": "Más recientes primero",
   "librarySortOldest": "Más antiguas primero",
   "librarySortLabel": "Orden",
+  "libraryShowOnly": "Mostrar solo",
+  "libraryShowEverything": "Todo",
   "libraryScanPrompt": "Leer {count} capturas",
   "libraryScanning": "Leyendo…",
   "restoreClashTitle": "{count, plural, =1{1 carpeta ya existe aquí} other{{count} carpetas ya existen aquí}}",

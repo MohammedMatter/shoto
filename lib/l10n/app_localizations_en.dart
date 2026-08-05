@@ -48,10 +48,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeGreetingEvening => 'Good evening';
 
   @override
-  String get homeInboxEmpty => 'Nothing saved';
+  String get homeInboxEmpty => 'Nothing saved yet';
 
   @override
-  String get homeInboxEmptySubtitle => 'Share a screenshot into SHOTO to start';
+  String get homeInboxEmptySubtitle =>
+      'Pick a few from your phone now, or share a screenshot into SHOTO from any app.';
+
+  @override
+  String get homeEmptyImportCta => 'Choose from my phone';
 
   @override
   String get homeInboxClear => 'All filed';
@@ -72,7 +76,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeStatFolders => 'Folders';
 
   @override
-  String get homeToolsTitle => 'What SHOTO can do';
+  String get homeToolsTitle => 'Tools';
+
+  @override
+  String get homeToolsTitleEmpty => 'Start here';
 
   @override
   String get homeToolSafeShare => 'Safe share';
@@ -109,9 +116,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get libraryActionProtect => 'Protect';
-
-  @override
-  String get homeToolsTitleShort => 'Do something';
 
   @override
   String get homeSeeAll => 'See all';
@@ -471,13 +475,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickSaveFailedBody => 'Try sharing it again.';
 
   @override
-  String get quickSaveSignedOutTitle => 'Sign in to SHOTO first';
-
-  @override
-  String get quickSaveSignedOutBody =>
-      'Your library belongs to your account. Open SHOTO, sign in, then share this again.';
-
-  @override
   String quickSaveSkipped(int count) {
     return 'Only the first $count were taken';
   }
@@ -748,13 +745,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get proWelcomeAction => 'Start using it';
 
   @override
-  String get featSearch => 'Search inside your screenshots';
-
-  @override
-  String get featSearchBody =>
-      'Find any screenshot by the words written in it, in Arabic or English. Nothing is uploaded — the reading happens on your phone.';
-
-  @override
   String get featSafeShare => 'Safe share';
 
   @override
@@ -783,27 +773,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Join a scrolling capture back into one tall image, with the overlap found and removed automatically.';
 
   @override
-  String get featUnlimited => 'Unlimited folders and screenshots';
+  String get featUnlimited => 'No ceiling on your library';
 
   @override
-  String get featUnlimitedBody =>
-      'The free tier stops at a few folders and screenshots. Pro removes both caps.';
-
-  @override
-  String get featSearchHow =>
-      'SHOTO reads the text printed inside every screenshot and remembers it, so one word you remember seeing is enough to find the picture again — no file names, no folders, no scrolling.';
-
-  @override
-  String get featSearchPoint1 =>
-      'Reads Arabic and English, and still matches when the spelling differs slightly.';
-
-  @override
-  String get featSearchPoint2 =>
-      'Also finds by what the picture shows — try \"receipt\", \"cat\" or \"food\".';
-
-  @override
-  String get featSearchPoint3 =>
-      'The reading happens on your phone. Nothing is uploaded, so it works offline too.';
+  String featUnlimitedBody(Object count) {
+    return 'The free tier organizes $count screenshots. Pro takes the number away.';
+  }
 
   @override
   String get featSafeShareHow =>
@@ -871,19 +846,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featUnlimitedHow =>
-      'The free tier is a real, usable app rather than a trial — it just has a ceiling. Pro takes the ceiling off, and everything you already organized stays exactly where it is.';
+      'The free tier is a real, usable app: saving, folders, favourites and full search, with no account and nothing uploaded. It has exactly one ceiling — how many screenshots it organizes — and Pro removes it. Everything you already organized stays exactly where it is.';
 
   @override
   String get featUnlimitedPoint1 =>
-      'As many folders as your library actually needs.';
+      'Folders are unlimited on the free tier, and always were meant to be.';
 
   @override
   String get featUnlimitedPoint2 =>
-      'No cap on how many screenshots you file and favourite.';
+      'Naming what a screenshot is for is free and uncapped too.';
 
   @override
   String get featUnlimitedPoint3 =>
-      'Saving, folders, favourites and search history stay yours either way.';
+      'Hitting the ceiling means SHOTO became where you keep things. Nothing is deleted when you do.';
 
   @override
   String get includedSubtitle => 'Every Pro feature, explained.';
@@ -912,8 +887,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get includedFreeTitle => 'What the free tier gives you';
 
   @override
-  String includedFreeBody(int folders, int count) {
-    return '$folders folders and $count organized screenshots — plus saving, favourites and the gallery, free for good.';
+  String includedFreeBody(int count) {
+    return '$count organized screenshots, unlimited folders, and full search — free for good.';
   }
 
   @override
@@ -921,7 +896,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authSubtitle =>
-      'Sign in to save, organize and find every screenshot in one place.';
+      'You don\'t need an account to use SHOTO. Sign in only to move a purchase to another phone.';
 
   @override
   String get authGoogle => 'Continue with Google';
@@ -1146,6 +1121,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSignOutHint => 'Your screenshots stay on this device';
 
   @override
+  String get settingsSignIn => 'Sign in';
+
+  @override
+  String get settingsSignInHint =>
+      'Optional. Only needed to move a purchase to another phone.';
+
+  @override
   String get settingsCacheMeasuring => 'Measuring…';
 
   @override
@@ -1353,16 +1335,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'The words printed in a screenshot, and what the picture shows. Type “receipt”, or “dog”.';
 
   @override
-  String get onbProTitle => 'SHOTO Pro';
+  String get onbSafeShareTitle => 'The screenshot you can actually send';
 
   @override
-  String get onbProBody =>
-      'Rules file new screenshots for you, and everything below comes with them.';
-
-  @override
-  String onbProMore(int count) {
-    return 'and $count more';
-  }
+  String get onbSafeShareBody =>
+      'A card number becomes a different card number — same length, same place, still valid. Nobody can tell it was edited.';
 
   @override
   String get onbFolderExample => 'Receipts';
@@ -1565,6 +1542,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get librarySortLabel => 'Order';
+
+  @override
+  String get libraryShowOnly => 'Show only';
+
+  @override
+  String get libraryShowEverything => 'Everything';
 
   @override
   String libraryScanPrompt(int count) {

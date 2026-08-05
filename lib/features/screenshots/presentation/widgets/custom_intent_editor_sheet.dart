@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shoto/core/constants/subscription_constants.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/app_sheet.dart';
-import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/core/services/haptics.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
@@ -15,9 +13,6 @@ import 'package:shoto/core/widgets/glass_layer.dart';
 import 'package:shoto/core/widgets/sheet_surface.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/intent_catalog.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/intent_visuals.dart';
-import 'package:shoto/features/subscription/domain/entities/subscription_status.dart';
-import 'package:shoto/features/subscription/domain/use_cases/get_subscription_status_use_case.dart';
-import 'package:shoto/features/subscription/presentation/pages/paywall_page.dart';
 
 /// Writes a verb, or edits one already written.
 ///
@@ -26,15 +21,14 @@ import 'package:shoto/features/subscription/presentation/pages/paywall_page.dart
 /// been updated and every list watching it has already redrawn, and handing
 /// back the edited intent would tempt callers into re-selecting something the
 /// user was only renaming.
+///
+/// Free and uncapped. The free tier used to allow three, which meant the app
+/// invited people to name what a screenshot was for and then charged them the
+/// moment they got good at it.
 Future<CustomIntent?> showCustomIntentEditorSheet(
   BuildContext context, {
   CustomIntent? existing,
 }) async {
-  if (existing == null && !await _ensureUnderCustomIntentLimit(context)) {
-    return null;
-  }
-  if (!context.mounted) return null;
-
   return showAppSheet<CustomIntent>(
     context: context,
     isScrollControlled: true,
@@ -44,26 +38,6 @@ Future<CustomIntent?> showCustomIntentEditorSheet(
     builder: (BuildContext sheetContext) =>
         _CustomIntentEditorContent(existing: existing),
   );
-}
-
-/// The free tier gets three of their own before the paywall.
-///
-/// Counted rather than gated outright, and counted against what exists rather
-/// than against what has ever existed — deleting one gives the slot back. A
-/// cap you cannot get back under is a punishment for experimenting, and this
-/// is a feature nobody can evaluate without experimenting.
-Future<bool> _ensureUnderCustomIntentLimit(BuildContext context) async {
-  final int existing = sl<IntentCatalog>().customIntents.length;
-  if (existing < SubscriptionConstants.freeCustomIntentLimit) return true;
-
-  final SubscriptionStatus status = await sl<GetSubscriptionStatusUseCase>()();
-  if (status.isPremium) return true;
-
-  if (!context.mounted) return false;
-  final bool? purchased = await Navigator.of(
-    context,
-  ).push<bool>(FadeSlidePageRoute(builder: (_) => PaywallPage()));
-  return purchased == true;
 }
 
 class _CustomIntentEditorContent extends StatefulWidget {

@@ -18,6 +18,8 @@ import 'package:shoto/features/smart_actions/domain/use_cases/get_screenshot_act
 import 'package:shoto/core/services/biometric_auth_service.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
+import 'package:shoto/core/services/funnel_log.dart';
+import 'package:shoto/core/services/local_identity.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/features/safe_share/data/services/redaction_service.dart';
 import 'package:shoto/core/services/backup_file_service.dart';
@@ -92,8 +94,11 @@ import 'package:shoto/features/subscription/presentation/bloc/subscription_bloc.
 final sl = GetIt.instance;
 
 void setupServiceLocator() {
+  sl.registerLazySingleton(() => LocalIdentity());
   sl.registerLazySingleton(() => AuthRemoteDataSource());
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
+  sl.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(sl(), sl()),
+  );
   sl.registerLazySingleton(() => SignInWithGoogleUseCase(sl()));
   sl.registerLazySingleton(() => SignInWithAppleUseCase(sl()));
   sl.registerLazySingleton(() => SignOutUseCase(sl()));
@@ -105,13 +110,14 @@ void setupServiceLocator() {
     ),
   );
 
-  sl.registerLazySingleton(() => AppDatabase());
+  sl.registerLazySingleton(() => AppDatabase(sl()));
   sl.registerLazySingleton(() => ThemeController());
   sl.registerLazySingleton(() => LocaleController());
   sl.registerLazySingleton(() => GridDensityController());
   sl.registerLazySingleton(() => CacheService());
   sl.registerLazySingleton(() => AppPreferences());
   sl.registerLazySingleton(() => DevAccess());
+  sl.registerLazySingleton(() => FunnelLog());
   sl.registerLazySingleton(() => BiometricAuthService());
 
   sl.registerLazySingleton(() => ScreenshotGalleryDataSource());

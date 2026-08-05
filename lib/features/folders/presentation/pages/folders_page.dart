@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:shoto/core/constants/subscription_constants.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/core/theme/app_colors.dart';
@@ -12,7 +12,6 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/widgets/empty_state.dart';
 import 'package:shoto/core/widgets/header_icon_button.dart';
-import 'package:shoto/core/widgets/premium_gate.dart';
 import 'package:shoto/core/widgets/primary_button.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
@@ -134,22 +133,29 @@ class _FoldersPageState extends State<FoldersPage> {
     );
   }
 
+  /// No cap, and no paywall.
+  ///
+  /// Making a fourth folder used to open the paywall. A folder is not a
+  /// feature somebody enjoys — it is the work of tidying up, which is the
+  /// thing SHOTO asked them to do in the first place. Charging for it
+  /// interrupted the one behaviour the app most needs to encourage, and it
+  /// was the second of three different free-tier currencies to keep track
+  /// of. The volume cap on screenshots is the whole free tier now.
   Future<void> _createFolder(BuildContext context) async {
     final FoldersBloc bloc = context.read<FoldersBloc>();
-    final FoldersState state = bloc.state;
-    final int currentCount = state is FoldersLoadedState
-        ? state.folders.length
-        : 0;
 
-    if (currentCount >= SubscriptionConstants.freeFolderLimit) {
-      if (!await ensurePremium(context)) return;
-    }
-
-    if (!context.mounted) return;
     showCreateFolderSheet(
       context,
-      onCreate: (name, color, isPrivate) =>
-          bloc.add(CreateFolderEvent(name, color, isPrivate: isPrivate)),
+      onCreate: (name, color, isPrivate) {
+        // Counted at the two presentation call sites — here and the share
+        // sheet's inline "new folder" — rather than inside the bloc or the
+        // use case. Both of those are handed their collaborators through the
+        // constructor and reach for nothing else; a service-locator lookup in
+        // either would be the first exception to that in the codebase, for a
+        // counter.
+        sl<FunnelLog>().record(FunnelStep.folderCreated);
+        bloc.add(CreateFolderEvent(name, color, isPrivate: isPrivate));
+      },
     );
   }
 }

@@ -10,6 +10,8 @@ import 'package:shoto/core/localization/locale_controller.dart';
 import 'package:shoto/core/routes/app_router.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
+import 'package:shoto/core/services/funnel_log.dart';
+import 'package:shoto/core/services/local_identity.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
@@ -38,13 +40,6 @@ void main() async {
   // before Firebase is ready, and it lets the work below start in parallel.
   setupServiceLocator();
 
-  // Started, not awaited. Firebase is the single slowest step here and none
-  // of the preference loads depend on it, so they overlap instead of queuing
-  // behind it.
-  final Future<void> firebaseReady = Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
   if (isShareSheet) {
     // The share sheet was taking over two seconds to appear from a cold
     // start, and a noticeable part of that was this function loading things
@@ -52,25 +47,49 @@ void main() async {
     // access and the subscription repository (quick save is free, so nothing
     // in the sheet is gated).
     //
-    // Waiting for them was pure delay in front of the one screen where delay
-    // is least acceptable — the user is mid-gesture in another app, and a
-    // sheet that arrives late has already lost the point of not opening the
-    // app at all.
+    // Firebase is now off this path too, and it was the single slowest step
+    // in it. The sheet only ever needed Firebase to answer "who is signed
+    // in", because that used to be what decided which library to save into.
+    // It is [LocalIdentity] that decides now — a SharedPreferences read — so
+    // the network stack, the auth SDK and the plugin channel behind them are
+    // all work the sheet no longer waits on. Nothing here signs anybody in,
+    // and the app proper still initializes Firebase normally below.
     //
-    // These three are genuinely needed before the first frame: the language
-    // and theme decide how it is drawn, and haptics fire on the first tap.
+    // Waiting for any of this was pure delay in front of the one screen
+    // where delay is least acceptable — the user is mid-gesture in another
+    // app, and a sheet that arrives late has already lost the point of not
+    // opening the app at all.
+    //
+    // These four are genuinely needed before the first frame: the identity
+    // decides where the image is filed, the language and theme decide how it
+    // is drawn, and haptics fire on the first tap.
     await Future.wait([
-      firebaseReady,
+      sl<LocalIdentity>().load(),
       sl<LocaleController>().load(),
       sl<ThemeController>().load(),
       sl<AppPreferences>().load(),
+      // The share sheet is the *primary* way screenshots enter the library,
+      // so leaving it out here would mean the activation step was only ever
+      // counted on the rarer path through the app's own picker. It is one
+      // more read of a SharedPreferences instance the three loads above have
+      // already warmed, so it costs nothing on the path that can least
+      // afford anything.
+      sl<FunnelLog>().load(),
     ]);
     runApp(QuickSaveApp());
     return;
   }
 
+  // Started, not awaited. Firebase is the single slowest step here and none
+  // of the preference loads depend on it, so they overlap instead of queuing
+  // behind it.
+  final Future<void> firebaseReady = Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   await Future.wait([
     firebaseReady,
+    sl<LocalIdentity>().load(),
     sl<LocaleController>().load(),
     sl<ThemeController>().load(),
     sl<GridDensityController>().load(),
@@ -78,6 +97,11 @@ void main() async {
     // Before the subscription repository is asked anything — every premium
     // gate reads its answer from there, and it consults this.
     sl<DevAccess>().load(),
+    // Records "installed" on the first launch that reaches this line, which
+    // is every first launch: nothing above it can fail without the app
+    // failing too. A denominator counted anywhere later would quietly be
+    // measuring something narrower than installs.
+    sl<FunnelLog>().load(),
   ]);
 
   // Safe to await even with no RevenueCat project configured yet — it

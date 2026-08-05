@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/constants/subscription_constants.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/theme/app_colors.dart';
@@ -31,6 +32,16 @@ class PaywallPage extends StatefulWidget {
 class _PaywallPageState extends State<PaywallPage> {
   bool _selectedYearly = true;
 
+  @override
+  void initState() {
+    super.initState();
+    // Every paywall in the app is this widget, so one call here counts all of
+    // them. Paired with [FunnelStep.purchased] it is the conversion rate; on
+    // its own it answers a question worth asking separately — how often the
+    // app stops somebody to ask for money.
+    sl<FunnelLog>().record(FunnelStep.paywallSeen);
+  }
+
   /// Runs the welcome screen, then closes the paywall reporting success.
   ///
   /// `context` is captured before the `await` and re-checked after it, because
@@ -55,7 +66,8 @@ class _PaywallPageState extends State<PaywallPage> {
             // Duplicates and Settings — so hanging the welcome screen off each
             // caller would mean remembering it at every one of them and
             // getting it wrong at one. This is the single point every purchase
-            // passes through.
+            // passes through — which makes it the right place to count one.
+            sl<FunnelLog>().record(FunnelStep.purchased);
             _celebrate(context);
           } else if (state is SubscriptionLoadedState &&
               state.errorMessage != null) {

@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
-import 'package:shoto/core/routes/go_router_refresh_stream.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 import 'package:shoto/features/auth/presentation/pages/auth_page.dart';
@@ -17,51 +16,41 @@ abstract class AppRouter {
   /// Decided once, when the router is built, rather than left to a splash
   /// screen to send itself onward.
   ///
-  /// Every load this depends on — auth state, the onboarding flag — finishes
-  /// before `runApp`, same as it always did. The only thing that changed is
-  /// that nothing sits between that data being ready and the real first
-  /// screen appearing: the native launch window now stays up until this
+  /// Every load this depends on — the onboarding flag — finishes before
+  /// `runApp`, so nothing sits between that data being ready and the real
+  /// first screen appearing: the native launch window stays up until this
   /// screen's first frame, instead of handing off to a Flutter copy of itself.
   static String _initialLocation() {
-    final bool signedIn = _authRepository.currentUser != null;
     final AppPreferences preferences = sl<AppPreferences>();
-    final bool seenIntro = preferences.hasSeenOnboarding;
+    if (preferences.hasSeenOnboarding) return '/home';
 
-    // Backfill for everyone who was already using SHOTO before the flag
-    // existed. Being signed in is proof the introduction was seen — there is
-    // no other way to have got here — and without this they would be shown
-    // it again the first time they signed out and reopened the app.
-    if (signedIn && !seenIntro) preferences.markOnboardingSeen();
+    // Backfill for everyone who was already using SHOTO when signing in was
+    // still mandatory. Being signed in is proof the introduction was seen —
+    // there was no other way to have got past it — and without this they
+    // would be shown it again on the first launch after upgrading.
+    if (_authRepository.currentUser != null) {
+      preferences.markOnboardingSeen();
+      return '/home';
+    }
 
-    if (signedIn) return '/home';
-    return seenIntro ? '/auth' : '/onboarding';
+    return '/onboarding';
   }
 
+  /// There is no redirect, and that is the point.
+  ///
+  /// `/home` used to be gated on a Firebase account: signed out meant bounced
+  /// to `/auth`, on the first screen, before the app would show anything at
+  /// all. It cost every new user a Google handoff to see an empty library,
+  /// and it contradicted the one claim SHOTO is built on — nothing leaves
+  /// your phone — for a uid that only ever scoped rows in a local sqlite
+  /// file. The library belongs to the device now (see [LocalIdentity]), so
+  /// there is nothing left for a gate to protect.
+  ///
+  /// `/auth` is still here and still works. It is reached deliberately, from
+  /// Settings, by somebody who wants to carry a purchase to a second device —
+  /// which is the only thing an account has ever actually bought them.
   static final GoRouter router = GoRouter(
     initialLocation: _initialLocation(),
-    refreshListenable: GoRouterRefreshStream(
-      stream: _authRepository.authStateChanges,
-    ),
-    redirect: (context, state) {
-      final String location = state.matchedLocation;
-      final bool isSignedIn = _authRepository.currentUser != null;
-
-      final bool isPreAuthRoute =
-          location == '/onboarding' || location == '/auth';
-      if (isPreAuthRoute && isSignedIn) return '/home';
-
-      // Sign-out lands on sign-in, not on the introduction.
-      //
-      // This used to send you to /onboarding, which was wrong twice over.
-      // Someone signing out has plainly already seen what the app is for, so
-      // showing them the pitch again is noise in the way of the one thing
-      // they were doing. And it *raced*: Settings also pushes /auth when the
-      // signed-out state arrives, so the two redirects fired together and you
-      // saw a frame of onboarding before landing on sign-in. Both now name
-      // the same destination, so there is nothing left to flash.
-      if (location == '/home' && !isSignedIn) return '/auth';
-      return null;
-    },
     routes: [
       GoRoute(
         path: '/onboarding',

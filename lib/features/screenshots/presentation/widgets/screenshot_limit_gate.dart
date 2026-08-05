@@ -7,8 +7,9 @@ import 'package:shoto/features/subscription/domain/entities/subscription_status.
 import 'package:shoto/features/subscription/domain/use_cases/get_subscription_status_use_case.dart';
 import 'package:shoto/features/subscription/presentation/pages/paywall_page.dart';
 
-/// Checks the free-tier 50-screenshot management cap before an action would
-/// bring [additionalNewItems] not-yet-managed screenshots under management
+/// Checks the free tier's one cap — [SubscriptionConstants.freeScreenshotLimit]
+/// screenshots — before an action would bring [additionalNewItems]
+/// not-yet-managed screenshots under management
 /// (favorited or filed into a folder for the first time). Already-managed
 /// screenshots stay freely editable — pass 0 for those.
 ///

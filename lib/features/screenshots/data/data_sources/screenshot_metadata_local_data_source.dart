@@ -16,7 +16,7 @@ class ScreenshotMetadataLocalDataSource {
   final AuthRepository _authRepository;
   ScreenshotMetadataLocalDataSource(this._appDatabase, this._authRepository);
 
-  String get _userId => _authRepository.currentUser!.id;
+  String get _userId => _authRepository.userId;
 
   Future<Map<String, Map<String, Object?>>> getAllMeta() async {
     final Database db = await _appDatabase.database;

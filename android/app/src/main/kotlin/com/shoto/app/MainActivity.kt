@@ -1,4 +1,4 @@
-package com.example.shoto
+package com.shoto.app
 
 import android.content.Intent
 import io.flutter.embedding.android.FlutterFragmentActivity

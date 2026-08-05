@@ -297,7 +297,7 @@ class _Prop extends StatelessWidget {
         StageProp.none => const SizedBox.shrink(key: ValueKey('none')),
         StageProp.folder => _FolderProp(key: const ValueKey('folder')),
         StageProp.search => _SearchProp(key: const ValueKey('search')),
-        StageProp.premium => _PremiumProp(key: const ValueKey('premium')),
+        StageProp.safeShare => _SafeShareProp(key: const ValueKey('safeShare')),
       },
     );
   }
@@ -383,27 +383,41 @@ class _SearchProp extends StatelessWidget {
   }
 }
 
-/// The Pro stage reads from [PremiumFeature.all] rather than from a list
-/// written here.
+/// The last stage shows a card number being *substituted*, not a price list.
 ///
-/// That list is already the single source of truth for what paying gets you —
-/// the paywall and the settings card both render from it. An onboarding with
-/// its own copy of it is an onboarding that will be wrong the first time a
-/// feature is added, and being wrong in the introduction is worse than being
-/// brief.
-class _PremiumProp extends StatelessWidget {
-  const _PremiumProp({super.key});
+/// This used to render [PremiumFeature.all] — four paid features and "and 2
+/// more" — which asked somebody to evaluate a subscription to a product they
+/// had not used yet, as the final thing before the button that opens it. It
+/// was also stale in a way nothing caught: its copy promised rules that file
+/// screenshots for you, and filing rules were deleted in v13.
+///
+/// What replaced it is the one capability neither Google Photos nor Apple
+/// Photos will ever ship. Both already read and index every screenshot for
+/// free, so "find your screenshots" is a commodity the phone gives away —
+/// but a platform owner cannot approve a feature that writes a different,
+/// plausible card number into a user's photo, and that is exactly what this
+/// does. Showing it beats describing it: two rows of mono digits, the second
+/// one perfectly ordinary, is the whole product in one glance.
+///
+/// The number is fake in both rows, and the replacement passes the same Luhn
+/// check the real one would — which is the actual claim being made.
+class _SafeShareProp extends StatelessWidget {
+  const _SafeShareProp({super.key});
+
+  /// Neither of these belongs to anybody. `4539…` is a Visa test prefix and
+  /// both lines are Luhn-valid, which is the point being demonstrated: the
+  /// stand-in is not a row of Xs, it is a number that passes every check the
+  /// original passed.
+  static const String _before = '4539 1488 0343 6467';
+  static const String _after = '4716 2093 5518 4021';
 
   @override
   Widget build(BuildContext context) {
-    final List<PremiumFeature> shown = PremiumFeature.all.take(4).toList();
-    final int rest = PremiumFeature.all.length - shown.length;
-
     return Align(
-      alignment: const Alignment(0, 1),
+      alignment: const Alignment(0, 0.9),
       child: Container(
-        width: 292.w,
-        padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 14.h),
+        width: 268.w,
+        padding: EdgeInsets.fromLTRB(16.w, 13.h, 16.w, 13.h),
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -413,31 +427,35 @@ class _PremiumProp extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (final PremiumFeature feature in shown) ...[
-              Row(
-                children: [
-                  Icon(feature.icon, size: 16.sp, color: AppColors.textPrimary),
-                  SizedBox(width: 10.w),
-                  Expanded(
-                    child: Text(
-                      feature.title(context),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.bodySmall.asMedium,
+            // Struck through rather than greyed out: grey reads as "disabled",
+            // and this value is not disabled — it is gone.
+            Text(
+              _before,
+              style: AppTextStyles.monoBody.copyWith(
+                color: AppColors.textSecondary,
+                decoration: TextDecoration.lineThrough,
+                decorationColor: AppColors.textSecondary,
+              ),
+            ),
+            SizedBox(height: 7.h),
+            Row(
+              children: [
+                Icon(
+                  Icons.shield_moon_rounded,
+                  size: 15.sp,
+                  color: AppColors.secondary,
+                ),
+                SizedBox(width: 9.w),
+                Expanded(
+                  child: Text(
+                    _after,
+                    style: AppTextStyles.monoBody.copyWith(
+                      color: AppColors.textPrimary,
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 9.h),
-            ],
-            if (rest > 0)
-              Padding(
-                padding: EdgeInsetsDirectional.only(start: 26.w),
-                child: Text(
-                  context.l10n.onbProMore(rest),
-                  style: AppTextStyles.caption,
                 ),
-              ),
+              ],
+            ),
           ],
         ),
       ),

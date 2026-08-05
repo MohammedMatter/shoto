@@ -31,11 +31,23 @@ class HeaderIconButton extends StatelessWidget {
   /// at a glance the first time.
   final String? tooltip;
 
+  /// Whether this button is currently *doing* something to the screen behind
+  /// it — a dot on the rim, nothing more.
+  ///
+  /// It exists for the library's view button, which now holds the content
+  /// filters that used to be a row of chips above the grid. A lit chip said
+  /// "something is narrowing what you are looking at" just by being there;
+  /// once that moved into a sheet, the button had to say it instead. A
+  /// control that hides an active filter and looks identical either way is
+  /// worse than the row it replaced.
+  final bool isMarked;
+
   const HeaderIconButton({
     super.key,
     required this.icon,
     required this.onTap,
     this.tooltip,
+    this.isMarked = false,
   });
 
   static double get size => 42.w;
@@ -52,7 +64,12 @@ class HeaderIconButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surface,
           shape: BoxShape.circle,
-          border: Border.all(color: AppColors.border),
+          border: Border.all(
+            // The rim carries it as well as the dot. A 7px dot alone is easy
+            // to miss on a 42px circle at the top of a busy screen, and the
+            // two together read as one state rather than as decoration.
+            color: isMarked ? AppColors.primary : AppColors.border,
+          ),
         ),
         // Swapped rather than replaced. Where the icon changes to reflect a
         // state the grid behind it also changed, an icon that switched
@@ -79,6 +96,32 @@ class HeaderIconButton extends StatelessWidget {
       ),
     );
 
-    return tooltip == null ? button : Tooltip(message: tooltip!, child: button);
+    final Widget marked = isMarked
+        ? Stack(
+            clipBehavior: Clip.none,
+            children: [
+              button,
+              // Outside the circle rather than inside it: within the rim it
+              // sits next to the glyph and reads as part of the icon.
+              PositionedDirectional(
+                top: -1,
+                end: -1,
+                child: Container(
+                  width: 9.w,
+                  height: 9.w,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                    // Punched out of the page rather than laid on top of it,
+                    // so the dot keeps its shape wherever the button lands.
+                    border: Border.all(color: AppColors.background, width: 1.5),
+                  ),
+                ),
+              ),
+            ],
+          )
+        : button;
+
+    return tooltip == null ? marked : Tooltip(message: tooltip!, child: marked);
   }
 }
