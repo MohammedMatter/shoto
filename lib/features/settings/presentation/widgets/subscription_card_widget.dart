@@ -3,12 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
+import 'package:shoto/core/services/account_service.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_shapes.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/features/subscription/domain/entities/premium_feature.dart';
+import 'package:shoto/features/settings/presentation/widgets/account_sheet.dart';
 import 'package:shoto/features/subscription/domain/use_cases/restore_purchases_use_case.dart';
 import 'package:shoto/features/subscription/presentation/pages/paywall_page.dart';
 
@@ -43,6 +45,22 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
       if (mounted) setState(() => _isRestoring = false);
       await sl<ProStatus>().refresh();
     }
+
+    // **A restore that finds nothing is the whole reason the account exists.**
+    //
+    // The store was asked about the Google account signed in on *this* phone
+    // and had nothing to give. For somebody who bought SHOTO on a different
+    // account that is not an error, it is the expected answer — and Google
+    // provides no way to move a subscription between accounts, so without
+    // this the answer to "I paid for this" is a shrug.
+    //
+    // Only offered on the miss. Somebody whose restore worked has no use for
+    // an account and should not be asked for an email.
+    if (!mounted) return;
+    if (sl<ProStatus>().isPro) return;
+    if (sl<AccountService>().isSignedIn) return;
+
+    await showAccountSheet(context, reason: context.l10n.accountReasonRestore);
   }
 
   Future<void> _openPaywall() async {

@@ -16,6 +16,7 @@ import 'package:shoto/features/smart_actions/data/repositories_impl/smart_action
 import 'package:shoto/features/smart_actions/domain/repositories/smart_actions_repository.dart';
 import 'package:shoto/features/smart_actions/domain/use_cases/get_screenshot_actions_use_case.dart';
 import 'package:shoto/core/services/biometric_auth_service.dart';
+import 'package:shoto/core/services/account_service.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
 import 'package:shoto/core/services/funnel_log.dart';
@@ -90,6 +91,9 @@ final sl = GetIt.instance;
 
 void setupServiceLocator() {
   sl.registerLazySingleton(() => LocalIdentity());
+  // Constructing this touches nothing — Firebase is initialized on first use,
+  // inside the service. See AccountService.
+  sl.registerLazySingleton(() => AccountService());
 
   sl.registerLazySingleton(() => AppDatabase(sl()));
   sl.registerLazySingleton(() => ThemeController());

@@ -9,6 +9,75 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get accountTitle => 'خلّي اشتراكك معك';
+
+  @override
+  String get accountBody =>
+      'الحساب بينقل اشتراكك لتلفون تاني، حتى لو مسجّل بحساب Google مختلف. ما بينقل لقطاتك ولا مجلداتك — هدول بيضلوا على هالجهاز.';
+
+  @override
+  String get accountEmailHint => 'البريد الإلكتروني';
+
+  @override
+  String get accountPasswordHint => 'كلمة السر';
+
+  @override
+  String get accountContinue => 'متابعة';
+
+  @override
+  String get accountForgot => 'نسيت كلمة السر؟';
+
+  @override
+  String get accountResetSent => 'شيك بريدك، وصلك رابط لتغيير كلمة السر';
+
+  @override
+  String get accountSignedIn => 'انربط الاشتراك بحسابك';
+
+  @override
+  String get accountSignedOut => 'تسجّل الخروج. مكتبتك ما تغيّر فيها إشي.';
+
+  @override
+  String get accountSignOut => 'تسجيل الخروج';
+
+  @override
+  String get accountSignOutNote =>
+      'لقطاتك ومجلداتك وإعداداتك بتضل على هالتلفون.';
+
+  @override
+  String get accountSettingsRow => 'الحساب';
+
+  @override
+  String get accountSettingsHintOff =>
+      'اختياري. بيحفظلك اشتراكك لو غيّرت تلفونك.';
+
+  @override
+  String get accountReasonRestore =>
+      'ما لقينا اشتراك لحساب المتجر المسجّل على هالتلفون. إذا اشتريت SHOTO بحساب تاني، سجّل دخول من هون.';
+
+  @override
+  String get accountReasonPurchased =>
+      'ضيف بريدك عشان الاشتراك يضل معك على تلفونك الجاي، بأي حساب كان.';
+
+  @override
+  String get accountErrorBadEmail => 'هاد ما بيشبه بريد إلكتروني.';
+
+  @override
+  String get accountErrorWeakPassword => 'استخدم ٦ خانات على الأقل.';
+
+  @override
+  String get accountErrorWrongPassword => 'كلمة السر غلط لهالبريد.';
+
+  @override
+  String get accountErrorTooMany => 'محاولات كتير. جرّب بعد شوي.';
+
+  @override
+  String get accountErrorOffline =>
+      'ما في اتصال. هاد الجزء الوحيد بـ SHOTO يلي بيحتاج إنترنت.';
+
+  @override
+  String get accountErrorFailed => 'ما زبطت. جرّب كمان مرة.';
+
+  @override
   String paywallTrialCta(int days) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
@@ -417,7 +486,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsPrivacyNote =>
-      'SHOTO ما بيقرأ معرض صورك أبداً. بيحتفظ بس باللقطات اللي بتشاركها معه، وكل شي بيعمله فيها — قراءة النص، كشف المكرر — بيصير على جهازك. ولا شي بينرفع لأي مكان.';
+      'SHOTO بيحتفظ بس باللقطات اللي بتعطيه ياها، وكل شي بيعمله فيها — قراءة النص، كشف المكرر — بيصير على جهازك. صورك ما بترفع لأي مكان أبداً. وفي شغلتين إنت اللي بتشغّلهم: عرض اللقطات الجديدة بيقرا ألبوم لقطات الشاشة عشان يسألك عنها، والحساب بيبعت بريدك الإلكتروني بس، عشان اشتراكك يضل معك لو غيّرت تلفونك.';
 
   @override
   String get commonSave => 'حفظ';
@@ -996,7 +1065,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingCta => 'يلا نبدأ';
 
   @override
-  String get onboardingPromise => 'كل شي بيضل على جهازك.';
+  String get onboardingPromise => 'لقطاتك بتضل على جهازك.';
 
   @override
   String get actionsTitle => 'إجراءات';

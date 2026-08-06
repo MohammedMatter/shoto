@@ -9,6 +9,76 @@ class AppLocalizationsUr extends AppLocalizations {
   AppLocalizationsUr([String locale = 'ur']) : super(locale);
 
   @override
+  String get accountTitle => 'اپنی سبسکرپشن ساتھ رکھیں';
+
+  @override
+  String get accountBody =>
+      'اکاؤنٹ آپ کی سبسکرپشن کو دوسرے فون پر لے جاتا ہے، چاہے اس میں کوئی اور Google اکاؤنٹ ہو۔ یہ آپ کے اسکرین شاٹ یا فولڈر منتقل نہیں کرتا — وہ اسی ڈیوائس پر رہتے ہیں۔';
+
+  @override
+  String get accountEmailHint => 'ای میل';
+
+  @override
+  String get accountPasswordHint => 'پاس ورڈ';
+
+  @override
+  String get accountContinue => 'جاری رکھیں';
+
+  @override
+  String get accountForgot => 'پاس ورڈ بھول گئے؟';
+
+  @override
+  String get accountResetSent => 'ری سیٹ لنک کے لیے اپنا ای میل دیکھیں';
+
+  @override
+  String get accountSignedIn => 'سبسکرپشن آپ کے اکاؤنٹ سے جڑ گئی';
+
+  @override
+  String get accountSignedOut =>
+      'سائن آؤٹ ہو گیا۔ آپ کی لائبریری جوں کی توں ہے۔';
+
+  @override
+  String get accountSignOut => 'سائن آؤٹ';
+
+  @override
+  String get accountSignOutNote =>
+      'آپ کے اسکرین شاٹ، فولڈر اور سیٹنگز اسی فون پر رہتے ہیں۔';
+
+  @override
+  String get accountSettingsRow => 'اکاؤنٹ';
+
+  @override
+  String get accountSettingsHintOff =>
+      'اختیاری۔ فون بدلنے پر سبسکرپشن محفوظ رہتی ہے۔';
+
+  @override
+  String get accountReasonRestore =>
+      'اس فون کے اسٹور اکاؤنٹ کے لیے کوئی سبسکرپشن نہیں ملی۔ اگر آپ نے SHOTO کسی اور اکاؤنٹ سے خریدا تھا، یہاں سائن ان کریں۔';
+
+  @override
+  String get accountReasonPurchased =>
+      'ای میل شامل کریں تاکہ یہ سبسکرپشن آپ کے اگلے فون پر بھی ساتھ جائے، چاہے کوئی بھی اکاؤنٹ ہو۔';
+
+  @override
+  String get accountErrorBadEmail => 'یہ ای میل پتے جیسا نہیں لگتا۔';
+
+  @override
+  String get accountErrorWeakPassword => 'کم از کم چھ حروف استعمال کریں۔';
+
+  @override
+  String get accountErrorWrongPassword => 'اس ای میل کے لیے پاس ورڈ غلط ہے۔';
+
+  @override
+  String get accountErrorTooMany => 'بہت زیادہ کوششیں۔ چند منٹ بعد کوشش کریں۔';
+
+  @override
+  String get accountErrorOffline =>
+      'کنکشن نہیں ہے۔ SHOTO کا صرف یہی حصہ اس کا محتاج ہے۔';
+
+  @override
+  String get accountErrorFailed => 'مکمل نہیں ہو سکا۔ دوبارہ کوشش کریں۔';
+
+  @override
   String paywallTrialCta(int days) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
@@ -410,7 +480,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get settingsPrivacyNote =>
-      'SHOTO آپ کی گیلری کبھی نہیں پڑھتا۔ یہ صرف وہی اسکرین شاٹس رکھتا ہے جو آپ اس میں شیئر کریں، اور ان کے ساتھ جو کچھ کرتا ہے — متن پڑھنا، نقول ڈھونڈنا — سب اسی آلے پر ہوتا ہے۔ کچھ بھی کہیں اپ لوڈ نہیں ہوتا۔';
+      'SHOTO صرف وہی اسکرین شاٹس رکھتا ہے جو آپ اسے دیں، اور ان کے ساتھ جو کچھ کرتا ہے — متن پڑھنا، نقول ڈھونڈنا — سب اسی آلے پر ہوتا ہے۔ آپ کی تصاویر کبھی اپ لوڈ نہیں ہوتیں۔ دو چیزیں آپ خود چالو کرتے ہیں: نئے اسکرین شاٹ دکھانا آپ کا اسکرین شاٹ البم پڑھتا ہے تاکہ ان کے بارے میں پوچھ سکے، اور اکاؤنٹ صرف آپ کا ای میل بھیجتا ہے، تاکہ فون بدلنے پر سبسکرپشن باقی رہے۔';
 
   @override
   String get commonSave => 'محفوظ کریں';
@@ -997,7 +1067,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get onboardingCta => 'شروع کریں';
 
   @override
-  String get onboardingPromise => 'سب کچھ آپ کے فون پر رہتا ہے۔';
+  String get onboardingPromise => 'آپ کے اسکرین شاٹ آپ کے فون پر رہتے ہیں۔';
 
   @override
   String get actionsTitle => 'اقدامات';

@@ -26,13 +26,36 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
 
   @override
   Future<void> initialize() {
-    // The device id. A purchase has to be restorable on this phone after a
-    // reinstall, and an anonymous RevenueCat id — what null produces — is
-    // regenerated each time, so it cannot do that. Carrying a purchase to a
-    // *second* phone is the store account's job: both Play and the App Store
-    // restore what the same store account bought, which is the account the
-    // user paid with and the only one they should have to remember.
+    // The device id, which is a *starting* identity rather than a durable
+    // one, and it is worth being exact about what it does and does not
+    // survive:
+    //
+    // * **Same phone, app still installed** — the id is stable, so the
+    //   entitlement is found on every launch.
+    // * **Reinstall** — `SharedPreferences` goes with the app, so a new id is
+    //   minted and RevenueCat sees a stranger. Restoring from the store fixes
+    //   it, and Android's own backup often carries the id across anyway.
+    // * **New phone, same store account** — the store restores the purchase.
+    // * **New phone, different store account** — nothing the store can do:
+    //   Google does not move a subscription between Google accounts. That is
+    //   the case [AccountService] exists for, and `attachAccount` is how the
+    //   entitlement stops depending on the store's identity at all.
+    //
+    // Passing null instead would produce a *fresh* anonymous id on every
+    // launch, which survives nothing.
     return _dataSource.initialize(appUserId: _localIdentity.id);
+  }
+
+  @override
+  Future<SubscriptionStatus> attachAccount(String accountId) async {
+    await _dataSource.logIn(accountId);
+    return getStatus();
+  }
+
+  @override
+  Future<SubscriptionStatus> detachAccount() async {
+    await _dataSource.logOut();
+    return getStatus();
   }
 
   @override

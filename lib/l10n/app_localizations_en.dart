@@ -9,6 +9,77 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get accountTitle => 'Keep your subscription';
+
+  @override
+  String get accountBody =>
+      'An account carries your subscription to another phone, even one signed in to a different Google account. It does not move your screenshots or folders — those stay on this device.';
+
+  @override
+  String get accountEmailHint => 'Email';
+
+  @override
+  String get accountPasswordHint => 'Password';
+
+  @override
+  String get accountContinue => 'Continue';
+
+  @override
+  String get accountForgot => 'Forgot password?';
+
+  @override
+  String get accountResetSent => 'Check your email for a reset link';
+
+  @override
+  String get accountSignedIn => 'Subscription attached to your account';
+
+  @override
+  String get accountSignedOut => 'Signed out. Your library is untouched.';
+
+  @override
+  String get accountSignOut => 'Sign out';
+
+  @override
+  String get accountSignOutNote =>
+      'Your screenshots, folders and settings stay on this phone.';
+
+  @override
+  String get accountSettingsRow => 'Account';
+
+  @override
+  String get accountSettingsHintOff =>
+      'Optional. Keeps your subscription if you change phone.';
+
+  @override
+  String get accountReasonRestore =>
+      'No subscription was found for the store account on this phone. If you bought SHOTO with a different account, sign in here instead.';
+
+  @override
+  String get accountReasonPurchased =>
+      'Add an email so this subscription follows you to your next phone, whichever account it is signed in to.';
+
+  @override
+  String get accountErrorBadEmail =>
+      'That does not look like an email address.';
+
+  @override
+  String get accountErrorWeakPassword => 'Use at least six characters.';
+
+  @override
+  String get accountErrorWrongPassword => 'Wrong password for this email.';
+
+  @override
+  String get accountErrorTooMany =>
+      'Too many attempts. Try again in a few minutes.';
+
+  @override
+  String get accountErrorOffline =>
+      'No connection. This is the one part of SHOTO that needs one.';
+
+  @override
+  String get accountErrorFailed => 'Could not finish that. Try again.';
+
+  @override
   String paywallTrialCta(int days) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
@@ -410,7 +481,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsPrivacyNote =>
-      'SHOTO never reads your gallery. It only holds the screenshots you share into it, and everything it does with them — reading text, finding duplicates — happens on this device. Nothing is ever uploaded.';
+      'SHOTO holds only the screenshots you hand it, and everything it does with them — reading text, finding duplicates — happens on this device. Your pictures are never uploaded. Two things are yours to switch on: offering new screenshots reads your Screenshots album so it can ask about them, and an account sends only your email address, so a subscription survives a change of phone.';
 
   @override
   String get commonSave => 'Save';
@@ -999,7 +1070,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingCta => 'Get started';
 
   @override
-  String get onboardingPromise => 'Everything stays on your phone.';
+  String get onboardingPromise => 'Your screenshots stay on your phone.';
 
   @override
   String get actionsTitle => 'Actions';

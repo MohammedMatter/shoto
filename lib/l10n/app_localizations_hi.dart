@@ -9,6 +9,76 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
+  String get accountTitle => 'अपनी सदस्यता साथ रखें';
+
+  @override
+  String get accountBody =>
+      'खाता आपकी सदस्यता को दूसरे फ़ोन पर ले जाता है, भले ही उसमें कोई और Google खाता हो। यह आपके स्क्रीनशॉट या फ़ोल्डर नहीं ले जाता — वे इसी डिवाइस पर रहते हैं।';
+
+  @override
+  String get accountEmailHint => 'ईमेल';
+
+  @override
+  String get accountPasswordHint => 'पासवर्ड';
+
+  @override
+  String get accountContinue => 'जारी रखें';
+
+  @override
+  String get accountForgot => 'पासवर्ड भूल गए?';
+
+  @override
+  String get accountResetSent => 'रीसेट लिंक के लिए अपना ईमेल देखें';
+
+  @override
+  String get accountSignedIn => 'सदस्यता आपके खाते से जुड़ गई';
+
+  @override
+  String get accountSignedOut => 'साइन आउट हो गया। आपकी लाइब्रेरी वैसी ही है।';
+
+  @override
+  String get accountSignOut => 'साइन आउट';
+
+  @override
+  String get accountSignOutNote =>
+      'आपके स्क्रीनशॉट, फ़ोल्डर और सेटिंग्स इसी फ़ोन पर रहते हैं।';
+
+  @override
+  String get accountSettingsRow => 'खाता';
+
+  @override
+  String get accountSettingsHintOff =>
+      'वैकल्पिक। फ़ोन बदलने पर सदस्यता बनी रहती है।';
+
+  @override
+  String get accountReasonRestore =>
+      'इस फ़ोन के स्टोर खाते के लिए कोई सदस्यता नहीं मिली। अगर आपने SHOTO किसी और खाते से खरीदा था, यहाँ साइन इन करें।';
+
+  @override
+  String get accountReasonPurchased =>
+      'ईमेल जोड़ें ताकि यह सदस्यता आपके अगले फ़ोन पर भी साथ जाए, चाहे कोई भी खाता हो।';
+
+  @override
+  String get accountErrorBadEmail => 'यह ईमेल पते जैसा नहीं लगता।';
+
+  @override
+  String get accountErrorWeakPassword => 'कम से कम छह अक्षर इस्तेमाल करें।';
+
+  @override
+  String get accountErrorWrongPassword => 'इस ईमेल के लिए पासवर्ड ग़लत है।';
+
+  @override
+  String get accountErrorTooMany =>
+      'बहुत ज़्यादा कोशिशें। कुछ मिनट बाद फिर देखें।';
+
+  @override
+  String get accountErrorOffline =>
+      'कनेक्शन नहीं है। SHOTO का बस यही हिस्सा इसकी माँग करता है।';
+
+  @override
+  String get accountErrorFailed => 'पूरा नहीं हो सका। फिर कोशिश करें।';
+
+  @override
   String paywallTrialCta(int days) {
     String _temp0 = intl.Intl.pluralLogic(
       days,
@@ -411,7 +481,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get settingsPrivacyNote =>
-      'SHOTO आपकी गैलरी कभी नहीं पढ़ता। यह सिर्फ़ वही स्क्रीनशॉट रखता है जो आप इसमें साझा करते हैं, और उनके साथ जो कुछ करता है — पाठ पढ़ना, डुप्लिकेट ढूँढना — सब इसी डिवाइस पर होता है। कुछ भी कहीं अपलोड नहीं होता।';
+      'SHOTO सिर्फ़ वही स्क्रीनशॉट रखता है जो आप इसे देते हैं, और उनके साथ जो कुछ करता है — पाठ पढ़ना, डुप्लिकेट ढूँढना — सब इसी डिवाइस पर होता है। आपकी तस्वीरें कभी अपलोड नहीं होतीं। दो चीज़ें आप ख़ुद चालू करते हैं: नए स्क्रीनशॉट दिखाना आपका स्क्रीनशॉट एल्बम पढ़ता है ताकि उनके बारे में पूछ सके, और खाता सिर्फ़ आपका ईमेल भेजता है, ताकि फ़ोन बदलने पर सदस्यता बनी रहे।';
 
   @override
   String get commonSave => 'सहेजें';
@@ -998,7 +1068,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get onboardingCta => 'शुरू करें';
 
   @override
-  String get onboardingPromise => 'सब कुछ आपके फ़ोन पर ही रहता है।';
+  String get onboardingPromise => 'आपके स्क्रीनशॉट आपके फ़ोन पर ही रहते हैं।';
 
   @override
   String get actionsTitle => 'क्रियाएँ';

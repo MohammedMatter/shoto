@@ -59,6 +59,23 @@ class AppMessage {
   static const AppMessage network = AppMessage._(_network);
   static const AppMessage generic = AppMessage._(_generic);
 
+  // ---------------------------------------------------------------- account
+  //
+  // Firebase reports these as codes, and its own `message` field is English
+  // prose written for developers. These are the same failures said in the
+  // app's six languages, and said in terms of what the user should do next.
+
+  static const AppMessage accountBadEmail = AppMessage._(_accountBadEmail);
+  static const AppMessage accountWeakPassword = AppMessage._(
+    _accountWeakPassword,
+  );
+  static const AppMessage accountWrongPassword = AppMessage._(
+    _accountWrongPassword,
+  );
+  static const AppMessage accountTooMany = AppMessage._(_accountTooMany);
+  static const AppMessage accountOffline = AppMessage._(_accountOffline);
+  static const AppMessage accountFailed = AppMessage._(_accountFailed);
+
   // ------------------------------------------------------------ subscription
 
   static const AppMessage plans = AppMessage._(_plans);
@@ -114,6 +131,13 @@ String _signInCancelled(AppLocalizations l) => l.errorSignInCancelled;
 String _signInInterrupted(AppLocalizations l) => l.errorSignInInterrupted;
 String _network(AppLocalizations l) => l.errorNetwork;
 String _generic(AppLocalizations l) => l.errorGeneric;
+
+String _accountBadEmail(AppLocalizations l) => l.accountErrorBadEmail;
+String _accountWeakPassword(AppLocalizations l) => l.accountErrorWeakPassword;
+String _accountWrongPassword(AppLocalizations l) => l.accountErrorWrongPassword;
+String _accountTooMany(AppLocalizations l) => l.accountErrorTooMany;
+String _accountOffline(AppLocalizations l) => l.accountErrorOffline;
+String _accountFailed(AppLocalizations l) => l.accountErrorFailed;
 
 String _plans(AppLocalizations l) => l.errorPlans;
 String _purchase(AppLocalizations l) => l.errorPurchase;

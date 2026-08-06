@@ -12,4 +12,15 @@ abstract class SubscriptionRepository {
   Future<List<SubscriptionPackageInfo>> getOfferings();
   Future<SubscriptionStatus> purchase(SubscriptionPackageInfo package);
   Future<SubscriptionStatus> restorePurchases();
+
+  /// Moves this device's entitlements onto an account, and reports what the
+  /// account is entitled to afterwards.
+  ///
+  /// Called when somebody signs in. A purchase made anonymously before that
+  /// follows them in rather than being stranded on a device id.
+  Future<SubscriptionStatus> attachAccount(String accountId);
+
+  /// Detaches the account. The entitlement stays with it on RevenueCat's side;
+  /// signing back in anywhere brings it back.
+  Future<SubscriptionStatus> detachAccount();
 }

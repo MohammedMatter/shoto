@@ -5,6 +5,7 @@ import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
+import 'package:shoto/core/services/account_service.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/haptics.dart';
 import 'package:shoto/core/services/pro_status.dart';
@@ -20,6 +21,7 @@ import 'package:shoto/features/backup/presentation/pages/backup_page.dart';
 import 'package:shoto/features/duplicates/presentation/pages/duplicates_page.dart';
 import 'package:shoto/features/settings/presentation/widgets/app_version_block.dart';
 import 'package:shoto/features/settings/presentation/widgets/contact_support_tile.dart';
+import 'package:shoto/features/settings/presentation/widgets/account_sheet.dart';
 import 'package:shoto/features/settings/presentation/widgets/language_sheet.dart';
 import 'package:shoto/features/settings/presentation/widgets/owner_name_sheet.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_group.dart';
@@ -269,9 +271,31 @@ class SettingsPage extends StatelessWidget {
                       SizedBox(height: 26.h),
                       const PrivacyNote(),
 
-                      // There is no Account group, because there is no
-                      // account. Restoring a purchase on a new phone is the
-                      // store's job and it lives on the subscription card.
+                      // An account group of exactly one row, and it is not a
+                      // profile: SHOTO has no idea who you are and does not
+                      // want to. The row exists because a subscription bought
+                      // on one Google account cannot be moved to another by
+                      // any means Google provides — see `AccountService`.
+                      ListenableBuilder(
+                        listenable: sl<AccountService>(),
+                        builder: (context, _) {
+                          final AccountService account = sl<AccountService>();
+                          return SettingsGroup(
+                            title: context.l10n.accountSettingsRow,
+                            children: [
+                              SettingsNavTile(
+                                icon: Icons.alternate_email_rounded,
+                                label: account.email ?? context.l10n.accountTitle,
+                                description: account.isSignedIn
+                                    ? context.l10n.accountSignOutNote
+                                    : context.l10n.accountSettingsHintOff,
+                                onTap: () => showAccountSheet(context),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+
                       SizedBox(height: 34.h),
                       AppVersionBlock(),
                     ],
