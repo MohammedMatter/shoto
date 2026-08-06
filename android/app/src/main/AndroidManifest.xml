@@ -1,4 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <!--
       READ_MEDIA_VISUAL_USER_SELECTED is deliberately NOT declared.
@@ -92,6 +94,32 @@
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="ocr" />
+
+        <!--
+          **Firebase does not get to start itself.**
+
+          The Firebase SDK ships a ContentProvider that Android runs during
+          process creation, before any app code — so `AccountService` loading
+          Firebase "on demand" was only half true: the Java half was already
+          being initialized on every cold start, for a feature most sessions
+          never touch. That is the cost the old mandatory sign-in was removed
+          to avoid, arriving through a side door.
+
+          It was also *failing* on every launch and saying so in the log —
+          "Default FirebaseApp failed to initialize because no default options
+          were found" — because this app deliberately has no
+          google-services.json. The Dart side passes explicit options from
+          firebase_options.dart when it actually needs Firebase, which is the
+          only initialization that should ever happen.
+
+          Removing the provider makes the lazy loading real and takes the
+          warning with it. `Firebase.initializeApp(options:)` still works.
+        -->
+        <provider
+            android:name="com.google.firebase.provider.FirebaseInitProvider"
+            android:authorities="${applicationId}.firebaseinitprovider"
+            android:exported="false"
+            tools:node="remove" />
 
         <meta-data
             android:name="flutterEmbedding"
