@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui' show PlatformDispatcher;
@@ -19,6 +20,7 @@ import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/features/quick_save/presentation/pages/quick_save_page.dart';
 import 'package:shoto/features/subscription/domain/repositories/subscription_repository.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,11 +72,25 @@ void main() async {
     return;
   }
 
-  // Every one of these is a SharedPreferences read. There used to be a
-  // `Firebase.initializeApp` at the head of this list — the slowest single
-  // step in launching the app, for an SDK nothing in it calls any more. See
-  // `docs/decisions/accounts.md`.
+  // **Firebase must be ready before the router is built**, and that is not a
+  // preference — it is a hard ordering constraint. `AppRouter` asks
+  // `AuthRepository.currentUser` to decide whether the first screen is the
+  // sign-in page or Home, and reading that with no initialized app throws
+  // `[core/no-app]` while the router is being constructed, which produces a
+  // blank grey screen and no error anywhere the user can see.
+  //
+  // Started rather than awaited on its own line: none of the preference loads
+  // below depend on it, so they overlap with it instead of queueing behind
+  // the slowest thing in startup.
+  //
+  // The share sheet above deliberately never reaches this — it has no
+  // navigation and no account, so it does not pay for either.
+  final Future<void> firebaseReady = Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   await Future.wait([
+    firebaseReady,
     sl<LocalIdentity>().load(),
     sl<LocaleController>().load(),
     sl<ThemeController>().load(),

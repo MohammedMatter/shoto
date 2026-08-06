@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shoto/core/routes/app_router.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/widgets/confirm_dialog.dart';
+import 'package:shoto/features/auth/domain/entities/user_entity.dart';
 import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 import 'package:shoto/features/auth/domain/use_cases/sign_out_use_case.dart';
 import 'package:shoto/core/services/haptics.dart';
@@ -19,6 +20,7 @@ import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/widgets/grid_density_selector.dart';
 import 'package:shoto/core/widgets/premium_gate.dart';
+import 'package:shoto/core/widgets/pro_badge.dart';
 import 'package:shoto/core/widgets/privacy_note.dart';
 import 'package:shoto/core/widgets/theme_mode_selector.dart';
 import 'package:shoto/features/backup/presentation/pages/backup_page.dart';
@@ -71,12 +73,14 @@ class SettingsPage extends StatelessWidget {
                         style: AppTextStyles.headlineLarge,
                       ),
                       SizedBox(height: 18.h),
-                      // A profile card used to sit here: an avatar, a name and
-                      // an email. With no account there is no name to put in
-                      // it, and a card showing a grey silhouette next to the
-                      // word "SHOTO" is a box that says nothing. The
-                      // subscription card carries the one fact it was really
-                      // for — whether this is Pro.
+                      // Who this is, answered at the top of the screen where
+                      // the question gets asked. It was taken out while there
+                      // were no accounts — a grey silhouette beside the word
+                      // "SHOTO" is a box that says nothing — and it is back
+                      // because there is a name and an address to put in it
+                      // again.
+                      _ProfileCard(user: sl<AuthRepository>().currentUser),
+                      SizedBox(height: 16.h),
                       SubscriptionCard(),
 
                       // Appearance first: it is the setting people come here to
@@ -314,5 +318,102 @@ class SettingsPage extends StatelessWidget {
               );
             },
           );
+  }
+}
+
+class _ProfileCard extends StatelessWidget {
+  final UserEntity? user;
+  const _ProfileCard({required this.user});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      // The avatar's ring is the quietest of the app's three Pro signals and
+      // the one most worth having: this card is where somebody looks to answer
+      // "what account am I on", and being on Pro is part of that answer.
+      listenable: sl<ProStatus>(),
+      builder: (context, _) {
+        final bool isPro = sl<ProStatus>().isPro;
+
+        return Container(
+          padding: EdgeInsets.all(16.w),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(22.r),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Row(
+            children: [
+              // A ring *around* the avatar rather than a border on it, so a
+              // photograph is not cropped by a stroke drawn over its own edge.
+              // Padding when there is no ring keeps the avatar the same size
+              // and in the same place either way — a Pro badge arriving must
+              // not shuffle the card.
+              Container(
+                padding: EdgeInsets.all(3.w),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isPro ? AppColors.primary : Colors.transparent,
+                    width: 1.5,
+                  ),
+                ),
+                child: Container(
+                  width: 46.w,
+                  height: 46.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.surfaceVariant,
+                    image: user?.photoUrl != null
+                        ? DecorationImage(
+                            image: NetworkImage(user!.photoUrl!),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
+                  child: user?.photoUrl == null
+                      ? Icon(
+                          Icons.person_rounded,
+                          color: AppColors.textSecondary,
+                          size: 23.sp,
+                        )
+                      : null,
+                ),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            (user?.name?.isNotEmpty ?? false)
+                                ? user!.name!
+                                : 'SHOTO',
+                            style: AppTextStyles.titleLarge,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (isPro) ...[SizedBox(width: 8.w), const ProBadge()],
+                      ],
+                    ),
+                    if (user?.email != null) ...[
+                      SizedBox(height: 1.h),
+                      Text(
+                        user!.email!,
+                        style: AppTextStyles.bodySmall,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
