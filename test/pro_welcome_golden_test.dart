@@ -57,7 +57,7 @@ void main() {
       matchesGoldenFile('goldens/pro_welcome_midflight.png'),
     );
     await tester.pumpAndSettle();
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('pro welcome — dark', (WidgetTester tester) async {
     await render(tester, Brightness.dark);
@@ -66,7 +66,7 @@ void main() {
       find.byType(ProWelcomePage),
       matchesGoldenFile('goldens/pro_welcome_dark.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('pro welcome — light', (WidgetTester tester) async {
     await render(tester, Brightness.light);
@@ -75,5 +75,5 @@ void main() {
       find.byType(ProWelcomePage),
       matchesGoldenFile('goldens/pro_welcome_light.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 }

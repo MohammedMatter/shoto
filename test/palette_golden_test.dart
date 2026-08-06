@@ -155,7 +155,7 @@ void main() {
       find.byType(ListView),
       matchesGoldenFile('goldens/palette_light.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('palette — dark', (WidgetTester tester) async {
     await renderBoard(tester, Brightness.dark);
@@ -163,7 +163,7 @@ void main() {
       find.byType(ListView),
       matchesGoldenFile('goldens/palette_dark.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 }
 
 class _Pill extends StatelessWidget {

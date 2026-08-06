@@ -60,7 +60,7 @@ void main() {
         find.byType(OnboardingPage),
         matchesGoldenFile('goldens/onboarding_$name.png'),
       );
-    }, skip: !autoUpdateGoldenFiles);
+    });
   }
 
   testWidgets('onboarding — pile, dark', (WidgetTester tester) async {
@@ -69,7 +69,7 @@ void main() {
       find.byType(OnboardingPage),
       matchesGoldenFile('goldens/onboarding_pile_dark.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('onboarding — pro, dark', (WidgetTester tester) async {
     await open(tester, Brightness.dark);
@@ -78,5 +78,5 @@ void main() {
       find.byType(OnboardingPage),
       matchesGoldenFile('goldens/onboarding_pro_dark.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 }

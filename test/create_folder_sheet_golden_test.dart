@@ -31,10 +31,9 @@ void main() {
   /// [BiometricAuthService] is here because the sheet asks it, in `initState`,
   /// which biometric this phone actually offers so the switch can name it.
   /// That dependency was added to the sheet without this registration, and
-  /// because every test in this file is `skip: !autoUpdateGoldenFiles`, the
-  /// resulting GetIt error was invisible on a normal `flutter test` run — the
-  /// file had been failing outright for anyone who passed `--update-goldens`,
-  /// which is the only way it ever executes.
+  /// because every test in this file was skipped unless the suite was asked to
+  /// update goldens, the resulting GetIt error was invisible on a normal
+  /// `flutter test` run. These assert now, so it could not hide again.
   ///
   /// The real service is safe to use under test: it has no platform channel
   /// to talk to, `availableBiometrics` catches that and returns an empty
@@ -119,7 +118,6 @@ void main() {
           ),
         );
       },
-      skip: !autoUpdateGoldenFiles,
     );
 
     testWidgets(
@@ -132,7 +130,6 @@ void main() {
           matchesGoldenFile('goldens/create_folder_private_on_${mode.key}.png'),
         );
       },
-      skip: !autoUpdateGoldenFiles,
     );
   }
 
@@ -154,5 +151,5 @@ void main() {
       find.byType(BottomSheet),
       matchesGoldenFile('goldens/create_folder_arabic.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 }

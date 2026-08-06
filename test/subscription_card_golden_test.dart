@@ -68,7 +68,7 @@ void main() {
       find.byType(SingleChildScrollView),
       matchesGoldenFile('goldens/subscription_cards_dark.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('subscription cards — light', (WidgetTester tester) async {
     await render(tester, Brightness.light);
@@ -76,5 +76,5 @@ void main() {
       find.byType(SingleChildScrollView),
       matchesGoldenFile('goldens/subscription_cards_light.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 }

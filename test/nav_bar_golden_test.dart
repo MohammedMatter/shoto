@@ -112,7 +112,7 @@ void main() {
       find.byType(Stack).first,
       matchesGoldenFile('goldens/nav_bar_light.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('nav bar glass — dark', (WidgetTester tester) async {
     await renderBar(tester, Brightness.dark);
@@ -120,5 +120,5 @@ void main() {
       find.byType(Stack).first,
       matchesGoldenFile('goldens/nav_bar_dark.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 }

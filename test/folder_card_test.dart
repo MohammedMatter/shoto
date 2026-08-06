@@ -232,7 +232,7 @@ void main() {
       find.byType(GridView),
       matchesGoldenFile('goldens/folders_grid_dark.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('folders grid — light', (WidgetTester tester) async {
     await renderGrid(tester, Brightness.light);
@@ -240,5 +240,5 @@ void main() {
       find.byType(GridView),
       matchesGoldenFile('goldens/folders_grid_light.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 }

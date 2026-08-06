@@ -136,5 +136,5 @@ void main() {
       find.byType(ListView),
       matchesGoldenFile('goldens/settings_groups.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 }

@@ -6,11 +6,24 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/widgets/pro_badge.dart';
 
 class HomeGreeting extends StatelessWidget {
+  /// The clock this widget reads, overridable from a test and nowhere else.
+  ///
+  /// This is the only nondeterministic thing on Home, and it is enough to make
+  /// a golden that asserts unusable: the same screen says "Good morning",
+  /// "Good afternoon" or "Good evening" depending on the hour the suite is
+  /// run, so a committed baseline would go red twice a day for no reason.
+  ///
+  /// A static rather than a constructor argument, because [HomeGreeting] is
+  /// built by [HomePage] — threading a parameter down would put a test-only
+  /// field on the page's public API to solve a problem that lives here.
+  @visibleForTesting
+  static DateTime Function()? debugClock;
+
   const HomeGreeting({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final int hour = DateTime.now().hour;
+    final int hour = (debugClock?.call() ?? DateTime.now()).hour;
     final String part = hour < 12
         ? context.l10n.homeGreetingMorning
         : hour < 18

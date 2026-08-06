@@ -273,7 +273,7 @@ void main() {
       ),
       'library_strip_5_light',
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('view sheet states', (WidgetTester tester) async {
     tester.view.physicalSize = const Size(1080, 2070);
@@ -374,5 +374,5 @@ void main() {
         openSheet: true,
       );
     }
-  }, skip: !autoUpdateGoldenFiles);
+  });
 }

@@ -2,56 +2,59 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
+import 'package:shoto/core/utils/screenshot_intent.dart';
+import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_state.dart';
 import 'package:shoto/features/home/presentation/pages/home_page.dart';
+import 'package:shoto/features/home/presentation/widgets/home_greeting.dart';
+import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
+import 'package:shoto/features/screenshots/domain/repositories/screenshot_repository.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_new_captures_use_case.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/subscription/domain/entities/subscription_status.dart';
 import 'package:shoto/features/subscription/domain/repositories/subscription_repository.dart';
 import 'package:shoto/l10n/app_localizations.dart';
 
+import 'support/fake_gallery.dart';
 import 'support/test_fonts.dart';
 import 'support/test_theme.dart';
 
-/// The rebuilt Home, for looking at.
+/// Home, in both of the states it actually ships in.
 ///
-/// The two changes it exists to show are both about *reach*: search is a
-/// full-width field near the top instead of a 44px circle in the corner a
-/// thumb cannot get to, and the counts under the hero are shortcuts rather
-/// than trivia. Neither is something an assertion can judge, so this writes a
-/// picture — including an Arabic one, because a screen whose whole top half is
-/// new is exactly where a non-directional padding would hide.
+/// The empty one was the only one photographed for a long time, which left
+/// the recent strip, the stat line and the intake queue — half the screen —
+/// with no picture anywhere. They are here now, which is what the `filled`
+/// flag is for.
 ///
-/// The blocs are stubbed at their empty states: a widget test has no photo
-/// library, and the parts being reviewed here are the header, the counts and
-/// the tool rows, none of which need one.
-/// Cubits rather than the real blocs: constructing those pulls in the whole
-/// dependency graph — photo_manager, sqflite, Firebase — none of which a
-/// golden of the *layout* has any use for. Home only ever reads the state.
+/// Unlike the rest of the goldens in this folder, these **assert**. Three
+/// things had to be true first: the entrance cascade is pumped past its end
+/// so nothing is mid-animation, the gallery is faked so thumbnails resolve to
+/// fixed bytes instead of failing, and [HomeGreeting.debugClock] is frozen —
+/// without it the greeting follows the wall clock and the baseline goes red
+/// twice a day.
 class _StubScreenshotsBloc extends Cubit<ScreenshotsState>
     implements ScreenshotsBloc {
-  _StubScreenshotsBloc() : super(ScreenshotsLoadedState(screenshots: const []));
+  _StubScreenshotsBloc(super.state);
 
   @override
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 class _StubFoldersBloc extends Cubit<FoldersState> implements FoldersBloc {
-  _StubFoldersBloc() : super(FoldersLoadedState(const []));
+  _StubFoldersBloc(super.state);
 
   @override
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-/// The only real dependency Home has that is not a bloc: [ProStatus], which
-/// the wordmark's badge watches. Backed by a fake so the test does not need
-/// RevenueCat or a signed-in Firebase user to draw a header.
 class _FakeSubscriptionRepository implements SubscriptionRepository {
   @override
   Future<SubscriptionStatus> getStatus() async => SubscriptionStatus.free;
@@ -63,8 +66,39 @@ class _FakeSubscriptionRepository implements SubscriptionRepository {
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
+/// Home reads this on mount through [GetNewCapturesUseCase]. Unregistered, it
+/// threw on every run of this file — which nothing noticed, because the
+/// goldens were skipped unless the suite was asked to update them.
+class _FakeScreenshotRepository implements ScreenshotRepository {
+  @override
+  Future<List<AssetEntity>> getNewCaptures({DateTime? since}) async =>
+      const [];
+
+  @override
+  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+/// Twelve, because the strip takes twelve — enough to reach the trailing edge
+/// and prove it keeps going.
+List<ScreenshotEntity> _library() => List<ScreenshotEntity>.generate(
+  12,
+  (int i) => ScreenshotEntity(
+    asset: FakeGallery.asset(i),
+    // Four favourites and three filed, so the hero has something left to
+    // count and the stat line has no zero in it.
+    isFavorite: i % 3 == 0,
+    folderId: i % 4 == 0 ? 1 : null,
+    intent: i == 1 || i == 5
+        ? const IntentState(ref: BuiltInIntent(ScreenshotIntent.pay))
+        : null,
+  ),
+);
+
 void main() {
-  setUpAll(() {
+  setUpAll(() async {
+    await FakeGallery.install();
+    HomeGreeting.debugClock = () => DateTime(2026, 8, 6, 14);
+
     if (!sl.isRegistered<AppPreferences>()) {
       sl.registerLazySingleton<AppPreferences>(() => AppPreferences());
     }
@@ -79,12 +113,26 @@ void main() {
         () => ProStatus(_FakeSubscriptionRepository(), sl<DevAccess>()),
       );
     }
+    if (!sl.isRegistered<GetNewCapturesUseCase>()) {
+      sl.registerLazySingleton<GetNewCapturesUseCase>(
+        () => GetNewCapturesUseCase(
+          _FakeScreenshotRepository(),
+          sl<AppPreferences>(),
+        ),
+      );
+    }
+  });
+
+  tearDownAll(() {
+    FakeGallery.uninstall();
+    HomeGreeting.debugClock = null;
   });
 
   Future<void> render(
     WidgetTester tester,
     Brightness brightness, {
     String locale = 'en',
+    bool filled = false,
   }) async {
     await loadTestFonts();
 
@@ -105,9 +153,38 @@ void main() {
           home: MultiBlocProvider(
             providers: [
               BlocProvider<ScreenshotsBloc>(
-                create: (_) => _StubScreenshotsBloc(),
+                create: (_) => _StubScreenshotsBloc(
+                  ScreenshotsLoadedState(
+                    screenshots: filled ? _library() : const [],
+                  ),
+                ),
               ),
-              BlocProvider<FoldersBloc>(create: (_) => _StubFoldersBloc()),
+              BlocProvider<FoldersBloc>(
+                create: (_) => _StubFoldersBloc(
+                  FoldersLoadedState(
+                    filled
+                        ? <FolderEntity>[
+                            FolderEntity(
+                              id: 1,
+                              name: 'Receipts',
+                              color: 0xFF5B8DEF,
+                              createdAt: DateTime(2026, 1, 1),
+                              screenshotCount: 3,
+                              isPrivate: false,
+                            ),
+                            FolderEntity(
+                              id: 2,
+                              name: 'Recipes',
+                              color: 0xFF6EA96E,
+                              createdAt: DateTime(2026, 1, 2),
+                              screenshotCount: 0,
+                              isPrivate: false,
+                            ),
+                          ]
+                        : const [],
+                  ),
+                ),
+              ),
             ],
             child: HomePage(
               onOpenLibrary: (_) {},
@@ -118,8 +195,10 @@ void main() {
         ),
       ),
     );
-    // Past the 520ms entrance cascade, so every section is at rest.
+    // Past the 520ms entrance cascade, so every section is at rest, then
+    // again so the thumbnails that resolved in the meantime have painted.
     await tester.pump(const Duration(milliseconds: 700));
+    await tester.pumpAndSettle();
   }
 
   testWidgets('home — dark', (WidgetTester tester) async {
@@ -128,7 +207,7 @@ void main() {
       find.byType(HomePage),
       matchesGoldenFile('goldens/home_dark.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('home — light', (WidgetTester tester) async {
     await render(tester, Brightness.light);
@@ -136,7 +215,7 @@ void main() {
       find.byType(HomePage),
       matchesGoldenFile('goldens/home_light.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('home — Arabic', (WidgetTester tester) async {
     await render(tester, Brightness.dark, locale: 'ar');
@@ -144,5 +223,29 @@ void main() {
       find.byType(HomePage),
       matchesGoldenFile('goldens/home_arabic.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
+
+  testWidgets('home — filled, dark', (WidgetTester tester) async {
+    await render(tester, Brightness.dark, filled: true);
+    await expectLater(
+      find.byType(HomePage),
+      matchesGoldenFile('goldens/home_filled_dark.png'),
+    );
+  });
+
+  testWidgets('home — filled, light', (WidgetTester tester) async {
+    await render(tester, Brightness.light, filled: true);
+    await expectLater(
+      find.byType(HomePage),
+      matchesGoldenFile('goldens/home_filled_light.png'),
+    );
+  });
+
+  testWidgets('home — filled, Arabic', (WidgetTester tester) async {
+    await render(tester, Brightness.dark, locale: 'ar', filled: true);
+    await expectLater(
+      find.byType(HomePage),
+      matchesGoldenFile('goldens/home_filled_arabic.png'),
+    );
+  });
 }

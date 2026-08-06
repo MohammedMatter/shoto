@@ -93,5 +93,5 @@ void main() {
       find.byType(Row).first,
       matchesGoldenFile('goldens/grid_density_icons.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 }
