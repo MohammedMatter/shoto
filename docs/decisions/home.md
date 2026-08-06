@@ -90,3 +90,78 @@ place; none of them was.
 They are hidden entirely while the library is empty. "Screenshots 0 ·
 Favorites 0 · Folders 0" restated the headline's claim three more times, in the
 space between the one action on the screen and the way to reach it.
+
+## Constraints with nowhere else to live
+
+Everything above this line is a record, written in the past tense, and the
+source is where a constraint is supposed to go — [README.md](README.md) says
+so, and says why.
+
+These are constraints anyway. Home's comments were removed on the owner's
+call when the page was split into `presentation/widgets/`, and these five
+were load-bearing: each one is a rule a future change could break without the
+analyzer, the tests or the goldens saying a word. They are written in the
+present tense on purpose, because unlike the records above they describe the
+code as it is now.
+
+### The Home list carries no horizontal padding
+
+`HomePage`'s `ListView` has vertical padding only. Every section wraps itself
+in `HomeGutter` instead.
+
+That is deliberate and it exists for one widget. `HomeRecentStrip` is supposed
+to run off the trailing edge of the screen — a row that stops neatly at the
+same margin as everything above it reads as a finished list of four, and a row
+that leaves the page says there are more without spending a word. It cannot do
+that from inside a padded parent, and Flutter has no negative padding.
+
+**Do not** move the gutter onto the `ListView`. The strip loses the one thing
+it is shaped to say.
+
+### The recent strip's hero tags are prefixed
+
+`HomeRecentStrip` tags its heroes `home-<id>`, via `_heroPrefix`.
+
+Home and Library are both alive inside the shell route at all times — that is
+what `LazyIndexedStack` is for — and both can be showing the same screenshot.
+Two heroes with the same tag in a single route is an assertion failure, not a
+cosmetic problem. The prefix is what keeps them apart.
+
+### The recent strip's cards need their hairline
+
+The canvas is `#1A1A1A` and a screenshot of a dark app is very nearly the same
+value, so a bare thumbnail has no edge at all: on a device the first cards in
+the strip read as holes cut out of the page rather than as pictures sitting on
+it. The border is the palette's own `border` token, one pixel, drawn *over* the
+image so it survives whatever the screenshot's own colours are — which is why
+the `ClipRRect` inside it is inset by a pixel.
+
+### A zero gets no hue
+
+`HomeStatLine` tints its figures — the same red the heart wears, the same teal
+the folders wear — so the line reads as an index of things the user already
+recognises. A value of `0` is drawn in `textSecondary` instead.
+
+A red `0` beside "Favourites" does not read as *none of these*; on a dark
+screen it reads as an alert, because red at a glance means something is wrong
+and the eye arrives long before the word does. Nothing is wrong. There are
+simply no favourites yet.
+
+The rule generalises past this screen: a colour encodes what a value *means*,
+and zero of something means nothing at all.
+
+### The stat line puts the label before the figure
+
+"Screenshots 12", not "12 Screenshots". This is a grammar fix, not a style
+preference, and reversing it breaks six languages at once.
+
+The three strings are bare plural nouns. Setting them *after* a number, as
+prose, produces "1 Folders" in English and "١ مجلدات" in Arabic, which is
+simply wrong — and correcting it properly would mean ICU plural forms in six
+languages, including Arabic's six-way split, for a line nobody reads twice.
+Reversed, they are label-and-value pairs rather than sentences, so no agreement
+is implied and none can be wrong.
+
+The line is a `Wrap` rather than a `Row` for the same family of reasons: the
+labels are much longer in some languages, and a `Row` would overflow instead of
+moving the last pair down.
