@@ -9,76 +9,40 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get accountTitle => 'Gardez votre abonnement';
+  String get settingsSignOut => 'Se déconnecter';
 
   @override
-  String get accountBody =>
-      'Un compte emmène votre abonnement sur un autre téléphone, même connecté à un autre compte Google. Il ne déplace ni vos captures ni vos dossiers : ceux-là restent sur cet appareil.';
+  String get settingsSignOutTitle => 'Se déconnecter ?';
 
   @override
-  String get accountEmailHint => 'E-mail';
+  String get authWelcome => 'Bienvenue sur SHOTO';
 
   @override
-  String get accountPasswordHint => 'Mot de passe';
+  String get authSubtitle =>
+      'Se connecter garde votre abonnement avec vous quand vous changez de téléphone. Vos captures restent sur cet appareil dans tous les cas — un compte ne les emporte jamais.';
 
   @override
-  String get accountContinue => 'Continuer';
+  String get authGoogle => 'Continuer avec Google';
 
   @override
-  String get accountForgot => 'Mot de passe oublié ?';
+  String get authApple => 'Continuer avec Apple';
 
   @override
-  String get accountResetSent => 'Consultez votre e-mail pour le réinitialiser';
+  String get authLegal =>
+      'En continuant, vous acceptez nos Conditions et notre Politique de confidentialité.';
 
   @override
-  String get accountSignedIn => 'Abonnement rattaché à votre compte';
+  String get settingsAccount => 'Compte';
 
   @override
-  String get accountSignedOut => 'Déconnecté. Votre bibliothèque est intacte.';
+  String get settingsSignOutHint => 'Vos captures restent sur cet appareil';
 
   @override
-  String get accountSignOut => 'Se déconnecter';
+  String get settingsSignIn => 'Se connecter';
 
   @override
-  String get accountSignOutNote =>
-      'Vos captures, dossiers et réglages restent sur ce téléphone.';
-
-  @override
-  String get accountSettingsRow => 'Compte';
-
-  @override
-  String get accountSettingsHintOff =>
-      'Facultatif. Conserve votre abonnement si vous changez de téléphone.';
-
-  @override
-  String get accountReasonRestore =>
-      'Aucun abonnement trouvé pour le compte du store de ce téléphone. Si vous avez acheté SHOTO avec un autre compte, connectez-vous ici.';
-
-  @override
-  String get accountReasonPurchased =>
-      'Ajoutez un e-mail pour que cet abonnement vous suive sur votre prochain téléphone, quel que soit le compte.';
-
-  @override
-  String get accountErrorBadEmail =>
-      'Cela ne ressemble pas à une adresse e-mail.';
-
-  @override
-  String get accountErrorWeakPassword => 'Utilisez au moins six caractères.';
-
-  @override
-  String get accountErrorWrongPassword =>
-      'Mot de passe incorrect pour cet e-mail.';
-
-  @override
-  String get accountErrorTooMany =>
-      'Trop de tentatives. Réessayez dans quelques minutes.';
-
-  @override
-  String get accountErrorOffline =>
-      'Pas de connexion. C\'est la seule partie de SHOTO qui en a besoin.';
-
-  @override
-  String get accountErrorFailed => 'Impossible de terminer. Réessayez.';
+  String get settingsSignInHint =>
+      'Facultatif. Sert uniquement à transférer un achat vers un autre téléphone.';
 
   @override
   String paywallTrialCta(int days) {

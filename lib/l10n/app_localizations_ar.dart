@@ -9,73 +9,38 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get accountTitle => 'خلّي اشتراكك معك';
+  String get settingsSignOut => 'تسجيل الخروج';
 
   @override
-  String get accountBody =>
-      'الحساب بينقل اشتراكك لتلفون تاني، حتى لو مسجّل بحساب Google مختلف. ما بينقل لقطاتك ولا مجلداتك — هدول بيضلوا على هالجهاز.';
+  String get settingsSignOutTitle => 'تسجيل الخروج؟';
 
   @override
-  String get accountEmailHint => 'البريد الإلكتروني';
+  String get authWelcome => 'أهلاً بك في SHOTO';
 
   @override
-  String get accountPasswordHint => 'كلمة السر';
+  String get authSubtitle =>
+      'تسجيل الدخول بيخلّي اشتراكك معك لو غيّرت تلفونك. لقطاتك بتضل على هالجهاز بكل الأحوال — الحساب ما بينقلها أبداً.';
 
   @override
-  String get accountContinue => 'متابعة';
+  String get authGoogle => 'تابع باستخدام Google';
 
   @override
-  String get accountForgot => 'نسيت كلمة السر؟';
+  String get authApple => 'تابع باستخدام Apple';
 
   @override
-  String get accountResetSent => 'شيك بريدك، وصلك رابط لتغيير كلمة السر';
+  String get authLegal => 'بمتابعتك، بتوافق على شروط الخدمة وسياسة الخصوصية.';
 
   @override
-  String get accountSignedIn => 'انربط الاشتراك بحسابك';
+  String get settingsAccount => 'الحساب';
 
   @override
-  String get accountSignedOut => 'تسجّل الخروج. مكتبتك ما تغيّر فيها إشي.';
+  String get settingsSignOutHint => 'لقطاتك بتضل على هالجهاز';
 
   @override
-  String get accountSignOut => 'تسجيل الخروج';
+  String get settingsSignIn => 'تسجيل الدخول';
 
   @override
-  String get accountSignOutNote =>
-      'لقطاتك ومجلداتك وإعداداتك بتضل على هالتلفون.';
-
-  @override
-  String get accountSettingsRow => 'الحساب';
-
-  @override
-  String get accountSettingsHintOff =>
-      'اختياري. بيحفظلك اشتراكك لو غيّرت تلفونك.';
-
-  @override
-  String get accountReasonRestore =>
-      'ما لقينا اشتراك لحساب المتجر المسجّل على هالتلفون. إذا اشتريت SHOTO بحساب تاني، سجّل دخول من هون.';
-
-  @override
-  String get accountReasonPurchased =>
-      'ضيف بريدك عشان الاشتراك يضل معك على تلفونك الجاي، بأي حساب كان.';
-
-  @override
-  String get accountErrorBadEmail => 'هاد ما بيشبه بريد إلكتروني.';
-
-  @override
-  String get accountErrorWeakPassword => 'استخدم ٦ خانات على الأقل.';
-
-  @override
-  String get accountErrorWrongPassword => 'كلمة السر غلط لهالبريد.';
-
-  @override
-  String get accountErrorTooMany => 'محاولات كتير. جرّب بعد شوي.';
-
-  @override
-  String get accountErrorOffline =>
-      'ما في اتصال. هاد الجزء الوحيد بـ SHOTO يلي بيحتاج إنترنت.';
-
-  @override
-  String get accountErrorFailed => 'ما زبطت. جرّب كمان مرة.';
+  String get settingsSignInHint => 'اختياري. بيلزم بس لنقل اشتراكك لجهاز تاني.';
 
   @override
   String paywallTrialCta(int days) {

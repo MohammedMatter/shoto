@@ -106,131 +106,71 @@ abstract class AppLocalizations {
     Locale('ur'),
   ];
 
-  /// No description provided for @accountTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Keep your subscription'**
-  String get accountTitle;
-
-  /// No description provided for @accountBody.
-  ///
-  /// In en, this message translates to:
-  /// **'An account carries your subscription to another phone, even one signed in to a different Google account. It does not move your screenshots or folders — those stay on this device.'**
-  String get accountBody;
-
-  /// No description provided for @accountEmailHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Email'**
-  String get accountEmailHint;
-
-  /// No description provided for @accountPasswordHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Password'**
-  String get accountPasswordHint;
-
-  /// No description provided for @accountContinue.
-  ///
-  /// In en, this message translates to:
-  /// **'Continue'**
-  String get accountContinue;
-
-  /// No description provided for @accountForgot.
-  ///
-  /// In en, this message translates to:
-  /// **'Forgot password?'**
-  String get accountForgot;
-
-  /// No description provided for @accountResetSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Check your email for a reset link'**
-  String get accountResetSent;
-
-  /// No description provided for @accountSignedIn.
-  ///
-  /// In en, this message translates to:
-  /// **'Subscription attached to your account'**
-  String get accountSignedIn;
-
-  /// No description provided for @accountSignedOut.
-  ///
-  /// In en, this message translates to:
-  /// **'Signed out. Your library is untouched.'**
-  String get accountSignedOut;
-
-  /// No description provided for @accountSignOut.
+  /// No description provided for @settingsSignOut.
   ///
   /// In en, this message translates to:
   /// **'Sign out'**
-  String get accountSignOut;
+  String get settingsSignOut;
 
-  /// No description provided for @accountSignOutNote.
+  /// No description provided for @settingsSignOutTitle.
   ///
   /// In en, this message translates to:
-  /// **'Your screenshots, folders and settings stay on this phone.'**
-  String get accountSignOutNote;
+  /// **'Sign out?'**
+  String get settingsSignOutTitle;
 
-  /// No description provided for @accountSettingsRow.
+  /// No description provided for @authWelcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to SHOTO'**
+  String get authWelcome;
+
+  /// No description provided for @authSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing in keeps your subscription with you when you change phone. Your screenshots stay on this device either way — an account never carries them.'**
+  String get authSubtitle;
+
+  /// No description provided for @authGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get authGoogle;
+
+  /// No description provided for @authApple.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get authApple;
+
+  /// No description provided for @authLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'By continuing, you agree to our Terms of Service and Privacy Policy.'**
+  String get authLegal;
+
+  /// No description provided for @settingsAccount.
   ///
   /// In en, this message translates to:
   /// **'Account'**
-  String get accountSettingsRow;
+  String get settingsAccount;
 
-  /// No description provided for @accountSettingsHintOff.
+  /// No description provided for @settingsSignOutHint.
   ///
   /// In en, this message translates to:
-  /// **'Optional. Keeps your subscription if you change phone.'**
-  String get accountSettingsHintOff;
+  /// **'Your screenshots stay on this device'**
+  String get settingsSignOutHint;
 
-  /// No description provided for @accountReasonRestore.
+  /// No description provided for @settingsSignIn.
   ///
   /// In en, this message translates to:
-  /// **'No subscription was found for the store account on this phone. If you bought SHOTO with a different account, sign in here instead.'**
-  String get accountReasonRestore;
+  /// **'Sign in'**
+  String get settingsSignIn;
 
-  /// No description provided for @accountReasonPurchased.
+  /// No description provided for @settingsSignInHint.
   ///
   /// In en, this message translates to:
-  /// **'Add an email so this subscription follows you to your next phone, whichever account it is signed in to.'**
-  String get accountReasonPurchased;
-
-  /// No description provided for @accountErrorBadEmail.
-  ///
-  /// In en, this message translates to:
-  /// **'That does not look like an email address.'**
-  String get accountErrorBadEmail;
-
-  /// No description provided for @accountErrorWeakPassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Use at least six characters.'**
-  String get accountErrorWeakPassword;
-
-  /// No description provided for @accountErrorWrongPassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Wrong password for this email.'**
-  String get accountErrorWrongPassword;
-
-  /// No description provided for @accountErrorTooMany.
-  ///
-  /// In en, this message translates to:
-  /// **'Too many attempts. Try again in a few minutes.'**
-  String get accountErrorTooMany;
-
-  /// No description provided for @accountErrorOffline.
-  ///
-  /// In en, this message translates to:
-  /// **'No connection. This is the one part of SHOTO that needs one.'**
-  String get accountErrorOffline;
-
-  /// No description provided for @accountErrorFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not finish that. Try again.'**
-  String get accountErrorFailed;
+  /// **'Optional. Only needed to move a purchase to another phone.'**
+  String get settingsSignInHint;
 
   /// No description provided for @paywallTrialCta.
   ///

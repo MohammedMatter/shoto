@@ -9,74 +9,40 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
-  String get accountTitle => 'अपनी सदस्यता साथ रखें';
+  String get settingsSignOut => 'साइन आउट';
 
   @override
-  String get accountBody =>
-      'खाता आपकी सदस्यता को दूसरे फ़ोन पर ले जाता है, भले ही उसमें कोई और Google खाता हो। यह आपके स्क्रीनशॉट या फ़ोल्डर नहीं ले जाता — वे इसी डिवाइस पर रहते हैं।';
+  String get settingsSignOutTitle => 'साइन आउट करें?';
 
   @override
-  String get accountEmailHint => 'ईमेल';
+  String get authWelcome => 'SHOTO में आपका स्वागत है';
 
   @override
-  String get accountPasswordHint => 'पासवर्ड';
+  String get authSubtitle =>
+      'साइन इन करने से फ़ोन बदलने पर आपकी सदस्यता आपके साथ रहती है। आपके स्क्रीनशॉट वैसे भी इसी डिवाइस पर रहते हैं — खाता उन्हें कभी नहीं ले जाता।';
 
   @override
-  String get accountContinue => 'जारी रखें';
+  String get authGoogle => 'Google से जारी रखें';
 
   @override
-  String get accountForgot => 'पासवर्ड भूल गए?';
+  String get authApple => 'Apple से जारी रखें';
 
   @override
-  String get accountResetSent => 'रीसेट लिंक के लिए अपना ईमेल देखें';
+  String get authLegal =>
+      'जारी रखने पर आप हमारी शर्तें और गोपनीयता नीति स्वीकार करते हैं।';
 
   @override
-  String get accountSignedIn => 'सदस्यता आपके खाते से जुड़ गई';
+  String get settingsAccount => 'खाता';
 
   @override
-  String get accountSignedOut => 'साइन आउट हो गया। आपकी लाइब्रेरी वैसी ही है।';
+  String get settingsSignOutHint => 'आपके स्क्रीनशॉट इसी डिवाइस पर रहेंगे';
 
   @override
-  String get accountSignOut => 'साइन आउट';
+  String get settingsSignIn => 'साइन इन';
 
   @override
-  String get accountSignOutNote =>
-      'आपके स्क्रीनशॉट, फ़ोल्डर और सेटिंग्स इसी फ़ोन पर रहते हैं।';
-
-  @override
-  String get accountSettingsRow => 'खाता';
-
-  @override
-  String get accountSettingsHintOff =>
-      'वैकल्पिक। फ़ोन बदलने पर सदस्यता बनी रहती है।';
-
-  @override
-  String get accountReasonRestore =>
-      'इस फ़ोन के स्टोर खाते के लिए कोई सदस्यता नहीं मिली। अगर आपने SHOTO किसी और खाते से खरीदा था, यहाँ साइन इन करें।';
-
-  @override
-  String get accountReasonPurchased =>
-      'ईमेल जोड़ें ताकि यह सदस्यता आपके अगले फ़ोन पर भी साथ जाए, चाहे कोई भी खाता हो।';
-
-  @override
-  String get accountErrorBadEmail => 'यह ईमेल पते जैसा नहीं लगता।';
-
-  @override
-  String get accountErrorWeakPassword => 'कम से कम छह अक्षर इस्तेमाल करें।';
-
-  @override
-  String get accountErrorWrongPassword => 'इस ईमेल के लिए पासवर्ड ग़लत है।';
-
-  @override
-  String get accountErrorTooMany =>
-      'बहुत ज़्यादा कोशिशें। कुछ मिनट बाद फिर देखें।';
-
-  @override
-  String get accountErrorOffline =>
-      'कनेक्शन नहीं है। SHOTO का बस यही हिस्सा इसकी माँग करता है।';
-
-  @override
-  String get accountErrorFailed => 'पूरा नहीं हो सका। फिर कोशिश करें।';
+  String get settingsSignInHint =>
+      'वैकल्पिक। सिर्फ़ खरीद को दूसरे फ़ोन पर ले जाने के लिए ज़रूरी है।';
 
   @override
   String paywallTrialCta(int days) {

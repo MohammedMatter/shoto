@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
-import 'package:shoto/core/services/account_service.dart';
 import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/constants/subscription_constants.dart';
 import 'package:shoto/core/localization/l10n.dart';
@@ -10,7 +9,6 @@ import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/widgets/primary_button.dart';
 import 'package:shoto/core/widgets/shoto_logo.dart';
-import 'package:shoto/features/settings/presentation/widgets/account_sheet.dart';
 import 'package:shoto/features/subscription/domain/entities/premium_feature.dart';
 import 'package:shoto/features/subscription/domain/entities/subscription_package_info.dart';
 import 'package:shoto/features/subscription/presentation/bloc/subscription_bloc.dart';
@@ -52,22 +50,6 @@ class _PaywallPageState extends State<PaywallPage> {
   Future<void> _celebrate(BuildContext context) async {
     final NavigatorState navigator = Navigator.of(context);
     await showProWelcome(context);
-
-    // **After the welcome, never before it.** The purchase is complete and
-    // nothing here is a condition of it — this is the moment an email starts
-    // being worth something to the buyer, because a subscription that cannot
-    // follow them to their next phone is one they will lose.
-    //
-    // Skipped for anyone who already has an account, and skipped entirely if
-    // they close it: the entitlement is on the device either way, and Settings
-    // keeps the offer.
-    if (context.mounted && !sl<AccountService>().isSignedIn) {
-      await showAccountSheet(
-        context,
-        reason: context.l10n.accountReasonPurchased,
-      );
-    }
-
     if (navigator.mounted) navigator.pop(true);
   }
 

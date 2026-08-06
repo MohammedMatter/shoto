@@ -9,75 +9,40 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get accountTitle => 'Keep your subscription';
+  String get settingsSignOut => 'Sign out';
 
   @override
-  String get accountBody =>
-      'An account carries your subscription to another phone, even one signed in to a different Google account. It does not move your screenshots or folders — those stay on this device.';
+  String get settingsSignOutTitle => 'Sign out?';
 
   @override
-  String get accountEmailHint => 'Email';
+  String get authWelcome => 'Welcome to SHOTO';
 
   @override
-  String get accountPasswordHint => 'Password';
+  String get authSubtitle =>
+      'Signing in keeps your subscription with you when you change phone. Your screenshots stay on this device either way — an account never carries them.';
 
   @override
-  String get accountContinue => 'Continue';
+  String get authGoogle => 'Continue with Google';
 
   @override
-  String get accountForgot => 'Forgot password?';
+  String get authApple => 'Continue with Apple';
 
   @override
-  String get accountResetSent => 'Check your email for a reset link';
+  String get authLegal =>
+      'By continuing, you agree to our Terms of Service and Privacy Policy.';
 
   @override
-  String get accountSignedIn => 'Subscription attached to your account';
+  String get settingsAccount => 'Account';
 
   @override
-  String get accountSignedOut => 'Signed out. Your library is untouched.';
+  String get settingsSignOutHint => 'Your screenshots stay on this device';
 
   @override
-  String get accountSignOut => 'Sign out';
+  String get settingsSignIn => 'Sign in';
 
   @override
-  String get accountSignOutNote =>
-      'Your screenshots, folders and settings stay on this phone.';
-
-  @override
-  String get accountSettingsRow => 'Account';
-
-  @override
-  String get accountSettingsHintOff =>
-      'Optional. Keeps your subscription if you change phone.';
-
-  @override
-  String get accountReasonRestore =>
-      'No subscription was found for the store account on this phone. If you bought SHOTO with a different account, sign in here instead.';
-
-  @override
-  String get accountReasonPurchased =>
-      'Add an email so this subscription follows you to your next phone, whichever account it is signed in to.';
-
-  @override
-  String get accountErrorBadEmail =>
-      'That does not look like an email address.';
-
-  @override
-  String get accountErrorWeakPassword => 'Use at least six characters.';
-
-  @override
-  String get accountErrorWrongPassword => 'Wrong password for this email.';
-
-  @override
-  String get accountErrorTooMany =>
-      'Too many attempts. Try again in a few minutes.';
-
-  @override
-  String get accountErrorOffline =>
-      'No connection. This is the one part of SHOTO that needs one.';
-
-  @override
-  String get accountErrorFailed => 'Could not finish that. Try again.';
+  String get settingsSignInHint =>
+      'Optional. Only needed to move a purchase to another phone.';
 
   @override
   String paywallTrialCta(int days) {

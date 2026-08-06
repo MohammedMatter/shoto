@@ -119,10 +119,11 @@ class _OnboardingPageState extends State<OnboardingPage>
     // final card and closing the app is not finishing the introduction, and
     // the gap between those two numbers is the thing worth being able to see.
     sl<FunnelLog>().record(FunnelStep.onboardingCompleted);
-    // Straight into the app. This used to push the sign-in wall, which meant
-    // the reward for finishing the introduction was being asked for a Google
-    // account before seeing a single screen.
-    context.goNamed(AppRouter.homePage);
+    // On to signing in. The introduction explains what the app is; the
+    // account is the step after that, and the app itself is the step after
+    // *that* — see `docs/decisions/accounts.md` for the history of this
+    // sequence, which has been both ways round.
+    context.goNamed(AppRouter.authPage);
   }
 
   @override

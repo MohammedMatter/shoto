@@ -49,14 +49,27 @@ class DefaultFirebaseOptions {
     }
   }
 
+  /// Registered against `com.shoto.app`.
+  ///
+  /// The previous id here belonged to a second Firebase app registered under
+  /// `com.example.shoto`, from before the package was given a real name.
+  /// Firebase cannot rename a registration, so the app was registered again
+  /// and this is the new one; the old entry still exists in the console and
+  /// can be removed once nothing is built from it.
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAuKxI_G9Vq_u3o0i8KHSka3yrCG6ngHH8',
-    appId: '1:562378341342:android:79c78257693d1f1afa3b4f',
+    appId: '1:562378341342:android:615371daef982f28fa3b4f',
     messagingSenderId: '562378341342',
     projectId: 'shoto-8ec52',
     storageBucket: 'shoto-8ec52.firebasestorage.app',
   );
 
+  /// **Still registered against `com.example.shoto`, and not yet corrected.**
+  ///
+  /// There is no iOS build — see `docs/decisions/ios.md` — and the bundle id
+  /// in the Xcode project is still the placeholder too. Registering an iOS app
+  /// under the right name is part of doing iOS, not part of preparing for it,
+  /// and a registration made now would have to be deleted later.
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDYyYuIqGpopfC5LFIpbpdLtYFr6yxck0A',
     appId: '1:562378341342:ios:17dd65c3a345a9abfa3b4f',

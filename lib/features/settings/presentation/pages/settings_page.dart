@@ -5,8 +5,12 @@ import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
-import 'package:shoto/core/services/account_service.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shoto/core/routes/app_router.dart';
 import 'package:shoto/core/services/app_preferences.dart';
+import 'package:shoto/core/widgets/confirm_dialog.dart';
+import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
+import 'package:shoto/features/auth/domain/use_cases/sign_out_use_case.dart';
 import 'package:shoto/core/services/haptics.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/core/theme/app_colors.dart';
@@ -21,7 +25,6 @@ import 'package:shoto/features/backup/presentation/pages/backup_page.dart';
 import 'package:shoto/features/duplicates/presentation/pages/duplicates_page.dart';
 import 'package:shoto/features/settings/presentation/widgets/app_version_block.dart';
 import 'package:shoto/features/settings/presentation/widgets/contact_support_tile.dart';
-import 'package:shoto/features/settings/presentation/widgets/account_sheet.dart';
 import 'package:shoto/features/settings/presentation/widgets/language_sheet.dart';
 import 'package:shoto/features/settings/presentation/widgets/owner_name_sheet.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_group.dart';
@@ -271,29 +274,36 @@ class SettingsPage extends StatelessWidget {
                       SizedBox(height: 26.h),
                       const PrivacyNote(),
 
-                      // An account group of exactly one row, and it is not a
-                      // profile: SHOTO has no idea who you are and does not
-                      // want to. The row exists because a subscription bought
-                      // on one Google account cannot be moved to another by
-                      // any means Google provides — see `AccountService`.
-                      ListenableBuilder(
-                        listenable: sl<AccountService>(),
-                        builder: (context, _) {
-                          final AccountService account = sl<AccountService>();
-                          return SettingsGroup(
-                            title: context.l10n.accountSettingsRow,
-                            children: [
-                              SettingsNavTile(
-                                icon: Icons.alternate_email_rounded,
-                                label: account.email ?? context.l10n.accountTitle,
-                                description: account.isSignedIn
-                                    ? context.l10n.accountSignOutNote
-                                    : context.l10n.accountSettingsHintOff,
-                                onTap: () => showAccountSheet(context),
-                              ),
-                            ],
-                          );
-                        },
+                      // Signing out leaves the library, the folders and every
+                      // setting exactly where they are — all of it belongs to
+                      // the device, not to the account.
+                      SettingsGroup(
+                        title: context.l10n.settingsAccount,
+                        caption: sl<AuthRepository>().currentUser?.email,
+                        children: [
+                          Builder(
+                            builder: (context) => SettingsNavTile(
+                              icon: Icons.logout_rounded,
+                              label: context.l10n.settingsSignOut,
+                              description: context.l10n.settingsSignOutHint,
+                              isDestructive: true,
+                              onTap: () async {
+                                final bool confirmed = await showConfirmDialog(
+                                  context,
+                                  title: context.l10n.settingsSignOutTitle,
+                                  message: context.l10n.settingsSignOutHint,
+                                  confirmLabel: context.l10n.settingsSignOut,
+                                  isDestructive: true,
+                                );
+                                if (!confirmed || !context.mounted) return;
+
+                                await sl<SignOutUseCase>()();
+                                if (!context.mounted) return;
+                                context.goNamed(AppRouter.authPage);
+                              },
+                            ),
+                          ),
+                        ],
                       ),
 
                       SizedBox(height: 34.h),

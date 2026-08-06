@@ -16,8 +16,14 @@ import 'package:shoto/features/smart_actions/data/repositories_impl/smart_action
 import 'package:shoto/features/smart_actions/domain/repositories/smart_actions_repository.dart';
 import 'package:shoto/features/smart_actions/domain/use_cases/get_screenshot_actions_use_case.dart';
 import 'package:shoto/core/services/biometric_auth_service.dart';
-import 'package:shoto/core/services/account_service.dart';
 import 'package:shoto/core/services/app_preferences.dart';
+import 'package:shoto/features/auth/data/data_sources/auth_remote_data_source.dart';
+import 'package:shoto/features/auth/data/repositories_impl/auth_repository_impl.dart';
+import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
+import 'package:shoto/features/auth/domain/use_cases/sign_in_with_apple_use_case.dart';
+import 'package:shoto/features/auth/domain/use_cases/sign_in_with_google_use_case.dart';
+import 'package:shoto/features/auth/domain/use_cases/sign_out_use_case.dart';
+import 'package:shoto/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:shoto/core/services/dev_access.dart';
 import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/services/local_identity.dart';
@@ -91,9 +97,20 @@ final sl = GetIt.instance;
 
 void setupServiceLocator() {
   sl.registerLazySingleton(() => LocalIdentity());
-  // Constructing this touches nothing — Firebase is initialized on first use,
-  // inside the service. See AccountService.
-  sl.registerLazySingleton(() => AccountService());
+  sl.registerLazySingleton(() => AuthRemoteDataSource());
+  sl.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(sl(), sl()),
+  );
+  sl.registerLazySingleton(() => SignInWithGoogleUseCase(sl()));
+  sl.registerLazySingleton(() => SignInWithAppleUseCase(sl()));
+  sl.registerLazySingleton(() => SignOutUseCase(sl()));
+  sl.registerFactory(
+    () => AuthBloc(
+      signInWithGoogleUseCase: sl(),
+      signInWithAppleUseCase: sl(),
+      signOutUseCase: sl(),
+    ),
+  );
 
   sl.registerLazySingleton(() => AppDatabase(sl()));
   sl.registerLazySingleton(() => ThemeController());

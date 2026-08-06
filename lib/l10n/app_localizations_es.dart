@@ -9,75 +9,41 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get accountTitle => 'Conserva tu suscripción';
+  String get settingsSignOut => 'Cerrar sesión';
 
   @override
-  String get accountBody =>
-      'Una cuenta lleva tu suscripción a otro teléfono, incluso a uno con otra cuenta de Google. No mueve tus capturas ni tus carpetas: eso se queda en este dispositivo.';
+  String get settingsSignOutTitle => '¿Cerrar sesión?';
 
   @override
-  String get accountEmailHint => 'Correo electrónico';
+  String get authWelcome => 'Bienvenido a SHOTO';
 
   @override
-  String get accountPasswordHint => 'Contraseña';
+  String get authSubtitle =>
+      'Iniciar sesión mantiene tu suscripción contigo al cambiar de teléfono. Tus capturas se quedan en este dispositivo de todos modos: una cuenta nunca se las lleva.';
 
   @override
-  String get accountContinue => 'Continuar';
+  String get authGoogle => 'Continuar con Google';
 
   @override
-  String get accountForgot => '¿Olvidaste la contraseña?';
+  String get authApple => 'Continuar con Apple';
 
   @override
-  String get accountResetSent => 'Revisa tu correo para restablecerla';
+  String get authLegal =>
+      'Al continuar, aceptas nuestros Términos y la Política de privacidad.';
 
   @override
-  String get accountSignedIn => 'Suscripción vinculada a tu cuenta';
+  String get settingsAccount => 'Cuenta';
 
   @override
-  String get accountSignedOut => 'Sesión cerrada. Tu biblioteca sigue intacta.';
+  String get settingsSignOutHint =>
+      'Tus capturas se quedan en este dispositivo';
 
   @override
-  String get accountSignOut => 'Cerrar sesión';
+  String get settingsSignIn => 'Iniciar sesión';
 
   @override
-  String get accountSignOutNote =>
-      'Tus capturas, carpetas y ajustes se quedan en este teléfono.';
-
-  @override
-  String get accountSettingsRow => 'Cuenta';
-
-  @override
-  String get accountSettingsHintOff =>
-      'Opcional. Conserva tu suscripción si cambias de teléfono.';
-
-  @override
-  String get accountReasonRestore =>
-      'No se encontró ninguna suscripción para la cuenta de la tienda de este teléfono. Si compraste SHOTO con otra cuenta, inicia sesión aquí.';
-
-  @override
-  String get accountReasonPurchased =>
-      'Añade un correo para que esta suscripción te siga a tu próximo teléfono, sea cual sea la cuenta.';
-
-  @override
-  String get accountErrorBadEmail => 'Eso no parece un correo electrónico.';
-
-  @override
-  String get accountErrorWeakPassword => 'Usa al menos seis caracteres.';
-
-  @override
-  String get accountErrorWrongPassword =>
-      'Contraseña incorrecta para este correo.';
-
-  @override
-  String get accountErrorTooMany =>
-      'Demasiados intentos. Prueba en unos minutos.';
-
-  @override
-  String get accountErrorOffline =>
-      'Sin conexión. Es la única parte de SHOTO que la necesita.';
-
-  @override
-  String get accountErrorFailed => 'No se pudo completar. Inténtalo de nuevo.';
+  String get settingsSignInHint =>
+      'Opcional. Solo hace falta para pasar una compra a otro teléfono.';
 
   @override
   String paywallTrialCta(int days) {

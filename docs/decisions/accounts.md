@@ -1,104 +1,77 @@
 # Accounts
 
-## There was a sign-in wall, on the first screen
+This one has been decided three times in opposite directions. All three
+arguments are here, because each was right about something and the next
+decision has to answer all of them rather than rediscover one.
 
-`/home` was gated on a Firebase account. Signed out meant bounced to `/auth`
-before the app would show anything at all, and the only ways through were
-Google and Apple — there was no guest path.
+## Where it stands
 
-What signing in bought the user was **nothing**. There is no cloud. Backup is a
-local zip handed to the OS share sheet. The uid scoped rows in a sqlite file so
-that two Google accounts on one phone would not see each other's folders, which
-is a problem approximately zero users have.
+**Onboarding, then sign in, then the app.** Google or Apple, no skip. Signing
+out returns to the sign-in screen and leaves the library, the folders and every
+setting exactly where they are.
 
-So it cost every new user an identity handoff to a third party to see an empty
-library, on the first screen, in an app whose whole positioning is that nothing
-leaves your phone.
+## Round one: it was a wall, and it bought nothing
 
-## Then it was optional, and still pointless
+`/home` was gated on a Firebase account, on the first screen, before the app
+showed anything at all.
 
-The gate came off and `/auth` stayed, reachable from Settings, for the one
-thing an account could plausibly do: carry a purchase to a second device.
+What signing in bought the user was nothing measurable. There is no cloud.
+Backup is a local zip. The uid scoped rows in a sqlite file so two Google
+accounts on one phone would not see each other's folders — a problem
+approximately nobody has. So it cost every new user an identity handoff to a
+third party to see an empty library, in an app whose positioning is that
+nothing leaves your phone.
 
-It could not really do that either. Both stores restore what the same *store*
-account bought — that is the account the user paid with, and the only one they
-should have to remember. RevenueCat is initialised with the device id so a
-reinstall on the same phone restores, and the store handles the rest.
+## Round two: no account at all
 
-## Then one came back, for one reason
+The wall came down and the whole feature went with it. The library moved to
+`LocalIdentity` — a random id minted on first launch, kept in
+`SharedPreferences` — and RevenueCat was keyed to that.
 
-There is one case neither the store nor a device id can answer: **a new phone
-signed in to a different Google account.**
+This was genuinely better in three ways, and they are the ones to protect
+whatever else changes:
 
-Google does not move a subscription between Google accounts. There is no
-button, no setting and no support request that does it — the purchase belongs
-to the account that paid. So "Restore purchases" asks the store about whoever
-is signed in *now*, gets nothing, and the app's answer to "I paid for this" is
-a shrug.
+- **Launch got faster.** `Firebase.initializeApp` was the slowest single step
+  in starting the app.
+- **Nothing gated the first screen.**
+- **The privacy claim became structural** rather than a promise: with no SDK
+  that could send anything, "nothing leaves this phone" was not a policy, it
+  was a fact about the binary.
 
-An account fixes exactly that, because the entitlement is then keyed to an id
-**we** own. `Purchases.logIn()` aliases the anonymous device id to it, so a
-purchase made before signing in follows the user in rather than being stranded.
+Then a real gap appeared. **Google does not move a subscription between Google
+accounts** — no button, no setting, no support request. So a user who buys Pro,
+changes phone *and* changes their Google account has no way back: "Restore
+purchases" asks the store about whoever is signed in now and gets nothing.
 
-**What it deliberately does not do:**
+## Round three: an optional email account, and why that was not it either
 
-- It does not move the billing. That stays on the old Google account until it
-  lapses, and when it lapses the entitlement goes with it.
-- It does not sync the library. Folders, favourites and intents are device-local
-  sqlite; syncing them needs a server this app does not have.
+The first answer to that gap was a lazily-loaded email/password account,
+offered after a purchase and after a failed restore, never as a gate.
 
-**What keeps it from becoming the wall again:**
+It solved the problem and was rejected anyway, for a reason worth recording:
+**it was more machinery than the person maintaining it wanted to hold in their
+head.** Two sign-in concepts, one of them invisible until a specific failure,
+plus a lazily-initialized SDK, plus a sheet with its own error vocabulary — to
+save a user one tap in an uncommon case.
 
-- **Firebase is initialized on demand**, inside `AccountService`, the first
-  time somebody opens the account sheet. A user who never makes an account
-  never pays for the SDK — which is what made the old sign-in so expensive:
-  `Firebase.initializeApp` was the slowest single step in launching the app,
-  for something most sessions never touched.
-- **It is offered in exactly two places**: after a purchase, and when a restore
-  comes back empty. Both are moments where an account has just become worth
-  something. Never on the first screen, never as a gate.
-- **One field pair, no sign-in/sign-up choice.** Whether an account exists for
-  an address is something the server knows and the user usually does not.
+That is a legitimate reason to reject a design, and it is not the same as the
+design being wrong.
 
-**Still true in the source:** nothing in the app may assume Firebase is
-initialized. Every method in `AccountService` calls `_ready()` first, and no
-other file imports `firebase_core`.
+## What is true of the current shape
 
-## The library still has no account at all
+- **It is a wall again**, which is what round one was reversed for. That cost
+  is real and it is being paid deliberately.
+- **It answers the subscription question completely.** Signing in with the same
+  account on any phone restores Pro regardless of which Google account the
+  store is using.
+- **The account still carries nothing else.** No folders, no favourites, no
+  screenshots. Anyone tempted to add sync should read `library-intake.md`
+  first, and change the privacy note in the same commit.
 
-Google Sign-In, Sign in with Apple, the `auth` feature, the profile card, the
-mandatory gate and the `google-services` Gradle plugin are all gone, and none
-of them came back with the account above.
+## If this is revisited a fourth time
 
-**Still true in the source:** the library belongs to `LocalIdentity`, a random
-id minted on first launch and kept in `SharedPreferences`. Every data source
-scopes its rows by it, and signing in changes none of that — an account moves
-an entitlement, not a library.
-
-## What the privacy note may claim
-
-It used to say *"SHOTO never reads your gallery… nothing is ever uploaded."*
-Neither half survived contact with the product:
-
-- The triage queue reads the Screenshots album, when switched on.
-- An account sends an email address, when created.
-
-Both are opt-in and both are worth having, but a promise with two silent
-exceptions is not a promise. The note now says what is unconditional — *your
-pictures are never uploaded* — and then names the two things the user
-themselves switches on. Anything added later that leaves the device belongs in
-that sentence on the same day it is written.
-
-## The one thing the account was really used for
-
-Safe Share read the signed-in user's name. That is not incidental — a name is
-the only private detail with no checksum and no label to find it by. "Ahmed
-Khalil" on a line by itself is a name only if you already know whose screenshot
-this is.
-
-It is a field in Settings now: typed once, optional, and more accurate, because
-the name on somebody's email is often not the name their bank prints.
-
-**Still true in the source:** `AppPreferences.ownerName` is the only personal
-string SHOTO asks anybody to type, and `RedactionService` treats empty as a
-fine answer.
+The middle option nobody has built: keep the wall off, and make the sign-in
+screen skippable — the same screen, with a "Not now" that lands on Home. It
+gives round two's conversion and round three's recovery path without a second
+sign-in concept anywhere in the app. It is a one-line route change and a
+button.
