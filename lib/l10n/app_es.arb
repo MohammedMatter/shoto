@@ -1,5 +1,7 @@
 {
   "@@locale": "es",
+  "settingsCrashReports": "Enviar informes de errores",
+  "settingsCrashReportsHint": "Si SHOTO falla, envía qué falló; nunca tus capturas ni su contenido",
   "settingsSignOut": "Cerrar sesión",
   "settingsSignOutTitle": "¿Cerrar sesión?",
   "authWelcome": "Bienvenido a SHOTO",
@@ -158,7 +160,7 @@
   "settingsFindDuplicates": "Buscar duplicados",
   "settingsClearCache": "Vaciar caché de imágenes",
   "settingsShare": "Compartir SHOTO",
-  "settingsPrivacyNote": "SHOTO solo guarda las capturas que le entregas, y todo lo que hace con ellas —leer texto, buscar duplicados— ocurre en este dispositivo. Tus imágenes nunca se suben. Hay dos cosas que tú activas: ofrecer capturas nuevas lee tu álbum de capturas para poder preguntarte por ellas, y una cuenta envía solo tu correo, para que la suscripción sobreviva a un cambio de teléfono.",
+  "settingsPrivacyNote": "SHOTO solo guarda las capturas que le entregas, y todo lo que hace con ellas —leer texto, buscar duplicados— ocurre en este dispositivo. Tus imágenes nunca se suben. Hay tres cosas que tú activas: ofrecer capturas nuevas lee tu álbum de capturas para poder preguntarte por ellas, una cuenta envía solo tu correo para que la suscripción sobreviva a un cambio de teléfono, y los informes de errores envían qué falló: el código, nunca una imagen.",
   "commonSave": "Guardar",
   "commonConfirm": "Confirmar",
   "commonRename": "Renombrar",

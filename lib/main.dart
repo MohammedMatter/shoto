@@ -9,6 +9,7 @@ import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
 import 'package:shoto/core/routes/app_router.dart';
 import 'package:shoto/core/services/app_preferences.dart';
+import 'package:shoto/core/services/crash_reporting.dart';
 import 'package:shoto/core/services/dev_access.dart';
 import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/services/local_identity.dart';
@@ -105,6 +106,15 @@ void main() async {
     // measuring something narrower than installs.
     sl<FunnelLog>().load(),
   ]);
+
+  // **After Firebase, before the first frame, and before anything that could
+  // throw.** Collection is a property of the SDK rather than a check at the
+  // moment of a crash, so leaving it at its default until somebody opens
+  // Settings would send whatever happened in between — from a user who has
+  // not agreed to send anything. Reading the stored answer here is what makes
+  // "off unless you turned it on" true rather than approximately true.
+  await sl<CrashReporting>().load();
+  sl<CrashReporting>().install();
 
   // Safe to await even with no RevenueCat project configured yet — it
   // no-ops rather than throwing. See RevenueCatDataSource. Sequenced after

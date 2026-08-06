@@ -1,5 +1,7 @@
 {
   "@@locale": "fr",
+  "settingsCrashReports": "Envoyer les rapports de plantage",
+  "settingsCrashReportsHint": "Si SHOTO plante, envoie ce qui a planté — jamais vos captures ni leur contenu",
   "settingsSignOut": "Se déconnecter",
   "settingsSignOutTitle": "Se déconnecter ?",
   "authWelcome": "Bienvenue sur SHOTO",
@@ -158,7 +160,7 @@
   "settingsFindDuplicates": "Trouver les doublons",
   "settingsClearCache": "Vider le cache d'images",
   "settingsShare": "Partager SHOTO",
-  "settingsPrivacyNote": "SHOTO ne garde que les captures que vous lui confiez, et tout ce qu'il en fait — lire le texte, chercher les doublons — se passe sur cet appareil. Vos images ne sont jamais envoyées ailleurs. Deux choses s'activent par vous : proposer les nouvelles captures lit votre album de captures pour pouvoir vous les soumettre, et un compte n'envoie que votre e-mail, pour qu'un abonnement survive à un changement de téléphone.",
+  "settingsPrivacyNote": "SHOTO ne garde que les captures que vous lui confiez, et tout ce qu'il en fait — lire le texte, chercher les doublons — se passe sur cet appareil. Vos images ne sont jamais envoyées ailleurs. Trois choses s'activent par vous : proposer les nouvelles captures lit votre album de captures pour pouvoir vous les soumettre, un compte n'envoie que votre e-mail pour qu'un abonnement survive à un changement de téléphone, et les rapports de plantage envoient ce qui a planté — le code, jamais une image.",
   "commonSave": "Enregistrer",
   "commonConfirm": "Confirmer",
   "commonRename": "Renommer",

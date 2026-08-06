@@ -9,6 +9,13 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get settingsCrashReports => 'Send crash reports';
+
+  @override
+  String get settingsCrashReportsHint =>
+      'If SHOTO breaks, send what broke — never your screenshots or their contents';
+
+  @override
   String get settingsSignOut => 'Sign out';
 
   @override
@@ -446,7 +453,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsPrivacyNote =>
-      'SHOTO holds only the screenshots you hand it, and everything it does with them — reading text, finding duplicates — happens on this device. Your pictures are never uploaded. Two things are yours to switch on: offering new screenshots reads your Screenshots album so it can ask about them, and an account sends only your email address, so a subscription survives a change of phone.';
+      'SHOTO holds only the screenshots you hand it, and everything it does with them — reading text, finding duplicates — happens on this device. Your pictures are never uploaded. Three things are yours to switch on: offering new screenshots reads your Screenshots album so it can ask about them, an account sends only your email address so a subscription survives a change of phone, and crash reports send what broke — the code, never a picture.';
 
   @override
   String get commonSave => 'Save';

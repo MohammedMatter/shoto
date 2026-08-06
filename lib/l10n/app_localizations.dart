@@ -106,6 +106,18 @@ abstract class AppLocalizations {
     Locale('ur'),
   ];
 
+  /// No description provided for @settingsCrashReports.
+  ///
+  /// In en, this message translates to:
+  /// **'Send crash reports'**
+  String get settingsCrashReports;
+
+  /// No description provided for @settingsCrashReportsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If SHOTO breaks, send what broke — never your screenshots or their contents'**
+  String get settingsCrashReportsHint;
+
   /// No description provided for @settingsSignOut.
   ///
   /// In en, this message translates to:
@@ -841,7 +853,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsPrivacyNote.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO holds only the screenshots you hand it, and everything it does with them — reading text, finding duplicates — happens on this device. Your pictures are never uploaded. Two things are yours to switch on: offering new screenshots reads your Screenshots album so it can ask about them, and an account sends only your email address, so a subscription survives a change of phone.'**
+  /// **'SHOTO holds only the screenshots you hand it, and everything it does with them — reading text, finding duplicates — happens on this device. Your pictures are never uploaded. Three things are yours to switch on: offering new screenshots reads your Screenshots album so it can ask about them, an account sends only your email address so a subscription survives a change of phone, and crash reports send what broke — the code, never a picture.'**
   String get settingsPrivacyNote;
 
   /// No description provided for @commonSave.

@@ -9,6 +9,13 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
+  String get settingsCrashReports => 'ابعت تقارير الأعطال';
+
+  @override
+  String get settingsCrashReportsHint =>
+      'إذا وقع SHOTO، بيبعت شو وقع — أبداً مش لقطاتك ولا محتواها';
+
+  @override
   String get settingsSignOut => 'تسجيل الخروج';
 
   @override
@@ -451,7 +458,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsPrivacyNote =>
-      'SHOTO بيحتفظ بس باللقطات اللي بتعطيه ياها، وكل شي بيعمله فيها — قراءة النص، كشف المكرر — بيصير على جهازك. صورك ما بترفع لأي مكان أبداً. وفي شغلتين إنت اللي بتشغّلهم: عرض اللقطات الجديدة بيقرا ألبوم لقطات الشاشة عشان يسألك عنها، والحساب بيبعت بريدك الإلكتروني بس، عشان اشتراكك يضل معك لو غيّرت تلفونك.';
+      'SHOTO بيحتفظ بس باللقطات اللي بتعطيه ياها، وكل شي بيعمله فيها — قراءة النص، كشف المكرر — بيصير على جهازك. صورك ما بترفع لأي مكان أبداً. وفي ثلاث شغلات إنت اللي بتشغّلهم: عرض اللقطات الجديدة بيقرا ألبوم لقطات الشاشة عشان يسألك عنها، والحساب بيبعت بريدك الإلكتروني بس عشان اشتراكك يضل معك لو غيّرت تلفونك، وتقارير الأعطال بتبعت شو وقع — الكود، مش الصورة.';
 
   @override
   String get commonSave => 'حفظ';

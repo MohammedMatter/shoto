@@ -9,6 +9,13 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get settingsCrashReports => 'Enviar informes de errores';
+
+  @override
+  String get settingsCrashReportsHint =>
+      'Si SHOTO falla, envía qué falló; nunca tus capturas ni su contenido';
+
+  @override
   String get settingsSignOut => 'Cerrar sesión';
 
   @override
@@ -449,7 +456,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settingsPrivacyNote =>
-      'SHOTO solo guarda las capturas que le entregas, y todo lo que hace con ellas —leer texto, buscar duplicados— ocurre en este dispositivo. Tus imágenes nunca se suben. Hay dos cosas que tú activas: ofrecer capturas nuevas lee tu álbum de capturas para poder preguntarte por ellas, y una cuenta envía solo tu correo, para que la suscripción sobreviva a un cambio de teléfono.';
+      'SHOTO solo guarda las capturas que le entregas, y todo lo que hace con ellas —leer texto, buscar duplicados— ocurre en este dispositivo. Tus imágenes nunca se suben. Hay tres cosas que tú activas: ofrecer capturas nuevas lee tu álbum de capturas para poder preguntarte por ellas, una cuenta envía solo tu correo para que la suscripción sobreviva a un cambio de teléfono, y los informes de errores envían qué falló: el código, nunca una imagen.';
 
   @override
   String get commonSave => 'Guardar';

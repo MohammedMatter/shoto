@@ -9,6 +9,13 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
+  String get settingsCrashReports => 'Envoyer les rapports de plantage';
+
+  @override
+  String get settingsCrashReportsHint =>
+      'Si SHOTO plante, envoie ce qui a planté — jamais vos captures ni leur contenu';
+
+  @override
   String get settingsSignOut => 'Se déconnecter';
 
   @override
@@ -449,7 +456,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settingsPrivacyNote =>
-      'SHOTO ne garde que les captures que vous lui confiez, et tout ce qu\'il en fait — lire le texte, chercher les doublons — se passe sur cet appareil. Vos images ne sont jamais envoyées ailleurs. Deux choses s\'activent par vous : proposer les nouvelles captures lit votre album de captures pour pouvoir vous les soumettre, et un compte n\'envoie que votre e-mail, pour qu\'un abonnement survive à un changement de téléphone.';
+      'SHOTO ne garde que les captures que vous lui confiez, et tout ce qu\'il en fait — lire le texte, chercher les doublons — se passe sur cet appareil. Vos images ne sont jamais envoyées ailleurs. Trois choses s\'activent par vous : proposer les nouvelles captures lit votre album de captures pour pouvoir vous les soumettre, un compte n\'envoie que votre e-mail pour qu\'un abonnement survive à un changement de téléphone, et les rapports de plantage envoient ce qui a planté — le code, jamais une image.';
 
   @override
   String get commonSave => 'Enregistrer';

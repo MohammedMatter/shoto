@@ -200,13 +200,18 @@ class _LibraryViewSheet extends StatelessWidget {
                 listenable: sl<GridDensityController>(),
                 builder: (context, _) => Row(
                   children: <Widget>[
+                    // The same heading style the two sections below use, so
+                    // the sheet reads as three things of equal rank rather
+                    // than as one setting sitting on top of two lists.
                     Expanded(
                       child: Text(
                         context.l10n.settingsGridDensity,
-                        style: AppTextStyles.bodyLarge,
+                        style: AppTextStyles.headlineMedium,
                       ),
                     ),
+                    SizedBox(width: 12.w),
                     GridDensitySelector(
+                      compact: true,
                       value: sl<GridDensityController>().columns,
                       onChanged: (int columns) =>
                           sl<GridDensityController>().setColumns(columns),
@@ -214,7 +219,7 @@ class _LibraryViewSheet extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 18.h),
+              SizedBox(height: 20.h),
               Text(
                 context.l10n.librarySortLabel,
                 style: AppTextStyles.headlineMedium,

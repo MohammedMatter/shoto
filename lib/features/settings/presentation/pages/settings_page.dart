@@ -8,6 +8,7 @@ import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shoto/core/routes/app_router.dart';
 import 'package:shoto/core/services/app_preferences.dart';
+import 'package:shoto/core/services/crash_reporting.dart';
 import 'package:shoto/core/widgets/confirm_dialog.dart';
 import 'package:shoto/features/auth/domain/entities/user_entity.dart';
 import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
@@ -267,9 +268,27 @@ class SettingsPage extends StatelessWidget {
                       // I need a human" is the more urgent errand, and below
                       // the rest because it is not what most visits to
                       // Settings are for.
-                      SettingsGroup(
-                        title: context.l10n.settingsHelp,
-                        children: const [ContactSupportTile()],
+                      // The crash switch sits with support rather than with
+                      // the other preferences, because it belongs to the same
+                      // errand: something went wrong and you want it fixed.
+                      // One of the two rows tells a human; the other tells the
+                      // code, without you having to write anything.
+                      ListenableBuilder(
+                        listenable: sl<CrashReporting>(),
+                        builder: (context, _) => SettingsGroup(
+                          title: context.l10n.settingsHelp,
+                          children: [
+                            const ContactSupportTile(),
+                            SettingsSwitchTile(
+                              icon: Icons.bug_report_outlined,
+                              label: context.l10n.settingsCrashReports,
+                              description: context.l10n.settingsCrashReportsHint,
+                              value: sl<CrashReporting>().isEnabled,
+                              onChanged: (bool value) =>
+                                  sl<CrashReporting>().setEnabled(value),
+                            ),
+                          ],
+                        ),
                       ),
 
                       // Not a group: this is the app's central promise, and a
