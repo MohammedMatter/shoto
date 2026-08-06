@@ -44,15 +44,12 @@ class _LanguageSheet extends StatelessWidget {
                 height: 4.h,
                 margin: EdgeInsets.only(bottom: 18.h),
                 decoration: BoxDecoration(
-                  color: AppColors.border,
+                  color: context.colors.border,
                   borderRadius: BorderRadius.circular(2.r),
                 ),
               ),
             ),
-            Text(
-              context.l10n.settingsLanguage,
-              style: AppTextStyles.titleLarge,
-            ),
+            Text(context.l10n.settingsLanguage, style: context.text.titleLarge),
             SizedBox(height: 14.h),
 
             // "Follow the phone" is a real choice, not the absence of one, so
@@ -68,7 +65,7 @@ class _LanguageSheet extends StatelessWidget {
                 Navigator.of(context).pop();
               },
             ),
-            Divider(color: AppColors.border, height: 20.h),
+            Divider(color: context.colors.border, height: 20.h),
 
             for (final AppLanguage language in AppLanguage.values)
               _Row(
@@ -113,11 +110,11 @@ class _Row extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 13.h),
         decoration: BoxDecoration(
           color: selected
-              ? AppColors.primary.withValues(alpha: 0.12)
-              : AppColors.surface,
+              ? context.colors.primary.withValues(alpha: 0.12)
+              : context.colors.surface,
           borderRadius: BorderRadius.circular(15.r),
           border: Border.all(
-            color: selected ? AppColors.primary : AppColors.border,
+            color: selected ? context.colors.primary : context.colors.border,
             width: selected ? 1.5 : 1,
           ),
         ),
@@ -127,15 +124,15 @@ class _Row extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: AppTextStyles.bodyLarge),
-                  Text(subtitle, style: AppTextStyles.caption),
+                  Text(title, style: context.text.bodyLarge),
+                  Text(subtitle, style: context.text.caption),
                 ],
               ),
             ),
             if (selected)
               Icon(
                 Icons.check_circle_rounded,
-                color: AppColors.primary,
+                color: context.colors.primary,
                 size: 20.sp,
               ),
           ],

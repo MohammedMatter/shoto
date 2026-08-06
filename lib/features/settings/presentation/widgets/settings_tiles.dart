@@ -31,15 +31,15 @@ class SettingsControlRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsetsDirectional.fromSTEB(15.w, 14.h, 15.w, 15.h),
-      color: AppColors.surface,
+      color: context.colors.surface,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, color: AppColors.textPrimary, size: 19.sp),
+              Icon(icon, color: context.colors.textPrimary, size: 19.sp),
               SizedBox(width: 14.w),
-              Text(label, style: AppTextStyles.bodyLarge),
+              Text(label, style: context.text.bodyLarge),
             ],
           ),
           SizedBox(height: 12.h),
@@ -149,10 +149,10 @@ class SettingsNavTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color tint = isDestructive
-        ? AppColors.error
+        ? context.colors.error
         : onTap == null
-        ? AppColors.textDisabled
-        : AppColors.textPrimary;
+        ? context.colors.textDisabled
+        : context.colors.textPrimary;
 
     return PressableScale(
       // A tint, not a shrink. This row is full-bleed inside a scrolling page,
@@ -165,7 +165,7 @@ class SettingsNavTile extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 14.h),
         // No background or border of its own: the row lives inside a
         // [SettingsGroup] card, which draws both once for the whole group.
-        color: AppColors.surface,
+        color: context.colors.surface,
         child: Row(
           children: [
             Icon(icon, color: tint, size: 19.sp),
@@ -176,10 +176,10 @@ class SettingsNavTile extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: AppTextStyles.bodyLarge.copyWith(color: tint),
+                    style: context.text.bodyLarge.copyWith(color: tint),
                   ),
                   SizedBox(height: 1.h),
-                  Text(description, style: AppTextStyles.caption),
+                  Text(description, style: context.text.caption),
                 ],
               ),
             ),
@@ -187,7 +187,7 @@ class SettingsNavTile extends StatelessWidget {
             if (onTap != null && !isDestructive)
               Icon(
                 Icons.chevron_right_rounded,
-                color: AppColors.textDisabled,
+                color: context.colors.textDisabled,
                 size: 20.sp,
               ),
           ],
@@ -217,18 +217,18 @@ class SettingsSwitchTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsetsDirectional.fromSTEB(15.w, 8.h, 10.w, 8.h),
-      color: AppColors.surface,
+      color: context.colors.surface,
       child: Row(
         children: [
-          Icon(icon, color: AppColors.textPrimary, size: 19.sp),
+          Icon(icon, color: context.colors.textPrimary, size: 19.sp),
           SizedBox(width: 14.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: AppTextStyles.bodyLarge),
+                Text(label, style: context.text.bodyLarge),
                 SizedBox(height: 1.h),
-                Text(description, style: AppTextStyles.caption),
+                Text(description, style: context.text.caption),
               ],
             ),
           ),

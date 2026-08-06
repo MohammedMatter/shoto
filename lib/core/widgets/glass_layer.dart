@@ -147,7 +147,7 @@ class GlassRim extends StatelessWidget {
         borderRadius: borderRadius,
         color:
             color ??
-            Colors.white.withValues(alpha: AppColors.isDark ? 0.11 : 0.6),
+            Colors.white.withValues(alpha: context.colors.isDark ? 0.11 : 0.6),
         falloff: falloff,
       ),
       child: child,

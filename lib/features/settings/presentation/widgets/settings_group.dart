@@ -48,19 +48,19 @@ class SettingsGroup extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title.toUpperCase(), style: AppTextStyles.overline),
+                Text(title.toUpperCase(), style: context.text.overline),
                 if (caption != null) ...[
                   SizedBox(height: 4.h),
-                  Text(caption!, style: AppTextStyles.caption),
+                  Text(caption!, style: context.text.caption),
                 ],
               ],
             ),
           ),
           Container(
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: context.colors.surface,
               borderRadius: BorderRadius.circular(20.r),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: context.colors.border),
             ),
             // Rows are square-cornered; the card clips them, so the first and
             // last pick up its radius without either needing to know where in
@@ -90,7 +90,7 @@ class SettingsDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.only(start: 50.w),
-      child: Divider(height: 1, thickness: 1, color: AppColors.border),
+      child: Divider(height: 1, thickness: 1, color: context.colors.border),
     );
   }
 }

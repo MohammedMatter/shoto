@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// The colours of the SHOTO **mark** — and nothing else.
 ///
-/// This is deliberately a separate file from [AppColors] rather than six more
+/// This is deliberately a separate file from [AppPalette] rather than six more
 /// getters inside it, because the two obey different rules and mixing them
 /// would quietly erode the one that matters.
 ///
@@ -38,7 +38,7 @@ import 'package:flutter/material.dart';
 ///
 /// Nothing in this file may be used to paint a surface, a button, a chip or
 /// any text. If a colour is needed for the interface it comes from
-/// [AppColors], which is where the reasoning about the interface lives.
+/// [AppPalette], which is where the reasoning about the interface lives.
 abstract class AppBrand {
   AppBrand._();
 

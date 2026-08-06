@@ -36,8 +36,8 @@ class WaitingOnYou extends StatelessWidget {
           children: [
             Text(
               context.l10n.intentWaitingTitle,
-              style: AppTextStyles.sectionLabel.copyWith(
-                color: AppColors.textSecondary,
+              style: context.text.sectionLabel.copyWith(
+                color: context.colors.textSecondary,
               ),
             ),
           ],
@@ -85,28 +85,28 @@ class _WaitingCard extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(14.r),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(intent.icon, size: 16.sp, color: AppColors.textSecondary),
+            Icon(intent.icon, size: 16.sp, color: context.colors.textSecondary),
             SizedBox(width: 9.w),
             // The number first and heavier than the verb. "3 to buy" is a
             // quantity of work; "To buy 3" is a label with a footnote.
             Text(
               '$count',
-              style: AppTextStyles.bodyLarge.asMedium.copyWith(
-                color: AppColors.textPrimary,
+              style: context.text.bodyLarge.asMedium.copyWith(
+                color: context.colors.textPrimary,
               ),
             ),
             SizedBox(width: 6.w),
             Text(
               intent.waitingTitle(context).toLowerCase(),
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+              style: context.text.bodySmall.copyWith(
+                color: context.colors.textSecondary,
               ),
             ),
           ],

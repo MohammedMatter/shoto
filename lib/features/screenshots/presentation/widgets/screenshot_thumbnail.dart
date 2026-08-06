@@ -194,7 +194,7 @@ class ScreenshotThumbnail extends StatelessWidget {
                 right: 6.w,
                 child: Icon(
                   Icons.favorite_rounded,
-                  color: AppColors.error,
+                  color: context.colors.error,
                   size: 16.sp,
                   shadows: const [Shadow(blurRadius: 4, color: Colors.black54)],
                 ),
@@ -226,7 +226,7 @@ class ScreenshotThumbnail extends StatelessWidget {
                         // Colour is the actual signal here, so it survives
                         // reduced motion — only the movement is dropped.
                         color: isSelected
-                            ? AppColors.primary
+                            ? context.colors.primary
                             : Colors.black.withValues(alpha: 0.4),
                         border: Border.all(color: Colors.white, width: 1.5),
                       ),
@@ -243,14 +243,14 @@ class ScreenshotThumbnail extends StatelessWidget {
                           curve: AppMotion.standard,
                           // Same trap as the Folders add button, and worse
                           // here because this one carries state: the filled
-                          // circle is `AppColors.primary`, which is bone in
+                          // circle is `AppPalette.primary`, which is bone in
                           // dark mode, so a white tick on it was invisible and
                           // a selected thumbnail looked unselected. The white
                           // *border* above stays white on purpose — it sits on
                           // the photo, not on the accent.
                           child: Icon(
                             Icons.check,
-                            color: AppColors.onPrimary,
+                            color: context.colors.onPrimary,
                             size: 14,
                           ),
                         ),
@@ -268,7 +268,10 @@ class ScreenshotThumbnail extends StatelessWidget {
                   curve: AppMotion.standard,
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.primary, width: 3),
+                      border: Border.all(
+                        color: context.colors.primary,
+                        width: 3,
+                      ),
                       borderRadius: BorderRadius.circular(16.r),
                     ),
                   ),
@@ -328,7 +331,7 @@ class _IntentBadge extends StatelessWidget {
         // screenshot. Done is allowed to be the app's colour, because by then
         // saying so *is* the point.
         color: isDone
-            ? AppColors.success
+            ? context.colors.success
             : Colors.black.withValues(alpha: 0.55),
         shape: BoxShape.circle,
       ),

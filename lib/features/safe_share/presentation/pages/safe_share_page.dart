@@ -200,12 +200,12 @@ class _SafeSharePageState extends State<SafeSharePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: context.colors.background,
         title: Text(
           context.l10n.safeShareTitle,
-          style: AppTextStyles.titleLarge,
+          style: context.text.titleLarge,
         ),
       ),
       body: SafeArea(top: false, child: _body()),
@@ -213,14 +213,17 @@ class _SafeSharePageState extends State<SafeSharePage> {
   }
 
   Widget _body() {
-    if (_failed) return _Unreadable();
+    if (_failed) return const _Unreadable();
 
     final RedactionPlan? plan = _plan;
-    // Not `const`: every widget in this app reads the mutable `AppColors`
-    // rather than `Theme.of`, and a const instance is identical across
-    // rebuilds, so Flutter skips the subtree and freezes it at whichever
-    // brightness happened to be active first. This has shipped twice.
-    if (plan == null) return _Scanning();
+    // Both of these are `const` now, and for most of this app's life they
+    // could not be: the palette was a mutable global, a const instance is
+    // identical across rebuilds, and Flutter skips an identical subtree — so
+    // it froze at whichever brightness happened to be active first. That bug
+    // shipped twice. Reading through `context.colors` ended it: these two
+    // depend on the theme by reading it, and a dependent is rebuilt on a
+    // change no matter how it was constructed.
+    if (plan == null) return const _Scanning();
     if (plan.isEmpty) {
       return _NothingFound(onShare: () => _share(protected: false));
     }
@@ -242,14 +245,14 @@ class _SafeSharePageState extends State<SafeSharePage> {
               if (!_unlocked) ...[
                 ScanReportCard(plan: plan),
                 SizedBox(height: 10.h),
-                CoverExplainer(),
+                const CoverExplainer(),
                 SizedBox(height: 16.h),
               ],
               Text(
                 _unlocked
                     ? context.l10n.safeShareReviewTitle
                     : context.l10n.safeShareFoundCount(plan.regions.length),
-                style: AppTextStyles.overline,
+                style: context.text.overline,
               ),
               SizedBox(height: 8.h),
               for (int i = 0; i < plan.regions.length; i++) ...[
@@ -312,7 +315,7 @@ class _Actions extends StatelessWidget {
           if (unlocked && nothingToDo) ...[
             Text(
               context.l10n.safeShareNothingSelected,
-              style: AppTextStyles.caption.copyWith(color: AppColors.error),
+              style: context.text.caption.copyWith(color: context.colors.error),
             ),
             SizedBox(height: 6.h),
           ],
@@ -337,8 +340,8 @@ class _Actions extends StatelessWidget {
             onPressed: busy ? null : onShareOriginal,
             child: Text(
               context.l10n.safeShareShareAsIs,
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.textSecondary,
+              style: context.text.caption.copyWith(
+                color: context.colors.textSecondary,
               ),
             ),
           ),
@@ -349,6 +352,8 @@ class _Actions extends StatelessWidget {
 }
 
 class _Scanning extends StatelessWidget {
+  const _Scanning();
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -360,13 +365,13 @@ class _Scanning extends StatelessWidget {
             height: 44.w,
             child: CircularProgressIndicator(
               strokeWidth: 3,
-              color: AppColors.primary,
+              color: context.colors.primary,
             ),
           ),
           SizedBox(height: 18.h),
-          Text(context.l10n.safeShareScanning, style: AppTextStyles.titleLarge),
+          Text(context.l10n.safeShareScanning, style: context.text.titleLarge),
           SizedBox(height: 5.h),
-          Text(context.l10n.safeShareOnDevice, style: AppTextStyles.bodySmall),
+          Text(context.l10n.safeShareOnDevice, style: context.text.bodySmall),
         ],
       ),
     );
@@ -397,6 +402,8 @@ class _NothingFound extends StatelessWidget {
 }
 
 class _Unreadable extends StatelessWidget {
+  const _Unreadable();
+
   @override
   Widget build(BuildContext context) {
     return Padding(

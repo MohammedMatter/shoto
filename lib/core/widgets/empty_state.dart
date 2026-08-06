@@ -111,13 +111,13 @@ class _EmptyStateState extends State<EmptyState>
               SizedBox(height: 20.h),
               Text(
                 title,
-                style: AppTextStyles.titleLarge,
+                style: context.text.titleLarge,
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 8.h),
               Text(
                 message,
-                style: AppTextStyles.bodyMedium,
+                style: context.text.bodyMedium,
                 textAlign: TextAlign.center,
               ),
               if (action != null) ...[SizedBox(height: 20.h), action],

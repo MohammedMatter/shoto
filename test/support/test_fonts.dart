@@ -31,7 +31,7 @@ Future<void> loadTestFonts() async {
   // golden cannot answer the only question it was generated to answer, which
   // is whether the screen reads correctly in that language. The app declares
   // all three as `fontFamilyFallback` on every style it builds (see
-  // `AppTextStyles._variable`), so loading them here is what makes the test
+  // `AppTypography._variable`), so loading them here is what makes the test
   // renderer agree with the phone.
   await _loadFamily('NotoSansArabic', ['NotoSansArabic.ttf']);
   await _loadFamily('NotoSansDevanagari', ['NotoSansDevanagari.ttf']);

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/localization/l10n.dart';
-import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/features/onboarding/presentation/pages/onboarding_page.dart';
 
 import 'support/test_fonts.dart';
+import 'support/test_theme.dart';
 
 /// Renders every stage of the introduction so the sequence can be *looked at*.
 ///
@@ -20,7 +20,6 @@ import 'support/test_fonts.dart';
 void main() {
   Future<void> open(WidgetTester tester, Brightness brightness) async {
     await loadTestFonts();
-    AppColors.setBrightness(brightness);
 
     tester.view.physicalSize = const Size(1080, 2100);
     tester.view.devicePixelRatio = 3;
@@ -31,10 +30,11 @@ void main() {
         designSize: const Size(360, 690),
         minTextAdapt: true,
         builder: (context, _) => MaterialApp(
+          theme: testTheme(brightness),
           debugShowCheckedModeBanner: false,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: OnboardingPage(),
+          home: const OnboardingPage(),
         ),
       ),
     );

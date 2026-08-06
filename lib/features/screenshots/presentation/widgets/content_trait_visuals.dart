@@ -36,8 +36,9 @@ extension ContentTraitVisuals on ContentTrait {
   /// severity, so the other four share one neutral accent instead of being
   /// handed a rainbow that would imply differences between them that do not
   /// exist.
-  Color get accent =>
-      this == ContentTrait.sensitive ? AppColors.error : AppColors.secondary;
+  Color accent(BuildContext context) => this == ContentTrait.sensitive
+      ? context.colors.error
+      : context.colors.secondary;
 
   /// One line saying where this trait's answer came from.
   ///

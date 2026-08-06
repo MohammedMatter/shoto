@@ -36,7 +36,7 @@ class ThemeModeSelector extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(4.w),
       decoration: BoxDecoration(
-        color: AppColors.surfaceVariant,
+        color: context.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Row(
@@ -55,7 +55,9 @@ class ThemeModeSelector extends StatelessWidget {
                 margin: EdgeInsets.symmetric(horizontal: 2.w),
                 padding: EdgeInsets.symmetric(vertical: 10.h),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.surface : Colors.transparent,
+                  color: isSelected
+                      ? context.colors.surface
+                      : Colors.transparent,
                   borderRadius: BorderRadius.circular(12.r),
                 ),
                 child: Column(
@@ -65,22 +67,22 @@ class ThemeModeSelector extends StatelessWidget {
                       icon,
                       size: 18.sp,
                       color: isSelected
-                          ? AppColors.primary
-                          : AppColors.textSecondary,
+                          ? context.colors.primary
+                          : context.colors.textSecondary,
                     ),
                     SizedBox(height: 4.h),
                     Text(
                       label,
-                      style: AppTextStyles.caption
+                      style: context.text.caption
                           .weight(
                             isSelected
-                                ? AppTextStyles.semiBold
-                                : AppTextStyles.regular,
+                                ? AppTypography.semiBold
+                                : AppTypography.regular,
                           )
                           .copyWith(
                             color: isSelected
-                                ? AppColors.primary
-                                : AppColors.textSecondary,
+                                ? context.colors.primary
+                                : context.colors.textSecondary,
                           ),
                     ),
                   ],

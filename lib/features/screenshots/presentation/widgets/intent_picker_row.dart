@@ -83,8 +83,8 @@ class _IntentPickerRowState extends State<IntentPickerRow> {
             if (widget.showPrompt) ...<Widget>[
               Text(
                 context.l10n.intentPrompt,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
+                style: context.text.bodySmall.copyWith(
+                  color: context.colors.textSecondary,
                 ),
               ),
               SizedBox(height: 10.h),
@@ -181,10 +181,12 @@ class _IntentChip extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 8.h),
             decoration: BoxDecoration(
               // The accent, not a per-intent hue — see IntentVisuals.tint.
-              color: isSelected ? AppColors.primary : AppColors.surfaceVariant,
+              color: isSelected
+                  ? context.colors.primary
+                  : context.colors.surfaceVariant,
               borderRadius: BorderRadius.circular(19.r),
               border: Border.all(
-                color: isSelected ? Colors.transparent : AppColors.border,
+                color: isSelected ? Colors.transparent : context.colors.border,
               ),
             ),
             child: Row(
@@ -194,16 +196,16 @@ class _IntentChip extends StatelessWidget {
                   icon,
                   size: 15.sp,
                   color: isSelected
-                      ? AppColors.onPrimary
-                      : AppColors.textSecondary,
+                      ? context.colors.onPrimary
+                      : context.colors.textSecondary,
                 ),
                 SizedBox(width: 7.w),
                 Text(
                   label,
-                  style: AppTextStyles.bodySmall.asMedium.copyWith(
+                  style: context.text.bodySmall.asMedium.copyWith(
                     color: isSelected
-                        ? AppColors.onPrimary
-                        : AppColors.textPrimary,
+                        ? context.colors.onPrimary
+                        : context.colors.textPrimary,
                   ),
                 ),
               ],

@@ -6,8 +6,6 @@ import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
 import 'package:shoto/core/services/pro_status.dart';
-import 'package:shoto/core/theme/app_colors.dart';
-import 'package:shoto/core/theme/app_theme.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_state.dart';
@@ -23,6 +21,8 @@ import 'package:shoto/features/subscription/domain/entities/subscription_status.
 import 'package:shoto/features/subscription/domain/repositories/subscription_repository.dart';
 import 'package:shoto/l10n/app_localizations.dart';
 
+import 'support/test_theme.dart';
+
 /// What Home must do on the day the app is installed.
 ///
 /// Every one of these was broken on a fresh install, and none of them is
@@ -33,7 +33,8 @@ import 'package:shoto/l10n/app_localizations.dart';
 /// nothing.
 class _EmptyScreenshotsBloc extends Cubit<ScreenshotsState>
     implements ScreenshotsBloc {
-  _EmptyScreenshotsBloc() : super(ScreenshotsLoadedState(screenshots: const []));
+  _EmptyScreenshotsBloc()
+    : super(ScreenshotsLoadedState(screenshots: const []));
 
   @override
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -123,7 +124,6 @@ void main() {
   });
 
   Future<void> render(WidgetTester tester) async {
-    AppColors.setBrightness(Brightness.light);
     tester.view.physicalSize = const Size(1080, 2200);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -136,7 +136,7 @@ void main() {
           debugShowCheckedModeBanner: false,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          theme: AppTheme.lightTheme,
+          theme: testTheme(Brightness.light),
           home: MultiBlocProvider(
             providers: [
               BlocProvider<ScreenshotsBloc>(

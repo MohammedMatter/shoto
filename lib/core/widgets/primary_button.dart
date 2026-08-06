@@ -38,7 +38,7 @@ class PrimaryButton extends StatelessWidget {
         height: 35.h,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            gradient: AppColors.primaryGradient,
+            gradient: context.colors.primaryGradient,
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Center(
@@ -64,7 +64,7 @@ class PrimaryButton extends StatelessWidget {
                       height: 22.w,
                       child: CircularProgressIndicator(
                         strokeWidth: 2.4,
-                        color: AppColors.onPrimary,
+                        color: context.colors.onPrimary,
                       ),
                     )
                   : Row(
@@ -74,13 +74,17 @@ class PrimaryButton extends StatelessWidget {
                       children: [
                         Text(
                           label,
-                          style: AppTextStyles.button.copyWith(
-                            color: AppColors.onPrimary,
+                          style: context.text.button.copyWith(
+                            color: context.colors.onPrimary,
                           ),
                         ),
                         if (icon != null) ...[
                           SizedBox(width: 8.w),
-                          Icon(icon, color: AppColors.onPrimary, size: 18.sp),
+                          Icon(
+                            icon,
+                            color: context.colors.onPrimary,
+                            size: 18.sp,
+                          ),
                         ],
                       ],
                     ),

@@ -103,7 +103,7 @@ class FolderCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   folder.name,
-                  style: AppTextStyles.titleSmall,
+                  style: context.text.titleSmall,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -128,7 +128,7 @@ class FolderCard extends StatelessWidget {
                   ),
                   child: Icon(
                     Icons.more_horiz_rounded,
-                    color: AppColors.textSecondary,
+                    color: context.colors.textSecondary,
                     size: 17.sp,
                   ),
                 ),
@@ -137,7 +137,7 @@ class FolderCard extends StatelessWidget {
           ),
           Text(
             context.l10n.countScreenshots(folder.screenshotCount),
-            style: AppTextStyles.bodySmall,
+            style: context.text.bodySmall,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -184,7 +184,7 @@ class _Cover extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: ClipRRect(
         // Inset by the border so the image does not paint over the line that
@@ -244,7 +244,7 @@ class _Placeholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: AppColors.surfaceVariant,
+      color: context.colors.surfaceVariant,
       child: Center(
         child: Icon(
           folder.isPrivate ? Icons.lock_rounded : Icons.folder_rounded,

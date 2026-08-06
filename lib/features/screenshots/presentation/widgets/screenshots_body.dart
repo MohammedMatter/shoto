@@ -114,7 +114,7 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
         if (state is ScreenshotsLoadingState ||
             state is ScreenshotsInitialState) {
           return Center(
-            child: CircularProgressIndicator(color: AppColors.primary),
+            child: CircularProgressIndicator(color: context.colors.primary),
           );
         }
 
@@ -283,8 +283,8 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                                 },
                               )
                       : RefreshIndicator(
-                          color: AppColors.primary,
-                          backgroundColor: AppColors.surface,
+                          color: context.colors.primary,
+                          backgroundColor: context.colors.surface,
                           onRefresh: () async => context
                               .read<ScreenshotsBloc>()
                               .add(RefreshScreenshotsEvent()),
@@ -507,16 +507,16 @@ class _SelectionToolbar extends StatelessWidget {
             scale: 0.9,
             onTap: () =>
                 context.read<ScreenshotsBloc>().add(ClearSelectionEvent()),
-            child: Icon(Icons.close_rounded, color: AppColors.textPrimary),
+            child: Icon(Icons.close_rounded, color: context.colors.textPrimary),
           ),
           SizedBox(width: 12.w),
           Expanded(
             child: Text(
               prompt ?? context.l10n.librarySelectedCount(count),
               style: prompt == null
-                  ? AppTextStyles.titleLarge
-                  : AppTextStyles.bodyMedium.asMedium.copyWith(
-                      color: AppColors.textPrimary,
+                  ? context.text.titleLarge
+                  : context.text.bodyMedium.asMedium.copyWith(
+                      color: context.colors.textPrimary,
                     ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -538,8 +538,8 @@ class _SelectionToolbar extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 8.w),
                 child: Text(
                   context.l10n.librarySelectAll,
-                  style: AppTextStyles.bodySmall.asMedium.copyWith(
-                    color: AppColors.primary,
+                  style: context.text.bodySmall.asMedium.copyWith(
+                    color: context.colors.primary,
                   ),
                 ),
               ),
@@ -551,7 +551,7 @@ class _SelectionToolbar extends StatelessWidget {
           if (count == 1 && intent != LibraryIntent.merge)
             _ToolbarAction(
               icon: Icons.shield_moon_rounded,
-              iconColor: AppColors.secondary,
+              iconColor: context.colors.secondary,
               label: context.l10n.libraryActionProtect,
               onTap: () async {
                 final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
@@ -578,7 +578,7 @@ class _SelectionToolbar extends StatelessWidget {
           if (count >= 2 && intent != LibraryIntent.protect)
             _ToolbarAction(
               icon: Icons.photo_size_select_large_rounded,
-              iconColor: AppColors.primary,
+              iconColor: context.colors.primary,
               label: context.l10n.libraryActionMerge,
               onTap: () async {
                 final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
@@ -612,7 +612,7 @@ class _SelectionToolbar extends StatelessWidget {
             // user already has.
             _ToolbarAction(
               icon: Icons.checklist_rtl_rounded,
-              iconColor: AppColors.secondary,
+              iconColor: context.colors.secondary,
               label: context.l10n.intentSelectionAction,
               onTap: () async {
                 final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
@@ -629,7 +629,7 @@ class _SelectionToolbar extends StatelessWidget {
             ),
             _ToolbarAction(
               icon: Icons.drive_file_move_rounded,
-              iconColor: AppColors.secondary,
+              iconColor: context.colors.secondary,
               label: context.l10n.libraryActionMove,
               onTap: () async {
                 final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
@@ -659,7 +659,7 @@ class _SelectionToolbar extends StatelessWidget {
             ),
             _ToolbarAction(
               icon: Icons.delete_outline_rounded,
-              iconColor: AppColors.error,
+              iconColor: context.colors.error,
               label: context.l10n.libraryActionDelete,
               onTap: () async {
                 final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
@@ -709,7 +709,7 @@ class _ToolbarAction extends StatelessWidget {
             SizedBox(height: 2.h),
             Text(
               label,
-              style: AppTextStyles.caption.asMedium.copyWith(color: iconColor),
+              style: context.text.caption.asMedium.copyWith(color: iconColor),
             ),
           ],
         ),

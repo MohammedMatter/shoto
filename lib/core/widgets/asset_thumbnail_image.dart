@@ -64,7 +64,7 @@ class AssetThumbnailImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: background ?? AppColors.surfaceVariant,
+      color: background ?? context.colors.surfaceVariant,
       child: Image(
         image: AssetEntityImageProvider(
           asset,

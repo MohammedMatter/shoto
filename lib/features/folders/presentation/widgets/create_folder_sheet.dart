@@ -90,28 +90,25 @@ class _CreateFolderSheetContentState extends State<_CreateFolderSheetContent> {
                   width: 40.w,
                   height: 4.h,
                   decoration: BoxDecoration(
-                    color: AppColors.border,
+                    color: context.colors.border,
                     borderRadius: BorderRadius.circular(2.r),
                   ),
                 ),
               ),
               SizedBox(height: 20.h),
-              Text(
-                context.l10n.foldersNew,
-                style: AppTextStyles.headlineMedium,
-              ),
+              Text(context.l10n.foldersNew, style: context.text.headlineMedium),
               SizedBox(height: 16.h),
               TextField(
                 controller: _controller,
                 autofocus: true,
-                style: AppTextStyles.bodyLarge,
+                style: context.text.bodyLarge,
                 decoration: InputDecoration(
                   hintText: context.l10n.foldersNameLabel,
-                  hintStyle: AppTextStyles.bodyLarge.copyWith(
-                    color: AppColors.textDisabled,
+                  hintStyle: context.text.bodyLarge.copyWith(
+                    color: context.colors.textDisabled,
                   ),
                   filled: true,
-                  fillColor: AppColors.surfaceVariant,
+                  fillColor: context.colors.surfaceVariant,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14.r),
                     borderSide: BorderSide.none,
@@ -202,12 +199,12 @@ class _CreateFolderSheetContentState extends State<_CreateFolderSheetContent> {
                     // and colour in this app has to mean something more
                     // specific than "selected".
                     color: _isPrivate
-                        ? AppColors.primary.withValues(alpha: 0.10)
-                        : AppColors.surfaceVariant,
+                        ? context.colors.primary.withValues(alpha: 0.10)
+                        : context.colors.surfaceVariant,
                     borderRadius: BorderRadius.circular(14.r),
                     border: Border.all(
                       color: _isPrivate
-                          ? AppColors.primary
+                          ? context.colors.primary
                           : Colors.transparent,
                       width: 1.5,
                     ),
@@ -231,8 +228,8 @@ class _CreateFolderSheetContentState extends State<_CreateFolderSheetContent> {
                           // one type and cross-fades nothing.
                           key: ValueKey<bool>(_isPrivate),
                           color: _isPrivate
-                              ? AppColors.textPrimary
-                              : AppColors.textSecondary,
+                              ? context.colors.textPrimary
+                              : context.colors.textSecondary,
                           size: 20.sp,
                         ),
                       ),
@@ -242,7 +239,7 @@ class _CreateFolderSheetContentState extends State<_CreateFolderSheetContent> {
                           _privateLabel,
                           // bodyLarge, matching every other switch row in the
                           // app — this one was a step smaller for no reason.
-                          style: AppTextStyles.bodyLarge,
+                          style: context.text.bodyLarge,
                         ),
                       ),
                       SizedBox(width: 8.w),

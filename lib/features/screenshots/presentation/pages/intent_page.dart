@@ -44,18 +44,18 @@ class IntentPage extends StatelessWidget {
             : 0;
 
         return Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: context.colors.background,
           appBar: AppBar(
-            backgroundColor: AppColors.background,
+            backgroundColor: context.colors.background,
             elevation: 0,
-            iconTheme: IconThemeData(color: AppColors.textPrimary),
+            iconTheme: IconThemeData(color: context.colors.textPrimary),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   intent.waitingTitle(context),
-                  style: AppTextStyles.titleLarge,
+                  style: context.text.titleLarge,
                 ),
                 // The finished count sits under the title rather than in the
                 // list. It is the reward for having used the screen, and it
@@ -63,8 +63,8 @@ class IntentPage extends StatelessWidget {
                 if (done > 0)
                   Text(
                     context.l10n.intentDoneCount(done),
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.success,
+                    style: context.text.caption.copyWith(
+                      color: context.colors.success,
                     ),
                   ),
               ],
@@ -147,19 +147,15 @@ class _WaitingRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PressableScale(
-      scale: 0.98,
-      onTap: onChange,
-      child: _body(context),
-    );
+    return PressableScale(scale: 0.98, onTap: onChange, child: _body(context));
   }
 
   Widget _body(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.colors.border),
       ),
       clipBehavior: Clip.antiAlias,
       child: Row(
@@ -184,8 +180,8 @@ class _WaitingRow extends StatelessWidget {
           Expanded(
             child: Text(
               _When.of(context, screenshot.asset.createDateTime),
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+              style: context.text.bodySmall.copyWith(
+                color: context.colors.textSecondary,
               ),
             ),
           ),
@@ -201,12 +197,12 @@ class _WaitingRow extends StatelessWidget {
                 decoration: BoxDecoration(
                   // Sage, the palette's completion colour — the one hue in the
                   // app that already means *finished*.
-                  color: AppColors.success.withValues(alpha: 0.16),
+                  color: context.colors.success.withValues(alpha: 0.16),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.check_rounded,
-                  color: AppColors.success,
+                  color: context.colors.success,
                   size: 24.sp,
                 ),
               ),

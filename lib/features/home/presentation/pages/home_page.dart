@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage>
     return ListenableBuilder(
       listenable: sl<ThemeController>(),
       builder: (context, child) => Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: context.colors.background,
         body: SafeArea(
           bottom: false,
           child: BlocBuilder<ScreenshotsBloc, ScreenshotsState>(
@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage>
                   _Enter(
                     parent: _entrance,
                     index: 0,
-                    child: _Gutter(child: _Greeting()),
+                    child: const _Gutter(child: _Greeting()),
                   ),
                   SizedBox(height: 18.h),
                   // The inbox, and the invitation to have one.
@@ -186,7 +186,7 @@ class _HomePageState extends State<HomePage>
                     _Enter(
                       parent: _entrance,
                       index: 1,
-                      child: _Gutter(child: _SearchField()),
+                      child: const _Gutter(child: _SearchField()),
                     ),
                     SizedBox(height: 26.h),
                   ],
@@ -365,7 +365,8 @@ class _IntakeState extends State<_Intake> {
     // idea, never before. A system dialog is not a way to ask a product
     // question: it has two buttons the app did not write and no room for the
     // sentence that makes the request reasonable.
-    final PermissionState permission = await sl<RequestPhotoPermissionUseCase>()();
+    final PermissionState permission =
+        await sl<RequestPhotoPermissionUseCase>()();
     if (!permission.hasAccess) {
       if (!mounted) return;
       await sl<AppPreferences>().setTriageEnabled(false);
@@ -424,23 +425,20 @@ class _IntakeInvite extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 10.h),
       margin: EdgeInsets.only(bottom: 8.h),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(18.r),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            context.l10n.triageInviteTitle,
-            style: AppTextStyles.titleLarge,
-          ),
+          Text(context.l10n.triageInviteTitle, style: context.text.titleLarge),
           SizedBox(height: 4.h),
           // The whole of it, not a summary with a "learn more". This is the
           // one place the app asks to look at something it does not own, and
           // the answer to "what will you do with it" has to be on the same
           // screen as the button that says yes.
-          Text(context.l10n.triageInviteBody, style: AppTextStyles.bodySmall),
+          Text(context.l10n.triageInviteBody, style: context.text.bodySmall),
           SizedBox(height: 6.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -449,8 +447,8 @@ class _IntakeInvite extends StatelessWidget {
                 onPressed: onDecline,
                 child: Text(
                   context.l10n.triageInviteDecline,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
+                  style: context.text.bodyMedium.copyWith(
+                    color: context.colors.textSecondary,
                   ),
                 ),
               ),
@@ -458,8 +456,8 @@ class _IntakeInvite extends StatelessWidget {
                 onPressed: onAccept,
                 child: Text(
                   context.l10n.triageInviteAccept,
-                  style: AppTextStyles.bodyMedium.asMedium.copyWith(
-                    color: AppColors.primary,
+                  style: context.text.bodyMedium.asMedium.copyWith(
+                    color: context.colors.primary,
                   ),
                 ),
               ),
@@ -485,28 +483,28 @@ class _IntakeQueue extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 13.h),
         margin: EdgeInsets.only(bottom: 8.h),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(18.r),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           children: [
             Icon(
               Icons.inbox_rounded,
               size: 19.sp,
-              color: AppColors.textSecondary,
+              color: context.colors.textSecondary,
             ),
             SizedBox(width: 10.w),
             Expanded(
               child: Text(
                 context.l10n.triageNewCount(count),
-                style: AppTextStyles.bodyMedium.asMedium,
+                style: context.text.bodyMedium.asMedium,
               ),
             ),
             Text(
               context.l10n.triageReview,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.primary,
+              style: context.text.bodyMedium.copyWith(
+                color: context.colors.primary,
               ),
             ),
           ],
@@ -639,7 +637,7 @@ class _Greeting extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(part, style: AppTextStyles.bodyMedium),
+              Text(part, style: context.text.bodyMedium),
               SizedBox(height: 1.h),
               // Plain text, not a ShaderMask.
               //
@@ -658,7 +656,7 @@ class _Greeting extends StatelessWidget {
                 children: [
                   Text(
                     'SHOTO',
-                    style: AppTextStyles.headlineLarge.copyWith(
+                    style: context.text.headlineLarge.copyWith(
                       // Ink, not the accent.
                       //
                       // With the coloured card gone this was the last saturated
@@ -668,7 +666,7 @@ class _Greeting extends StatelessWidget {
                       // The name reads perfectly well in ink, and the screen now
                       // has no accent on it at all until the palette question is
                       // settled.
-                      color: AppColors.textPrimary,
+                      color: context.colors.textPrimary,
                       letterSpacing: -1,
                     ),
                   ),
@@ -720,22 +718,22 @@ class _SearchField extends StatelessWidget {
       child: Container(
         padding: EdgeInsetsDirectional.fromSTEB(14.w, 13.h, 12.w, 13.h),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           children: [
             Icon(
               Icons.search_rounded,
-              color: AppColors.textSecondary,
+              color: context.colors.textSecondary,
               size: 19.sp,
             ),
             SizedBox(width: 10.w),
             Expanded(
               child: Text(
                 context.l10n.searchHint,
-                style: AppTextStyles.bodyMedium,
+                style: context.text.bodyMedium,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -830,12 +828,12 @@ class _UnsortedHeadline extends StatelessWidget {
             // waiting, the figure is still the biggest thing on the screen —
             // which is the whole design, and it only works if the calm state
             // stands down.
-            Text(headline, style: AppTextStyles.headlineMedium),
+            Text(headline, style: context.text.headlineMedium),
             SizedBox(height: 5.h),
             Text(
               detail,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+              style: context.text.bodySmall.copyWith(
+                color: context.colors.textSecondary,
               ),
             ),
 
@@ -882,7 +880,7 @@ class _UnsortedHeadline extends StatelessWidget {
           // changes: file one screenshot and the number on Home visibly
           // drops. That is the app confirming the work landed, in the one
           // place the user is looking for confirmation.
-          _Count(unsortedCount, style: AppTextStyles.displayHero),
+          _Count(unsortedCount, style: context.text.displayHero),
           SizedBox(height: 4.h),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -890,8 +888,8 @@ class _UnsortedHeadline extends StatelessWidget {
               Expanded(
                 child: Text(
                   context.l10n.homeInboxCountSubtitle,
-                  style: AppTextStyles.bodyLarge.asMedium.copyWith(
-                    color: AppColors.textPrimary,
+                  style: context.text.bodyLarge.asMedium.copyWith(
+                    color: context.colors.textPrimary,
                   ),
                   maxLines: 2,
                 ),
@@ -900,7 +898,7 @@ class _UnsortedHeadline extends StatelessWidget {
               Icon(
                 Icons.arrow_forward_rounded,
                 // The one action the whole screen is built around.
-                color: AppColors.marker,
+                color: context.colors.marker,
                 size: 19.sp,
               ),
             ],
@@ -959,10 +957,10 @@ class _StatLine extends StatelessWidget {
             ? state.folders.length
             : 0;
 
-        final TextStyle label = AppTextStyles.bodySmall.copyWith(
-          color: AppColors.textSecondary,
+        final TextStyle label = context.text.bodySmall.copyWith(
+          color: context.colors.textSecondary,
         );
-        TextStyle figure(Color color) => AppTextStyles.mono.asSemiBold.copyWith(
+        TextStyle figure(Color color) => context.text.mono.asSemiBold.copyWith(
           fontSize: 12.sp,
           color: color,
         );
@@ -1015,7 +1013,9 @@ class _StatLine extends StatelessWidget {
                   Text(name, style: label),
                   Text(
                     ' $value',
-                    style: figure(value == 0 ? AppColors.textSecondary : tint),
+                    style: figure(
+                      value == 0 ? context.colors.textSecondary : tint,
+                    ),
                   ),
                 ],
               ),
@@ -1028,7 +1028,7 @@ class _StatLine extends StatelessWidget {
             stat(
               context.l10n.homeStatScreenshots,
               total,
-              AppColors.textPrimary,
+              context.colors.textPrimary,
               () => onOpenLibrary(LibraryFilter.all),
             ),
             dot(),
@@ -1038,14 +1038,14 @@ class _StatLine extends StatelessWidget {
             stat(
               context.l10n.homeStatFavorites,
               favorites,
-              AppColors.error,
+              context.colors.error,
               () => onOpenLibrary(LibraryFilter.favorites),
             ),
             dot(),
             stat(
               context.l10n.homeStatFolders,
               folders,
-              AppColors.secondary,
+              context.colors.secondary,
               onOpenFolders,
             ),
           ],
@@ -1070,7 +1070,7 @@ class _SectionTitle extends StatelessWidget {
         // a screen where the hierarchy is already unmistakable it is just
         // the layout raising its voice for no reason, and every generated
         // dashboard does it.
-        Text(title, style: AppTextStyles.sectionLabel),
+        Text(title, style: context.text.sectionLabel),
         const Spacer(),
         if (onSeeAll != null)
           PressableScale(
@@ -1078,8 +1078,8 @@ class _SectionTitle extends StatelessWidget {
             onTap: onSeeAll,
             child: Text(
               context.l10n.homeSeeAll,
-              style: AppTextStyles.sectionLabel.asSemiBold.copyWith(
-                color: AppColors.textPrimary,
+              style: context.text.sectionLabel.asSemiBold.copyWith(
+                color: context.colors.textPrimary,
               ),
             ),
           ),
@@ -1154,7 +1154,7 @@ class _ToolList extends StatelessWidget {
           // Neutral. Adding a screenshot is not information, not completion and
           // not destruction, and the palette's rule is that anything with no job
           // to encode stays colourless.
-          tint: AppColors.marker,
+          tint: context.colors.marker,
           title: context.l10n.importTitle,
           subtitle: context.l10n.homeToolImportSubtitle,
           onTap: () =>
@@ -1165,7 +1165,7 @@ class _ToolList extends StatelessWidget {
         // Hiding something before you send it is a protective, informational
         // act, not a destructive one — the same job `secondary` does
         // everywhere else in the app.
-        tint: AppColors.secondary,
+        tint: context.colors.secondary,
         title: context.l10n.homeToolSafeShare,
         subtitle: context.l10n.homeToolSafeShareSubtitle,
         // Was: a snackbar reading "Open a screenshot, then tap Safe share."
@@ -1180,7 +1180,7 @@ class _ToolList extends StatelessWidget {
       _Tool(
         icon: Icons.content_copy_rounded,
         // Deleting copies is the one tool here that removes something.
-        tint: AppColors.error,
+        tint: context.colors.error,
         title: context.l10n.homeToolDuplicates,
         subtitle: context.l10n.homeToolDuplicatesSubtitle,
         // The paywall sits *inside* the ready branch, so an empty library
@@ -1191,7 +1191,7 @@ class _ToolList extends StatelessWidget {
           if (!context.mounted) return;
           await Navigator.of(
             context,
-          ).push(FadeSlidePageRoute(builder: (_) => DuplicatesPage()));
+          ).push(FadeSlidePageRoute(builder: (_) => const DuplicatesPage()));
         }),
       ),
       // Search is **not** in this list any more.
@@ -1203,7 +1203,7 @@ class _ToolList extends StatelessWidget {
       _Tool(
         icon: Icons.photo_size_select_large_rounded,
         // Merging produces something finished.
-        tint: AppColors.success,
+        tint: context.colors.success,
         title: context.l10n.homeToolStitch,
         subtitle: context.l10n.homeToolStitchSubtitle,
         // Was: "Long-press two or more screenshots in your library, then tap
@@ -1220,7 +1220,7 @@ class _ToolList extends StatelessWidget {
       children: [
         for (final (int index, _Tool tool) in tools.indexed) ...[
           if (index > 0)
-            Divider(height: 1, thickness: 1, color: AppColors.border),
+            Divider(height: 1, thickness: 1, color: context.colors.border),
           _ToolRow(tool: tool),
         ],
       ],
@@ -1288,12 +1288,12 @@ class _ToolRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(tool.title, style: AppTextStyles.titleSmall),
+                  Text(tool.title, style: context.text.titleSmall),
                   SizedBox(height: 2.h),
                   Text(
                     tool.subtitle,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+                    style: context.text.bodySmall.copyWith(
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ],
@@ -1302,7 +1302,7 @@ class _ToolRow extends StatelessWidget {
             SizedBox(width: 10.w),
             Icon(
               Icons.chevron_right_rounded,
-              color: AppColors.textDisabled,
+              color: context.colors.textDisabled,
               size: 20.sp,
             ),
           ],
@@ -1383,7 +1383,7 @@ class _RecentStrip extends StatelessWidget {
             width: _cardWidth.w,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppRadius.md),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: context.colors.border),
             ),
             // The clip is inset by the border so the image does not paint over
             // the line that is there to contain it.

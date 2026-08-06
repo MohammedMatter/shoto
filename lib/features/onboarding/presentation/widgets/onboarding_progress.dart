@@ -45,8 +45,8 @@ class OnboardingProgress extends StatelessWidget {
                   height: 4.h,
                   decoration: BoxDecoration(
                     color: i <= index
-                        ? AppColors.primary
-                        : AppColors.surfaceElevated,
+                        ? context.colors.primary
+                        : context.colors.surfaceElevated,
                     borderRadius: BorderRadius.circular(999),
                   ),
                 ),

@@ -32,7 +32,7 @@ class LibraryPage extends StatelessWidget {
     return ListenableBuilder(
       listenable: sl<ThemeController>(),
       builder: (context, child) => Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: context.colors.background,
         body: SafeArea(
           bottom: false,
           child: Column(
@@ -48,7 +48,7 @@ class LibraryPage extends StatelessWidget {
                         children: [
                           Text(
                             context.l10n.navLibrary,
-                            style: AppTextStyles.headlineLarge,
+                            style: context.text.headlineLarge,
                           ),
                           BlocBuilder<ScreenshotsBloc, ScreenshotsState>(
                             buildWhen: (a, b) => true,
@@ -59,7 +59,7 @@ class LibraryPage extends StatelessWidget {
                               final int count = state.screenshots.length;
                               return Text(
                                 context.l10n.countScreenshots(count),
-                                style: AppTextStyles.bodyMedium,
+                                style: context.text.bodyMedium,
                               );
                             },
                           ),

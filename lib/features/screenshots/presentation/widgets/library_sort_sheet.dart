@@ -49,7 +49,7 @@ class _LibrarySortSheet extends StatelessWidget {
           children: [
             Text(
               context.l10n.librarySortLabel,
-              style: AppTextStyles.headlineMedium,
+              style: context.text.headlineMedium,
             ),
             SizedBox(height: 12.h),
             for (final LibrarySort sort in LibrarySort.values)
@@ -94,16 +94,18 @@ class _SortRow extends StatelessWidget {
       leading: Icon(
         // The arrows survive, but only beside the words that explain them.
         sort.isNewestFirst ? Icons.south_rounded : Icons.north_rounded,
-        color: isCurrent ? AppColors.primary : AppColors.textSecondary,
+        color: isCurrent
+            ? context.colors.primary
+            : context.colors.textSecondary,
       ),
       title: Text(
         label,
-        style: AppTextStyles.bodyLarge.weight(
+        style: context.text.bodyLarge.weight(
           isCurrent ? FontWeight.w600 : FontWeight.w400,
         ),
       ),
       trailing: isCurrent
-          ? Icon(Icons.check_rounded, color: AppColors.primary)
+          ? Icon(Icons.check_rounded, color: context.colors.primary)
           : null,
       onTap: onTap,
     );

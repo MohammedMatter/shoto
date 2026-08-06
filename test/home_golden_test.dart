@@ -6,8 +6,6 @@ import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
 import 'package:shoto/core/services/pro_status.dart';
-import 'package:shoto/core/theme/app_colors.dart';
-import 'package:shoto/core/theme/app_theme.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_state.dart';
@@ -19,6 +17,7 @@ import 'package:shoto/features/subscription/domain/repositories/subscription_rep
 import 'package:shoto/l10n/app_localizations.dart';
 
 import 'support/test_fonts.dart';
+import 'support/test_theme.dart';
 
 /// The rebuilt Home, for looking at.
 ///
@@ -88,7 +87,7 @@ void main() {
     String locale = 'en',
   }) async {
     await loadTestFonts();
-    AppColors.setBrightness(brightness);
+
     tester.view.physicalSize = const Size(1080, 2200);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -102,9 +101,7 @@ void main() {
           locale: Locale(locale),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          theme: brightness == Brightness.dark
-              ? AppTheme.darkTheme
-              : AppTheme.lightTheme,
+          theme: testTheme(brightness),
           home: MultiBlocProvider(
             providers: [
               BlocProvider<ScreenshotsBloc>(

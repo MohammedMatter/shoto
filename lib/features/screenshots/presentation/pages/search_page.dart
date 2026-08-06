@@ -51,7 +51,7 @@ Future<void> openSearchPage(
   Navigator.of(context).push(
     FadeSlidePageRoute(
       builder: (_) =>
-          BlocProvider.value(value: resolvedBloc, child: SearchPage()),
+          BlocProvider.value(value: resolvedBloc, child: const SearchPage()),
     ),
   );
 }
@@ -191,7 +191,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.background,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,21 +204,21 @@ class _SearchPageState extends State<SearchPage> {
                     onPressed: () => Navigator.of(context).pop(),
                     icon: Icon(
                       Icons.arrow_back_rounded,
-                      color: AppColors.textPrimary,
+                      color: context.colors.textPrimary,
                     ),
                   ),
                   Expanded(
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 14.w),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceVariant,
+                        color: context.colors.surfaceVariant,
                         borderRadius: BorderRadius.circular(16.r),
                       ),
                       child: Row(
                         children: [
                           Icon(
                             Icons.search_rounded,
-                            color: AppColors.textSecondary,
+                            color: context.colors.textSecondary,
                             size: 20.sp,
                           ),
                           SizedBox(width: 8.w),
@@ -226,10 +226,10 @@ class _SearchPageState extends State<SearchPage> {
                             child: TextField(
                               controller: _controller,
                               autofocus: true,
-                              style: AppTextStyles.bodyLarge,
+                              style: context.text.bodyLarge,
                               decoration: InputDecoration(
                                 hintText: context.l10n.searchHint,
-                                hintStyle: AppTextStyles.bodyMedium,
+                                hintStyle: context.text.bodyMedium,
                                 border: InputBorder.none,
                                 isDense: true,
                                 contentPadding: EdgeInsets.symmetric(
@@ -255,13 +255,13 @@ class _SearchPageState extends State<SearchPage> {
                       height: 14.w,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: AppColors.secondary,
+                        color: context.colors.secondary,
                       ),
                     ),
                     SizedBox(width: 10.w),
                     Text(
                       context.l10n.searchWorking,
-                      style: AppTextStyles.caption,
+                      style: context.text.caption,
                     ),
                   ],
                 ),
@@ -411,8 +411,8 @@ class _VisualMatchBadge extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.caption.asSemiBold.copyWith(
-                color: AppColors.onPrimary,
+              style: context.text.caption.asSemiBold.copyWith(
+                color: context.colors.onPrimary,
               ),
             ),
           ),

@@ -9,6 +9,7 @@ import 'package:shoto/features/folders/presentation/widgets/folder_card.dart';
 import 'package:shoto/l10n/app_localizations.dart';
 
 import 'support/test_fonts.dart';
+import 'support/test_theme.dart';
 
 /// [FolderCard] draws a picture with a caption under it, inside a tile whose
 /// height the grid fixes in advance. Two things about that can go wrong
@@ -39,12 +40,15 @@ void main() {
     required FolderEntity entity,
     AssetEntity? cover,
     double textScale = 1,
+    Brightness brightness = Brightness.dark,
   }) async {
+    final AppPalette palette = testPalette(brightness);
     await tester.pumpWidget(
       ScreenUtilInit(
         designSize: const Size(360, 690),
         minTextAdapt: true,
         builder: (context, _) => MaterialApp(
+          theme: testTheme(brightness),
           debugShowCheckedModeBanner: false,
           locale: const Locale('en'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -52,7 +56,7 @@ void main() {
           home: MediaQuery(
             data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
             child: Scaffold(
-              backgroundColor: AppColors.background,
+              backgroundColor: palette.background,
               body: Center(
                 child: SizedBox(
                   width: tileWidth,
@@ -83,8 +87,6 @@ void main() {
   testWidgets('caption never overflows the tile, at any text scale', (
     WidgetTester tester,
   ) async {
-    AppColors.setBrightness(Brightness.dark);
-
     // 2.0 is past what the Android accessibility slider reaches by default;
     // if it survives that it survives the real range.
     for (final double scale in <double>[1, 1.3, 1.6, 2]) {
@@ -111,8 +113,6 @@ void main() {
   testWidgets('a private folder draws no cover, even when one is available', (
     WidgetTester tester,
   ) async {
-    AppColors.setBrightness(Brightness.dark);
-
     final AssetEntity asset = AssetEntity(
       id: 'asset-1',
       typeInt: AssetType.image.index,
@@ -136,8 +136,6 @@ void main() {
   testWidgets('an empty folder falls back to its colour and folder glyph', (
     WidgetTester tester,
   ) async {
-    AppColors.setBrightness(Brightness.dark);
-
     await pumpCard(tester, entity: folder(screenshotCount: 0));
 
     expect(find.byType(AssetThumbnailImage), findsNothing);
@@ -155,7 +153,7 @@ void main() {
   /// photograph would only make it easier to look at.
   Future<void> renderGrid(WidgetTester tester, Brightness brightness) async {
     await loadTestFonts();
-    AppColors.setBrightness(brightness);
+    final AppPalette palette = testPalette(brightness);
 
     tester.view.physicalSize = const Size(1080, 1500);
     tester.view.devicePixelRatio = 3;
@@ -203,7 +201,7 @@ void main() {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: palette.background,
             body: Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               child: GridView.builder(

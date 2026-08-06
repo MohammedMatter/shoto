@@ -5,7 +5,7 @@ import 'package:shoto/core/widgets/glass_layer.dart';
 
 /// The panel a bottom sheet is drawn on: frosted, not filled.
 ///
-/// Every sheet in the app used to paint itself an opaque [AppColors.surface]
+/// Every sheet in the app used to paint itself an opaque [AppPalette.surface]
 /// rectangle, which makes a fine card and a poor sheet. A sheet is a thing that
 /// has *arrived over* the screen you were looking at, and an opaque fill throws
 /// away the only cue that says so — once it stops moving there is nothing left
@@ -71,7 +71,7 @@ class SheetSurface extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: AppColors.isDark
+              colors: context.colors.isDark
                   ? [
                       const Color(0xFF303030).withValues(alpha: 0.78),
                       const Color(0xFF212121).withValues(alpha: 0.86),

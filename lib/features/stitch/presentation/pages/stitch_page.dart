@@ -31,15 +31,15 @@ class StitchPage extends StatelessWidget {
       child: ListenableBuilder(
         listenable: sl<ThemeController>(),
         builder: (context, child) => Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: context.colors.background,
           appBar: AppBar(
-            backgroundColor: AppColors.background,
+            backgroundColor: context.colors.background,
             surfaceTintColor: Colors.transparent,
             elevation: 0,
-            iconTheme: IconThemeData(color: AppColors.textPrimary),
+            iconTheme: IconThemeData(color: context.colors.textPrimary),
             title: Text(
               context.l10n.stitchTitle,
-              style: AppTextStyles.titleLarge,
+              style: context.text.titleLarge,
             ),
           ),
           body: const SafeArea(top: false, child: _Body()),
@@ -114,20 +114,20 @@ class _Working extends StatelessWidget {
               child: CircularProgressIndicator(
                 value: fraction,
                 strokeWidth: 3.5,
-                color: AppColors.primary,
-                backgroundColor: AppColors.surfaceVariant,
+                color: context.colors.primary,
+                backgroundColor: context.colors.surfaceVariant,
               ),
             ),
             SizedBox(height: 22.h),
             Text(
               context.l10n.stitchWorking,
-              style: AppTextStyles.titleLarge,
+              style: context.text.titleLarge,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 8.h),
             Text(
               context.l10n.stitchWorkingBody,
-              style: AppTextStyles.bodyMedium,
+              style: context.text.bodyMedium,
               textAlign: TextAlign.center,
             ),
           ],
@@ -158,9 +158,9 @@ class _Preview extends StatelessWidget {
             width: double.infinity,
             margin: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 12.h),
             decoration: BoxDecoration(
-              color: AppColors.surfaceVariant,
+              color: context.colors.surfaceVariant,
               borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(color: AppColors.border),
+              border: Border.all(color: context.colors.border),
             ),
             clipBehavior: Clip.antiAlias,
             // The whole point is to check the joins, so the result is
@@ -199,8 +199,8 @@ class _Preview extends StatelessWidget {
                         ),
                         child: Text(
                           context.l10n.stitchDiscard,
-                          style: AppTextStyles.button.copyWith(
-                            color: AppColors.textSecondary,
+                          style: context.text.button.copyWith(
+                            color: context.colors.textSecondary,
                           ),
                         ),
                       ),
@@ -237,12 +237,12 @@ class _Summary extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(9.w),
             decoration: BoxDecoration(
-              color: AppColors.secondary.withValues(alpha: 0.16),
+              color: context.colors.secondary.withValues(alpha: 0.16),
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Icon(
               Icons.photo_size_select_large_rounded,
-              color: AppColors.secondary,
+              color: context.colors.secondary,
               size: 18.sp,
             ),
           ),
@@ -253,13 +253,13 @@ class _Summary extends StatelessWidget {
               children: [
                 Text(
                   context.l10n.stitchResultMerged(outcome.sourceCount),
-                  style: AppTextStyles.bodyLarge.asSemiBold,
+                  style: context.text.bodyLarge.asSemiBold,
                 ),
                 SizedBox(height: 2.h),
                 Text(
                   '${outcome.width} × ${outcome.height} px  ·  '
                   '${context.l10n.stitchResultTrimmed(outcome.trimmedRows)}',
-                  style: AppTextStyles.caption,
+                  style: context.text.caption,
                 ),
               ],
             ),

@@ -68,7 +68,7 @@ class _WhatsIncludedPageState extends State<WhatsIncludedPage> {
   Future<void> _openPaywall() async {
     await Navigator.of(
       context,
-    ).push<bool>(FadeSlidePageRoute(builder: (_) => PaywallPage()));
+    ).push<bool>(FadeSlidePageRoute(builder: (_) => const PaywallPage()));
     if (mounted) _refresh();
   }
 
@@ -85,13 +85,13 @@ class _WhatsIncludedPageState extends State<WhatsIncludedPage> {
     return ListenableBuilder(
       listenable: sl<ThemeController>(),
       builder: (context, _) => Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: context.colors.background,
         body: SafeArea(
           bottom: false,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _Header(),
+              const _Header(),
               Expanded(
                 child: Stack(
                   children: [
@@ -115,7 +115,7 @@ class _WhatsIncludedPageState extends State<WhatsIncludedPage> {
                           padding: EdgeInsetsDirectional.only(start: 2.w),
                           child: Text(
                             context.l10n.includedHint,
-                            style: AppTextStyles.sectionLabel,
+                            style: context.text.sectionLabel,
                           ),
                         ),
                         SizedBox(height: 10.h),
@@ -137,7 +137,7 @@ class _WhatsIncludedPageState extends State<WhatsIncludedPage> {
 
                         if (isPremium == false) ...[
                           SizedBox(height: 8.h),
-                          _FreeTierNote(),
+                          const _FreeTierNote(),
                         ],
 
                         SizedBox(height: 16.h),
@@ -158,7 +158,7 @@ class _WhatsIncludedPageState extends State<WhatsIncludedPage> {
                             20.h,
                           ),
                           decoration: BoxDecoration(
-                            gradient: AppColors.scrimGradient,
+                            gradient: context.colors.scrimGradient,
                           ),
                           child: SafeArea(
                             top: false,
@@ -191,7 +191,10 @@ class _Header extends StatelessWidget {
         children: [
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: context.colors.textPrimary,
+            ),
           ),
           Expanded(
             child: Column(
@@ -199,11 +202,11 @@ class _Header extends StatelessWidget {
               children: [
                 Text(
                   context.l10n.settingsWhatsIncluded,
-                  style: AppTextStyles.headlineMedium,
+                  style: context.text.headlineMedium,
                 ),
                 Text(
                   context.l10n.includedSubtitle,
-                  style: AppTextStyles.bodySmall,
+                  style: context.text.bodySmall,
                 ),
               ],
             ),
@@ -234,13 +237,13 @@ class _StatusStrip extends StatelessWidget {
       padding: EdgeInsetsDirectional.fromSTEB(14.w, 13.h, 14.w, 13.h),
       decoration: BoxDecoration(
         color: premium
-            ? AppColors.success.withValues(alpha: 0.1)
-            : AppColors.surface,
+            ? context.colors.success.withValues(alpha: 0.1)
+            : context.colors.surface,
         borderRadius: BorderRadius.circular(18.r),
         border: Border.all(
           color: premium
-              ? AppColors.success.withValues(alpha: 0.3)
-              : AppColors.border,
+              ? context.colors.success.withValues(alpha: 0.3)
+              : context.colors.border,
         ),
       ),
       child: Row(
@@ -250,7 +253,9 @@ class _StatusStrip extends StatelessWidget {
             premium
                 ? (dev ? Icons.terminal_rounded : Icons.check_circle_rounded)
                 : Icons.lock_outline_rounded,
-            color: premium ? AppColors.success : AppColors.textSecondary,
+            color: premium
+                ? context.colors.success
+                : context.colors.textSecondary,
             size: 19.sp,
           ),
           SizedBox(width: 12.w),
@@ -264,7 +269,7 @@ class _StatusStrip extends StatelessWidget {
                             ? context.l10n.subDevUnlock
                             : context.l10n.includedActiveTitle)
                       : context.l10n.includedLockedTitle,
-                  style: AppTextStyles.titleSmall,
+                  style: context.text.titleSmall,
                 ),
                 SizedBox(height: 2.h),
                 Text(
@@ -273,7 +278,7 @@ class _StatusStrip extends StatelessWidget {
                             ? context.l10n.subDevUnlockBody
                             : context.l10n.includedActiveBody)
                       : context.l10n.includedLockedBody,
-                  style: AppTextStyles.bodySmall,
+                  style: context.text.bodySmall,
                 ),
               ],
             ),
@@ -337,14 +342,14 @@ class _FeatureCardState extends State<_FeatureCard> {
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(22.r),
         border: Border.all(
           // The open card is the one being read; a slightly firmer edge is
           // enough to say so without tinting the whole surface.
           color: open
-              ? AppColors.primary.withValues(alpha: 0.35)
-              : AppColors.border,
+              ? context.colors.primary.withValues(alpha: 0.35)
+              : context.colors.border,
         ),
       ),
       clipBehavior: Clip.antiAlias,
@@ -380,16 +385,16 @@ class _FeatureCardState extends State<_FeatureCard> {
                         // inversion the app uses for a selected chip, so the
                         // open card is legible at a glance on a page of seven.
                         color: open
-                            ? AppColors.primary
-                            : AppColors.surfaceVariant,
+                            ? context.colors.primary
+                            : context.colors.surfaceVariant,
                         borderRadius: BorderRadius.circular(13.r),
                       ),
                       child: Icon(
                         widget.feature.icon,
                         size: 19.sp,
                         color: open
-                            ? AppColors.onPrimary
-                            : AppColors.textPrimary,
+                            ? context.colors.onPrimary
+                            : context.colors.textPrimary,
                       ),
                     ),
                     SizedBox(width: 13.w),
@@ -399,12 +404,12 @@ class _FeatureCardState extends State<_FeatureCard> {
                         children: [
                           Text(
                             widget.feature.title(context),
-                            style: AppTextStyles.titleSmall,
+                            style: context.text.titleSmall,
                           ),
                           SizedBox(height: 3.h),
                           Text(
                             widget.feature.description(context),
-                            style: AppTextStyles.bodySmall,
+                            style: context.text.bodySmall,
                             // Clamped while closed so seven cards stay a list
                             // you can scan rather than seven paragraphs.
                             maxLines: open ? null : 2,
@@ -424,7 +429,7 @@ class _FeatureCardState extends State<_FeatureCard> {
                         curve: AppMotion.standard,
                         child: Icon(
                           Icons.keyboard_arrow_down_rounded,
-                          color: AppColors.textSecondary,
+                          color: context.colors.textSecondary,
                           size: 21.sp,
                         ),
                       ),
@@ -461,14 +466,14 @@ class _FeatureDetail extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(height: 1, color: AppColors.border),
+            Container(height: 1, color: context.colors.border),
             SizedBox(height: 14.h),
-            Text(context.l10n.includedHowLabel, style: AppTextStyles.overline),
+            Text(context.l10n.includedHowLabel, style: context.text.overline),
             SizedBox(height: 6.h),
             Text(
               feature.how(context),
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textPrimary,
+              style: context.text.bodySmall.copyWith(
+                color: context.colors.textPrimary,
               ),
             ),
             SizedBox(height: 14.h),
@@ -483,7 +488,7 @@ class _FeatureDetail extends StatelessWidget {
 
 /// One checkable specific.
 ///
-/// The tick is drawn in the accent rather than in [AppColors.success]: green
+/// The tick is drawn in the accent rather than in [AppPalette.success]: green
 /// means *finished* everywhere else in this app, and a list of things the
 /// feature can do is not a list of things that have happened.
 class _Point extends StatelessWidget {
@@ -503,11 +508,11 @@ class _Point extends StatelessWidget {
             child: Icon(
               Icons.check_rounded,
               size: 15.sp,
-              color: AppColors.primary,
+              color: context.colors.primary,
             ),
           ),
           SizedBox(width: 9.w),
-          Expanded(child: Text(text, style: AppTextStyles.bodySmall)),
+          Expanded(child: Text(text, style: context.text.bodySmall)),
         ],
       ),
     );
@@ -528,19 +533,19 @@ class _FreeTierNote extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(15.w),
       decoration: BoxDecoration(
-        color: AppColors.surfaceVariant,
+        color: context.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(18.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(context.l10n.includedFreeTitle, style: AppTextStyles.titleSmall),
+          Text(context.l10n.includedFreeTitle, style: context.text.titleSmall),
           SizedBox(height: 3.h),
           Text(
             context.l10n.includedFreeBody(
               SubscriptionConstants.freeScreenshotLimit,
             ),
-            style: AppTextStyles.bodySmall,
+            style: context.text.bodySmall,
           ),
         ],
       ),

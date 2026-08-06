@@ -29,7 +29,7 @@ Future<void> showSmartActionsSheet(
     builder: (_) => SheetSurface(
       child: BlocProvider(
         create: (_) => SmartActionsCubit(sl())..scan(screenshot),
-        child: _Sheet(),
+        child: const _Sheet(),
       ),
     ),
   );
@@ -53,7 +53,7 @@ class _Sheet extends StatelessWidget {
               height: 4.h,
               margin: EdgeInsets.only(top: 10.h, bottom: 14.h),
               decoration: BoxDecoration(
-                color: AppColors.border,
+                color: context.colors.border,
                 borderRadius: BorderRadius.circular(2.r),
               ),
             ),
@@ -77,7 +77,7 @@ class _Sheet extends StatelessWidget {
                         height: 26.w,
                         child: CircularProgressIndicator(
                           strokeWidth: 3,
-                          color: AppColors.primary,
+                          color: context.colors.primary,
                         ),
                       ),
                     );
@@ -111,7 +111,7 @@ class _Results extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 16.h),
       itemCount: actions.length,
       separatorBuilder: (_, _) =>
-          Divider(height: 24.h, thickness: 1, color: AppColors.border),
+          Divider(height: 24.h, thickness: 1, color: context.colors.border),
       itemBuilder: (context, index) => _ActionRow(action: actions[index]),
     );
   }
@@ -147,7 +147,7 @@ class _ActionRow extends StatelessWidget {
         SnackBar(
           content: Text(copiedMessage),
           behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
         ),
       );
     }
@@ -170,9 +170,9 @@ class _ActionRow extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(action.icon, size: 17.sp, color: AppColors.primary),
+            Icon(action.icon, size: 17.sp, color: context.colors.primary),
             SizedBox(width: 8.w),
-            Text(action.kindLabel(context), style: AppTextStyles.caption),
+            Text(action.kindLabel(context), style: context.text.caption),
           ],
         ),
         SizedBox(height: 6.h),
@@ -182,8 +182,8 @@ class _ActionRow extends StatelessWidget {
           // character by character, and a proportional font makes that
           // unnecessarily hard.
           style: _isMonospaced(action.kind)
-              ? AppTextStyles.monoBody.asSemiBold
-              : AppTextStyles.bodyLarge.asSemiBold,
+              ? context.text.monoBody.asSemiBold
+              : context.text.bodyLarge.asSemiBold,
         ),
         // The second line only exists for the intent kinds, and it carries
         // the part SHOTO worked out rather than the part it read: an event's
@@ -191,7 +191,7 @@ class _ActionRow extends StatelessWidget {
         // password belongs to, the carrier holding a parcel.
         if (subtitle != null) ...[
           SizedBox(height: 3.h),
-          Text(subtitle, style: AppTextStyles.bodySmall),
+          Text(subtitle, style: context.text.bodySmall),
         ],
         SizedBox(height: 12.h),
         Wrap(
@@ -220,7 +220,7 @@ class _OptionChip extends StatelessWidget {
       onTap: onTap,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: AppColors.surfaceVariant,
+          color: context.colors.surfaceVariant,
           borderRadius: BorderRadius.circular(12.r),
         ),
         child: Padding(
@@ -228,12 +228,12 @@ class _OptionChip extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(option.icon, size: 15.sp, color: AppColors.textPrimary),
+              Icon(option.icon, size: 15.sp, color: context.colors.textPrimary),
               SizedBox(width: 6.w),
               Text(
                 option.label,
-                style: AppTextStyles.bodySmall.asMedium.copyWith(
-                  color: AppColors.textPrimary,
+                style: context.text.bodySmall.asMedium.copyWith(
+                  color: context.colors.textPrimary,
                 ),
               ),
             ],
@@ -264,17 +264,18 @@ class _Message extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          trailing ?? Icon(icon, size: 30.sp, color: AppColors.textSecondary),
+          trailing ??
+              Icon(icon, size: 30.sp, color: context.colors.textSecondary),
           SizedBox(height: 14.h),
           Text(
             title,
-            style: AppTextStyles.titleLarge,
+            style: context.text.titleLarge,
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 6.h),
           Text(
             body,
-            style: AppTextStyles.bodyMedium,
+            style: context.text.bodyMedium,
             textAlign: TextAlign.center,
           ),
         ],

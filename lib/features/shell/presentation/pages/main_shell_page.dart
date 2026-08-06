@@ -158,9 +158,9 @@ class _MainShellPageState extends State<MainShellPage>
                 onOpenLibraryForIntent: _openLibraryForIntent,
                 onOpenFolders: _openFolders,
               ),
-              LibraryPage(),
-              FoldersPage(),
-              SettingsPage(),
+              const LibraryPage(),
+              const FoldersPage(),
+              const SettingsPage(),
             ],
           ),
           bottomNavigationBar: ListenableBuilder(

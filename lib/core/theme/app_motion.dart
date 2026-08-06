@@ -484,7 +484,7 @@ class _PressableScaleState extends State<PressableScale> {
                   child: ColoredBox(
                     // Derived from the text colour, so it darkens on paper and
                     // lightens on near-black without a second token.
-                    color: AppColors.textPrimary.withValues(alpha: 0.055),
+                    color: context.colors.textPrimary.withValues(alpha: 0.055),
                   ),
                 ),
               ),

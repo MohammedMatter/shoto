@@ -46,14 +46,14 @@ class DuplicatesPage extends StatelessWidget {
         },
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: context.colors.background,
             appBar: AppBar(
-              backgroundColor: AppColors.background,
+              backgroundColor: context.colors.background,
               elevation: 0,
-              iconTheme: IconThemeData(color: AppColors.textPrimary),
+              iconTheme: IconThemeData(color: context.colors.textPrimary),
               title: Text(
                 context.l10n.dupTitle,
-                style: AppTextStyles.titleLarge,
+                style: context.text.titleLarge,
               ),
             ),
             body: SafeArea(top: false, child: _Body(state: state)),
@@ -161,14 +161,14 @@ class _ScanningView extends StatelessWidget {
               child: CircularProgressIndicator(
                 value: state.total == 0 ? null : state.fraction,
                 strokeWidth: 4,
-                color: AppColors.primary,
-                backgroundColor: AppColors.surfaceVariant,
+                color: context.colors.primary,
+                backgroundColor: context.colors.surfaceVariant,
               ),
             ),
             SizedBox(height: 22.h),
             Text(
               context.l10n.dupScanning,
-              style: AppTextStyles.titleLarge,
+              style: context.text.titleLarge,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 6.h),
@@ -176,7 +176,7 @@ class _ScanningView extends StatelessWidget {
               state.total == 0
                   ? context.l10n.dupReading
                   : context.l10n.dupProgress(state.processed, state.total),
-              style: AppTextStyles.bodyMedium,
+              style: context.text.bodyMedium,
               textAlign: TextAlign.center,
             ),
           ],
@@ -200,14 +200,14 @@ class _SummaryBanner extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
+        gradient: context.colors.primaryGradient,
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Row(
         children: [
           Icon(
             Icons.auto_awesome_rounded,
-            color: AppColors.onPrimary,
+            color: context.colors.onPrimary,
             size: 26.sp,
           ),
           SizedBox(width: 14.w),
@@ -217,15 +217,15 @@ class _SummaryBanner extends StatelessWidget {
               children: [
                 Text(
                   context.l10n.dupSetsFound(groupCount),
-                  style: AppTextStyles.titleLarge.copyWith(
-                    color: AppColors.onPrimary,
+                  style: context.text.titleLarge.copyWith(
+                    color: context.colors.onPrimary,
                   ),
                 ),
                 SizedBox(height: 2.h),
                 Text(
                   context.l10n.dupReclaimable(formatBytes(reclaimableBytes)),
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.onPrimary.withValues(alpha: 0.9),
+                  style: context.text.bodySmall.copyWith(
+                    color: context.colors.onPrimary.withValues(alpha: 0.9),
                   ),
                 ),
               ],
@@ -250,8 +250,8 @@ class _DeleteBar extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 12.h),
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          border: Border(top: BorderSide(color: AppColors.border)),
+          color: context.colors.surface,
+          border: Border(top: BorderSide(color: context.colors.border)),
         ),
         child: PrimaryButton(
           label: count == 0

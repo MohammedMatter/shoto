@@ -5,15 +5,15 @@ import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/biometric_auth_service.dart';
 import 'package:shoto/core/theme/app_colors.dart';
-import 'package:shoto/core/theme/app_theme.dart';
 import 'package:shoto/features/folders/presentation/widgets/create_folder_sheet.dart';
 import 'package:shoto/l10n/app_localizations.dart';
 
 import 'support/test_fonts.dart';
+import 'support/test_theme.dart';
 
 /// The "private folder" switch, in both of its states.
 ///
-/// It shipped with `activeThumbColor: AppColors.primary` and nothing else,
+/// It shipped with `activeThumbColor: AppPalette.primary` and nothing else,
 /// which meant the thumb was set to the *same colour Material was already
 /// painting the track* — `colorScheme.primary` is that accent. Switched on, the
 /// control was a single uniform slab with no thumb visible in it, so the one
@@ -56,7 +56,7 @@ void main() {
     String locale = 'en',
   }) async {
     await loadTestFonts();
-    AppColors.setBrightness(brightness);
+    final AppPalette palette = testPalette(brightness);
 
     tester.view.physicalSize = const Size(1080, 1560);
     tester.view.devicePixelRatio = 3;
@@ -74,12 +74,10 @@ void main() {
           // The real theme, because the bug being checked for lived in what
           // Material fills in when the app's theme is the only thing telling
           // it what "primary" means.
-          theme: brightness == Brightness.dark
-              ? AppTheme.darkTheme
-              : AppTheme.lightTheme,
+          theme: testTheme(brightness),
           home: Builder(
             builder: (context) => Scaffold(
-              backgroundColor: AppColors.background,
+              backgroundColor: palette.background,
               body: Center(
                 child: ElevatedButton(
                   onPressed: () =>

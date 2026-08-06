@@ -76,14 +76,14 @@ class _PaywallPageState extends State<PaywallPage> {
               ..showSnackBar(
                 SnackBar(
                   content: Text(state.errorMessage!.resolve(context)),
-                  backgroundColor: AppColors.error,
+                  backgroundColor: context.colors.error,
                 ),
               );
           }
         },
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: context.colors.background,
             body: SafeArea(
               child: state is SubscriptionErrorState
                   ? _ErrorBody(message: state.message.resolve(context))
@@ -115,7 +115,7 @@ class _ErrorBody extends StatelessWidget {
           children: [
             Text(
               message,
-              style: AppTextStyles.bodyMedium,
+              style: context.text.bodyMedium,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 16.h),
@@ -182,7 +182,7 @@ class _PaywallBody extends StatelessWidget {
                     onPressed: () => Navigator.of(context).pop(false),
                     icon: Icon(
                       Icons.close_rounded,
-                      color: AppColors.textSecondary,
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ],
@@ -192,13 +192,13 @@ class _PaywallBody extends StatelessWidget {
               Text(
                 context.l10n.paywallTitle,
                 textAlign: TextAlign.center,
-                style: AppTextStyles.headlineLarge,
+                style: context.text.headlineLarge,
               ),
               SizedBox(height: 6.h),
               Text(
                 context.l10n.paywallSubtitle,
                 textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMedium,
+                style: context.text.bodyMedium,
               ),
               SizedBox(height: 24.h),
               // The full, honest list. Someone hitting this screen has just
@@ -212,7 +212,9 @@ class _PaywallBody extends StatelessWidget {
               SizedBox(height: 10.h),
               if (isLoading)
                 Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
+                  child: CircularProgressIndicator(
+                    color: context.colors.primary,
+                  ),
                 )
               else ...[
                 SubscriptionPackageCard(
@@ -240,7 +242,7 @@ class _PaywallBody extends StatelessWidget {
                   Text(
                     "Subscriptions aren't live yet — pricing shown for preview.",
                     textAlign: TextAlign.center,
-                    style: AppTextStyles.caption,
+                    style: context.text.caption,
                   ),
                 ],
               ],
@@ -255,14 +257,14 @@ class _PaywallBody extends StatelessWidget {
                     selected.priceString,
                   ),
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.bodySmall,
+                  style: context.text.bodySmall,
                 ),
                 SizedBox(height: 12.h),
               ],
               Text(
                 context.l10n.paywallLegal,
                 textAlign: TextAlign.center,
-                style: AppTextStyles.caption,
+                style: context.text.caption,
               ),
             ],
           ),
@@ -273,7 +275,7 @@ class _PaywallBody extends StatelessWidget {
           bottom: 0,
           child: Container(
             padding: EdgeInsets.fromLTRB(24.w, 16.h, 24.w, 24.h),
-            decoration: BoxDecoration(gradient: AppColors.scrimGradient),
+            decoration: BoxDecoration(gradient: context.colors.scrimGradient),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -315,8 +317,8 @@ class _PaywallBody extends StatelessWidget {
                         ),
                   child: Text(
                     context.l10n.paywallRestore,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+                    style: context.text.bodySmall.copyWith(
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ),
@@ -342,22 +344,19 @@ class _FeatureRow extends StatelessWidget {
           width: 36.w,
           height: 36.w,
           decoration: BoxDecoration(
-            color: AppColors.primary.withValues(alpha: 0.13),
+            color: context.colors.primary.withValues(alpha: 0.13),
             borderRadius: BorderRadius.circular(11.r),
           ),
-          child: Icon(feature.icon, color: AppColors.primary, size: 18.sp),
+          child: Icon(feature.icon, color: context.colors.primary, size: 18.sp),
         ),
         SizedBox(width: 13.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(feature.title(context), style: AppTextStyles.titleSmall),
+              Text(feature.title(context), style: context.text.titleSmall),
               SizedBox(height: 2.h),
-              Text(
-                feature.description(context),
-                style: AppTextStyles.bodySmall,
-              ),
+              Text(feature.description(context), style: context.text.bodySmall),
             ],
           ),
         ),

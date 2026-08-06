@@ -105,7 +105,7 @@ class _Fan extends StatelessWidget {
             filed: true,
             child: Icon(
               icon,
-              color: AppColors.textSecondary,
+              color: context.colors.textSecondary,
               size: card.sp * 0.46,
             ),
           ),
@@ -143,12 +143,12 @@ class _Card extends StatelessWidget {
       height: h,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         // A filed card is clipped instead of rounded, exactly as it is
         // everywhere else — the clip and the radius are the same gesture and
         // applying both would round off the cut.
         borderRadius: filed ? null : BorderRadius.circular(AppRadius.xs),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: child,
     );

@@ -37,7 +37,7 @@ class GridDensitySelector extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(compact ? 3.w : 4.w),
       decoration: BoxDecoration(
-        color: AppColors.surfaceVariant,
+        color: context.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(compact ? 14.r : 16.r),
       ),
       child: Row(
@@ -53,60 +53,60 @@ class GridDensitySelector extends StatelessWidget {
           final bool isSelected = columns == value;
 
           final Widget segment = PressableScale(
-              scale: 0.95,
-              onTap: () => onChanged(columns),
-              child: AnimatedContainer(
-                // The duration was hardcoded and the curve was left at
-                // AnimatedContainer's default, which is **linear** — so the
-                // pill's fill crossfaded at a constant rate, the
-                // one timing reserved for things that genuinely move at a
-                // constant rate. A colour change should arrive quickly and
-                // settle, like everything else here.
-                duration: AppMotion.duration(context, AppMotion.normal),
-                curve: AppMotion.standard,
-                margin: EdgeInsets.symmetric(horizontal: 2.w),
-                // Square-ish and generous in compact mode. The glyph shrinks
-                // to a 18px target if the padding follows the text that is no
-                // longer there, and a 44px touch target is the floor for
-                // anything a thumb has to hit.
-                padding: compact
-                    ? EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h)
-                    : EdgeInsets.symmetric(vertical: 10.h),
-                decoration: BoxDecoration(
-                  color: isSelected ? AppColors.surface : Colors.transparent,
-                  borderRadius: BorderRadius.circular(compact ? 11.r : 12.r),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      icon,
-                      size: 18.sp,
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.textSecondary,
-                    ),
-                    if (!compact) ...[
-                      SizedBox(height: 4.h),
-                      Text(
-                        label,
-                        style: AppTextStyles.caption
-                            .weight(
-                              isSelected
-                                  ? AppTextStyles.semiBold
-                                  : AppTextStyles.regular,
-                            )
-                            .copyWith(
-                              color: isSelected
-                                  ? AppColors.primary
-                                  : AppColors.textSecondary,
-                            ),
-                      ),
-                    ],
-                  ],
-                ),
+            scale: 0.95,
+            onTap: () => onChanged(columns),
+            child: AnimatedContainer(
+              // The duration was hardcoded and the curve was left at
+              // AnimatedContainer's default, which is **linear** — so the
+              // pill's fill crossfaded at a constant rate, the
+              // one timing reserved for things that genuinely move at a
+              // constant rate. A colour change should arrive quickly and
+              // settle, like everything else here.
+              duration: AppMotion.duration(context, AppMotion.normal),
+              curve: AppMotion.standard,
+              margin: EdgeInsets.symmetric(horizontal: 2.w),
+              // Square-ish and generous in compact mode. The glyph shrinks
+              // to a 18px target if the padding follows the text that is no
+              // longer there, and a 44px touch target is the floor for
+              // anything a thumb has to hit.
+              padding: compact
+                  ? EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h)
+                  : EdgeInsets.symmetric(vertical: 10.h),
+              decoration: BoxDecoration(
+                color: isSelected ? context.colors.surface : Colors.transparent,
+                borderRadius: BorderRadius.circular(compact ? 11.r : 12.r),
               ),
-            );
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    icon,
+                    size: 18.sp,
+                    color: isSelected
+                        ? context.colors.primary
+                        : context.colors.textSecondary,
+                  ),
+                  if (!compact) ...[
+                    SizedBox(height: 4.h),
+                    Text(
+                      label,
+                      style: context.text.caption
+                          .weight(
+                            isSelected
+                                ? AppTypography.semiBold
+                                : AppTypography.regular,
+                          )
+                          .copyWith(
+                            color: isSelected
+                                ? context.colors.primary
+                                : context.colors.textSecondary,
+                          ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          );
 
           // The label still exists for anyone who cannot see the glyph, and
           // as the long-press tooltip — dropping the text from the screen is

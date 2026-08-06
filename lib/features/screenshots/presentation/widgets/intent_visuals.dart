@@ -72,7 +72,7 @@ extension IntentVisuals on ScreenshotIntent {
   /// **Deliberately no per-intent colour.**
   ///
   /// The obvious design is a hue per intent, and it is wrong for this app.
-  /// `AppColors` is down to three hues on purpose and says why: with the
+  /// `AppPalette` is down to three hues on purpose and says why: with the
   /// accent and every neutral achromatic, the surviving colours "are legible
   /// as meaning rather than as decoration". Spending a palette on identity
   /// would undo that everywhere, not just here — once the library has a dozen
@@ -84,7 +84,7 @@ extension IntentVisuals on ScreenshotIntent {
   /// which is all the row has to be. Colour is kept for the one thing in this
   /// feature that is genuinely a state rather than a name: waiting versus
   /// done.
-  Color get tint => AppColors.secondary;
+  Color tint(BuildContext context) => context.colors.secondary;
 }
 
 /// The same three questions, asked of any intent at all.

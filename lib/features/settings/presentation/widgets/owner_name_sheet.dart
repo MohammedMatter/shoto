@@ -89,7 +89,7 @@ class _OwnerNameContentState extends State<_OwnerNameContent> {
                   width: 40.w,
                   height: 4.h,
                   decoration: BoxDecoration(
-                    color: AppColors.border,
+                    color: context.colors.border,
                     borderRadius: BorderRadius.circular(2.r),
                   ),
                 ),
@@ -99,7 +99,7 @@ class _OwnerNameContentState extends State<_OwnerNameContent> {
                 padding: EdgeInsets.symmetric(horizontal: 24.w),
                 child: Text(
                   context.l10n.ownerNameTitle,
-                  style: AppTextStyles.headlineMedium,
+                  style: context.text.headlineMedium,
                 ),
               ),
               SizedBox(height: 8.h),
@@ -111,7 +111,7 @@ class _OwnerNameContentState extends State<_OwnerNameContent> {
                 padding: EdgeInsets.symmetric(horizontal: 24.w),
                 child: Text(
                   context.l10n.ownerNameBody,
-                  style: AppTextStyles.bodySmall,
+                  style: context.text.bodySmall,
                 ),
               ),
               SizedBox(height: 18.h),
@@ -123,16 +123,16 @@ class _OwnerNameContentState extends State<_OwnerNameContent> {
                   maxLength: _maxLength,
                   textCapitalization: TextCapitalization.words,
                   textInputAction: TextInputAction.done,
-                  style: AppTextStyles.bodyLarge,
+                  style: context.text.bodyLarge,
                   onSubmitted: (_) => _save(),
                   decoration: InputDecoration(
                     hintText: context.l10n.ownerNameFieldHint,
-                    hintStyle: AppTextStyles.bodyLarge.copyWith(
-                      color: AppColors.textDisabled,
+                    hintStyle: context.text.bodyLarge.copyWith(
+                      color: context.colors.textDisabled,
                     ),
                     counterText: '',
                     filled: true,
-                    fillColor: AppColors.surfaceVariant,
+                    fillColor: context.colors.surfaceVariant,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14.r),
                       borderSide: BorderSide.none,
@@ -155,7 +155,7 @@ class _OwnerNameContentState extends State<_OwnerNameContent> {
                   child: TextButton(
                     onPressed: _save,
                     style: TextButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: context.colors.primary,
                       padding: EdgeInsets.symmetric(vertical: 15.h),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.r),
@@ -163,8 +163,8 @@ class _OwnerNameContentState extends State<_OwnerNameContent> {
                     ),
                     child: Text(
                       context.l10n.commonSave,
-                      style: AppTextStyles.bodyLarge.asMedium.copyWith(
-                        color: AppColors.onPrimary,
+                      style: context.text.bodyLarge.asMedium.copyWith(
+                        color: context.colors.onPrimary,
                       ),
                     ),
                   ),

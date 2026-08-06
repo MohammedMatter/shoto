@@ -28,14 +28,14 @@ class ProBadge extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
       decoration: BoxDecoration(
         color: onAccent
-            ? AppColors.onMarker.withValues(alpha: 0.22)
-            : AppColors.primary,
+            ? context.colors.onMarker.withValues(alpha: 0.22)
+            : context.colors.primary,
         borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
       child: Text(
         context.l10n.commonPro,
-        style: AppTextStyles.overline.asSemiBold.copyWith(
-          color: onAccent ? AppColors.onMarker : AppColors.onPrimary,
+        style: context.text.overline.asSemiBold.copyWith(
+          color: onAccent ? context.colors.onMarker : context.colors.onPrimary,
         ),
       ),
     );

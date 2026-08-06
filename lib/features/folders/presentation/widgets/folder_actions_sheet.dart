@@ -40,7 +40,7 @@ Future<void> showFolderActionsSheet(
               height: 4.h,
               margin: EdgeInsets.only(top: 10.h, bottom: 6.h),
               decoration: BoxDecoration(
-                color: AppColors.border,
+                color: context.colors.border,
                 borderRadius: BorderRadius.circular(2.r),
               ),
             ),
@@ -57,7 +57,7 @@ Future<void> showFolderActionsSheet(
                   Expanded(
                     child: Text(
                       folder.name,
-                      style: AppTextStyles.titleLarge,
+                      style: context.text.titleLarge,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -65,10 +65,13 @@ Future<void> showFolderActionsSheet(
               ),
             ),
             ListTile(
-              leading: Icon(Icons.edit_rounded, color: AppColors.textPrimary),
+              leading: Icon(
+                Icons.edit_rounded,
+                color: context.colors.textPrimary,
+              ),
               title: Text(
                 context.l10n.commonRename,
-                style: AppTextStyles.bodyLarge,
+                style: context.text.bodyLarge,
               ),
               onTap: () {
                 Navigator.of(sheetContext).pop();
@@ -81,19 +84,21 @@ Future<void> showFolderActionsSheet(
               },
             ),
             ListTile(
-              // Not const: `error` is mode-aware now, so it resolves at build
-              // time rather than compile time.
+              // Not const, and it cannot be: `error` is read from the theme,
+              // so it resolves at build time rather than compile time.
               leading: Icon(
                 Icons.delete_outline_rounded,
-                color: AppColors.error,
+                color: context.colors.error,
               ),
               title: Text(
                 context.l10n.foldersDelete,
-                style: AppTextStyles.bodyLarge.copyWith(color: AppColors.error),
+                style: context.text.bodyLarge.copyWith(
+                  color: context.colors.error,
+                ),
               ),
               subtitle: Text(
                 context.l10n.foldersDeleteKept,
-                style: AppTextStyles.caption,
+                style: context.text.caption,
               ),
               onTap: () async {
                 Navigator.of(sheetContext).pop();
@@ -130,19 +135,19 @@ void _promptRename(
   showAppDialog<void>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      backgroundColor: AppColors.surface,
+      backgroundColor: context.colors.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       title: Text(
         context.l10n.foldersRenameTitle,
-        style: AppTextStyles.titleLarge,
+        style: context.text.titleLarge,
       ),
       content: TextField(
         controller: controller,
         autofocus: true,
-        style: AppTextStyles.bodyLarge,
+        style: context.text.bodyLarge,
         decoration: InputDecoration(
           filled: true,
-          fillColor: AppColors.surfaceVariant,
+          fillColor: context.colors.surfaceVariant,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14.r),
             borderSide: BorderSide.none,
@@ -158,8 +163,8 @@ void _promptRename(
           onPressed: () => Navigator.of(dialogContext).pop(),
           child: Text(
             context.l10n.commonCancel,
-            style: AppTextStyles.button.copyWith(
-              color: AppColors.textSecondary,
+            style: context.text.button.copyWith(
+              color: context.colors.textSecondary,
             ),
           ),
         ),
@@ -173,7 +178,7 @@ void _promptRename(
           },
           child: Text(
             context.l10n.commonSave,
-            style: AppTextStyles.button.copyWith(color: AppColors.primary),
+            style: context.text.button.copyWith(color: context.colors.primary),
           ),
         ),
       ],

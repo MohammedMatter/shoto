@@ -55,7 +55,7 @@ class _FoldersPageState extends State<FoldersPage> {
     return ListenableBuilder(
       listenable: sl<ThemeController>(),
       builder: (context, child) => Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: context.colors.background,
         body: SafeArea(
           bottom: false,
           child: Padding(
@@ -69,7 +69,7 @@ class _FoldersPageState extends State<FoldersPage> {
                   children: [
                     Text(
                       context.l10n.navFolders,
-                      style: AppTextStyles.headlineLarge,
+                      style: context.text.headlineLarge,
                     ),
                     // The app's one header-action button — see
                     // [HeaderIconButton] for why this stopped being a filled

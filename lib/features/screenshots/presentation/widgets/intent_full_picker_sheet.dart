@@ -96,7 +96,7 @@ class _IntentFullPickerContentState extends State<_IntentFullPickerContent> {
                         width: 40.w,
                         height: 4.h,
                         decoration: BoxDecoration(
-                          color: AppColors.border,
+                          color: context.colors.border,
                           borderRadius: BorderRadius.circular(2.r),
                         ),
                       ),
@@ -104,7 +104,7 @@ class _IntentFullPickerContentState extends State<_IntentFullPickerContent> {
                     SizedBox(height: 18.h),
                     Text(
                       context.l10n.intentPrompt,
-                      style: AppTextStyles.headlineMedium,
+                      style: context.text.headlineMedium,
                     ),
                     SizedBox(height: 18.h),
                     _SectionLabel(context.l10n.intentSectionCommon),
@@ -118,7 +118,8 @@ class _IntentFullPickerContentState extends State<_IntentFullPickerContent> {
                           _PickerChip(
                             icon: intent.icon,
                             label: intent.label(context),
-                            isSelected: widget.selected == BuiltInIntent(intent),
+                            isSelected:
+                                widget.selected == BuiltInIntent(intent),
                             onTap: () => _choose(BuiltInIntent(intent)),
                           ),
                       ],
@@ -131,8 +132,8 @@ class _IntentFullPickerContentState extends State<_IntentFullPickerContent> {
                         padding: EdgeInsets.only(bottom: 10.h),
                         child: Text(
                           context.l10n.intentYoursEmpty,
-                          style: AppTextStyles.bodySmall.copyWith(
-                            color: AppColors.textSecondary,
+                          style: context.text.bodySmall.copyWith(
+                            color: context.colors.textSecondary,
                           ),
                         ),
                       )
@@ -161,13 +162,15 @@ class _IntentFullPickerContentState extends State<_IntentFullPickerContent> {
                     SizedBox(height: 14.h),
                     _WriteYourOwnButton(onTap: _createCustom),
                     SizedBox(height: 18.h),
-                    Divider(height: 1, color: AppColors.border),
+                    Divider(height: 1, color: context.colors.border),
                     SizedBox(height: 6.h),
                     // Always offered, even when nothing is set. "Not for
                     // anything" is a real answer to the question and not only
                     // an undo — a screenshot can be worth keeping and owe you
                     // nothing.
-                    _ClearRow(onTap: () => _finish(const IntentPickerResult(null))),
+                    _ClearRow(
+                      onTap: () => _finish(const IntentPickerResult(null)),
+                    ),
                   ],
                 ),
               ),
@@ -182,9 +185,7 @@ class _IntentFullPickerContentState extends State<_IntentFullPickerContent> {
     Haptics.confirm();
     // Tapping what is already set clears it, exactly as it does in the compact
     // row. The two pickers must not disagree about what a second tap means.
-    _finish(
-      IntentPickerResult(widget.selected == intent ? null : intent),
-    );
+    _finish(IntentPickerResult(widget.selected == intent ? null : intent));
   }
 
   void _finish(IntentPickerResult result) {
@@ -215,8 +216,8 @@ class _SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
     text.toUpperCase(),
-    style: AppTextStyles.bodySmall.asMedium.copyWith(
-      color: AppColors.textSecondary,
+    style: context.text.bodySmall.asMedium.copyWith(
+      color: context.colors.textSecondary,
       letterSpacing: 0.6,
     ),
   );
@@ -259,10 +260,12 @@ class _PickerChip extends StatelessWidget {
           // of twenty is where "cramped" comes from.
           padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : AppColors.surfaceVariant,
+            color: isSelected
+                ? context.colors.primary
+                : context.colors.surfaceVariant,
             borderRadius: BorderRadius.circular(19.r),
             border: Border.all(
-              color: isSelected ? Colors.transparent : AppColors.border,
+              color: isSelected ? Colors.transparent : context.colors.border,
             ),
           ),
           child: Row(
@@ -272,16 +275,16 @@ class _PickerChip extends StatelessWidget {
                 icon,
                 size: 15.sp,
                 color: isSelected
-                    ? AppColors.onPrimary
-                    : AppColors.textSecondary,
+                    ? context.colors.onPrimary
+                    : context.colors.textSecondary,
               ),
               SizedBox(width: 7.w),
               Text(
                 label,
-                style: AppTextStyles.bodySmall.asMedium.copyWith(
+                style: context.text.bodySmall.asMedium.copyWith(
                   color: isSelected
-                      ? AppColors.onPrimary
-                      : AppColors.textPrimary,
+                      ? context.colors.onPrimary
+                      : context.colors.textPrimary,
                 ),
               ),
             ],
@@ -309,7 +312,7 @@ class _WriteYourOwnButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14.r),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -317,12 +320,12 @@ class _WriteYourOwnButton extends StatelessWidget {
             Icon(
               Icons.edit_rounded,
               size: 17.sp,
-              color: AppColors.textSecondary,
+              color: context.colors.textSecondary,
             ),
             SizedBox(width: 10.w),
             Text(
               context.l10n.intentNewAction,
-              style: AppTextStyles.bodyMedium.asMedium,
+              style: context.text.bodyMedium.asMedium,
             ),
           ],
         ),
@@ -345,12 +348,12 @@ class _ClearRow extends StatelessWidget {
         contentPadding: EdgeInsets.zero,
         leading: Icon(
           Icons.not_interested_rounded,
-          color: AppColors.textSecondary,
+          color: context.colors.textSecondary,
         ),
         title: Text(
           context.l10n.intentClear,
-          style: AppTextStyles.bodyLarge.copyWith(
-            color: AppColors.textSecondary,
+          style: context.text.bodyLarge.copyWith(
+            color: context.colors.textSecondary,
           ),
         ),
       ),

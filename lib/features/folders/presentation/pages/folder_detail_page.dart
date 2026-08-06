@@ -86,7 +86,7 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
   Widget build(BuildContext context) {
     if (!_unlocked) {
       return Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: context.colors.background,
         body: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 32.w),
@@ -96,18 +96,18 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
                 Icon(
                   Icons.lock_rounded,
                   size: 48.sp,
-                  color: AppColors.textSecondary,
+                  color: context.colors.textSecondary,
                 ),
                 SizedBox(height: 16.h),
                 Text(
                   widget.folder.name,
-                  style: AppTextStyles.titleLarge,
+                  style: context.text.titleLarge,
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 8.h),
                 Text(
                   context.l10n.folderLockedMessage,
-                  style: AppTextStyles.bodyMedium,
+                  style: context.text.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 24.h),
@@ -122,8 +122,8 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text(
                     context.l10n.commonCancel,
-                    style: AppTextStyles.button.copyWith(
-                      color: AppColors.textSecondary,
+                    style: context.text.button.copyWith(
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ),
@@ -139,7 +139,7 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
       create: (_) =>
           sl<ScreenshotsBloc>()..add(LoadScreenshotsEvent(folderId: folder.id)),
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: context.colors.background,
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +151,7 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
                     IconButton(
                       icon: Icon(
                         Icons.arrow_back_ios_new_rounded,
-                        color: AppColors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
@@ -172,7 +172,7 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
                     Expanded(
                       child: Text(
                         folder.name,
-                        style: AppTextStyles.titleLarge,
+                        style: context.text.titleLarge,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -180,7 +180,7 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
                       tooltip: context.l10n.foldersOptions,
                       icon: Icon(
                         Icons.more_horiz_rounded,
-                        color: AppColors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                       onPressed: _showActions,
                     ),

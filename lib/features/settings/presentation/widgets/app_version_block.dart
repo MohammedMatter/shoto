@@ -92,11 +92,11 @@ class _AppVersionBlockState extends State<AppVersionBlock> {
               padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 6.h),
               child: Column(
                 children: [
-                  Text('SHOTO', style: AppTextStyles.overline),
+                  Text('SHOTO', style: context.text.overline),
                   SizedBox(height: 3.h),
                   Text(
                     context.l10n.appVersion(AppInfo.version),
-                    style: AppTextStyles.caption,
+                    style: context.text.caption,
                   ),
                   if (unlocked) ...[
                     SizedBox(height: 9.h),
@@ -109,10 +109,10 @@ class _AppVersionBlockState extends State<AppVersionBlock> {
                         vertical: 4.h,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.14),
+                        color: context.colors.primary.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(999),
                         border: Border.all(
-                          color: AppColors.primary.withValues(alpha: 0.4),
+                          color: context.colors.primary.withValues(alpha: 0.4),
                         ),
                       ),
                       child: Row(
@@ -121,13 +121,13 @@ class _AppVersionBlockState extends State<AppVersionBlock> {
                           Icon(
                             Icons.terminal_rounded,
                             size: 13.sp,
-                            color: AppColors.primary,
+                            color: context.colors.primary,
                           ),
                           SizedBox(width: 6.w),
                           Text(
                             context.l10n.devModeBadge,
-                            style: AppTextStyles.overline.copyWith(
-                              color: AppColors.primary,
+                            style: context.text.overline.copyWith(
+                              color: context.colors.primary,
                             ),
                           ),
                         ],
@@ -136,7 +136,7 @@ class _AppVersionBlockState extends State<AppVersionBlock> {
                     SizedBox(height: 5.h),
                     Text(
                       context.l10n.devTapToDisable(DevAccess.tapsToReveal),
-                      style: AppTextStyles.caption,
+                      style: context.text.caption,
                     ),
                   ],
                 ],

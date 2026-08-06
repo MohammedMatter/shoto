@@ -88,7 +88,7 @@ class _TriagePageState extends State<TriagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.background,
       body: SafeArea(
         child: _isDone
             ? const Center(child: CircularProgressIndicator())
@@ -143,13 +143,10 @@ class _Header extends StatelessWidget {
               children: <Widget>[
                 Text(
                   context.l10n.triageTitle,
-                  style: AppTextStyles.headlineMedium,
+                  style: context.text.headlineMedium,
                 ),
                 SizedBox(height: 2.h),
-                Text(
-                  context.l10n.triageBody,
-                  style: AppTextStyles.bodySmall,
-                ),
+                Text(context.l10n.triageBody, style: context.text.bodySmall),
               ],
             ),
           ),
@@ -160,7 +157,7 @@ class _Header extends StatelessWidget {
             padding: EdgeInsets.only(top: 4.h),
             child: Text(
               context.l10n.triageProgress(index, total),
-              style: AppTextStyles.mono,
+              style: context.text.mono,
             ),
           ),
           IconButton(
@@ -168,7 +165,7 @@ class _Header extends StatelessWidget {
             icon: Icon(
               Icons.close_rounded,
               size: 22.sp,
-              color: AppColors.textSecondary,
+              color: context.colors.textSecondary,
             ),
           ),
         ],
@@ -207,7 +204,7 @@ class _Capture extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.md),
         child: Container(
           width: double.infinity,
-          color: AppColors.surfaceVariant,
+          color: context.colors.surfaceVariant,
           child: AssetThumbnailImage(asset: asset, fit: BoxFit.contain),
         ),
       ),
@@ -240,13 +237,13 @@ class _Choices extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 15.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.r),
-                  side: BorderSide(color: AppColors.border),
+                  side: BorderSide(color: context.colors.border),
                 ),
               ),
               child: Text(
                 context.l10n.triageSkip,
-                style: AppTextStyles.bodyLarge.copyWith(
-                  color: AppColors.textSecondary,
+                style: context.text.bodyLarge.copyWith(
+                  color: context.colors.textSecondary,
                 ),
               ),
             ),
@@ -257,7 +254,7 @@ class _Choices extends StatelessWidget {
             child: TextButton(
               onPressed: onKeep,
               style: TextButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: context.colors.primary,
                 padding: EdgeInsets.symmetric(vertical: 15.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.r),
@@ -265,8 +262,8 @@ class _Choices extends StatelessWidget {
               ),
               child: Text(
                 context.l10n.triageKeep,
-                style: AppTextStyles.bodyLarge.asMedium.copyWith(
-                  color: AppColors.onPrimary,
+                style: context.text.bodyLarge.asMedium.copyWith(
+                  color: context.colors.onPrimary,
                 ),
               ),
             ),

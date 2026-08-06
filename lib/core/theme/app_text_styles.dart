@@ -21,8 +21,31 @@ import 'package:shoto/core/theme/app_colors.dart';
 ///   Each step is tuned instead of inheriting one global value.
 /// * **Line height is always explicit.** Left to the font's own default,
 ///   vertical rhythm drifts between screens and nothing aligns.
-abstract class AppTextStyles {
-  AppTextStyles._();
+///
+/// ---
+///
+/// Read through `context.text`, for the same reason [AppPalette] is read
+/// through `context.colors`: this was a set of static getters over a mutable
+/// `_language` field, and a static read cannot tell a `const` subtree that
+/// anything changed. Both of the two things that vary — the palette that
+/// colours a style and the script that sets its line height — now arrive as
+/// [ThemeData] extensions, so a widget depends on them by reading them.
+@immutable
+class AppTypography extends ThemeExtension<AppTypography> {
+  const AppTypography({required this.language, required this.palette});
+
+  /// Whose line heights are in force.
+  ///
+  /// Scripts differ in how much vertical room they need for the same point
+  /// size. Nastaliq is the extreme case — its words step downward as they are
+  /// written, so lines set at Latin spacing overlap.
+  final AppLanguage language;
+
+  /// The palette a style takes its default colour from.
+  ///
+  /// Held rather than looked up, so a `TextStyle` from this scale is complete
+  /// on its own and a call site never has to remember to colour it.
+  final AppPalette palette;
 
   /// The bundled families declared in pubspec.yaml.
   ///
@@ -55,20 +78,7 @@ abstract class AppTextStyles {
   static const FontWeight medium = FontWeight.w500;
   static const FontWeight semiBold = FontWeight.w600;
 
-  /// Whose line heights are currently in force.
-  ///
-  /// Set from `MyApp.build` alongside `AppColors.setBrightness`, and read the
-  /// same way — synchronously, during the same frame, by widgets that ask for
-  /// a style directly rather than through `Theme.of`. See app_colors.dart for
-  /// why the app is built this way.
-  static AppLanguage _language = AppLanguage.english;
-
-  static void setLanguage(AppLanguage language) => _language = language;
-
-  /// Scripts differ in how much vertical room they need for the same point
-  /// size. Nastaliq is the extreme case — its words step downward as they are
-  /// written, so lines set at Latin spacing overlap.
-  static double _line(double height) => height * _language.lineHeightScale;
+  double _line(double height) => height * language.lineHeightScale;
 
   /// Builds a style on one of the two **variable** families.
   ///
@@ -100,7 +110,7 @@ abstract class AppTextStyles {
   /// screen: folder names, rule names and the text read out of screenshots
   /// are all the user's own, in whatever language they wrote them. A
   /// French-language app showing an Arabic folder name must still render it.
-  static TextStyle _variable({
+  TextStyle _variable({
     required String family,
     required double size,
     required FontWeight weight,
@@ -111,7 +121,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontFamily: family,
       fontFamilyFallback: AppLanguage.fontFallbacks,
-      color: color ?? AppColors.textPrimary,
+      color: color ?? palette.textPrimary,
       fontSize: size,
       fontVariations: [FontVariation('wght', weight.value.toDouble())],
       height: _line(height),
@@ -119,7 +129,7 @@ abstract class AppTextStyles {
     );
   }
 
-  static TextStyle _sans({
+  TextStyle _sans({
     required double size,
     required FontWeight weight,
     required double height,
@@ -134,7 +144,7 @@ abstract class AppTextStyles {
     color: color,
   );
 
-  static TextStyle _display({
+  TextStyle _display({
     required double size,
     required FontWeight weight,
     required double height,
@@ -159,7 +169,7 @@ abstract class AppTextStyles {
   /// It does not need to be as large as it was to do that job, and at a real
   /// semibold rather than a synthetic extra-bold it holds the eye on shape
   /// instead of on sheer mass.
-  static TextStyle get displayHero => _display(
+  TextStyle get displayHero => _display(
     size: 44.sp,
     weight: semiBold,
     height: 1.04,
@@ -169,27 +179,27 @@ abstract class AppTextStyles {
     letterSpacing: -1.4,
   );
 
-  static TextStyle get displayLarge => _display(
+  TextStyle get displayLarge => _display(
     size: 28.sp,
     weight: semiBold,
     height: 1.18,
     letterSpacing: -0.6,
   );
 
-  static TextStyle get headlineLarge => _display(
+  TextStyle get headlineLarge => _display(
     size: 23.sp,
     weight: semiBold,
     height: 1.25,
     letterSpacing: -0.4,
   );
 
-  static TextStyle get headlineMedium =>
+  TextStyle get headlineMedium =>
       _display(size: 19.sp, weight: semiBold, height: 1.3, letterSpacing: -0.2);
 
-  static TextStyle get titleLarge =>
+  TextStyle get titleLarge =>
       _sans(size: 16.sp, weight: semiBold, height: 1.35, letterSpacing: -0.1);
 
-  static TextStyle get titleSmall =>
+  TextStyle get titleSmall =>
       _sans(size: 14.sp, weight: semiBold, height: 1.35);
 
   /// Quiet section markers, in sentence case.
@@ -198,39 +208,37 @@ abstract class AppTextStyles {
   /// but Home no longer shouts `RECENT` and `WHAT SHOTO CAN DO` at itself.
   /// All-caps everywhere is a tell: it is what a layout reaches for when the
   /// hierarchy is not doing the work.
-  static TextStyle get sectionLabel => _sans(
+  TextStyle get sectionLabel => _sans(
     size: 12.sp,
     weight: medium,
     height: 1.35,
-    color: AppColors.textSecondary,
+    color: palette.textSecondary,
   );
 
   /// Body copy sits at [regular]. It was w500 — a half-step of extra weight
   /// applied to every paragraph in the app, which is the kind of thing that
   /// reads as "heavy" without anything on screen looking obviously wrong.
-  static TextStyle get bodyLarge =>
-      _sans(size: 14.5.sp, weight: regular, height: 1.5);
+  TextStyle get bodyLarge => _sans(size: 14.5.sp, weight: regular, height: 1.5);
 
-  static TextStyle get bodyMedium => _sans(
+  TextStyle get bodyMedium => _sans(
     size: 13.sp,
     weight: regular,
     height: 1.55,
-    color: AppColors.textSecondary,
+    color: palette.textSecondary,
   );
 
-  static TextStyle get bodySmall => _sans(
+  TextStyle get bodySmall => _sans(
     size: 12.sp,
     weight: regular,
     height: 1.5,
-    color: AppColors.textSecondary,
+    color: palette.textSecondary,
   );
 
-  static TextStyle get button =>
-      _sans(size: 14.5.sp, weight: medium, height: 1.2);
+  TextStyle get button => _sans(size: 14.5.sp, weight: medium, height: 1.2);
 
   /// The line under a label: a row's description, a chip's count, a caveat.
   ///
-  /// **[AppColors.textSecondary], not [AppColors.textDisabled]**, and the
+  /// **[AppPalette.textSecondary], not [AppPalette.textDisabled]**, and the
   /// difference is not a shade — it is a measurement. At 11.5sp this is small
   /// text, which WCAG asks to clear 4.5:1, and `textDisabled` clears **3.0:1**
   /// on a card and **2.3:1** in light mode. Every description in Settings, in
@@ -243,11 +251,11 @@ abstract class AppTextStyles {
   /// controls that cannot be used — see [SettingsNavTile]'s tint when it has
   /// no `onTap` — and borrowing it for ordinary prose made the app quieter
   /// than it meant to be.
-  static TextStyle get caption => _sans(
+  TextStyle get caption => _sans(
     size: 11.5.sp,
     weight: regular,
     height: 1.45,
-    color: AppColors.textSecondary,
+    color: palette.textSecondary,
   );
 
   /// Small section markers. The tracking is what keeps small text from
@@ -256,12 +264,12 @@ abstract class AppTextStyles {
   /// Same contrast correction as [caption], and it matters more here: a
   /// section heading is the thing a user scans to find where they are, and
   /// at 10.5sp it was the least legible text in the app.
-  static TextStyle get overline => _sans(
+  TextStyle get overline => _sans(
     size: 10.5.sp,
     weight: medium,
     height: 1.35,
     letterSpacing: 0.9,
-    color: AppColors.textSecondary,
+    color: palette.textSecondary,
   );
 
   /// Tabular by default — a counter that shifts sideways as it counts is the
@@ -271,10 +279,10 @@ abstract class AppTextStyles {
   /// from `fontWeight` in the ordinary way and the `wght` axis does not
   /// apply. Both weights it is asked for, [regular] and [semiBold], are real
   /// files — see pubspec.yaml — so nothing is synthesised here either.
-  static TextStyle get mono => TextStyle(
+  TextStyle get mono => TextStyle(
     fontFamily: monoFamily,
     fontFamilyFallback: AppLanguage.fontFallbacks,
-    color: AppColors.textPrimary,
+    color: palette.textPrimary,
     fontWeight: regular,
     fontFeatures: const [FontFeature.tabularFigures()],
     letterSpacing: 0,
@@ -286,17 +294,55 @@ abstract class AppTextStyles {
   /// Exists so those call sites stop reaching for the platform's generic
   /// `'monospace'`, which is a different typeface on every device and none of
   /// them this one.
-  static TextStyle get monoBody =>
+  TextStyle get monoBody =>
       mono.copyWith(fontSize: 14.5.sp, height: _line(1.5));
 
   /// Counts and figures that must not shift while they change — with
   /// proportional digits a live number visibly jitters as it updates.
-  static TextStyle get numeric => mono.copyWith(
+  TextStyle get numeric => mono.copyWith(
     fontSize: 21.sp,
     fontWeight: semiBold,
     height: _line(1.15),
     letterSpacing: -0.3,
   );
+
+  @override
+  AppTypography copyWith({AppLanguage? language, AppPalette? palette}) =>
+      AppTypography(
+        language: language ?? this.language,
+        palette: palette ?? this.palette,
+      );
+
+  /// Same reasoning as [AppPalette.lerp]: the theme swaps rather than
+  /// animates, so there is no intermediate state to describe. Interpolating a
+  /// *language* would be meaningless in any case.
+  @override
+  AppTypography lerp(ThemeExtension<AppTypography>? other, double t) {
+    if (other is! AppTypography) return this;
+    return t < 0.5 ? this : other;
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AppTypography &&
+          other.language == language &&
+          other.palette == palette;
+
+  @override
+  int get hashCode => Object.hash(language, palette);
+}
+
+/// `context.text.bodyLarge`, everywhere a style is read.
+extension AppTypographyX on BuildContext {
+  /// Falls back to the English scale on the dark palette when no extension is
+  /// registered — see [AppPaletteX.colors] for why this does not throw.
+  AppTypography get text =>
+      Theme.of(this).extension<AppTypography>() ??
+      const AppTypography(
+        language: AppLanguage.english,
+        palette: AppPalette.dark,
+      );
 }
 
 /// Re-weights a style from the app's scale.
@@ -304,7 +350,7 @@ abstract class AppTextStyles {
 /// The only supported way to change weight at a call site. `copyWith`'s
 /// `fontWeight:` looks like it works and quietly does nothing on the two UI
 /// families, because they are variable and take their weight from the `wght`
-/// axis instead — the whole story is on [AppTextStyles._variable].
+/// axis instead — the whole story is on [AppTypography._variable].
 ///
 /// This sets the axis, and for the static mono family sets the plain weight
 /// as well, so one call is correct for every style in the scale.
@@ -313,12 +359,12 @@ extension AppTextWeight on TextStyle {
     fontVariations: [FontVariation('wght', value.value.toDouble())],
     // `copyWith` treats null as "leave it alone", so the variable families
     // keep the unset `fontWeight` their exact file match depends on.
-    fontWeight: fontFamily == AppTextStyles.monoFamily ? value : null,
+    fontWeight: fontFamily == AppTypography.monoFamily ? value : null,
   );
 
-  TextStyle get asRegular => weight(AppTextStyles.regular);
+  TextStyle get asRegular => weight(AppTypography.regular);
 
-  TextStyle get asMedium => weight(AppTextStyles.medium);
+  TextStyle get asMedium => weight(AppTypography.medium);
 
-  TextStyle get asSemiBold => weight(AppTextStyles.semiBold);
+  TextStyle get asSemiBold => weight(AppTypography.semiBold);
 }

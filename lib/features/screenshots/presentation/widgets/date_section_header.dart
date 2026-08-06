@@ -39,13 +39,13 @@ class DateSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.background,
+      color: context.colors.background,
       alignment: AlignmentDirectional.centerStart,
       padding: EdgeInsets.only(bottom: 8.h),
       child: Text(
         _label(context),
-        style: AppTextStyles.bodySmall.asMedium.copyWith(
-          color: AppColors.textSecondary,
+        style: context.text.bodySmall.asMedium.copyWith(
+          color: context.colors.textSecondary,
         ),
       ),
     );

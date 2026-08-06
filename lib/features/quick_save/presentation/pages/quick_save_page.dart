@@ -448,7 +448,7 @@ class _QuickSavePageState extends State<QuickSavePage>
           // It earned its place against a full-width `BoxShadow` at
           // `blurRadius: 32` that used to sit on this panel, redrawn sixty
           // times a second for a surface that was only moving. That shadow is
-          // gone now (see [AppColors]), so the saving is smaller — but the
+          // gone now (see [AppPalette]), so the saving is smaller — but the
           // panel is still the widest, deepest subtree in the app and it still
           // moves under a finger, which is the case this is for.
           child: RepaintBoundary(
@@ -489,7 +489,7 @@ class _QuickSavePageState extends State<QuickSavePage>
             // the wait looked rough. Its own boundary keeps those repaints to
             // the 40 or so pixels that actually change.
             child: RepaintBoundary(
-              child: CircularProgressIndicator(color: AppColors.primary),
+              child: CircularProgressIndicator(color: context.colors.primary),
             ),
           ),
         );
@@ -498,7 +498,7 @@ class _QuickSavePageState extends State<QuickSavePage>
         return _Status(
           key: const ValueKey('failed'),
           icon: Icons.error_outline_rounded,
-          tint: AppColors.error,
+          tint: context.colors.error,
           title: context.l10n.quickSaveFailedTitle,
           subtitle: context.l10n.quickSaveFailedBody,
         );
@@ -507,7 +507,7 @@ class _QuickSavePageState extends State<QuickSavePage>
         return _Status(
           key: const ValueKey('saved'),
           icon: Icons.check_rounded,
-          tint: AppColors.success,
+          tint: context.colors.success,
           title: context.l10n.quickSaveSaved,
           subtitle: _savedSubtitle(context),
         );
@@ -539,12 +539,12 @@ class _QuickSavePageState extends State<QuickSavePage>
               onTap: () => setState(() => _stage = _Stage.ready),
               child: Icon(
                 Icons.arrow_back_rounded,
-                color: AppColors.textSecondary,
+                color: context.colors.textSecondary,
                 size: 20.sp,
               ),
             ),
             SizedBox(width: 12.w),
-            Text(context.l10n.foldersNew, style: AppTextStyles.titleLarge),
+            Text(context.l10n.foldersNew, style: context.text.titleLarge),
           ],
         ),
         SizedBox(height: 16.h),
@@ -552,16 +552,16 @@ class _QuickSavePageState extends State<QuickSavePage>
           controller: _nameController,
           autofocus: true,
           textCapitalization: TextCapitalization.sentences,
-          style: AppTextStyles.bodyLarge,
+          style: context.text.bodyLarge,
           onSubmitted: (_) => _createFolder(),
           onChanged: (_) => setState(() {}),
           decoration: InputDecoration(
             hintText: context.l10n.foldersNameHint,
-            hintStyle: AppTextStyles.bodyLarge.copyWith(
-              color: AppColors.textDisabled,
+            hintStyle: context.text.bodyLarge.copyWith(
+              color: context.colors.textDisabled,
             ),
             filled: true,
-            fillColor: AppColors.surfaceVariant,
+            fillColor: context.colors.surfaceVariant,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14.r),
               borderSide: BorderSide.none,
@@ -587,7 +587,7 @@ class _QuickSavePageState extends State<QuickSavePage>
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: _newFolderColor == color
-                          ? AppColors.textPrimary
+                          ? context.colors.textPrimary
                           : Colors.transparent,
                       width: 2.5,
                     ),
@@ -607,18 +607,18 @@ class _QuickSavePageState extends State<QuickSavePage>
             decoration: BoxDecoration(
               gradient: _nameController.text.trim().isEmpty
                   ? null
-                  : AppColors.primaryGradient,
+                  : context.colors.primaryGradient,
               color: _nameController.text.trim().isEmpty
-                  ? AppColors.surfaceVariant
+                  ? context.colors.surfaceVariant
                   : null,
               borderRadius: BorderRadius.circular(17.r),
             ),
             child: Text(
               context.l10n.foldersCreate,
-              style: AppTextStyles.button.copyWith(
+              style: context.text.button.copyWith(
                 color: _nameController.text.trim().isEmpty
-                    ? AppColors.textDisabled
-                    : AppColors.onPrimary,
+                    ? context.colors.textDisabled
+                    : context.colors.onPrimary,
               ),
             ),
           ),
@@ -646,20 +646,20 @@ class _QuickSavePageState extends State<QuickSavePage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(_title(context), style: AppTextStyles.titleLarge),
+                  Text(_title(context), style: context.text.titleLarge),
                   SizedBox(height: 2.h),
                   Text(
                     _folders.isEmpty
                         ? context.l10n.quickSaveNeedFolder
                         : context.l10n.quickSavePickFolder,
-                    style: AppTextStyles.bodySmall,
+                    style: context.text.bodySmall,
                   ),
                   if (_skipped > 0) ...[
                     SizedBox(height: 3.h),
                     Text(
                       context.l10n.quickSaveSkipped(_images.length),
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.warning,
+                      style: context.text.caption.copyWith(
+                        color: context.colors.warning,
                       ),
                     ),
                   ],
@@ -678,17 +678,17 @@ class _QuickSavePageState extends State<QuickSavePage>
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
               decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
+                color: context.colors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(15.r),
                 border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.35),
+                  color: context.colors.primary.withValues(alpha: 0.35),
                 ),
               ),
               child: Row(
                 children: [
                   Icon(
                     Icons.create_new_folder_rounded,
-                    color: AppColors.primary,
+                    color: context.colors.primary,
                     size: 19.sp,
                   ),
                   SizedBox(width: 12.w),
@@ -698,18 +698,18 @@ class _QuickSavePageState extends State<QuickSavePage>
                       children: [
                         Text(
                           context.l10n.quickSaveCreateFirstFolder,
-                          style: AppTextStyles.titleSmall,
+                          style: context.text.titleSmall,
                         ),
                         Text(
                           context.l10n.quickSaveCreateFirstFolderWhy,
-                          style: AppTextStyles.caption,
+                          style: context.text.caption,
                         ),
                       ],
                     ),
                   ),
                   Icon(
                     Icons.add_rounded,
-                    color: AppColors.primary,
+                    color: context.colors.primary,
                     size: 19.sp,
                   ),
                 ],
@@ -779,8 +779,8 @@ class _QuickSavePageState extends State<QuickSavePage>
             height: 54.h,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              gradient: _inert ? null : AppColors.primaryGradient,
-              color: _inert ? AppColors.surfaceVariant : null,
+              gradient: _inert ? null : context.colors.primaryGradient,
+              color: _inert ? context.colors.surfaceVariant : null,
               borderRadius: BorderRadius.circular(17.r),
             ),
             child: busy
@@ -789,7 +789,7 @@ class _QuickSavePageState extends State<QuickSavePage>
                     height: 21.w,
                     child: CircularProgressIndicator(
                       strokeWidth: 2.4,
-                      color: AppColors.onPrimary,
+                      color: context.colors.onPrimary,
                     ),
                   )
                 : Row(
@@ -798,8 +798,8 @@ class _QuickSavePageState extends State<QuickSavePage>
                       Icon(
                         Icons.folder_open_rounded,
                         color: _inert
-                            ? AppColors.textDisabled
-                            : AppColors.onPrimary,
+                            ? context.colors.textDisabled
+                            : context.colors.onPrimary,
                         size: 20.sp,
                       ),
                       SizedBox(width: 9.w),
@@ -812,10 +812,10 @@ class _QuickSavePageState extends State<QuickSavePage>
                         _selected != null
                             ? context.l10n.quickSaveFileIn(_selected!.name)
                             : context.l10n.quickSavePickFolder,
-                        style: AppTextStyles.button.copyWith(
+                        style: context.text.button.copyWith(
                           color: _inert
-                              ? AppColors.textDisabled
-                              : AppColors.onPrimary,
+                              ? context.colors.textDisabled
+                              : context.colors.onPrimary,
                         ),
                       ),
                     ],
@@ -900,8 +900,8 @@ class _SharedPreview extends StatelessWidget {
                 height: 50.w,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(13.r),
-                  border: Border.all(color: AppColors.surface, width: 1.5),
-                  color: AppColors.surfaceVariant,
+                  border: Border.all(color: context.colors.surface, width: 1.5),
+                  color: context.colors.surfaceVariant,
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: Image.file(File(images[i].path), fit: BoxFit.cover),
@@ -914,14 +914,14 @@ class _SharedPreview extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                 decoration: BoxDecoration(
-                  gradient: AppColors.primaryGradient,
+                  gradient: context.colors.primaryGradient,
                   borderRadius: BorderRadius.circular(999),
-                  border: Border.all(color: AppColors.surface, width: 1.5),
+                  border: Border.all(color: context.colors.surface, width: 1.5),
                 ),
                 child: Text(
                   '+$hidden',
-                  style: AppTextStyles.caption.asSemiBold.copyWith(
-                    color: AppColors.onPrimary,
+                  style: context.text.caption.asSemiBold.copyWith(
+                    color: context.colors.onPrimary,
                   ),
                 ),
               ),
@@ -954,7 +954,7 @@ class _Sheet extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.colors.surface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
         ),
         child: SafeArea(
@@ -977,7 +977,7 @@ class _Sheet extends StatelessWidget {
                   height: 4.h,
                   margin: EdgeInsets.only(bottom: 18.h),
                   decoration: BoxDecoration(
-                    color: AppColors.border,
+                    color: context.colors.border,
                     borderRadius: BorderRadius.circular(2.r),
                   ),
                 ),
@@ -1008,7 +1008,7 @@ class _FolderChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color accent = tint ?? AppColors.primary;
+    final Color accent = tint ?? context.colors.primary;
 
     return PressableScale(
       scale: 0.94,
@@ -1020,7 +1020,7 @@ class _FolderChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected
               ? accent.withValues(alpha: 0.14)
-              : AppColors.surfaceVariant,
+              : context.colors.surfaceVariant,
           borderRadius: BorderRadius.circular(13.r),
           border: Border.all(
             color: selected ? accent : Colors.transparent,
@@ -1033,15 +1033,15 @@ class _FolderChip extends StatelessWidget {
             Icon(
               icon,
               size: 15.sp,
-              color: selected ? accent : AppColors.textSecondary,
+              color: selected ? accent : context.colors.textSecondary,
             ),
             SizedBox(width: 7.w),
             Text(
               label,
-              style: AppTextStyles.bodySmall.asMedium.copyWith(
+              style: context.text.bodySmall.asMedium.copyWith(
                 color: selected
-                    ? AppColors.textPrimary
-                    : AppColors.textSecondary,
+                    ? context.colors.textPrimary
+                    : context.colors.textSecondary,
               ),
             ),
           ],
@@ -1085,13 +1085,13 @@ class _Status extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: AppTextStyles.titleLarge,
+            style: context.text.titleLarge,
           ),
           SizedBox(height: 3.h),
           Text(
             subtitle,
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodySmall,
+            style: context.text.bodySmall,
           ),
         ],
       ),

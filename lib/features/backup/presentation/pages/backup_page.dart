@@ -215,12 +215,12 @@ class _BackupPageState extends State<BackupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: context.colors.background,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.textPrimary),
-        title: Text(context.l10n.backupTitle, style: AppTextStyles.titleLarge),
+        iconTheme: IconThemeData(color: context.colors.textPrimary),
+        title: Text(context.l10n.backupTitle, style: context.text.titleLarge),
       ),
       body: SafeArea(
         child: ListView(
@@ -228,15 +228,15 @@ class _BackupPageState extends State<BackupPage> {
           children: [
             Text(
               context.l10n.backupIntro,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+              style: context.text.bodyMedium.copyWith(
+                color: context.colors.textSecondary,
               ),
             ),
             SizedBox(height: 24.h),
 
             _Card(
               icon: Icons.save_alt_rounded,
-              tint: AppColors.primary,
+              tint: context.colors.primary,
               title: context.l10n.backupCreateTitle,
               body: context.l10n.backupCreateBody,
               action: PrimaryButton(
@@ -250,7 +250,7 @@ class _BackupPageState extends State<BackupPage> {
 
             _Card(
               icon: Icons.settings_backup_restore_rounded,
-              tint: AppColors.secondary,
+              tint: context.colors.secondary,
               title: context.l10n.restoreTitle,
               body: context.l10n.restoreBody,
               action: PrimaryButton(
@@ -279,8 +279,8 @@ class _BackupPageState extends State<BackupPage> {
                             _job == _Job.restore
                                 ? context.l10n.restoreWorking
                                 : context.l10n.backupWorking,
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
+                            style: context.text.bodySmall.copyWith(
+                              color: context.colors.textSecondary,
                             ),
                           ),
                           SizedBox(height: 8.h),
@@ -289,9 +289,9 @@ class _BackupPageState extends State<BackupPage> {
                             child: LinearProgressIndicator(
                               value: _progress,
                               minHeight: 6.h,
-                              backgroundColor: AppColors.surfaceVariant,
+                              backgroundColor: context.colors.surfaceVariant,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.primary,
+                                context.colors.primary,
                               ),
                             ),
                           ),
@@ -307,14 +307,14 @@ class _BackupPageState extends State<BackupPage> {
                 Icon(
                   Icons.lock_outline_rounded,
                   size: 15.sp,
-                  color: AppColors.textSecondary,
+                  color: context.colors.textSecondary,
                 ),
                 SizedBox(width: 8.w),
                 Expanded(
                   child: Text(
                     context.l10n.backupPrivacyNote,
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
+                    style: context.text.caption.copyWith(
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ),
@@ -347,9 +347,9 @@ class _Card extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(18.w),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -368,15 +368,15 @@ class _Card extends StatelessWidget {
               ),
               SizedBox(width: 12.w),
               Expanded(
-                child: Text(title, style: AppTextStyles.bodyLarge.asMedium),
+                child: Text(title, style: context.text.bodyLarge.asMedium),
               ),
             ],
           ),
           SizedBox(height: 10.h),
           Text(
             body,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+            style: context.text.bodySmall.copyWith(
+              color: context.colors.textSecondary,
             ),
           ),
           SizedBox(height: 16.h),

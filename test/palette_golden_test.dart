@@ -7,6 +7,7 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/widgets/primary_button.dart';
 
 import 'support/test_fonts.dart';
+import 'support/test_theme.dart';
 
 /// Renders the accent doing every job it actually has, in both modes.
 ///
@@ -20,7 +21,8 @@ import 'support/test_fonts.dart';
 void main() {
   Future<void> renderBoard(WidgetTester tester, Brightness brightness) async {
     await loadTestFonts();
-    AppColors.setBrightness(brightness);
+    final AppTypography type = testTypography(brightness);
+    final AppPalette palette = testPalette(brightness);
 
     tester.view.physicalSize = const Size(1080, 1500);
     tester.view.devicePixelRatio = 3;
@@ -31,17 +33,18 @@ void main() {
         designSize: const Size(360, 690),
         minTextAdapt: true,
         builder: (context, _) => MaterialApp(
+          theme: testTheme(brightness),
           debugShowCheckedModeBanner: false,
           home: Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: palette.background,
             body: SafeArea(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
                 children: [
-                  Text('SHOTO', style: AppTextStyles.displayLarge),
+                  Text('SHOTO', style: type.displayLarge),
                   Text(
                     'The accent, doing every job it has',
-                    style: AppTextStyles.bodyMedium,
+                    style: type.bodyMedium,
                   ),
                   const SizedBox(height: 20),
 
@@ -54,10 +57,10 @@ void main() {
                   // job is telling those two apart at a glance. Drawn here
                   // rather than pulled in from the library screen so the board
                   // stays about colour and needs no bloc, locale or locator.
-                  Row(
+                  const Row(
                     children: [
                       _Pill(label: 'All  128', isActive: true),
-                      const SizedBox(width: 8),
+                      SizedBox(width: 8),
                       _Pill(label: 'Favorites', isActive: false),
                     ],
                   ),
@@ -69,11 +72,11 @@ void main() {
                     spacing: 4,
                     runSpacing: 8,
                     children: [
-                      _Dot(color: AppColors.primary, label: 'accent'),
-                      _Dot(color: AppColors.secondary, label: 'move'),
-                      _Dot(color: AppColors.success, label: 'done'),
-                      _Dot(color: AppColors.alert, label: 'delete'),
-                      _Dot(color: AppColors.graphite, label: 'muted'),
+                      _Dot(color: palette.primary, label: 'accent'),
+                      _Dot(color: palette.secondary, label: 'move'),
+                      _Dot(color: palette.success, label: 'done'),
+                      _Dot(color: palette.alert, label: 'delete'),
+                      const _Dot(color: AppPalette.graphite, label: 'muted'),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -83,15 +86,15 @@ void main() {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.08),
+                      color: palette.primary.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(AppRadius.md),
                       border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.25),
+                        color: palette.primary.withValues(alpha: 0.25),
                       ),
                     ),
                     child: Text(
                       'A tinted panel, the way rules and quick save draw one.',
-                      style: AppTextStyles.bodyMedium,
+                      style: type.bodyMedium,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -99,9 +102,9 @@ void main() {
                   // Surface steps, so the accent can be judged against what it
                   // actually sits on rather than against the canvas alone.
                   for (final (Color c, String name) in <(Color, String)>[
-                    (AppColors.surface, 'surface'),
-                    (AppColors.surfaceVariant, 'surfaceVariant'),
-                    (AppColors.surfaceElevated, 'surfaceElevated'),
+                    (palette.surface, 'surface'),
+                    (palette.surfaceVariant, 'surfaceVariant'),
+                    (palette.surfaceElevated, 'surfaceElevated'),
                   ])
                     Container(
                       margin: const EdgeInsets.only(bottom: 8),
@@ -109,11 +112,11 @@ void main() {
                       decoration: BoxDecoration(
                         color: c,
                         borderRadius: BorderRadius.circular(AppRadius.sm),
-                        border: Border.all(color: AppColors.border),
+                        border: Border.all(color: palette.border),
                       ),
                       child: Row(
                         children: [
-                          Text(name, style: AppTextStyles.bodyMedium),
+                          Text(name, style: type.bodyMedium),
                           const Spacer(),
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -121,15 +124,15 @@ void main() {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.primary,
+                              color: palette.primary,
                               borderRadius: BorderRadius.circular(
                                 AppRadius.pill,
                               ),
                             ),
                             child: Text(
                               'PRO',
-                              style: AppTextStyles.caption.copyWith(
-                                color: AppColors.onPrimary,
+                              style: type.caption.copyWith(
+                                color: palette.onPrimary,
                               ),
                             ),
                           ),
@@ -174,16 +177,18 @@ class _Pill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: isActive ? AppColors.primary : AppColors.surface,
+        color: isActive ? context.colors.primary : context.colors.surface,
         borderRadius: BorderRadius.circular(AppRadius.pill),
         border: Border.all(
-          color: isActive ? Colors.transparent : AppColors.border,
+          color: isActive ? Colors.transparent : context.colors.border,
         ),
       ),
       child: Text(
         label,
-        style: AppTextStyles.bodySmall.copyWith(
-          color: isActive ? AppColors.onPrimary : AppColors.textSecondary,
+        style: context.text.bodySmall.copyWith(
+          color: isActive
+              ? context.colors.onPrimary
+              : context.colors.textSecondary,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -209,7 +214,7 @@ class _Dot extends StatelessWidget {
             decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           const SizedBox(height: 6),
-          Text(label, style: AppTextStyles.caption),
+          Text(label, style: context.text.caption),
         ],
       ),
     );

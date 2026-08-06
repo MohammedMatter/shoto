@@ -32,9 +32,9 @@ class SocialSignInButton extends StatelessWidget {
         height: 56.h,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: AppColors.surface,
+            color: context.colors.surface,
             borderRadius: BorderRadius.circular(18.r),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: context.colors.border),
           ),
           child: Center(
             child: AnimatedSwitcher(
@@ -55,7 +55,7 @@ class SocialSignInButton extends StatelessWidget {
                       height: 22.w,
                       child: CircularProgressIndicator(
                         strokeWidth: 2.4,
-                        color: AppColors.textPrimary,
+                        color: context.colors.textPrimary,
                       ),
                     )
                   : Row(
@@ -65,7 +65,7 @@ class SocialSignInButton extends StatelessWidget {
                       children: [
                         SizedBox(width: 22.w, height: 22.w, child: icon),
                         SizedBox(width: 12.w),
-                        Text(label, style: AppTextStyles.button),
+                        Text(label, style: context.text.button),
                       ],
                     ),
             ),

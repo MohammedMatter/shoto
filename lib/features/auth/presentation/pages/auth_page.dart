@@ -35,7 +35,7 @@ class AuthPage extends StatelessWidget {
                 ..showSnackBar(
                   SnackBar(
                     content: Text(state.message.resolve(context)),
-                    backgroundColor: AppColors.error,
+                    backgroundColor: context.colors.error,
                   ),
                 );
             }
@@ -49,30 +49,30 @@ class AuthPage extends StatelessWidget {
             return Stack(
               fit: StackFit.expand,
               children: [
-                _AuthBackground(),
+                const _AuthBackground(),
                 SafeArea(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24.w),
                     child: Column(
                       children: [
                         const Spacer(flex: 3),
-                        ShotoLogo(size: 76),
+                        const ShotoLogo(size: 76),
                         SizedBox(height: 20.h),
                         Text(
                           context.l10n.authWelcome,
-                          style: AppTextStyles.headlineLarge,
+                          style: context.text.headlineLarge,
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 10.h),
                         Text(
                           context.l10n.authSubtitle,
                           textAlign: TextAlign.center,
-                          style: AppTextStyles.bodyMedium,
+                          style: context.text.bodyMedium,
                         ),
                         const Spacer(flex: 4),
                         SocialSignInButton(
                           label: context.l10n.authGoogle,
-                          icon: FaIcon(FontAwesomeIcons.google),
+                          icon: const FaIcon(FontAwesomeIcons.google),
                           isLoading: isGoogleLoading,
                           onPressed: () => context.read<AuthBloc>().add(
                             SignInWithGoogleEvent(),
@@ -84,7 +84,7 @@ class AuthPage extends StatelessWidget {
                             label: context.l10n.authApple,
                             icon: Icon(
                               Icons.apple,
-                              color: AppColors.textPrimary,
+                              color: context.colors.textPrimary,
                               size: 22,
                             ),
                             isLoading: isAppleLoading,
@@ -97,7 +97,7 @@ class AuthPage extends StatelessWidget {
                         Text(
                           context.l10n.authLegal,
                           textAlign: TextAlign.center,
-                          style: AppTextStyles.caption,
+                          style: context.text.caption,
                         ),
                         SizedBox(height: 32.h),
                       ],
@@ -118,6 +118,6 @@ class _AuthBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: AppColors.background);
+    return Container(color: context.colors.background);
   }
 }

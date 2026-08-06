@@ -29,9 +29,11 @@ class ScanReportCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(14.w, 13.h, 14.w, 13.h),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: AppColors.marker.withValues(alpha: 0.35)),
+        border: Border.all(
+          color: context.colors.marker.withValues(alpha: 0.35),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,13 +43,13 @@ class ScanReportCard extends StatelessWidget {
               Icon(
                 Icons.privacy_tip_outlined,
                 size: 17.sp,
-                color: AppColors.marker,
+                color: context.colors.marker,
               ),
               SizedBox(width: 8.w),
               Expanded(
                 child: Text(
                   context.l10n.safeShareFoundTitle(plan.regions.length),
-                  style: AppTextStyles.titleLarge,
+                  style: context.text.titleLarge,
                 ),
               ),
             ],
@@ -62,7 +64,7 @@ class ScanReportCard extends StatelessWidget {
             ],
           ),
           SizedBox(height: 9.h),
-          Text(context.l10n.safeShareFreeScan, style: AppTextStyles.caption),
+          Text(context.l10n.safeShareFreeScan, style: context.text.caption),
         ],
       ),
     );
@@ -78,7 +80,7 @@ class _KindChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool certain = kind.isCertain;
-    final Color accent = certain ? AppColors.error : AppColors.marker;
+    final Color accent = certain ? context.colors.error : context.colors.marker;
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.h),
@@ -91,8 +93,8 @@ class _KindChip extends StatelessWidget {
         // The count only appears when it is more than one — "Phone number 1"
         // reads as a label with a stray digit stuck to it.
         count > 1 ? '${kind.label(context)} ×$count' : kind.label(context),
-        style: AppTextStyles.caption.copyWith(
-          color: AppColors.textPrimary,
+        style: context.text.caption.copyWith(
+          color: context.colors.textPrimary,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -116,7 +118,7 @@ class CoverExplainer extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.fromLTRB(14.w, 12.h, 14.w, 12.h),
       decoration: BoxDecoration(
-        color: AppColors.surfaceVariant,
+        color: context.colors.surfaceVariant,
         borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Column(
@@ -127,17 +129,17 @@ class CoverExplainer extends StatelessWidget {
               Icon(
                 Icons.shield_outlined,
                 size: 15.sp,
-                color: AppColors.textPrimary,
+                color: context.colors.textPrimary,
               ),
               SizedBox(width: 7.w),
               Text(
                 context.l10n.safeShareHowTitle,
-                style: AppTextStyles.titleSmall,
+                style: context.text.titleSmall,
               ),
             ],
           ),
           SizedBox(height: 6.h),
-          Text(context.l10n.safeShareHowBody, style: AppTextStyles.bodySmall),
+          Text(context.l10n.safeShareHowBody, style: context.text.bodySmall),
         ],
       ),
     );

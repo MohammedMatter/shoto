@@ -48,7 +48,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
   Future<void> _openPaywall() async {
     await Navigator.of(
       context,
-    ).push<bool>(FadeSlidePageRoute(builder: (_) => PaywallPage()));
+    ).push<bool>(FadeSlidePageRoute(builder: (_) => const PaywallPage()));
     await sl<ProStatus>().refresh();
   }
 
@@ -88,7 +88,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
 List<Widget> get debugSubscriptionCardStates => [
   _UpgradeCard(onTap: () {}),
   _ProCard(isRestoring: false, isTesterAccess: false, onRestore: () {}),
-  _ProCard(isRestoring: false, isTesterAccess: true, onRestore: null),
+  const _ProCard(isRestoring: false, isTesterAccess: true, onRestore: null),
 ];
 
 /// The pill on the upgrade slab.
@@ -108,13 +108,13 @@ class _ProPill extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.h),
       decoration: BoxDecoration(
         // Legible *on* the accent rather than made of it.
-        color: AppColors.onMarker.withValues(alpha: 0.22),
+        color: context.colors.onMarker.withValues(alpha: 0.22),
         borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
       child: Text(
         context.l10n.subPremiumBadge,
-        style: AppTextStyles.overline.asSemiBold.copyWith(
-          color: AppColors.onMarker,
+        style: context.text.overline.asSemiBold.copyWith(
+          color: context.colors.onMarker,
         ),
       ),
     );
@@ -152,7 +152,7 @@ class _UpgradeCard extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 20.h),
         decoration: BoxDecoration(
-          color: AppColors.primary,
+          color: context.colors.primary,
           borderRadius: BorderRadius.circular(24.r),
         ),
         child: Column(
@@ -164,7 +164,7 @@ class _UpgradeCard extends StatelessWidget {
                 const Spacer(),
                 Icon(
                   Icons.arrow_forward_rounded,
-                  color: AppColors.onMarker,
+                  color: context.colors.onMarker,
                   size: 19.sp,
                 ),
               ],
@@ -172,8 +172,8 @@ class _UpgradeCard extends StatelessWidget {
             SizedBox(height: 16.h),
             Text(
               context.l10n.subUnlockEverything,
-              style: AppTextStyles.headlineMedium.copyWith(
-                color: AppColors.onMarker,
+              style: context.text.headlineMedium.copyWith(
+                color: context.colors.onMarker,
               ),
             ),
             SizedBox(height: 14.h),
@@ -184,15 +184,15 @@ class _UpgradeCard extends StatelessWidget {
                   children: [
                     Icon(
                       feature.icon,
-                      color: AppColors.onMarker.withValues(alpha: 0.85),
+                      color: context.colors.onMarker.withValues(alpha: 0.85),
                       size: 15.sp,
                     ),
                     SizedBox(width: 10.w),
                     Expanded(
                       child: Text(
                         feature.title(context),
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.onMarker,
+                        style: context.text.bodySmall.copyWith(
+                          color: context.colors.onMarker,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -206,8 +206,8 @@ class _UpgradeCard extends StatelessWidget {
             // costs to think about rather than by counting what was left out.
             Text(
               context.l10n.settingsFeatureCount(features.length),
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.onMarker.withValues(alpha: 0.7),
+              style: context.text.caption.copyWith(
+                color: context.colors.onMarker.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -258,12 +258,14 @@ class _ProCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(18.w, 16.h, 18.w, 18.h),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(24.r),
         // Half strength and a hairline. Enough to be the only accented edge in
         // Settings; not enough to out-shout the page title. See the note above
         // for why full strength was wrong.
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.5)),
+        border: Border.all(
+          color: context.colors.primary.withValues(alpha: 0.5),
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,7 +278,7 @@ class _ProCard extends StatelessWidget {
                   isTesterAccess
                       ? context.l10n.subDevUnlock
                       : context.l10n.subPremiumTitle,
-                  style: AppTextStyles.headlineMedium,
+                  style: context.text.headlineMedium,
                 ),
                 SizedBox(height: 3.h),
                 Text(
@@ -286,7 +288,7 @@ class _ProCard extends StatelessWidget {
                   isTesterAccess
                       ? context.l10n.subDevUnlockBody
                       : context.l10n.subPremiumBody,
-                  style: AppTextStyles.bodySmall,
+                  style: context.text.bodySmall,
                 ),
               ],
             ),
@@ -301,7 +303,7 @@ class _ProCard extends StatelessWidget {
               height: 18.w,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: AppColors.primary,
+                color: context.colors.primary,
               ),
             )
           else
@@ -312,7 +314,7 @@ class _ProCard extends StatelessWidget {
                 padding: EdgeInsetsDirectional.only(start: 10.w, top: 2.h),
                 child: Icon(
                   Icons.refresh_rounded,
-                  color: AppColors.textSecondary,
+                  color: context.colors.textSecondary,
                   size: 19.sp,
                 ),
               ),

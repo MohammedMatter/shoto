@@ -19,20 +19,20 @@ Future<bool> showConfirmDialog(
   final bool? result = await showAppDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      backgroundColor: AppColors.surface.withValues(alpha: 0.92),
+      backgroundColor: context.colors.surface.withValues(alpha: 0.92),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: AppColors.border),
+        side: BorderSide(color: context.colors.border),
       ),
-      title: Text(title, style: AppTextStyles.titleLarge),
-      content: Text(message, style: AppTextStyles.bodyMedium),
+      title: Text(title, style: context.text.titleLarge),
+      content: Text(message, style: context.text.bodyMedium),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(dialogContext).pop(false),
           child: Text(
             context.l10n.commonCancel,
-            style: AppTextStyles.button.copyWith(
-              color: AppColors.textSecondary,
+            style: context.text.button.copyWith(
+              color: context.colors.textSecondary,
             ),
           ),
         ),
@@ -40,8 +40,10 @@ Future<bool> showConfirmDialog(
           onPressed: () => Navigator.of(dialogContext).pop(true),
           child: Text(
             confirmLabel ?? context.l10n.commonConfirm,
-            style: AppTextStyles.button.copyWith(
-              color: isDestructive ? AppColors.error : AppColors.primary,
+            style: context.text.button.copyWith(
+              color: isDestructive
+                  ? context.colors.error
+                  : context.colors.primary,
             ),
           ),
         ),

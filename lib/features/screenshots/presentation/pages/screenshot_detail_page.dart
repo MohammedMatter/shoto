@@ -545,9 +545,9 @@ class _TopBar extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppColors.overlay.withValues(alpha: 0.55),
-            AppColors.overlay.withValues(alpha: 0.28),
-            AppColors.overlay.withValues(alpha: 0),
+            AppPalette.overlay.withValues(alpha: 0.55),
+            AppPalette.overlay.withValues(alpha: 0.28),
+            AppPalette.overlay.withValues(alpha: 0),
           ],
           stops: const [0, 0.55, 1],
         ),
@@ -578,7 +578,7 @@ class _TopBar extends StatelessWidget {
                   ),
                   child: Text(
                     context.l10n.countPosition(position, total),
-                    style: AppTextStyles.caption.copyWith(color: Colors.white),
+                    style: context.text.caption.copyWith(color: Colors.white),
                   ),
                 ),
               ),
@@ -666,10 +666,11 @@ class _IntentBar extends StatelessWidget {
                           // With nothing set, the prompt itself is the label —
                           // the control has to say what it is for before it
                           // has anything to report.
-                          state?.ref.label(context) ?? context.l10n.intentPrompt,
+                          state?.ref.label(context) ??
+                              context.l10n.intentPrompt,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.bodySmall.asMedium.copyWith(
+                          style: context.text.bodySmall.asMedium.copyWith(
                             color: Colors.white.withValues(
                               alpha: isDone ? 0.55 : 0.95,
                             ),
@@ -702,7 +703,7 @@ class _IntentBar extends StatelessWidget {
               // thumbnail turns and the same green the sheet's button fills
               // with, so finishing something looks like one event no matter
               // which of the three surfaces you happened to be on.
-              fill: isDone ? AppColors.success : null,
+              fill: isDone ? context.colors.success : null,
               tint: Colors.white,
               onTap: () {
                 Haptics.confirm();
@@ -777,7 +778,7 @@ class _ActionBar extends StatelessWidget {
                       : Icons.favorite_border_rounded,
                   // The one coloured icon in the row: it is the only action
                   // here that has an on/off state to communicate.
-                  tint: item.isFavorite ? AppColors.error : Colors.white,
+                  tint: item.isFavorite ? context.colors.error : Colors.white,
                   label: context.l10n.detailFavorite,
                   onTap: onFavorite,
                   // Favouriting changes an outline into a filled shape and
@@ -865,7 +866,7 @@ class _BarAction extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.caption.copyWith(
+              style: context.text.caption.copyWith(
                 color: Colors.white.withValues(alpha: 0.85),
                 fontSize: 9.5.sp,
                 height: 1,
@@ -907,13 +908,13 @@ abstract class _ChromePalette {
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
     colors: [
-      AppColors.overlay.withValues(alpha: 0.7),
-      AppColors.overlay.withValues(alpha: 0.78),
+      AppPalette.overlay.withValues(alpha: 0.7),
+      AppPalette.overlay.withValues(alpha: 0.78),
     ],
   );
 
   /// The back button and the counter — icons and one short line.
-  static Color get circleFill => AppColors.overlay.withValues(alpha: 0.66);
+  static Color get circleFill => AppPalette.overlay.withValues(alpha: 0.66);
 
   /// The lit edge. Unchanged from the old white glass, and it still earns its
   /// place: over a dark screenshot the fill alone has no boundary, and this is
@@ -964,8 +965,8 @@ class _GlassCircle extends StatelessWidget {
             duration: AppMotion.duration(context, AppMotion.normal),
             switchInCurve: AppMotion.standard,
             switchOutCurve: AppMotion.standard,
-            transitionBuilder:
-                (Widget child, Animation<double> animation) => FadeTransition(
+            transitionBuilder: (Widget child, Animation<double> animation) =>
+                FadeTransition(
                   opacity: animation,
                   child: ScaleTransition(
                     scale: Tween<double>(begin: 0.6, end: 1).animate(animation),

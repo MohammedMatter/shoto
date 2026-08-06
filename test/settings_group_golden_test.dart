@@ -10,6 +10,7 @@ import 'package:shoto/features/settings/presentation/widgets/settings_tiles.dart
 import 'package:shoto/l10n/app_localizations.dart';
 
 import 'support/test_fonts.dart';
+import 'support/test_theme.dart';
 
 /// Renders the Settings building blocks so the layout can be *looked at*.
 ///
@@ -23,7 +24,9 @@ import 'support/test_fonts.dart';
 void main() {
   testWidgets('settings groups render', (WidgetTester tester) async {
     await loadTestFonts();
-    AppColors.setBrightness(Brightness.dark);
+    const Brightness brightness = Brightness.dark;
+    final AppPalette palette = testPalette(brightness);
+    final AppTypography type = testTypography(brightness);
 
     tester.view.physicalSize = const Size(1080, 2100);
     tester.view.devicePixelRatio = 3;
@@ -34,6 +37,7 @@ void main() {
         designSize: const Size(360, 690),
         minTextAdapt: true,
         builder: (context, _) => MaterialApp(
+          theme: testTheme(brightness),
           debugShowCheckedModeBanner: false,
           // ThemeModeSelector reads `context.l10n` for its segment labels, so
           // without these it throws on a null AppLocalizations and this file
@@ -42,12 +46,12 @@ void main() {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: palette.background,
             body: SafeArea(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
                 children: [
-                  Text('Settings', style: AppTextStyles.headlineLarge),
+                  Text('Settings', style: type.headlineLarge),
                   SettingsGroup(
                     title: 'Appearance',
                     children: [

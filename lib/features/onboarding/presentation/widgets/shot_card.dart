@@ -55,11 +55,11 @@ class ShotCard extends StatelessWidget {
       height: size.height,
       padding: EdgeInsets.all(7.w),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         borderRadius: mark == ShotMark.filed
             ? null
             : BorderRadius.circular(AppRadius.sm),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: _Contents(seed: seed, mark: mark),
     );
@@ -119,13 +119,13 @@ class _Contents extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.w),
                 decoration: BoxDecoration(
-                  color: AppColors.textPrimary,
+                  color: context.colors.textPrimary,
                   borderRadius: BorderRadius.circular(3),
                 ),
                 child: Text(
                   '•••• •••• ••••',
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.background,
+                  style: context.text.caption.copyWith(
+                    color: context.colors.background,
                     fontSize: 5.sp,
                     height: 1,
                   ),
@@ -154,7 +154,7 @@ class _Line extends StatelessWidget {
       decoration: BoxDecoration(
         // The one place colour appears on a card: a search hit. It is the
         // only thing on the card the user is being asked to notice.
-        color: lit ? AppColors.secondary : AppColors.surfaceElevated,
+        color: lit ? context.colors.secondary : context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(2),
       ),
     );
@@ -174,7 +174,7 @@ class _Block extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: AppColors.surfaceElevated,
+        color: context.colors.surfaceElevated,
         borderRadius: BorderRadius.circular(radius),
       ),
     );

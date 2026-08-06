@@ -35,11 +35,11 @@ class SubscriptionPackageCard extends StatelessWidget {
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary.withValues(alpha: 0.12)
-              : AppColors.surface,
+              ? context.colors.primary.withValues(alpha: 0.12)
+              : context.colors.surface,
           borderRadius: BorderRadius.circular(18.r),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.border,
+            color: isSelected ? context.colors.primary : context.colors.border,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -53,9 +53,11 @@ class SubscriptionPackageCard extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isSelected ? AppColors.primary : Colors.transparent,
+                color: isSelected ? context.colors.primary : Colors.transparent,
                 border: Border.all(
-                  color: isSelected ? AppColors.primary : AppColors.border,
+                  color: isSelected
+                      ? context.colors.primary
+                      : context.colors.border,
                   width: 2,
                 ),
               ),
@@ -69,7 +71,11 @@ class SubscriptionPackageCard extends StatelessWidget {
                   curve: AppMotion.standard,
                   // No longer const: onMarker now flips with the theme, so
                   // it cannot be baked in at compile time.
-                  child: Icon(Icons.check, color: AppColors.onMarker, size: 14),
+                  child: Icon(
+                    Icons.check,
+                    color: context.colors.onMarker,
+                    size: 14,
+                  ),
                 ),
               ),
             ),
@@ -80,7 +86,7 @@ class SubscriptionPackageCard extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(title, style: AppTextStyles.titleLarge),
+                      Text(title, style: context.text.titleLarge),
                       if (badgeLabel != null) ...[
                         SizedBox(width: 8.w),
                         Container(
@@ -89,13 +95,13 @@ class SubscriptionPackageCard extends StatelessWidget {
                             vertical: 2.h,
                           ),
                           decoration: BoxDecoration(
-                            gradient: AppColors.primaryGradient,
+                            gradient: context.colors.primaryGradient,
                             borderRadius: BorderRadius.circular(8.r),
                           ),
                           child: Text(
                             badgeLabel!,
-                            style: AppTextStyles.caption.asSemiBold.copyWith(
-                              color: AppColors.onMarker,
+                            style: context.text.caption.asSemiBold.copyWith(
+                              color: context.colors.onMarker,
                             ),
                           ),
                         ),
@@ -108,8 +114,8 @@ class SubscriptionPackageCard extends StatelessWidget {
             Text.rich(
               TextSpan(
                 children: [
-                  TextSpan(text: priceString, style: AppTextStyles.titleLarge),
-                  TextSpan(text: periodLabel, style: AppTextStyles.bodySmall),
+                  TextSpan(text: priceString, style: context.text.titleLarge),
+                  TextSpan(text: periodLabel, style: context.text.bodySmall),
                 ],
               ),
             ),

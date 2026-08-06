@@ -92,7 +92,7 @@ class _ProWelcomePageState extends State<ProWelcomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.background,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 32.w),
@@ -133,14 +133,14 @@ class _ProWelcomePageState extends State<ProWelcomePage>
                       SizedBox(height: 14.h),
                       Text(
                         context.l10n.proWelcomeTitle,
-                        style: AppTextStyles.displayLarge,
+                        style: context.text.displayLarge,
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 8.h),
                       Text(
                         context.l10n.proWelcomeBody,
-                        style: AppTextStyles.bodyLarge.copyWith(
-                          color: AppColors.textSecondary,
+                        style: context.text.bodyLarge.copyWith(
+                          color: context.colors.textSecondary,
                         ),
                         textAlign: TextAlign.center,
                       ),

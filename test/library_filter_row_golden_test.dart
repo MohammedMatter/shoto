@@ -5,6 +5,7 @@ import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/routes/app_sheet.dart';
 import 'package:shoto/core/theme/app_colors.dart';
+import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
@@ -15,6 +16,7 @@ import 'package:shoto/features/screenshots/presentation/widgets/screenshots_filt
 import 'package:shoto/l10n/app_localizations.dart';
 
 import 'support/test_fonts.dart';
+import 'support/test_theme.dart';
 
 /// The library's filter strip and the sheet the content traits moved into, in
 /// the states that actually matter, so the design can be *looked at*.
@@ -35,10 +37,18 @@ const Map<ContentTrait, int> _counts = <ContentTrait, int>{
   ContentTrait.event: 2,
 };
 
-Widget _wrap(Widget child) => ScreenUtilInit(
+/// Takes a *builder* rather than a built widget, and that is load-bearing.
+///
+/// `testTheme` builds the app's real `ThemeData`, whose `TextTheme` is a set
+/// of concrete styles sized in `.sp` — so constructing it reads ScreenUtil,
+/// and reading ScreenUtil before [ScreenUtilInit] has run throws. Passing
+/// `_strip(...)` as an argument evaluated it one step too early; passing
+/// `() => _strip(...)` runs it inside the builder, where the app itself
+/// builds its themes.
+Widget _wrap(Widget Function() build) => ScreenUtilInit(
   designSize: const Size(360, 690),
   minTextAdapt: true,
-  builder: (context, _) => child,
+  builder: (context, _) => build(),
 );
 
 Widget _strip({
@@ -46,14 +56,17 @@ Widget _strip({
   required LibraryFilter filter,
   ContentTrait? lens,
   int unreadCount = 0,
+  Brightness brightness = Brightness.dark,
 }) {
+  final AppPalette palette = testPalette(brightness);
   return MaterialApp(
+    theme: testTheme(brightness),
     debugShowCheckedModeBanner: false,
     locale: locale,
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     home: Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: palette.background,
       body: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -93,16 +106,19 @@ Widget _sheetHost({
   int unreadCount = 0,
   bool isScanning = false,
   Map<ContentTrait, int> counts = _counts,
+  Brightness brightness = Brightness.dark,
 }) {
+  final AppPalette palette = testPalette(brightness);
   return MaterialApp(
     key: ValueKey<String>(slot),
+    theme: testTheme(brightness),
     debugShowCheckedModeBanner: false,
     locale: locale,
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     home: Builder(
       builder: (context) => Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: palette.background,
         body: Center(
           child: ElevatedButton(
             // The body directly, not `showLibraryViewSheet` — that one now
@@ -173,10 +189,16 @@ void main() {
     if (!sl.isRegistered<AppPreferences>()) {
       sl.registerLazySingleton<AppPreferences>(() => AppPreferences());
     }
-  });
-
-  setUp(() {
-    AppColors.setBrightness(Brightness.dark);
+    // The density control moved into this sheet when the Library header went
+    // from four buttons to three, and this file was not updated with it — so
+    // the sheet half of the generator threw on every run. It never showed up
+    // as a failure because goldens are skipped unless `--update-goldens` is
+    // passed, which is exactly the blind spot a generation-only test has.
+    if (!sl.isRegistered<GridDensityController>()) {
+      sl.registerLazySingleton<GridDensityController>(
+        () => GridDensityController(),
+      );
+    }
   });
 
   testWidgets('filter strip states', (WidgetTester tester) async {
@@ -193,7 +215,9 @@ void main() {
     //    controls above the grid.
     await _shoot(
       tester,
-      _wrap(_strip(locale: const Locale('en'), filter: LibraryFilter.all)),
+      _wrap(
+        () => _strip(locale: const Locale('en'), filter: LibraryFilter.all),
+      ),
       'library_strip_1_resting',
     );
 
@@ -201,7 +225,10 @@ void main() {
     //    figure that was tapped.
     await _shoot(
       tester,
-      _wrap(_strip(locale: const Locale('en'), filter: LibraryFilter.unsorted)),
+      _wrap(
+        () =>
+            _strip(locale: const Locale('en'), filter: LibraryFilter.unsorted),
+      ),
       'library_strip_2_unsorted',
     );
 
@@ -210,7 +237,7 @@ void main() {
     await _shoot(
       tester,
       _wrap(
-        _strip(
+        () => _strip(
           locale: const Locale('en'),
           filter: LibraryFilter.all,
           lens: ContentTrait.link,
@@ -225,7 +252,7 @@ void main() {
     await _shoot(
       tester,
       _wrap(
-        _strip(
+        () => _strip(
           locale: const Locale('ar'),
           filter: LibraryFilter.unsorted,
           lens: ContentTrait.link,
@@ -235,11 +262,14 @@ void main() {
       'library_strip_4_arabic_rtl',
     );
 
-    AppColors.setBrightness(Brightness.light);
     await _shoot(
       tester,
       _wrap(
-        _strip(locale: const Locale('en'), filter: LibraryFilter.favorites),
+        () => _strip(
+          locale: const Locale('en'),
+          filter: LibraryFilter.favorites,
+          brightness: Brightness.light,
+        ),
       ),
       'library_strip_5_light',
     );
@@ -259,7 +289,11 @@ void main() {
     await _shoot(
       tester,
       _wrap(
-        _sheetHost(slot: 'full', locale: const Locale('en'), unreadCount: 87),
+        () => _sheetHost(
+          slot: 'full',
+          locale: const Locale('en'),
+          unreadCount: 87,
+        ),
       ),
       'library_sheet_1_full',
       target: sheet,
@@ -271,7 +305,7 @@ void main() {
     await _shoot(
       tester,
       _wrap(
-        _sheetHost(
+        () => _sheetHost(
           slot: 'lens',
           locale: const Locale('en'),
           lens: ContentTrait.sensitive,
@@ -287,7 +321,7 @@ void main() {
     await _shoot(
       tester,
       _wrap(
-        _sheetHost(
+        () => _sheetHost(
           slot: 'unread',
           locale: const Locale('en'),
           unreadCount: 12,
@@ -302,7 +336,7 @@ void main() {
     await _shoot(
       tester,
       _wrap(
-        _sheetHost(
+        () => _sheetHost(
           slot: 'scanning',
           locale: const Locale('ar'),
           unreadCount: 12,
@@ -328,7 +362,7 @@ void main() {
       await _shoot(
         tester,
         _wrap(
-          _sheetHost(
+          () => _sheetHost(
             slot: code,
             locale: Locale(code),
             lens: ContentTrait.contact,

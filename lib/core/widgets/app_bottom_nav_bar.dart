@@ -29,11 +29,11 @@ class AppNavItem {
 ///    shadow was the problem: a wide dark blur on a near-black canvas is a
 ///    smudge, and it made the bar the heaviest object in a deliberately quiet
 ///    interface. (That shadow is now gone from the whole app — see
-///    [AppColors].)
+///    [AppPalette].)
 /// 2. No bar at all — items straight over the page. Honest, and unreadable
 ///    over a library of other people's screenshots.
 /// 3. Flat `graphite` at 70%, then 90%. A mid grey is the universal language
-///    of *disabled*, which is exactly why [AppColors.marker] refuses to be
+///    of *disabled*, which is exactly why [AppPalette.marker] refuses to be
 ///    one, and at 90% it stopped being translucent at all.
 /// 4. Frost with a fill **lighter than the canvas** — `#3D3D3D` over a
 ///    `#1A1A1A` page. This is the interesting failure: it read as fog. A
@@ -42,7 +42,7 @@ class AppNavItem {
 ///    every pixel towards mid grey is what haze does.
 ///
 /// So: the fill is **darker than the canvas and barely there** — a few points
-/// down from [AppColors.background], at just over half alpha. The blur does the
+/// down from [AppPalette.background], at just over half alpha. The blur does the
 /// separating and the fill only settles it, which is the way round it has to be
 /// for glass. The screenshots scrolling underneath stay visible as soft shape
 /// and colour, which is the entire cue that this bar is floating over the page
@@ -116,7 +116,7 @@ class AppBottomNavBar extends StatelessWidget {
                 // is glass. Over the bare page the bar is then almost nothing —
                 // which is correct, and why [GlassRim] is what gives it its
                 // shape.
-                colors: AppColors.isDark
+                colors: context.colors.isDark
                     ? [
                         const Color(0xFF242424).withValues(alpha: 0.44),
                         const Color(0xFF1C1C1C).withValues(alpha: 0.56),
@@ -187,7 +187,7 @@ class _NavItemView extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 5.h),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),
-          gradient: isActive ? AppColors.primaryGradient : null,
+          gradient: isActive ? context.colors.primaryGradient : null,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -198,7 +198,9 @@ class _NavItemView extends StatelessWidget {
               child: Icon(
                 isActive ? item.activeIcon : item.icon,
                 size: 19.sp,
-                color: isActive ? AppColors.onPrimary : AppColors.textSecondary,
+                color: isActive
+                    ? context.colors.onPrimary
+                    : context.colors.textSecondary,
               ),
             ),
             // The label is what makes a four-tab bar readable. With icons
@@ -208,16 +210,16 @@ class _NavItemView extends StatelessWidget {
               item.label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.caption
+              style: context.text.caption
                   .weight(
-                    isActive ? AppTextStyles.semiBold : AppTextStyles.regular,
+                    isActive ? AppTypography.semiBold : AppTypography.regular,
                   )
                   .copyWith(
                     fontSize: 9.5.sp,
                     height: 1,
                     color: isActive
-                        ? AppColors.onPrimary
-                        : AppColors.textSecondary,
+                        ? context.colors.onPrimary
+                        : context.colors.textSecondary,
                   ),
             ),
             SizedBox(height: 3.h),

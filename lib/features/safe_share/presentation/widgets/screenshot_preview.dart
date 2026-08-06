@@ -60,7 +60,7 @@ class ScreenshotPreview extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadius.md),
         child: ColoredBox(
-          color: AppColors.surfaceVariant,
+          color: context.colors.surfaceVariant,
           child: AspectRatio(
             aspectRatio: imageSize.width / imageSize.height,
             child: Stack(
@@ -82,7 +82,7 @@ class ScreenshotPreview extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: Padding(
                       padding: EdgeInsets.only(bottom: 10.h),
-                      child: _BusyPill(),
+                      child: const _BusyPill(),
                     ),
                   ),
               ],
@@ -117,14 +117,16 @@ class ScreenshotPreview extends StatelessWidget {
 /// Sits on the picture rather than replacing it: the point of the debounce is
 /// that the previous result stays readable while the next one is drawn.
 class _BusyPill extends StatelessWidget {
+  const _BusyPill();
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: AppColors.background.withValues(alpha: 0.86),
+        color: context.colors.background.withValues(alpha: 0.86),
         borderRadius: BorderRadius.circular(AppRadius.pill),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -134,13 +136,15 @@ class _BusyPill extends StatelessWidget {
             height: 11.w,
             child: CircularProgressIndicator(
               strokeWidth: 1.8,
-              color: AppColors.primary,
+              color: context.colors.primary,
             ),
           ),
           SizedBox(width: 7.w),
           Text(
             context.l10n.safeShareBuilding,
-            style: AppTextStyles.caption.copyWith(color: AppColors.textPrimary),
+            style: context.text.caption.copyWith(
+              color: context.colors.textPrimary,
+            ),
           ),
         ],
       ),
@@ -181,15 +185,17 @@ class _WithMarkers extends StatelessWidget {
           children: [
             Image.file(file, fit: BoxFit.fill),
             // The colour is read here, in a build that reruns on a theme
-            // change, and handed to the painter. A painter that read
-            // `AppColors` itself would keep whatever colour it was first
-            // built with, because `shouldRepaint` has no way to notice a
-            // global changed underneath it.
+            // change, and handed to the painter. A [CustomPainter] has no
+            // `BuildContext` and so cannot read the palette itself: it would
+            // have to be given one from somewhere, and `shouldRepaint` has no
+            // way to notice that something it closed over has changed.
             //
             // The wash is 8% so the eye finds the region at a glance; any
             // heavier and it starts doing the job the subscription is for.
             if (rects.isNotEmpty)
-              CustomPaint(painter: _RegionsOutline(rects, AppColors.marker)),
+              CustomPaint(
+                painter: _RegionsOutline(rects, context.colors.marker),
+              ),
           ],
         );
       },

@@ -90,7 +90,7 @@ class _ShareIntentListenerState extends State<ShareIntentListener> {
           ..showSnackBar(
             SnackBar(
               content: Text(context.l10n.shareSavedCount(count)),
-              backgroundColor: AppColors.surfaceVariant,
+              backgroundColor: context.colors.surfaceVariant,
             ),
           );
       },

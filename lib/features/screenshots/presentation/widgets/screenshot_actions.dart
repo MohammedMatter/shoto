@@ -56,15 +56,15 @@ Future<void> showScreenshotQuickActionsSheet(
                 padding: EdgeInsetsDirectional.fromSTEB(20.w, 8.h, 20.w, 14.h),
                 child: IntentSection(item: item, bloc: bloc),
               ),
-              Divider(height: 1, color: AppColors.border),
+              Divider(height: 1, color: context.colors.border),
               SizedBox(height: 6.h),
               _QuickActionTile(
                 icon: item.isFavorite
                     ? Icons.favorite_rounded
                     : Icons.favorite_border_rounded,
                 iconColor: item.isFavorite
-                    ? AppColors.error
-                    : AppColors.textPrimary,
+                    ? context.colors.error
+                    : context.colors.textPrimary,
                 label: item.isFavorite
                     ? context.l10n.detailUnfavorite
                     : context.l10n.detailAddFavorite,
@@ -83,7 +83,7 @@ Future<void> showScreenshotQuickActionsSheet(
               ),
               _QuickActionTile(
                 icon: Icons.drive_file_move_rounded,
-                iconColor: AppColors.secondary,
+                iconColor: context.colors.secondary,
                 label: context.l10n.foldersMoveTitle,
                 onTap: () async {
                   Navigator.of(sheetContext).pop();
@@ -103,7 +103,7 @@ Future<void> showScreenshotQuickActionsSheet(
               ),
               _QuickActionTile(
                 icon: Icons.delete_outline_rounded,
-                iconColor: AppColors.error,
+                iconColor: context.colors.error,
                 label: context.l10n.commonDelete,
                 onTap: () async {
                   Navigator.of(sheetContext).pop();
@@ -165,11 +165,11 @@ class _QuickActionTile extends StatelessWidget {
       scale: 0.98,
       onTap: onTap,
       child: ListTile(
-        leading: Icon(icon, color: iconColor ?? AppColors.textPrimary),
+        leading: Icon(icon, color: iconColor ?? context.colors.textPrimary),
         title: Text(
           label,
-          style: AppTextStyles.bodyLarge.copyWith(
-            color: iconColor ?? AppColors.textPrimary,
+          style: context.text.bodyLarge.copyWith(
+            color: iconColor ?? context.colors.textPrimary,
           ),
         ),
       ),

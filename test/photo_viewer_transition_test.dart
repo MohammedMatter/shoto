@@ -25,7 +25,7 @@ void main() {
             behavior: HitTestBehavior.opaque,
             onTap: () => Navigator.of(context).push(
               PhotoViewerRoute(
-                builder: (_) => Scaffold(
+                builder: (_) => const Scaffold(
                   backgroundColor: Colors.black,
                   body: Center(
                     child: PhotoHero(
@@ -34,7 +34,7 @@ void main() {
                         key: destKey,
                         width: 300,
                         height: 600,
-                        child: const ColoredBox(color: Colors.red),
+                        child: ColoredBox(color: Colors.red),
                       ),
                     ),
                   ),

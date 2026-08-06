@@ -206,7 +206,7 @@ class _LibraryViewSheet extends StatelessWidget {
                     Expanded(
                       child: Text(
                         context.l10n.settingsGridDensity,
-                        style: AppTextStyles.headlineMedium,
+                        style: context.text.headlineMedium,
                       ),
                     ),
                     SizedBox(width: 12.w),
@@ -222,7 +222,7 @@ class _LibraryViewSheet extends StatelessWidget {
               SizedBox(height: 20.h),
               Text(
                 context.l10n.librarySortLabel,
-                style: AppTextStyles.headlineMedium,
+                style: context.text.headlineMedium,
               ),
               SizedBox(height: 8.h),
               for (final LibrarySort value in LibrarySort.values)
@@ -245,14 +245,14 @@ class _LibraryViewSheet extends StatelessWidget {
                 SizedBox(height: 18.h),
                 Text(
                   context.l10n.libraryShowOnly,
-                  style: AppTextStyles.headlineMedium,
+                  style: context.text.headlineMedium,
                 ),
                 SizedBox(height: 8.h),
                 // "Everything" is a row rather than an implied state, because
                 // leaving a filter has to be as reachable as entering one.
                 _TraitRow(
                   icon: Icons.grid_view_rounded,
-                  accent: AppColors.textSecondary,
+                  accent: context.colors.textSecondary,
                   label: context.l10n.libraryShowEverything,
                   count: null,
                   isCurrent: lens == null,
@@ -264,7 +264,7 @@ class _LibraryViewSheet extends StatelessWidget {
                 for (final ContentTrait trait in offered)
                   _TraitRow(
                     icon: trait.icon,
-                    accent: trait.accent,
+                    accent: trait.accent(context),
                     label: trait.label(context),
                     count: traitCounts[trait] ?? 0,
                     isCurrent: lens == trait,
@@ -324,16 +324,18 @@ class _SortRow extends StatelessWidget {
       leading: Icon(
         // The arrows survive, but only beside the words that explain them.
         sort.isNewestFirst ? Icons.south_rounded : Icons.north_rounded,
-        color: isCurrent ? AppColors.primary : AppColors.textSecondary,
+        color: isCurrent
+            ? context.colors.primary
+            : context.colors.textSecondary,
       ),
       title: Text(
         label,
-        style: AppTextStyles.bodyLarge.weight(
+        style: context.text.bodyLarge.weight(
           isCurrent ? FontWeight.w600 : FontWeight.w400,
         ),
       ),
       trailing: isCurrent
-          ? Icon(Icons.check_rounded, color: AppColors.primary)
+          ? Icon(Icons.check_rounded, color: context.colors.primary)
           : null,
       onTap: onTap,
     );
@@ -369,12 +371,12 @@ class _TraitRow extends StatelessWidget {
       leading: Icon(icon, color: accent),
       title: Text(
         count == null ? label : context.l10n.countChip(label, count!),
-        style: AppTextStyles.bodyLarge.weight(
+        style: context.text.bodyLarge.weight(
           isCurrent ? FontWeight.w600 : FontWeight.w400,
         ),
       ),
       trailing: isCurrent
-          ? Icon(Icons.check_rounded, color: AppColors.primary)
+          ? Icon(Icons.check_rounded, color: context.colors.primary)
           : null,
       onTap: onTap,
     );
@@ -403,15 +405,17 @@ class _ScanRow extends StatelessWidget {
               height: 22.sp,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  context.colors.primary,
+                ),
               ),
             )
-          : Icon(Icons.auto_awesome_rounded, color: AppColors.primary),
+          : Icon(Icons.auto_awesome_rounded, color: context.colors.primary),
       title: Text(
         isScanning
             ? context.l10n.libraryScanning
             : context.l10n.libraryScanPrompt(count),
-        style: AppTextStyles.bodyLarge,
+        style: context.text.bodyLarge,
       ),
       onTap: isScanning ? null : onTap,
     );

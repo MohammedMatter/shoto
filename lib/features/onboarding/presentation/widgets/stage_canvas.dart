@@ -111,14 +111,14 @@ class StageCanvas extends StatelessWidget {
 /// The light behind the cards.
 ///
 /// The screen is achromatic on purpose everywhere else, and the reason is
-/// written down in [AppColors]: the app frames *other people's screenshots*,
+/// written down in [AppPalette]: the app frames *other people's screenshots*,
 /// so the frame must not have a temperature the pictures inside it do not
 /// share. On this screen there are no photographs — every card is drawn — so
 /// that constraint is not the one operating here, and the sequence was paying
 /// its price for nothing.
 ///
 /// What it must still protect is the **search hit**. A line of a card turning
-/// [AppColors.secondary] is the one moment colour is allowed to mean
+/// [AppPalette.secondary] is the one moment colour is allowed to mean
 /// something, and it only reads because nothing else on the screen competes.
 ///
 /// Three things keep that true, and they are the constraints to check against
@@ -224,7 +224,7 @@ class _Wash extends StatelessWidget {
     // So the number that is held constant is the *effect*, not the alpha —
     // which is the same reason the accent itself is two hand-picked values
     // rather than one lightened.
-    final double peak = AppColors.isDark ? 0.40 : 0.17;
+    final double peak = context.colors.isDark ? 0.40 : 0.17;
     final double alpha = peak - t * (peak * 0.35);
 
     return IgnorePointer(
@@ -234,9 +234,9 @@ class _Wash extends StatelessWidget {
             center: Alignment(cx, cy * yScale),
             radius: radius,
             colors: [
-              AppColors.secondary.withValues(alpha: alpha),
-              AppColors.secondary.withValues(alpha: alpha * 0.34),
-              AppColors.secondary.withValues(alpha: 0),
+              context.colors.secondary.withValues(alpha: alpha),
+              context.colors.secondary.withValues(alpha: alpha * 0.34),
+              context.colors.secondary.withValues(alpha: 0),
             ],
             stops: const [0, 0.46, 1],
           ),
@@ -295,9 +295,9 @@ class _Prop extends StatelessWidget {
       switchOutCurve: AppMotion.standard,
       child: switch (prop) {
         StageProp.none => const SizedBox.shrink(key: ValueKey('none')),
-        StageProp.folder => _FolderProp(key: const ValueKey('folder')),
-        StageProp.search => _SearchProp(key: const ValueKey('search')),
-        StageProp.safeShare => _SafeShareProp(key: const ValueKey('safeShare')),
+        StageProp.folder => const _FolderProp(key: ValueKey('folder')),
+        StageProp.search => const _SearchProp(key: ValueKey('search')),
+        StageProp.safeShare => const _SafeShareProp(key: ValueKey('safeShare')),
       },
     );
   }
@@ -313,9 +313,9 @@ class _FolderProp extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.pill),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -323,15 +323,19 @@ class _FolderProp extends StatelessWidget {
             Icon(
               Icons.folder_rounded,
               size: 15.sp,
-              color: AppColors.textSecondary,
+              color: context.colors.textSecondary,
             ),
             SizedBox(width: 8.w),
             Text(
               context.l10n.onbFolderExample,
-              style: AppTextStyles.bodySmall.asMedium,
+              style: context.text.bodySmall.asMedium,
             ),
             SizedBox(width: 8.w),
-            Icon(Icons.check_rounded, size: 15.sp, color: AppColors.success),
+            Icon(
+              Icons.check_rounded,
+              size: 15.sp,
+              color: context.colors.success,
+            ),
           ],
         ),
       ),
@@ -350,22 +354,22 @@ class _SearchProp extends StatelessWidget {
         width: 200.w,
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
         decoration: BoxDecoration(
-          color: AppColors.surfaceVariant,
+          color: context.colors.surfaceVariant,
           borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           children: [
             Icon(
               Icons.search_rounded,
               size: 16.sp,
-              color: AppColors.textSecondary,
+              color: context.colors.textSecondary,
             ),
             SizedBox(width: 9.w),
             Text(
               context.l10n.onbSearchExample,
-              style: AppTextStyles.bodySmall.asMedium.copyWith(
-                color: AppColors.textPrimary,
+              style: context.text.bodySmall.asMedium.copyWith(
+                color: context.colors.textPrimary,
               ),
             ),
             // The caret sits still. A blinking one is motion with nothing to
@@ -374,7 +378,7 @@ class _SearchProp extends StatelessWidget {
               width: 1.5,
               height: 13.sp,
               margin: EdgeInsetsDirectional.only(start: 2.w),
-              color: AppColors.secondary,
+              color: context.colors.secondary,
             ),
           ],
         ),
@@ -419,9 +423,9 @@ class _SafeShareProp extends StatelessWidget {
         width: 268.w,
         padding: EdgeInsets.fromLTRB(16.w, 13.h, 16.w, 13.h),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.colors.border),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -431,10 +435,10 @@ class _SafeShareProp extends StatelessWidget {
             // and this value is not disabled — it is gone.
             Text(
               _before,
-              style: AppTextStyles.monoBody.copyWith(
-                color: AppColors.textSecondary,
+              style: context.text.monoBody.copyWith(
+                color: context.colors.textSecondary,
                 decoration: TextDecoration.lineThrough,
-                decorationColor: AppColors.textSecondary,
+                decorationColor: context.colors.textSecondary,
               ),
             ),
             SizedBox(height: 7.h),
@@ -443,14 +447,14 @@ class _SafeShareProp extends StatelessWidget {
                 Icon(
                   Icons.shield_moon_rounded,
                   size: 15.sp,
-                  color: AppColors.secondary,
+                  color: context.colors.secondary,
                 ),
                 SizedBox(width: 9.w),
                 Expanded(
                   child: Text(
                     _after,
-                    style: AppTextStyles.monoBody.copyWith(
-                      color: AppColors.textPrimary,
+                    style: context.text.monoBody.copyWith(
+                      color: context.colors.textPrimary,
                     ),
                   ),
                 ),

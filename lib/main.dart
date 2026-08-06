@@ -15,7 +15,6 @@ import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/services/local_identity.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/core/theme/app_colors.dart';
-import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/theme/app_theme.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
@@ -69,7 +68,7 @@ void main() async {
       // afford anything.
       sl<FunnelLog>().load(),
     ]);
-    runApp(QuickSaveApp());
+    runApp(const QuickSaveApp());
     return;
   }
 
@@ -130,7 +129,7 @@ void main() async {
   // would mean a subscriber's first frame has no badge on it.
   await sl<ProStatus>().load();
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 /// The whole app when launched from another app's share sheet.
@@ -143,30 +142,24 @@ class QuickSaveApp extends StatelessWidget {
       designSize: const Size(360, 690),
       minTextAdapt: true,
       builder: (context, child) {
-        AppTextStyles.setLanguage(sl<LocaleController>().effectiveLanguage);
+        final AppLanguage language = sl<LocaleController>().effectiveLanguage;
 
         // Follows the theme the user picked *inside SHOTO*, not the system's.
         // Reading platform brightness here made the sheet appear dark over a
         // light app whenever the two disagreed, which reads as a different
         // app's UI rather than SHOTO's.
         final ThemeMode themeMode = sl<ThemeController>().themeMode;
-        final Brightness resolvedBrightness = switch (themeMode) {
-          ThemeMode.light => Brightness.light,
-          ThemeMode.dark => Brightness.dark,
-          ThemeMode.system => MediaQuery.platformBrightnessOf(context),
-        };
-        AppColors.setBrightness(resolvedBrightness);
 
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           locale: sl<LocaleController>().locale,
           supportedLocales: AppLanguage.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
+          theme: AppTheme.light(language),
+          darkTheme: AppTheme.dark(language),
           themeMode: themeMode,
           themeAnimationDuration: Duration.zero,
-          home: QuickSavePage(),
+          home: const QuickSavePage(),
         );
       },
     );
@@ -195,28 +188,27 @@ class MyApp extends StatelessWidget {
             final ThemeMode themeMode = sl<ThemeController>().themeMode;
             final LocaleController locales = sl<LocaleController>();
 
-            // Same contract as AppColors.setBrightness below — set before
-            // the subtree is built, because the type scale is read
-            // synchronously during this frame.
-            AppTextStyles.setLanguage(locales.effectiveLanguage);
+            final AppLanguage language = locales.effectiveLanguage;
+            // Resolved here as well as by `MaterialApp.themeMode`, because the
+            // system bars are set from *outside* the app's own theme — there
+            // is no context below `MaterialApp` at this point to read
+            // `context.colors` from, and the very first frame has to already
+            // be right.
             final Brightness resolvedBrightness = switch (themeMode) {
               ThemeMode.light => Brightness.light,
               ThemeMode.dark => Brightness.dark,
               ThemeMode.system => MediaQuery.platformBrightnessOf(context),
             };
-            // Must happen before MaterialApp.router builds its subtree —
-            // every custom widget below reads AppColors synchronously
-            // during this same frame. See app_colors.dart for why.
-            AppColors.setBrightness(resolvedBrightness);
+            final AppPalette palette = AppPalette.of(resolvedBrightness);
 
-            final bool isDark = resolvedBrightness == Brightness.dark;
+            final bool isDark = palette.isDark;
             final SystemUiOverlayStyle systemBars = SystemUiOverlayStyle(
               statusBarColor: Colors.transparent,
               statusBarIconBrightness: isDark
                   ? Brightness.light
                   : Brightness.dark,
               statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
-              systemNavigationBarColor: AppColors.background,
+              systemNavigationBarColor: palette.background,
               systemNavigationBarIconBrightness: isDark
                   ? Brightness.light
                   : Brightness.dark,
@@ -243,8 +235,8 @@ class MyApp extends StatelessWidget {
                 locale: locales.locale,
                 supportedLocales: AppLanguage.supportedLocales,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
-                theme: AppTheme.lightTheme,
-                darkTheme: AppTheme.darkTheme,
+                theme: AppTheme.light(language),
+                darkTheme: AppTheme.dark(language),
                 themeMode: themeMode,
                 // The single most important line for how switching themes
                 // *feels*. Material cross-fades ThemeData over 200ms by

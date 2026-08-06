@@ -134,7 +134,7 @@ class _OnboardingPageState extends State<OnboardingPage>
     final bool rtl = Directionality.of(context) == TextDirection.rtl;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -154,8 +154,8 @@ class _OnboardingPageState extends State<OnboardingPage>
                     onPressed: _finish,
                     child: Text(
                       context.l10n.onbSkip,
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
+                      style: context.text.bodySmall.copyWith(
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ),
@@ -220,7 +220,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                   Text(
                     context.l10n.onboardingPromise,
                     textAlign: TextAlign.center,
-                    style: AppTextStyles.caption,
+                    style: context.text.caption,
                   ),
                 ],
               ),
@@ -268,12 +268,12 @@ class _Copy extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: AppTextStyles.headlineLarge),
+            Text(title, style: context.text.headlineLarge),
             SizedBox(height: 8.h),
             Text(
               body,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+              style: context.text.bodyMedium.copyWith(
+                color: context.colors.textSecondary,
               ),
             ),
           ],

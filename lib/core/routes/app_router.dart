@@ -37,20 +37,24 @@ abstract class AppRouter {
       GoRoute(
         path: '/onboarding',
         name: onboardingPage,
-        // Not const — same reasoning as MainShellPage's IndexedStack: a
-        // const page widget can get frozen by Flutter's reconciliation and
-        // stop picking up theme (or other) changes after its first build.
-        builder: (context, state) => OnboardingPage(),
+        // These three were deliberately *not* const for most of the app's
+        // life: a const page widget is identical on every rebuild, so
+        // Flutter's reconciliation skipped its subtree and it stopped picking
+        // up theme changes after its first build. That was a symptom of the
+        // palette being a mutable global, and it is fixed at the source — the
+        // palette is an InheritedWidget now, and a dependent of one is rebuilt
+        // whether or not it is const. See app_colors.dart.
+        builder: (context, state) => const OnboardingPage(),
       ),
       GoRoute(
         path: '/auth',
         name: authPage,
-        builder: (context, state) => AuthPage(),
+        builder: (context, state) => const AuthPage(),
       ),
       GoRoute(
         path: '/home',
         name: homePage,
-        builder: (context, state) => MainShellPage(),
+        builder: (context, state) => const MainShellPage(),
       ),
     ],
   );

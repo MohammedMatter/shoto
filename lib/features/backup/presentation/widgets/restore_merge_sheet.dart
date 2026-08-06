@@ -55,7 +55,7 @@ class _RestoreMergeSheet extends StatelessWidget {
                 width: 40.w,
                 height: 4.h,
                 decoration: BoxDecoration(
-                  color: AppColors.border,
+                  color: context.colors.border,
                   borderRadius: BorderRadius.circular(2.r),
                 ),
               ),
@@ -63,13 +63,13 @@ class _RestoreMergeSheet extends StatelessWidget {
             SizedBox(height: 20.h),
             Text(
               context.l10n.restoreClashTitle(unique.length),
-              style: AppTextStyles.headlineMedium,
+              style: context.text.headlineMedium,
             ),
             SizedBox(height: 10.h),
             Text(
               context.l10n.restoreClashBody,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+              style: context.text.bodyMedium.copyWith(
+                color: context.colors.textSecondary,
               ),
             ),
             SizedBox(height: 16.h),
@@ -88,14 +88,14 @@ class _RestoreMergeSheet extends StatelessWidget {
                       vertical: 6.h,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceVariant,
+                      color: context.colors.surfaceVariant,
                       borderRadius: BorderRadius.circular(18.r),
-                      border: Border.all(color: AppColors.border),
+                      border: Border.all(color: context.colors.border),
                     ),
                     child: Text(
                       name,
-                      style: AppTextStyles.caption.asMedium.copyWith(
-                        color: AppColors.textPrimary,
+                      style: context.text.caption.asMedium.copyWith(
+                        color: context.colors.textPrimary,
                       ),
                     ),
                   ),
@@ -104,8 +104,8 @@ class _RestoreMergeSheet extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 6.h),
                     child: Text(
                       context.l10n.restoreClashMore(unique.length - 8),
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
+                      style: context.text.caption.copyWith(
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ),
@@ -115,7 +115,7 @@ class _RestoreMergeSheet extends StatelessWidget {
 
             _Option(
               icon: Icons.merge_rounded,
-              tint: AppColors.secondary,
+              tint: context.colors.secondary,
               title: context.l10n.restoreClashMerge,
               body: context.l10n.restoreClashMergeBody,
               onTap: () => Navigator.of(context).pop(FolderMergeChoice.merge),
@@ -123,7 +123,7 @@ class _RestoreMergeSheet extends StatelessWidget {
             SizedBox(height: 10.h),
             _Option(
               icon: Icons.call_split_rounded,
-              tint: AppColors.primary,
+              tint: context.colors.primary,
               title: context.l10n.restoreClashSeparate,
               body: context.l10n.restoreClashSeparateBody,
               onTap: () =>
@@ -162,9 +162,9 @@ class _Option extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(16.w),
         decoration: BoxDecoration(
-          color: AppColors.surfaceVariant,
+          color: context.colors.surfaceVariant,
           borderRadius: BorderRadius.circular(14.r),
-          border: Border.all(color: AppColors.border),
+          border: Border.all(color: context.colors.border),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,12 +184,12 @@ class _Option extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: AppTextStyles.bodyLarge.asMedium),
+                  Text(title, style: context.text.bodyLarge.asMedium),
                   SizedBox(height: 3.h),
                   Text(
                     body,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+                    style: context.text.bodySmall.copyWith(
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ],

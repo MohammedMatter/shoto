@@ -34,9 +34,9 @@ void showAppSnackBar(
   _visibleMessage = message;
 
   final Color tint = switch (kind) {
-    SnackKind.neutral => AppColors.primary,
-    SnackKind.success => AppColors.success,
-    SnackKind.error => AppColors.error,
+    SnackKind.neutral => context.colors.primary,
+    SnackKind.success => context.colors.success,
+    SnackKind.error => context.colors.error,
   };
 
   final ScaffoldFeatureController<SnackBar, SnackBarClosedReason> controller =
@@ -57,14 +57,14 @@ void showAppSnackBar(
               Expanded(
                 child: Text(
                   message,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.textPrimary,
+                  style: context.text.bodySmall.copyWith(
+                    color: context.colors.textPrimary,
                   ),
                 ),
               ),
             ],
           ),
-          backgroundColor: AppColors.surface,
+          backgroundColor: context.colors.surface,
           behavior: SnackBarBehavior.floating,
           elevation: 0,
           // Clears the floating bottom nav, which lives in a Stack above the
@@ -73,7 +73,7 @@ void showAppSnackBar(
           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 13.h),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
-            side: BorderSide(color: AppColors.border),
+            side: BorderSide(color: context.colors.border),
           ),
           duration: const Duration(seconds: 3),
         ),
