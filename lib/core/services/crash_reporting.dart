@@ -58,6 +58,22 @@ class CrashReporting extends ChangeNotifier {
       await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
         _enabled,
       );
+
+      // **Off has to mean nothing was kept, not nothing was sent yet.**
+      //
+      // Disabling collection stops Crashlytics *uploading*, and it keeps
+      // writing reports to disk. Turning the switch on later then sends the
+      // backlog — every crash that happened while the answer was no. Watched
+      // that happen: three crashes forced on a test device, two of them with
+      // the switch off, and all three arrived in the console the moment it
+      // went on.
+      //
+      // That is a defensible SDK default and the wrong promise for this app.
+      // The switch says reports are off; a pile of them waiting for a change
+      // of mind is not off, it is deferred consent nobody asked for.
+      if (!_enabled) {
+        await FirebaseCrashlytics.instance.deleteUnsentReports();
+      }
     } catch (error) {
       // A device with no Play services, or a Firebase app that failed to
       // initialize, must not take the app down over an *optional* diagnostic.
