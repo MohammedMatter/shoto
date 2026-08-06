@@ -39,12 +39,10 @@
     "placeholders": { "count": { "type": "int" } }
   },
   "triageReview": "देखें",
-  "triageInviteTitle": "आप जो कैप्चर करते हैं, दिखाएँ?",
-  "triageInviteBody": "SHOTO आपके लिए गए स्क्रीनशॉट सामने रख सकता है, ताकि आप एक बार में तय कर लें, न कि साल भर बाद ढूँढ़ें। यह अपने आप कुछ नहीं रखता, कुछ नहीं मिटाता, और सिर्फ़ आपका स्क्रीनशॉट एल्बम पढ़ता है।",
-  "triageInviteAccept": "नए स्क्रीनशॉट दिखाएँ",
   "triageInviteDecline": "अभी नहीं",
   "settingsTriage": "नए स्क्रीनशॉट दिखाएँ",
   "settingsTriageHint": "जो आप कैप्चर करते हैं वह दिखाता है; अपने आप कुछ नहीं रखता",
+  "triageNothingNew": "देखने के लिए कुछ नया नहीं",
   "settingsYourName": "आपका नाम",
   "settingsYourNameHint": "ताकि Safe Share इसे दिखने पर ढक सके",
   "settingsYourNameNotSet": "तय नहीं",

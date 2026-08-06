@@ -39,12 +39,10 @@
     "placeholders": { "count": { "type": "int" } }
   },
   "triageReview": "Review",
-  "triageInviteTitle": "Show you what you capture?",
-  "triageInviteBody": "SHOTO can offer the screenshots you take, so you decide about them once instead of finding them a year later. It keeps nothing on its own, deletes nothing, and reads only your Screenshots album.",
-  "triageInviteAccept": "Offer new screenshots",
   "triageInviteDecline": "Not now",
   "settingsTriage": "Offer new screenshots",
   "settingsTriageHint": "Shows what you capture; keeps nothing on its own",
+  "triageNothingNew": "Nothing new to review",
   "settingsYourName": "Your name",
   "settingsYourNameHint": "So Safe Share can cover it when it appears",
   "settingsYourNameNotSet": "Not set",

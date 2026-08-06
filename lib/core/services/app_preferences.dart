@@ -16,6 +16,7 @@ class AppPreferences extends ChangeNotifier {
   static const String _triageEnabledKey = 'pref_triage_enabled';
   static const String _triageAskedKey = 'pref_triage_asked';
   static const String _triageSinceKey = 'pref_triage_since';
+  static const String _triageSnoozedKey = 'pref_triage_snoozed';
 
   bool _haptics = true;
   bool _confirmBeforeDelete = true;
@@ -24,6 +25,7 @@ class AppPreferences extends ChangeNotifier {
   bool _triageEnabled = false;
   bool _triageAsked = false;
   int _triageSince = 0;
+  int _triageSnoozedAt = 0;
 
   /// Whether taps give physical feedback. Off is a genuine accessibility
   /// preference, and some people simply find it noisy.
@@ -78,6 +80,27 @@ class AppPreferences extends ChangeNotifier {
   /// other. See `ScreenshotGalleryDataSource.getDeviceCaptures`.
   DateTime get triageSince => DateTime.fromMillisecondsSinceEpoch(_triageSince);
 
+  /// How many captures were waiting the last time the user said "not now".
+  ///
+  /// The queue used to have no way to be put down. It appeared whenever a
+  /// single new capture existed, which for anybody who takes screenshots is
+  /// *every day, permanently*, and the only way to be rid of it was to answer
+  /// the whole queue. That is the difference between an inbox and a nag, and
+  /// it is why the row was removed from Home.
+  ///
+  /// Storing the **count** rather than a timestamp is what makes "not now"
+  /// mean the right thing. A snooze until tomorrow says nothing about whether
+  /// anything changed; a snooze at eleven says *ask me again when there is
+  /// genuinely more than eleven*. Reviewing the queue clears it back to zero.
+  int get triageSnoozedAt => _triageSnoozedAt;
+
+  Future<void> snoozeTriage(int waiting) async {
+    _triageSnoozedAt = waiting;
+    notifyListeners();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(_triageSnoozedKey, waiting);
+  }
+
   Future<void> load() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     _haptics = prefs.getBool(_hapticsKey) ?? true;
@@ -86,6 +109,7 @@ class AppPreferences extends ChangeNotifier {
     _ownerName = prefs.getString(_ownerNameKey) ?? '';
     _triageEnabled = prefs.getBool(_triageEnabledKey) ?? false;
     _triageAsked = prefs.getBool(_triageAskedKey) ?? false;
+    _triageSnoozedAt = prefs.getInt(_triageSnoozedKey) ?? 0;
     // Defaults to *now* rather than to zero. A user switching this on today is
     // asking what they have captured since; handing them every screenshot they
     // have ever taken is the gallery-mirror this app deliberately is not.

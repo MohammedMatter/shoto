@@ -122,16 +122,6 @@ class AppLocalizationsHi extends AppLocalizations {
   String get triageReview => 'देखें';
 
   @override
-  String get triageInviteTitle => 'आप जो कैप्चर करते हैं, दिखाएँ?';
-
-  @override
-  String get triageInviteBody =>
-      'SHOTO आपके लिए गए स्क्रीनशॉट सामने रख सकता है, ताकि आप एक बार में तय कर लें, न कि साल भर बाद ढूँढ़ें। यह अपने आप कुछ नहीं रखता, कुछ नहीं मिटाता, और सिर्फ़ आपका स्क्रीनशॉट एल्बम पढ़ता है।';
-
-  @override
-  String get triageInviteAccept => 'नए स्क्रीनशॉट दिखाएँ';
-
-  @override
   String get triageInviteDecline => 'अभी नहीं';
 
   @override
@@ -140,6 +130,9 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get settingsTriageHint =>
       'जो आप कैप्चर करते हैं वह दिखाता है; अपने आप कुछ नहीं रखता';
+
+  @override
+  String get triageNothingNew => 'देखने के लिए कुछ नया नहीं';
 
   @override
   String get settingsYourName => 'आपका नाम';

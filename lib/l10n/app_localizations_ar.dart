@@ -127,16 +127,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get triageReview => 'راجعها';
 
   @override
-  String get triageInviteTitle => 'بدك نعرض عليك يلي بتصوّره؟';
-
-  @override
-  String get triageInviteBody =>
-      'SHOTO بيقدر يعرض عليك اللقطات يلي بتاخدها، فبتقرّر فيها مرة بدل ما تدوّر عليها بعد سنة. ما بيحتفظ بشي لحاله، ما بيحذف شي، وبيقرا بس ألبوم لقطات الشاشة.';
-
-  @override
-  String get triageInviteAccept => 'اعرض اللقطات الجديدة';
-
-  @override
   String get triageInviteDecline => 'مش هلق';
 
   @override
@@ -144,6 +134,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settingsTriageHint => 'بيعرض يلي بتصوّره، وما بيحتفظ بشي لحاله';
+
+  @override
+  String get triageNothingNew => 'ما في شي جديد تراجعه';
 
   @override
   String get settingsYourName => 'اسمك';

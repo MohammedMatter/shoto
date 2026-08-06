@@ -39,12 +39,10 @@
     "placeholders": { "count": { "type": "int" } }
   },
   "triageReview": "Passer en revue",
-  "triageInviteTitle": "Vous montrer ce que vous capturez ?",
-  "triageInviteBody": "SHOTO peut vous proposer les captures que vous prenez, pour décider une fois plutôt que de les retrouver un an après. Il ne garde rien de lui-même, ne supprime rien et ne lit que votre album de captures.",
-  "triageInviteAccept": "Proposer les nouvelles captures",
   "triageInviteDecline": "Pas maintenant",
   "settingsTriage": "Proposer les nouvelles captures",
   "settingsTriageHint": "Montre ce que vous capturez ; ne garde rien de lui-même",
+  "triageNothingNew": "Rien de nouveau à revoir",
   "settingsYourName": "Votre nom",
   "settingsYourNameHint": "Pour que Safe Share le masque quand il apparaît",
   "settingsYourNameNotSet": "Non défini",

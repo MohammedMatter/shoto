@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
@@ -15,8 +14,6 @@ import 'package:shoto/features/folders/presentation/bloc/folders_state.dart';
 import 'package:shoto/features/home/presentation/pages/home_page.dart';
 import 'package:shoto/features/home/presentation/widgets/home_greeting.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
-import 'package:shoto/features/screenshots/domain/repositories/screenshot_repository.dart';
-import 'package:shoto/features/screenshots/domain/use_cases/get_new_captures_use_case.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/subscription/domain/entities/subscription_status.dart';
@@ -30,7 +27,7 @@ import 'support/test_theme.dart';
 /// Home, in both of the states it actually ships in.
 ///
 /// The empty one was the only one photographed for a long time, which left
-/// the recent strip, the stat line and the intake queue — half the screen —
+/// the recent strip, the stat line and Waiting on you — half the screen —
 /// with no picture anywhere. They are here now, which is what the `filled`
 /// flag is for.
 ///
@@ -61,18 +58,6 @@ class _FakeSubscriptionRepository implements SubscriptionRepository {
 
   @override
   Stream<SubscriptionStatus> get statusChanges => const Stream.empty();
-
-  @override
-  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
-}
-
-/// Home reads this on mount through [GetNewCapturesUseCase]. Unregistered, it
-/// threw on every run of this file — which nothing noticed, because the
-/// goldens were skipped unless the suite was asked to update them.
-class _FakeScreenshotRepository implements ScreenshotRepository {
-  @override
-  Future<List<AssetEntity>> getNewCaptures({DateTime? since}) async =>
-      const [];
 
   @override
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -111,14 +96,6 @@ void main() {
     if (!sl.isRegistered<ProStatus>()) {
       sl.registerLazySingleton<ProStatus>(
         () => ProStatus(_FakeSubscriptionRepository(), sl<DevAccess>()),
-      );
-    }
-    if (!sl.isRegistered<GetNewCapturesUseCase>()) {
-      sl.registerLazySingleton<GetNewCapturesUseCase>(
-        () => GetNewCapturesUseCase(
-          _FakeScreenshotRepository(),
-          sl<AppPreferences>(),
-        ),
       );
     }
   });

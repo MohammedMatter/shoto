@@ -9,7 +9,6 @@ import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/features/home/presentation/widgets/home_entrance.dart';
 import 'package:shoto/features/home/presentation/widgets/home_greeting.dart';
-import 'package:shoto/features/home/presentation/widgets/home_intake.dart';
 import 'package:shoto/features/home/presentation/widgets/home_recent_strip.dart';
 import 'package:shoto/features/home/presentation/widgets/home_search_field.dart';
 import 'package:shoto/features/home/presentation/widgets/home_section_title.dart';
@@ -80,13 +79,6 @@ class _HomePageState extends State<HomePage>
                     child: const HomeGutter(child: HomeGreeting()),
                   ),
                   SizedBox(height: 18.h),
-                  HomeEnter(
-                    parent: _entrance,
-                    index: 1,
-                    child: HomeGutter(
-                      child: HomeIntake(hasLibrary: all.isNotEmpty),
-                    ),
-                  ),
                   if (all.isNotEmpty) ...[
                     HomeEnter(
                       parent: _entrance,

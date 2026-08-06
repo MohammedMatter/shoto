@@ -39,12 +39,10 @@
     "placeholders": { "count": { "type": "int" } }
   },
   "triageReview": "Revisar",
-  "triageInviteTitle": "¿Te mostramos lo que capturas?",
-  "triageInviteBody": "SHOTO puede ofrecerte las capturas que haces, para que decidas una vez en lugar de buscarlas un año después. No guarda nada por su cuenta, no borra nada y solo lee tu álbum de capturas.",
-  "triageInviteAccept": "Ofrecer capturas nuevas",
   "triageInviteDecline": "Ahora no",
   "settingsTriage": "Ofrecer capturas nuevas",
   "settingsTriageHint": "Muestra lo que capturas; no guarda nada por su cuenta",
+  "triageNothingNew": "No hay nada nuevo que revisar",
   "settingsYourName": "Tu nombre",
   "settingsYourNameHint": "Para que Safe Share lo tape cuando aparezca",
   "settingsYourNameNotSet": "Sin definir",

@@ -24,7 +24,15 @@ Future<int> openTriagePage(BuildContext context) async {
   final List<AssetEntity> captures = await sl<GetNewCapturesUseCase>()();
 
   if (!context.mounted) return 0;
-  if (captures.isEmpty) return 0;
+  // Says so rather than doing nothing. This used to be reached only from a
+  // badge that had already counted something, so an empty queue meant the
+  // count had gone stale in the seconds since — rare, and silence was fine.
+  // It is opened deliberately from Settings now, and a tap that produces no
+  // response at all reads as a broken button rather than as an empty inbox.
+  if (captures.isEmpty) {
+    showAppSnackBar(context, context.l10n.triageNothingNew);
+    return 0;
+  }
 
   final int? kept = await Navigator.of(context).push<int>(
     FadeSlidePageRoute(builder: (_) => TriagePage(captures: captures)),

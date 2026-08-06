@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
@@ -26,6 +27,7 @@ import 'package:shoto/core/widgets/privacy_note.dart';
 import 'package:shoto/core/widgets/theme_mode_selector.dart';
 import 'package:shoto/features/backup/presentation/pages/backup_page.dart';
 import 'package:shoto/features/duplicates/presentation/pages/duplicates_page.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/request_photo_permission_use_case.dart';
 import 'package:shoto/features/settings/presentation/widgets/app_version_block.dart';
 import 'package:shoto/features/settings/presentation/widgets/contact_support_tile.dart';
 import 'package:shoto/features/settings/presentation/widgets/language_sheet.dart';
@@ -162,17 +164,30 @@ class SettingsPage extends StatelessWidget {
                           value: prefs.confirmBeforeDelete,
                           onChanged: prefs.setConfirmBeforeDelete,
                         ),
-                        // Reachable here as well as from Home's
-                        // invitation, because a one-time card is a fine
-                        // way to *offer* something and a terrible way to
-                        // let somebody change their mind about it two
-                        // months later.
+                        // The on/off answer lives here; the queue itself is
+                        // offered at the top of the Library, which is the
+                        // screen somebody opens to deal with screenshots.
+                        //
+                        // Turning it on asks the OS for photo access, because
+                        // the switch is worthless without it: the use case
+                        // behind it returns an empty list forever and the
+                        // screen would simply never have anything in it. If
+                        // access is refused the switch goes back off rather
+                        // than sitting on and doing nothing.
                         SettingsSwitchTile(
                           icon: Icons.inbox_outlined,
                           label: context.l10n.settingsTriage,
                           description: context.l10n.settingsTriageHint,
                           value: prefs.triageEnabled,
-                          onChanged: prefs.setTriageEnabled,
+                          onChanged: (bool value) async {
+                            if (!value) {
+                              await prefs.setTriageEnabled(false);
+                              return;
+                            }
+                            final PermissionState permission =
+                                await sl<RequestPhotoPermissionUseCase>()();
+                            await prefs.setTriageEnabled(permission.hasAccess);
+                          },
                         ),
                         // The app's only personal field, and it sits
                         // with the other two preferences rather than in

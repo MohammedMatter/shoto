@@ -250,24 +250,6 @@ abstract class AppLocalizations {
   /// **'Review'**
   String get triageReview;
 
-  /// No description provided for @triageInviteTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Show you what you capture?'**
-  String get triageInviteTitle;
-
-  /// No description provided for @triageInviteBody.
-  ///
-  /// In en, this message translates to:
-  /// **'SHOTO can offer the screenshots you take, so you decide about them once instead of finding them a year later. It keeps nothing on its own, deletes nothing, and reads only your Screenshots album.'**
-  String get triageInviteBody;
-
-  /// No description provided for @triageInviteAccept.
-  ///
-  /// In en, this message translates to:
-  /// **'Offer new screenshots'**
-  String get triageInviteAccept;
-
   /// No description provided for @triageInviteDecline.
   ///
   /// In en, this message translates to:
@@ -285,6 +267,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Shows what you capture; keeps nothing on its own'**
   String get settingsTriageHint;
+
+  /// No description provided for @triageNothingNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing new to review'**
+  String get triageNothingNew;
 
   /// No description provided for @settingsYourName.
   ///

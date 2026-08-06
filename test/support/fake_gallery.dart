@@ -45,14 +45,18 @@ abstract final class FakeGallery {
   /// they stay one obvious thing — a solid rectangle — instead of a base64
   /// blob nobody can check.
   static Future<void> install() async {
-    for (int i = 0; i < _fills.length; i++) {
-      _pngs[i] = await _solid(_fills[i]);
+    if (_pngs.isEmpty) {
+      for (int i = 0; i < _fills.length; i++) {
+        _pngs[i] = await _solid(_fills[i]);
+      }
     }
 
-    TestDefaultBinaryMessengerBinding
-        .instance
-        .defaultBinaryMessenger
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(_channel, (MethodCall call) async {
+          // Everything else — `notify`, `startChangeNotify`, the permission
+          // calls — answers null rather than falling through to a
+          // MissingPluginException. A widget that merely *registers* for
+          // gallery changes should not fail a test that has no gallery.
           if (call.method != 'getThumb') return null;
           final String id = (call.arguments['id'] ?? '0').toString();
           final int slot = (int.tryParse(id) ?? 0) % _fills.length;
@@ -76,10 +80,9 @@ abstract final class FakeGallery {
 
   static Future<Uint8List> _solid(Color color) async {
     final ui.PictureRecorder recorder = ui.PictureRecorder();
-    Canvas(recorder).drawRect(
-      const Rect.fromLTWH(0, 0, 60, 130),
-      Paint()..color = color,
-    );
+    Canvas(
+      recorder,
+    ).drawRect(const Rect.fromLTWH(0, 0, 60, 130), Paint()..color = color);
     final ui.Image image = await recorder.endRecording().toImage(60, 130);
     final ByteData? bytes = await image.toByteData(
       format: ui.ImageByteFormat.png,

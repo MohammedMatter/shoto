@@ -15,6 +15,7 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.d
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/pages/search_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/import_screenshots_action.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/library_intake_row.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/library_view_sheet.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshots_body.dart';
 
@@ -149,6 +150,10 @@ class LibraryPage extends StatelessWidget {
                   ],
                 ),
               ),
+              // Above the filter chips rather than among them: those ask
+              // which part of the library to show, and this is about
+              // something that is not in the library yet.
+              const LibraryIntakeRow(),
               Expanded(
                 child: ScreenshotsBody(
                   emptyTitle: context.l10n.libraryEmptyTitle,

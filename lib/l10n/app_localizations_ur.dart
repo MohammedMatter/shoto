@@ -121,16 +121,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get triageReview => 'دیکھیں';
 
   @override
-  String get triageInviteTitle => 'جو آپ کیپچر کرتے ہیں وہ دکھائیں؟';
-
-  @override
-  String get triageInviteBody =>
-      'SHOTO آپ کے لیے گئے اسکرین شاٹ سامنے رکھ سکتا ہے، تاکہ آپ ایک بار فیصلہ کر لیں، نہ کہ سال بعد انہیں ڈھونڈیں۔ یہ خود سے کچھ نہیں رکھتا، کچھ نہیں مٹاتا، اور صرف آپ کا اسکرین شاٹ البم پڑھتا ہے۔';
-
-  @override
-  String get triageInviteAccept => 'نئے اسکرین شاٹ دکھائیں';
-
-  @override
   String get triageInviteDecline => 'ابھی نہیں';
 
   @override
@@ -139,6 +129,9 @@ class AppLocalizationsUr extends AppLocalizations {
   @override
   String get settingsTriageHint =>
       'جو آپ کیپچر کرتے ہیں دکھاتا ہے؛ خود سے کچھ نہیں رکھتا';
+
+  @override
+  String get triageNothingNew => 'دیکھنے کے لیے کچھ نیا نہیں';
 
   @override
   String get settingsYourName => 'آپ کا نام';

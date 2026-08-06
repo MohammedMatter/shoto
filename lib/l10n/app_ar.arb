@@ -39,12 +39,10 @@
     "placeholders": { "count": { "type": "int" } }
   },
   "triageReview": "راجعها",
-  "triageInviteTitle": "بدك نعرض عليك يلي بتصوّره؟",
-  "triageInviteBody": "SHOTO بيقدر يعرض عليك اللقطات يلي بتاخدها، فبتقرّر فيها مرة بدل ما تدوّر عليها بعد سنة. ما بيحتفظ بشي لحاله، ما بيحذف شي، وبيقرا بس ألبوم لقطات الشاشة.",
-  "triageInviteAccept": "اعرض اللقطات الجديدة",
   "triageInviteDecline": "مش هلق",
   "settingsTriage": "اعرض اللقطات الجديدة",
   "settingsTriageHint": "بيعرض يلي بتصوّره، وما بيحتفظ بشي لحاله",
+  "triageNothingNew": "ما في شي جديد تراجعه",
   "settingsYourName": "اسمك",
   "settingsYourNameHint": "عشان Safe Share يغطّيه لما يظهر بلقطة",
   "settingsYourNameNotSet": "مش محدّد",
