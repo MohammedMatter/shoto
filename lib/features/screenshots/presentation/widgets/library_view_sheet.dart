@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
+import 'package:shoto/core/theme/grid_density_controller.dart';
+import 'package:shoto/core/widgets/grid_density_selector.dart';
 import 'package:shoto/core/routes/app_sheet.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
@@ -117,6 +120,38 @@ class _LibraryViewSheet extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // **Density lives here now, not in the header.**
+              //
+              // It was a permanent button on the busiest screen in the app,
+              // for a preference somebody sets once and then never touches —
+              // and it was the fourth control in a row of four, in front of a
+              // grid whose entire job is to show pictures. The header's own
+              // note already said density and sort both answer "how do I want
+              // to look at this"; they are now in the same place, which is
+              // what that sentence was describing all along.
+              //
+              // Not moved to Settings, where it also exists: a display choice
+              // you make *while looking at the thing* should not require
+              // leaving it.
+              ListenableBuilder(
+                listenable: sl<GridDensityController>(),
+                builder: (context, _) => Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        context.l10n.settingsGridDensity,
+                        style: AppTextStyles.bodyLarge,
+                      ),
+                    ),
+                    GridDensitySelector(
+                      value: sl<GridDensityController>().columns,
+                      onChanged: (int columns) =>
+                          sl<GridDensityController>().setColumns(columns),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 18.h),
               Text(
                 context.l10n.librarySortLabel,
                 style: AppTextStyles.headlineMedium,

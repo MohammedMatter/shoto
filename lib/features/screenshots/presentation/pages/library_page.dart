@@ -5,7 +5,6 @@ import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
-import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/core/widgets/premium_gate.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
@@ -67,26 +66,8 @@ class LibraryPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    // Wrapped so the button actually hears the change it
-                    // causes: it used to be a fixed grid_view icon that
-                    // never rebuilt, so cycling the density rearranged the
-                    // whole grid while the control that did it sat there
-                    // looking untouched.
-                    ListenableBuilder(
-                      listenable: sl<GridDensityController>(),
-                      builder: (context, _) {
-                        final int columns = sl<GridDensityController>().columns;
-                        return HeaderIconButton(
-                          icon: GridDensityController.iconFor(columns),
-                          tooltip: GridDensityController.labelFor(
-                            context,
-                            columns,
-                          ),
-                          onTap: () => sl<GridDensityController>().cycle(),
-                        );
-                      },
-                    ),
-                    SizedBox(width: 8.w),
+                    // Three controls, not four. Grid density moved into the
+                    // view sheet below — see the note there.
                     Builder(
                       builder: (context) => HeaderIconButton(
                         icon: Icons.add_photo_alternate_outlined,
@@ -98,9 +79,9 @@ class LibraryPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 8.w),
-                    // Next to grid density on purpose: both answer "how do I
-                    // want to look at this", neither changes what is in the
-                    // library.
+                    // Everything about how the library is being *looked at*:
+                    // the order, the content traits, and now the grid density
+                    // as well. None of them changes what is in the library.
                     //
                     // It opens a sheet rather than toggling in place. This was
                     // a bare ↓/↑ that flipped on tap, and the first person to
