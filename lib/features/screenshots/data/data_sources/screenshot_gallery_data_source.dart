@@ -157,6 +157,20 @@ class ScreenshotGalleryDataSource {
     for (final AssetEntity asset in assets) {
       final String location = (asset.relativePath ?? '').toLowerCase();
       if (location.contains(importAlbumName.toLowerCase())) continue;
+      // **The platform filter above is inclusive, and this is not.**
+      //
+      // photo_manager compiles `createTimeCond` to `date_added >= ?` with the
+      // bound divided down to whole seconds. The caller's watermark is the
+      // create time of the last capture it decided about, so that capture
+      // satisfies `>=` and comes back on every read — skip a queue of seven,
+      // take two more, and the row offers three. The count was permanently
+      // one too high and the same picture was asked about forever.
+      //
+      // Narrowing it here rather than by handing the query a later bound: a
+      // second-granularity `since + 1s` would also drop an *undecided*
+      // capture that happened to land in the same second as a decided one,
+      // which is the failure that actually loses somebody's screenshot.
+      if (!asset.createDateTime.isAfter(since)) continue;
       fresh.add(asset);
     }
 
