@@ -100,6 +100,10 @@ class LibraryPage extends StatelessWidget {
                         if (state is! ScreenshotsLoadedState) {
                           return const SizedBox.shrink();
                         }
+
+                        final ScreenshotsBloc bloc = context
+                            .read<ScreenshotsBloc>();
+
                         return Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -107,34 +111,24 @@ class LibraryPage extends StatelessWidget {
                               icon: Icons.tune_rounded,
                               tooltip: context.l10n.librarySortLabel,
                               isMarked: state.lens != null,
+                              // The bloc is handed over rather than its
+                              // values: the sheet outlives this build, and a
+                              // scan started from inside it changes the very
+                              // numbers it is drawing.
                               onTap: () => showLibraryViewSheet(
                                 context,
-                                sort: state.sort,
-                                onSort: (LibrarySort sort) => context
-                                    .read<ScreenshotsBloc>()
-                                    .add(SetLibrarySortEvent(sort)),
-                                lens: state.lens,
-                                onSelectLens: (ContentTrait? lens) => context
-                                    .read<ScreenshotsBloc>()
-                                    .add(SetLibraryLensEvent(lens)),
-                                traitCounts: <ContentTrait, int>{
-                                  for (final ContentTrait trait
-                                      in ContentTrait.values)
-                                    trait: state.traitCount(trait),
-                                },
-                                traitsReady: state.traitsReady,
-                                unreadCount: state.unreadCount,
-                                isScanning: state.isScanning,
+                                bloc: bloc,
+                                onSort: (LibrarySort sort) =>
+                                    bloc.add(SetLibrarySortEvent(sort)),
+                                onSelectLens: (ContentTrait? lens) =>
+                                    bloc.add(SetLibraryLensEvent(lens)),
                                 onScan: () async {
                                   // Recognition is the paid feature behind
                                   // every trait, so the gate belongs on the
                                   // thing that starts it rather than on the
                                   // counts it eventually fills in.
                                   if (!await ensurePremium(context)) return;
-                                  if (!context.mounted) return;
-                                  context.read<ScreenshotsBloc>().add(
-                                    ScanUnreadForTraitsEvent(),
-                                  );
+                                  bloc.add(ScanUnreadForTraitsEvent());
                                 },
                               ),
                             ),

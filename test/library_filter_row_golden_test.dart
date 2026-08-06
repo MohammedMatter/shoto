@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/app_preferences.dart';
+import 'package:shoto/core/routes/app_sheet.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/utils/content_traits.dart';
@@ -104,17 +105,19 @@ Widget _sheetHost({
         backgroundColor: AppColors.background,
         body: Center(
           child: ElevatedButton(
-            onPressed: () => showLibraryViewSheet(
-              context,
-              sort: LibrarySort.newest,
-              onSort: (_) {},
-              lens: lens,
-              onSelectLens: (_) {},
-              traitCounts: counts,
-              traitsReady: traitsReady,
-              unreadCount: unreadCount,
-              isScanning: isScanning,
-              onScan: () {},
+            // The body directly, not `showLibraryViewSheet` — that one now
+            // watches the Library's bloc, and these goldens are photographs
+            // of a layout rather than of a state machine.
+            onPressed: () => showAppSheet<void>(
+              context: context,
+              builder: (_) => debugLibraryViewSheet(
+                sort: LibrarySort.newest,
+                lens: lens,
+                traitCounts: counts,
+                traitsReady: traitsReady,
+                unreadCount: unreadCount,
+                isScanning: isScanning,
+              ),
             ),
             child: const Text('open'),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
@@ -10,6 +11,8 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/core/widgets/sheet_surface.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_sort.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/content_trait_visuals.dart';
 
 /// Everything about *how the library is being looked at*, in one sheet:
@@ -39,32 +42,92 @@ import 'package:shoto/features/screenshots/presentation/widgets/content_trait_vi
 /// differently rather than ignored: a labelled control that is always in the
 /// same place is more findable than a chip that has scrolled off the edge, and
 /// the button carries a dot whenever a trait is narrowing the grid.
+/// **The sheet watches the bloc; it is not handed a snapshot.**
+///
+/// It used to take its numbers as plain arguments, read once at the moment it
+/// opened, and a sheet built from a frozen copy of a changing thing has one
+/// specific failure: tapping "read them" started a scan the sheet could never
+/// hear the end of. The spinner ran forever — through the whole scan, and then
+/// after it finished — because nothing was ever going to rebuild the widget.
+/// The work was fine. The only broken thing was the screen reporting on it.
+///
+/// Reading the bloc directly also turns the wait into something legible: the
+/// count beside the button falls as each screenshot is recognised, the trait
+/// rows appear as their counts stop being zero, and the button takes itself
+/// away when there is nothing left to read. Recognition still costs what it
+/// costs — several hundred milliseconds an image, and that is ML Kit's floor,
+/// not ours — but a number that moves is a wait, and a spinner that does not
+/// is a hang.
 Future<void> showLibraryViewSheet(
   BuildContext context, {
-  required LibrarySort sort,
+  required ScreenshotsBloc bloc,
   required ValueChanged<LibrarySort> onSort,
-  required ContentTrait? lens,
   required ValueChanged<ContentTrait?> onSelectLens,
-  required Map<ContentTrait, int> traitCounts,
-  required bool traitsReady,
-  required int unreadCount,
-  required bool isScanning,
   required VoidCallback onScan,
 }) {
   return showAppSheet<void>(
     context: context,
-    builder: (_) => SheetSurface(
-      child: _LibraryViewSheet(
-        sort: sort,
-        onSort: onSort,
-        lens: lens,
-        onSelectLens: onSelectLens,
-        traitCounts: traitCounts,
-        traitsReady: traitsReady,
-        unreadCount: unreadCount,
-        isScanning: isScanning,
-        onScan: onScan,
+    // `.value`, not `create`: this is the Library's own bloc, and the sheet
+    // must not own or close it.
+    builder: (_) => BlocProvider<ScreenshotsBloc>.value(
+      value: bloc,
+      child: BlocBuilder<ScreenshotsBloc, ScreenshotsState>(
+        bloc: bloc,
+        builder: (BuildContext context, ScreenshotsState state) {
+          if (state is! ScreenshotsLoadedState) {
+            return const SheetSurface(child: SizedBox.shrink());
+          }
+
+          return SheetSurface(
+            child: _LibraryViewSheet(
+              sort: state.sort,
+              onSort: onSort,
+              lens: state.lens,
+              onSelectLens: onSelectLens,
+              traitCounts: <ContentTrait, int>{
+                for (final ContentTrait trait in ContentTrait.values)
+                  trait: state.traitCount(trait),
+              },
+              traitsReady: state.traitsReady,
+              unreadCount: state.unreadCount,
+              isScanning: state.isScanning,
+              onScan: onScan,
+            ),
+          );
+        },
       ),
+    ),
+  );
+}
+
+/// The sheet's body, built from plain values instead of from a bloc.
+///
+/// For the goldens, which exist to photograph this layout in six languages and
+/// two themes. Reproducing each arrangement through a real state would mean
+/// synthesising screenshots and trait maps until the derived counts happened
+/// to come out right — a lot of scaffolding to photograph a column of rows,
+/// and a test that would then be measuring the derivation rather than the
+/// picture.
+@visibleForTesting
+Widget debugLibraryViewSheet({
+  required LibrarySort sort,
+  required ContentTrait? lens,
+  required Map<ContentTrait, int> traitCounts,
+  required bool traitsReady,
+  required int unreadCount,
+  required bool isScanning,
+}) {
+  return SheetSurface(
+    child: _LibraryViewSheet(
+      sort: sort,
+      onSort: (_) {},
+      lens: lens,
+      onSelectLens: (_) {},
+      traitCounts: traitCounts,
+      traitsReady: traitsReady,
+      unreadCount: unreadCount,
+      isScanning: isScanning,
+      onScan: () {},
     ),
   );
 }
@@ -205,14 +268,24 @@ class _LibraryViewSheet extends StatelessWidget {
                       onSelectLens(lens == trait ? null : trait);
                     },
                   ),
+                // **The one row that does not close the sheet.**
+                //
+                // Every other row here answers immediately — a sort or a lens
+                // is applied to a grid the sheet is covering, so leaving is
+                // the point. Reading takes fifteen seconds, and closing on
+                // the tap threw away the only place the progress is visible:
+                // the count beside this row falls as each screenshot is
+                // recognised, and the rows above appear as their counts stop
+                // being zero.
+                //
+                // So the sheet stays, and the user closes it when they have
+                // seen enough. The scan is in the bloc, not the sheet, so
+                // leaving early never cancels it.
                 if (showScan)
                   _ScanRow(
                     count: unreadCount,
                     isScanning: isScanning,
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      onScan();
-                    },
+                    onTap: onScan,
                   ),
               ],
             ],
