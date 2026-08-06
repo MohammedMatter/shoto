@@ -9,11 +9,11 @@ class AppLocalizationsUr extends AppLocalizations {
   AppLocalizationsUr([String locale = 'ur']) : super(locale);
 
   @override
-  String get settingsCrashReports => 'کریش رپورٹس بھیجیں';
+  String get settingsCrashReports => 'کریش رپورٹس';
 
   @override
   String get settingsCrashReportsHint =>
-      'اگر SHOTO ٹوٹے تو کیا ٹوٹا وہ بھیجتا ہے — آپ کے اسکرین شاٹ یا ان کا مواد کبھی نہیں';
+      'کچھ خرابی ہونے پر تکنیکی تفصیلات بھیجیں';
 
   @override
   String get settingsSignOut => 'سائن آؤٹ';

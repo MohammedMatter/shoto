@@ -1,7 +1,7 @@
 {
   "@@locale": "hi",
-  "settingsCrashReports": "क्रैश रिपोर्ट भेजें",
-  "settingsCrashReportsHint": "अगर SHOTO टूटे तो क्या टूटा वह भेजता है — आपके स्क्रीनशॉट या उनकी सामग्री कभी नहीं",
+  "settingsCrashReports": "क्रैश रिपोर्ट",
+  "settingsCrashReportsHint": "कुछ गड़बड़ होने पर तकनीकी जानकारी भेजें",
   "settingsSignOut": "साइन आउट",
   "settingsSignOutTitle": "साइन आउट करें?",
   "authWelcome": "SHOTO में आपका स्वागत है",

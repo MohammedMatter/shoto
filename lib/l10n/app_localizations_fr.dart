@@ -9,11 +9,11 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get settingsCrashReports => 'Envoyer les rapports de plantage';
+  String get settingsCrashReports => 'Rapports de plantage';
 
   @override
   String get settingsCrashReportsHint =>
-      'Si SHOTO plante, envoie ce qui a planté — jamais vos captures ni leur contenu';
+      'Envoyer des détails techniques en cas de problème';
 
   @override
   String get settingsSignOut => 'Se déconnecter';

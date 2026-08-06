@@ -1,7 +1,7 @@
 {
   "@@locale": "ar",
-  "settingsCrashReports": "ابعت تقارير الأعطال",
-  "settingsCrashReportsHint": "إذا وقع SHOTO، بيبعت شو وقع — أبداً مش لقطاتك ولا محتواها",
+  "settingsCrashReports": "تقارير الأعطال",
+  "settingsCrashReportsHint": "إرسال تفاصيل تقنية عند حدوث خطأ",
   "settingsSignOut": "تسجيل الخروج",
   "settingsSignOutTitle": "تسجيل الخروج؟",
   "authWelcome": "أهلاً بك في SHOTO",

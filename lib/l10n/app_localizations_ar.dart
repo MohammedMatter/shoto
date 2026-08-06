@@ -9,11 +9,10 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get settingsCrashReports => 'ابعت تقارير الأعطال';
+  String get settingsCrashReports => 'تقارير الأعطال';
 
   @override
-  String get settingsCrashReportsHint =>
-      'إذا وقع SHOTO، بيبعت شو وقع — أبداً مش لقطاتك ولا محتواها';
+  String get settingsCrashReportsHint => 'إرسال تفاصيل تقنية عند حدوث خطأ';
 
   @override
   String get settingsSignOut => 'تسجيل الخروج';

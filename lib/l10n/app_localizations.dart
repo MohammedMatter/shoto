@@ -109,13 +109,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsCrashReports.
   ///
   /// In en, this message translates to:
-  /// **'Send crash reports'**
+  /// **'Crash reports'**
   String get settingsCrashReports;
 
   /// No description provided for @settingsCrashReportsHint.
   ///
   /// In en, this message translates to:
-  /// **'If SHOTO breaks, send what broke — never your screenshots or their contents'**
+  /// **'Send technical details when something goes wrong'**
   String get settingsCrashReportsHint;
 
   /// No description provided for @settingsSignOut.

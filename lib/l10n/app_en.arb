@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
-  "settingsCrashReports": "Send crash reports",
-  "settingsCrashReportsHint": "If SHOTO breaks, send what broke — never your screenshots or their contents",
+  "settingsCrashReports": "Crash reports",
+  "settingsCrashReportsHint": "Send technical details when something goes wrong",
   "settingsSignOut": "Sign out",
   "settingsSignOutTitle": "Sign out?",
   "authWelcome": "Welcome to SHOTO",

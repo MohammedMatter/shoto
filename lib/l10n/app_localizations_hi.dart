@@ -9,11 +9,11 @@ class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
   @override
-  String get settingsCrashReports => 'क्रैश रिपोर्ट भेजें';
+  String get settingsCrashReports => 'क्रैश रिपोर्ट';
 
   @override
   String get settingsCrashReportsHint =>
-      'अगर SHOTO टूटे तो क्या टूटा वह भेजता है — आपके स्क्रीनशॉट या उनकी सामग्री कभी नहीं';
+      'कुछ गड़बड़ होने पर तकनीकी जानकारी भेजें';
 
   @override
   String get settingsSignOut => 'साइन आउट';

@@ -9,11 +9,11 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get settingsCrashReports => 'Send crash reports';
+  String get settingsCrashReports => 'Crash reports';
 
   @override
   String get settingsCrashReportsHint =>
-      'If SHOTO breaks, send what broke — never your screenshots or their contents';
+      'Send technical details when something goes wrong';
 
   @override
   String get settingsSignOut => 'Sign out';

@@ -1,7 +1,7 @@
 {
   "@@locale": "fr",
-  "settingsCrashReports": "Envoyer les rapports de plantage",
-  "settingsCrashReportsHint": "Si SHOTO plante, envoie ce qui a planté — jamais vos captures ni leur contenu",
+  "settingsCrashReports": "Rapports de plantage",
+  "settingsCrashReportsHint": "Envoyer des détails techniques en cas de problème",
   "settingsSignOut": "Se déconnecter",
   "settingsSignOutTitle": "Se déconnecter ?",
   "authWelcome": "Bienvenue sur SHOTO",

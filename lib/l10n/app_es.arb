@@ -1,7 +1,7 @@
 {
   "@@locale": "es",
-  "settingsCrashReports": "Enviar informes de errores",
-  "settingsCrashReportsHint": "Si SHOTO falla, envía qué falló; nunca tus capturas ni su contenido",
+  "settingsCrashReports": "Informes de errores",
+  "settingsCrashReportsHint": "Enviar detalles técnicos cuando algo falla",
   "settingsSignOut": "Cerrar sesión",
   "settingsSignOutTitle": "¿Cerrar sesión?",
   "authWelcome": "Bienvenido a SHOTO",
