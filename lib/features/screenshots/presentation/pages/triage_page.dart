@@ -193,12 +193,18 @@ class _Capture extends StatelessWidget {
       duration: AppMotion.duration(context, AppMotion.normal),
       switchInCurve: AppMotion.standard,
       switchOutCurve: AppMotion.standard,
-      child: ClippedCorner(
+      // Rounded, **not** clipped, and that is a rule rather than a choice:
+      // the corner is a filing mark and it only survives on surfaces the app
+      // drew itself. On a photograph a missing corner reads as a rendering
+      // fault — see the same note in `screenshot_thumbnail.dart`, where it
+      // was tried and taken back out. It is doubly wrong here, on a capture
+      // the user has not decided to keep yet: the mark would be claiming
+      // exactly the thing the screen is asking about.
+      child: ClipRRect(
         // Keyed by asset, or the switcher sees one thumbnail widget of one
         // type and cross-fades nothing as the queue advances.
         key: ValueKey<String>(asset.id),
-        cut: 22.r,
-        radius: AppRadius.md,
+        borderRadius: BorderRadius.circular(AppRadius.md),
         child: Container(
           width: double.infinity,
           color: AppColors.surfaceVariant,
