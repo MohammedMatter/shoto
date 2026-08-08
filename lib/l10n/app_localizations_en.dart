@@ -922,11 +922,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featSafeShareHow =>
-      'Finding what is private in a screenshot is free and unlimited. Paying is what turns those findings into a clean copy: each detail is redrawn in the screenshot\'s own colours as a different, equally ordinary value.';
+      'Finding what is private in a screenshot is free and unlimited. Paying is what turns those findings into a clean copy: each detail you leave selected is covered in the exported image, which is flat — no layer to undo.';
 
   @override
   String get featSafeSharePoint1 =>
-      'Card numbers are Luhn-checked and IBANs mod-97 checked — and the stand-ins pass the same checks, so nothing looks fabricated.';
+      'Card numbers are Luhn-checked and IBANs mod-97 checked, so those two are found by proof rather than by pattern — no guessing on the detail that matters most.';
 
   @override
   String get featSafeSharePoint2 =>
@@ -934,7 +934,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featSafeSharePoint3 =>
-      'You see every change before you send, and can cover or keep any of them instead. The original screenshot is never touched.';
+      'You see everything found before you send, and can leave any of it showing if the app got it wrong. The original screenshot is never touched.';
 
   @override
   String get featActionsHow =>

@@ -925,11 +925,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get featSafeShareHow =>
-      'Vinden wat privé is in een screenshot is gratis en onbeperkt. Je betaalt om die vondsten om te zetten in een schone kopie: elk gegeven wordt in de kleuren van het screenshot opnieuw getekend als een andere, even gewone waarde.';
+      'Vinden wat privé is in een screenshot is gratis en onbeperkt. Je betaalt om die vondsten om te zetten in een schone kopie: elk gegeven dat je aangevinkt laat, wordt afgedekt in de geëxporteerde afbeelding, en die is plat — geen laag om ongedaan te maken.';
 
   @override
   String get featSafeSharePoint1 =>
-      'Kaartnummers worden met Luhn gecontroleerd en IBANs met modulo 97 — en de vervangers doorstaan dezelfde controles, dus niets oogt verzonnen.';
+      'Kaartnummers worden met Luhn gecontroleerd en IBANs met modulo 97: die twee zijn bewezen in plaats van geraden, precies bij het gegeven dat het zwaarst weegt.';
 
   @override
   String get featSafeSharePoint2 =>
@@ -937,7 +937,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get featSafeSharePoint3 =>
-      'Je ziet elke wijziging voor je verstuurt, en kunt er elk afdekken of houden. Het originele screenshot wordt nooit aangeraakt.';
+      'Je ziet alles wat gevonden is voor je verstuurt en kunt laten staan wat de app verkeerd had. Het originele screenshot wordt nooit aangeraakt.';
 
   @override
   String get featActionsHow =>

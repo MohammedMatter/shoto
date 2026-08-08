@@ -924,11 +924,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get featSafeShareHow =>
-      'Repérer ce qui est privé dans une capture est gratuit et illimité. Ce qui est payant, c\'est d\'en faire une copie propre : chaque donnée est redessinée dans les couleurs de la capture, sous la forme d\'une autre valeur tout aussi banale.';
+      'Repérer ce qui est privé dans une capture est gratuit et illimité. Ce qui est payant, c\'est d\'en faire une copie propre : chaque donnée laissée sélectionnée est masquée dans l\'image exportée, et cette image est plate, sans aucune couche à annuler.';
 
   @override
   String get featSafeSharePoint1 =>
-      'Les cartes sont vérifiées par Luhn et les IBAN par mod-97 — et les remplaçants passent les mêmes contrôles, donc rien ne paraît inventé.';
+      'Les cartes sont vérifiées par Luhn et les IBAN par mod-97 : ces deux-là sont prouvés plutôt que devinés, précisément sur la donnée qui compte le plus.';
 
   @override
   String get featSafeSharePoint2 =>
@@ -936,7 +936,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get featSafeSharePoint3 =>
-      'Vous voyez chaque changement avant l\'envoi et pouvez plutôt masquer ou garder chacun d\'eux. La capture d\'origine n\'est jamais modifiée.';
+      'Vous voyez tout ce qui a été trouvé avant l\'envoi et pouvez laisser visible ce que l\'app a mal repéré. La capture d\'origine n\'est jamais modifiée.';
 
   @override
   String get featActionsHow =>

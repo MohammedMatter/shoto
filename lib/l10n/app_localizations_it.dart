@@ -929,11 +929,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get featSafeShareHow =>
-      'Trovare ciò che è privato in uno screenshot è gratis e senza limiti. Si paga per trasformare quei ritrovamenti in una copia pulita: ogni dato viene ridisegnato con i colori dello screenshot come un valore diverso e altrettanto ordinario.';
+      'Trovare ciò che è privato in uno screenshot è gratis e senza limiti. Si paga per trasformare quei ritrovamenti in una copia pulita: ogni dato che lasci selezionato viene coperto nell\'immagine esportata, che è piatta, senza livelli da annullare.';
 
   @override
   String get featSafeSharePoint1 =>
-      'I numeri di carta sono verificati con Luhn e gli IBAN con il modulo 97 — e le controfigure superano gli stessi controlli, così niente sembra inventato.';
+      'I numeri di carta sono verificati con Luhn e gli IBAN con il modulo 97: questi due sono dimostrati invece che indovinati, proprio sul dato che conta di più.';
 
   @override
   String get featSafeSharePoint2 =>
@@ -941,7 +941,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get featSafeSharePoint3 =>
-      'Vedi ogni modifica prima di inviare e puoi coprire o tenere ciascuna. Lo screenshot originale non viene mai toccato.';
+      'Vedi tutto ciò che è stato trovato prima di inviare e puoi lasciare in chiaro quello che l\'app ha sbagliato. Lo screenshot originale non viene mai toccato.';
 
   @override
   String get featActionsHow =>

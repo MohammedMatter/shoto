@@ -1665,13 +1665,13 @@ abstract class AppLocalizations {
   /// No description provided for @featSafeShareHow.
   ///
   /// In en, this message translates to:
-  /// **'Finding what is private in a screenshot is free and unlimited. Paying is what turns those findings into a clean copy: each detail is redrawn in the screenshot\'s own colours as a different, equally ordinary value.'**
+  /// **'Finding what is private in a screenshot is free and unlimited. Paying is what turns those findings into a clean copy: each detail you leave selected is covered in the exported image, which is flat — no layer to undo.'**
   String get featSafeShareHow;
 
   /// No description provided for @featSafeSharePoint1.
   ///
   /// In en, this message translates to:
-  /// **'Card numbers are Luhn-checked and IBANs mod-97 checked — and the stand-ins pass the same checks, so nothing looks fabricated.'**
+  /// **'Card numbers are Luhn-checked and IBANs mod-97 checked, so those two are found by proof rather than by pattern — no guessing on the detail that matters most.'**
   String get featSafeSharePoint1;
 
   /// No description provided for @featSafeSharePoint2.
@@ -1683,7 +1683,7 @@ abstract class AppLocalizations {
   /// No description provided for @featSafeSharePoint3.
   ///
   /// In en, this message translates to:
-  /// **'You see every change before you send, and can cover or keep any of them instead. The original screenshot is never touched.'**
+  /// **'You see everything found before you send, and can leave any of it showing if the app got it wrong. The original screenshot is never touched.'**
   String get featSafeSharePoint3;
 
   /// No description provided for @featActionsHow.

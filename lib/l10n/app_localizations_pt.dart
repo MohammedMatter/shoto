@@ -920,11 +920,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get featSafeShareHow =>
-      'Achar o que é privado numa captura é grátis e ilimitado. O que se paga é transformar esses achados numa cópia limpa: cada dado é redesenhado nas cores da própria captura como um valor diferente e igualmente comum.';
+      'Achar o que é privado numa captura é grátis e ilimitado. O que se paga é transformar esses achados numa cópia limpa: cada dado que você deixar marcado é coberto na imagem exportada, e essa imagem é plana, sem nenhuma camada para desfazer.';
 
   @override
   String get featSafeSharePoint1 =>
-      'Números de cartão passam por Luhn e IBANs por módulo 97 — e os substitutos passam nas mesmas checagens, então nada parece inventado.';
+      'Números de cartão passam por Luhn e IBANs por módulo 97: esses dois são provados em vez de adivinhados, justo no dado que mais importa.';
 
   @override
   String get featSafeSharePoint2 =>
@@ -932,7 +932,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get featSafeSharePoint3 =>
-      'Você vê cada mudança antes de enviar, e pode cobrir ou manter qualquer uma. A captura original nunca é tocada.';
+      'Você vê tudo que foi encontrado antes de enviar e pode deixar à mostra o que o app marcou errado. A captura original nunca é tocada.';
 
   @override
   String get featActionsHow =>
