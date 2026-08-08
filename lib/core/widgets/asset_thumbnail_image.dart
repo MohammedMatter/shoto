@@ -54,11 +54,28 @@ class AssetThumbnailImage extends StatelessWidget {
   /// It is not part of the cache key, so both fits share one decode.
   final BoxFit fit;
 
+  /// Which part of the picture survives the crop.
+  ///
+  /// **Top, because a screenshot identifies itself at the top.** The status
+  /// bar, the app's own header, the sender's name, the subject line, the
+  /// heading of the page — everything that answers "which screenshot is
+  /// this?" is in the first fifth of the image. Centre-cropping a tall
+  /// capture into a square tile throws exactly that away and keeps the middle
+  /// of a message thread, which looks the same on every screenshot anybody
+  /// owns. The default was centre only because that is Flutter's, not because
+  /// anything chose it.
+  ///
+  /// Pass [Alignment.center] with [BoxFit.contain]: nothing is cropped there,
+  /// so this only decides which end the letterboxing goes on, and a single
+  /// capture the user is judging belongs in the middle of its box.
+  final Alignment alignment;
+
   const AssetThumbnailImage({
     super.key,
     required this.asset,
     this.background,
     this.fit = BoxFit.cover,
+    this.alignment = Alignment.topCenter,
   });
 
   @override
@@ -72,6 +89,7 @@ class AssetThumbnailImage extends StatelessWidget {
           thumbnailSize: size,
         ),
         fit: fit,
+        alignment: alignment,
         width: double.infinity,
         height: double.infinity,
         // Holds the pixels already on screen while a new decode is in flight

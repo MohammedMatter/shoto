@@ -205,7 +205,13 @@ class _Capture extends StatelessWidget {
         child: Container(
           width: double.infinity,
           color: context.colors.surfaceVariant,
-          child: AssetThumbnailImage(asset: asset, fit: BoxFit.contain),
+          child: AssetThumbnailImage(
+            asset: asset,
+            fit: BoxFit.contain,
+            // Nothing is cropped here, so this only says where the
+            // letterboxing goes — and a capture being judged sits centred.
+            alignment: Alignment.center,
+          ),
         ),
       ),
     );
