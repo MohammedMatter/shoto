@@ -891,7 +891,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get featSafeShareBody =>
-      'Remplace numéros de carte, adresses, noms et coordonnées par des équivalents crédibles : même longueur, même format, même endroit. La copie envoyée ne semble pas retouchée.';
+      'Repère les numéros de carte, adresses, noms et coordonnées, et masque chacun par un bloc opaque. Le texte autour reste, l\'image reste lisible — et la copie envoyée n\'a aucune couche à retirer.';
 
   @override
   String get featActions => 'Transformez vos captures en actions';
@@ -1445,7 +1445,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get onbSafeShareBody =>
-      'Un numéro de carte en devient un autre — même longueur, même place, toujours valide. Personne ne voit la retouche.';
+      'Le numéro de carte passe sous un bloc opaque — la mention à côté reste, l\'image reste lisible. Vous vérifiez chaque masque avant d\'envoyer.';
 
   @override
   String get onbFolderExample => 'Reçus';

@@ -1611,7 +1611,7 @@ abstract class AppLocalizations {
   /// No description provided for @featSafeShareBody.
   ///
   /// In en, this message translates to:
-  /// **'Swaps card numbers, addresses, names and contact details for realistic stand-ins — same length, same format, same place. The copy you send does not look edited.'**
+  /// **'Finds card numbers, addresses, names and contact details and covers each with a solid block. The words around them stay, so the picture still reads — and the copy you send has no layer to peel back.'**
   String get featSafeShareBody;
 
   /// No description provided for @featActions.
@@ -2487,7 +2487,7 @@ abstract class AppLocalizations {
   /// No description provided for @onbSafeShareBody.
   ///
   /// In en, this message translates to:
-  /// **'A card number becomes a different card number — same length, same place, still valid. Nobody can tell it was edited.'**
+  /// **'The card number goes under a solid block — the label beside it stays, so the picture still reads. You check every cover before you send.'**
   String get onbSafeShareBody;
 
   /// No description provided for @onbFolderExample.

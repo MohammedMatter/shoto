@@ -891,7 +891,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get featSafeShareBody =>
-      'Cambia números de tarjeta, direcciones, nombres y datos de contacto por sustitutos realistas: misma longitud, mismo formato, mismo sitio. La copia que envías no parece editada.';
+      'Encuentra números de tarjeta, direcciones, nombres y datos de contacto, y tapa cada uno con un bloque sólido. El texto de alrededor se mantiene y la captura se sigue entendiendo; la copia que envías no tiene ninguna capa que quitar.';
 
   @override
   String get featActions => 'Convierte capturas en acciones';
@@ -1438,7 +1438,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get onbSafeShareBody =>
-      'Un número de tarjeta se convierte en otro: mismo largo, mismo sitio, igual de válido. Nadie nota que se editó.';
+      'El número de tarjeta queda bajo un bloque sólido: la etiqueta de al lado se mantiene y la captura se sigue entendiendo. Revisas cada tapado antes de enviar.';
 
   @override
   String get onbFolderExample => 'Recibos';

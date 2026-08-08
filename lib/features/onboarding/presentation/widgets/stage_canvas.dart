@@ -397,23 +397,32 @@ class _SearchProp extends StatelessWidget {
 ///
 /// What replaced it is the one capability neither Google Photos nor Apple
 /// Photos will ever ship. Both already read and index every screenshot for
-/// free, so "find your screenshots" is a commodity the phone gives away —
-/// but a platform owner cannot approve a feature that writes a different,
-/// plausible card number into a user's photo, and that is exactly what this
-/// does. Showing it beats describing it: two rows of mono digits, the second
-/// one perfectly ordinary, is the whole product in one glance.
+/// free, so "find your screenshots" is a commodity the phone gives away;
+/// finding the private detail in one and covering it before it is sent is
+/// not. Showing it beats describing it — the number, then the number gone.
 ///
-/// The number is fake in both rows, and the replacement passes the same Luhn
-/// check the real one would — which is the actual claim being made.
+/// **This drew a substitution until it was caught, and the copy did too.**
+/// It showed one card number becoming a second, ordinary-looking one, which
+/// is a feature `RedactionService` deleted on purpose: a block says one thing
+/// and the user can check it in the preview, while an invented stand-in asks
+/// them to believe the app put the right value in the right place. The slide
+/// went on selling it for months after the code stopped doing it, and an
+/// onboarding that promises what the product will not deliver is worse than
+/// one that undersells.
+///
+/// So the mark here is the real one — [_cover] is the colour and radius
+/// `RedactionService._paintCover` paints. If that changes, this changes.
 class _SafeShareProp extends StatelessWidget {
   const _SafeShareProp({super.key});
 
-  /// Neither of these belongs to anybody. `4539…` is a Visa test prefix and
-  /// both lines are Luhn-valid, which is the point being demonstrated: the
-  /// stand-in is not a row of Xs, it is a number that passes every check the
-  /// original passed.
-  static const String _before = '4539 1488 0343 6467';
-  static const String _after = '4716 2093 5518 4021';
+  /// A Visa test prefix, belonging to nobody. It is shown twice — once as the
+  /// screenshot has it, once with the block over it — so the second row is
+  /// sized by the very digits it covers rather than by a guess.
+  static const String _number = '4539 1488 0343 6467';
+
+  /// The colour and corner [RedactionService] actually paints, so the promise
+  /// on the first screen and the export the user gets are the same mark.
+  static const Color _cover = Color(0xFF121212);
 
   @override
   Widget build(BuildContext context) {
@@ -431,14 +440,11 @@ class _SafeShareProp extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Struck through rather than greyed out: grey reads as "disabled",
-            // and this value is not disabled — it is gone.
+            // The screenshot as it arrived.
             Text(
-              _before,
+              _number,
               style: context.text.monoBody.copyWith(
                 color: context.colors.textSecondary,
-                decoration: TextDecoration.lineThrough,
-                decorationColor: context.colors.textSecondary,
               ),
             ),
             SizedBox(height: 7.h),
@@ -450,13 +456,30 @@ class _SafeShareProp extends StatelessWidget {
                   color: context.colors.secondary,
                 ),
                 SizedBox(width: 9.w),
-                Expanded(
-                  child: Text(
-                    _after,
-                    style: context.text.monoBody.copyWith(
-                      color: context.colors.textPrimary,
+                // The same digits with the block over them, drawn as a stack
+                // so the mark is exactly as wide as what it hides. A fixed
+                // width would drift the moment the type scale moved, and a
+                // cover that is narrower than its number is the one mistake
+                // this screen must never illustrate.
+                Stack(
+                  children: [
+                    Text(
+                      _number,
+                      style: context.text.monoBody.copyWith(
+                        color: Colors.transparent,
+                      ),
                     ),
-                  ),
+                    Positioned.fill(
+                      left: -3,
+                      right: -3,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: _cover,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

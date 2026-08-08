@@ -892,7 +892,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get featSafeShareBody =>
-      'Vervangt kaartnummers, adressen, namen en contactgegevens door realistische vervangers — zelfde lengte, zelfde opmaak, zelfde plek. Aan de kopie die je stuurt is niets te zien.';
+      'Vindt kaartnummers, adressen, namen en contactgegevens en dekt elk ervan af met een dicht blok. De tekst eromheen blijft staan, dus het beeld blijft leesbaar — en de verstuurde kopie heeft geen laag die je eraf kunt halen.';
 
   @override
   String get featActions => 'Maak van screenshots acties';
@@ -1447,7 +1447,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get onbSafeShareBody =>
-      'Een kaartnummer wordt een ander kaartnummer — zelfde lengte, zelfde plek, nog steeds geldig. Niemand ziet dat het bewerkt is.';
+      'Het kaartnummer verdwijnt onder een dicht blok — het label ernaast blijft staan, dus het beeld blijft leesbaar. Je controleert elke afdekking voor je verstuurt.';
 
   @override
   String get onbFolderExample => 'Bonnetjes';

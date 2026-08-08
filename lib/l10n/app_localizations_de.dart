@@ -896,7 +896,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get featSafeShareBody =>
-      'Tauscht Kartennummern, Adressen, Namen und Kontaktdaten gegen realistische Platzhalter – gleiche Länge, gleiches Format, gleiche Stelle. Der Kopie sieht man die Bearbeitung nicht an.';
+      'Findet Kartennummern, Adressen, Namen und Kontaktdaten und deckt jedes davon mit einem massiven Balken ab. Der Text drumherum bleibt, das Bild bleibt lesbar – und die gesendete Kopie hat keine Ebene, die sich entfernen lässt.';
 
   @override
   String get featActions => 'Screenshots zu Aktionen machen';
@@ -1458,7 +1458,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get onbSafeShareBody =>
-      'Aus einer Kartennummer wird eine andere Kartennummer – gleiche Länge, gleiche Stelle, weiterhin gültig. Niemand merkt, dass sie bearbeitet wurde.';
+      'Die Kartennummer verschwindet unter einem massiven Balken – die Beschriftung daneben bleibt, das Bild bleibt lesbar. Du prüfst jede Abdeckung, bevor du sendest.';
 
   @override
   String get onbFolderExample => 'Belege';

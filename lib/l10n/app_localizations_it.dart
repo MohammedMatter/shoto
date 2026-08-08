@@ -896,7 +896,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get featSafeShareBody =>
-      'Sostituisce numeri di carta, indirizzi, nomi e contatti con controfigure realistiche: stessa lunghezza, stesso formato, stesso posto. La copia che invii non sembra modificata.';
+      'Trova numeri di carta, indirizzi, nomi e recapiti e copre ciascuno con un blocco pieno. Il testo intorno resta, così l\'immagine si capisce ancora — e la copia che invii non ha nessun livello da rimuovere.';
 
   @override
   String get featActions => 'Trasforma gli screenshot in azioni';
@@ -1453,7 +1453,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get onbSafeShareBody =>
-      'Un numero di carta diventa un altro numero di carta — stessa lunghezza, stesso posto, ancora valido. Nessuno può accorgersi della modifica.';
+      'Il numero della carta finisce sotto un blocco pieno — l\'etichetta accanto resta, così l\'immagine si capisce ancora. Controlli ogni copertura prima di inviare.';
 
   @override
   String get onbFolderExample => 'Scontrini';
