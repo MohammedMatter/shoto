@@ -10,6 +10,7 @@ import 'package:shoto/core/widgets/sheet_surface.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_event.dart';
+import 'package:shoto/features/folders/presentation/widgets/folder_name_limit.dart';
 
 /// Rename / delete actions for a folder.
 ///
@@ -144,8 +145,10 @@ void _promptRename(
       content: TextField(
         controller: controller,
         autofocus: true,
+        maxLength: kMaxFolderNameLength,
         style: context.text.bodyLarge,
         decoration: InputDecoration(
+          counterText: '',
           filled: true,
           fillColor: context.colors.surfaceVariant,
           border: OutlineInputBorder(

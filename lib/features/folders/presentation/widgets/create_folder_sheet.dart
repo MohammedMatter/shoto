@@ -11,6 +11,7 @@ import 'package:shoto/core/widgets/app_switch.dart';
 import 'package:shoto/core/widgets/primary_button.dart';
 import 'package:shoto/core/widgets/sheet_surface.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_colors.dart';
+import 'package:shoto/features/folders/presentation/widgets/folder_name_limit.dart';
 
 Future<void> showCreateFolderSheet(
   BuildContext context, {
@@ -101,12 +102,14 @@ class _CreateFolderSheetContentState extends State<_CreateFolderSheetContent> {
               TextField(
                 controller: _controller,
                 autofocus: true,
+                maxLength: kMaxFolderNameLength,
                 style: context.text.bodyLarge,
                 decoration: InputDecoration(
                   hintText: context.l10n.foldersNameLabel,
                   hintStyle: context.text.bodyLarge.copyWith(
                     color: context.colors.textDisabled,
                   ),
+                  counterText: '',
                   filled: true,
                   fillColor: context.colors.surfaceVariant,
                   border: OutlineInputBorder(

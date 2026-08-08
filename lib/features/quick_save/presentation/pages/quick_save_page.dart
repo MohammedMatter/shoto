@@ -17,6 +17,7 @@ import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 import 'package:shoto/features/folders/domain/use_cases/create_folder_use_case.dart';
 import 'package:shoto/features/folders/domain/use_cases/get_folders_use_case.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_colors.dart';
+import 'package:shoto/features/folders/presentation/widgets/folder_name_limit.dart';
 import 'package:shoto/features/screenshots/domain/repositories/screenshot_repository.dart';
 
 /// The sheet that rises when an image is shared into SHOTO.
@@ -551,6 +552,7 @@ class _QuickSavePageState extends State<QuickSavePage>
         TextField(
           controller: _nameController,
           autofocus: true,
+          maxLength: kMaxFolderNameLength,
           textCapitalization: TextCapitalization.sentences,
           style: context.text.bodyLarge,
           onSubmitted: (_) => _createFolder(),
@@ -560,6 +562,10 @@ class _QuickSavePageState extends State<QuickSavePage>
             hintStyle: context.text.bodyLarge.copyWith(
               color: context.colors.textDisabled,
             ),
+            // Suppressed for the same reason as the intent label field: the
+            // cap is here so the button and the chips can render the name,
+            // not a budget the user is meant to watch themselves spend.
+            counterText: '',
             filled: true,
             fillColor: context.colors.surfaceVariant,
             border: OutlineInputBorder(
@@ -778,6 +784,10 @@ class _QuickSavePageState extends State<QuickSavePage>
           child: Container(
             height: 54.h,
             alignment: Alignment.center,
+            // Keeps an ellipsized label off the rounded ends. Without it a
+            // long folder name runs the text right into the corner radius,
+            // which reads as clipped rather than shortened.
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             decoration: BoxDecoration(
               gradient: _inert ? null : context.colors.primaryGradient,
               color: _inert ? context.colors.surfaceVariant : null,
@@ -803,19 +813,36 @@ class _QuickSavePageState extends State<QuickSavePage>
                         size: 20.sp,
                       ),
                       SizedBox(width: 9.w),
-                      Text(
-                        // Branches on where the screenshot is going rather
-                        // than on whether the button is tappable — the two
-                        // are the same thing again now that a folder is the
-                        // only way to file, but writing it this way is what
-                        // keeps `_selected!` provably safe.
-                        _selected != null
-                            ? context.l10n.quickSaveFileIn(_selected!.name)
-                            : context.l10n.quickSavePickFolder,
-                        style: context.text.button.copyWith(
-                          color: _inert
-                              ? context.colors.textDisabled
-                              : context.colors.onPrimary,
+                      // **Flexible, because the folder name is user-written
+                      // and this label embeds it.** The row is
+                      // `MainAxisSize.min` so the button's contents hug and
+                      // centre, and a bare `Text` in that row is measured at
+                      // its intrinsic width — a long enough folder name simply
+                      // ran off the end and painted the overflow stripes. This
+                      // hands the text whatever is left after the icon and
+                      // lets it ellipsize instead.
+                      //
+                      // Fixed here rather than only by capping the name field:
+                      // names also arrive from the folders screen, from rename,
+                      // and from a restored backup, so the label has to survive
+                      // any length whatever the inputs allow.
+                      Flexible(
+                        child: Text(
+                          // Branches on where the screenshot is going rather
+                          // than on whether the button is tappable — the two
+                          // are the same thing again now that a folder is the
+                          // only way to file, but writing it this way is what
+                          // keeps `_selected!` provably safe.
+                          _selected != null
+                              ? context.l10n.quickSaveFileIn(_selected!.name)
+                              : context.l10n.quickSavePickFolder,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: context.text.button.copyWith(
+                            color: _inert
+                                ? context.colors.textDisabled
+                                : context.colors.onPrimary,
+                          ),
                         ),
                       ),
                     ],
@@ -1036,12 +1063,22 @@ class _FolderChip extends StatelessWidget {
               color: selected ? accent : context.colors.textSecondary,
             ),
             SizedBox(width: 7.w),
-            Text(
-              label,
-              style: context.text.bodySmall.asMedium.copyWith(
-                color: selected
-                    ? context.colors.textPrimary
-                    : context.colors.textSecondary,
+            // The strip scrolls horizontally, so a long folder name never
+            // overflows here — it does something quieter and worse: one chip
+            // grows wider than the phone and hides every other folder behind
+            // a scroll nobody knows to perform. Capped so the strip keeps
+            // showing that there are others.
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 150.w),
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.text.bodySmall.asMedium.copyWith(
+                  color: selected
+                      ? context.colors.textPrimary
+                      : context.colors.textSecondary,
+                ),
               ),
             ),
           ],

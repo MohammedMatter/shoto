@@ -40,10 +40,19 @@ class IntentPickerRow extends StatefulWidget {
   final IntentRef? selected;
   final ValueChanged<IntentRef?> onChanged;
 
-  /// Whether to print the question above the chips.
+  /// Whether to print the label above the chips.
   ///
   /// On for the save sheet, where the row arrives unannounced. Off where the
   /// surrounding screen has already asked.
+  ///
+  /// **It is a label and not a question, deliberately.** On the save sheet
+  /// this row sits under the folder chips, and the folder is the one answer
+  /// that is actually required — asked by the button, which reads "Pick a
+  /// folder" until one is chosen. So the required half had no written prompt
+  /// and the optional half had the only question mark on the screen, which is
+  /// the hierarchy backwards: a question mark stops a hurried reader, and this
+  /// is the one they are free to walk past. `intentPrompt` names what the
+  /// chips are for and hands the choice back in the same breath.
   final bool showPrompt;
 
   const IntentPickerRow({
