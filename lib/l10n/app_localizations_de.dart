@@ -394,6 +394,17 @@ class AppLocalizationsDe extends AppLocalizations {
       'SHOTO bewahrt die Screenshots, die du hineinteilst, in einem eigenen Album auf. Für das Schreiben und Zurücklesen braucht es Fotozugriff – den Rest deiner Galerie listet es nie auf.';
 
   @override
+  String get permissionAskTitle =>
+      'SHOTO braucht Zugriff auf sein Screenshots-Album';
+
+  @override
+  String get permissionAskMessage =>
+      'Nur dieses Album, und nur um aufzulisten, was darin ist. Nichts wird hochgeladen, und nichts landet in deiner Bibliothek, bevor du es auswählst.';
+
+  @override
+  String get permissionAllow => 'Zugriff erlauben';
+
+  @override
   String get permissionPartialTitle => 'Voller Fotozugriff nötig';
 
   @override

@@ -394,6 +394,17 @@ class AppLocalizationsNl extends AppLocalizations {
       'SHOTO bewaart de screenshots die je erin deelt in een eigen album. Het heeft fototoegang nodig om daar te schrijven en ze terug te lezen — de rest van je galerij wordt nooit opgesomd.';
 
   @override
+  String get permissionAskTitle =>
+      'SHOTO moet zijn screenshot-album kunnen zien';
+
+  @override
+  String get permissionAskMessage =>
+      'Alleen dat album, en alleen om te tonen wat erin zit. Er wordt niets geüpload, en er komt niets in je bibliotheek tot jij het kiest.';
+
+  @override
+  String get permissionAllow => 'Toegang toestaan';
+
+  @override
   String get permissionPartialTitle => 'Volledige fototoegang nodig';
 
   @override

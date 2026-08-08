@@ -66,10 +66,36 @@ class LibraryUnavailable extends StatelessWidget {
         child: CircularProgressIndicator(color: context.colors.primary),
       ),
 
+      // **Never asked is not refused, and the two need opposite buttons.**
+      //
+      // This screen is now the first thing a new install shows, so it says
+      // what is being asked for before Android's dialog says "photos and
+      // videos" with no context at all: one album, only to list it, nothing
+      // uploaded, nothing added without a tap. The button raises the dialog —
+      // it is the only thing in the app that does — which is why it reads
+      // "Allow access" rather than "Continue".
+      //
+      // Sending this user to system settings, as the refusal case does and as
+      // both cases used to, would open the app on an instruction to go and
+      // repair it.
+      ScreenshotsPermissionUnaskedState() => EmptyState(
+        icon: Icons.photo_library_outlined,
+        title: context.l10n.permissionAskTitle,
+        message: context.l10n.permissionAskMessage,
+        action: PrimaryButton(
+          label: context.l10n.permissionAllow,
+          onPressed: () =>
+              context.read<ScreenshotsBloc>().add(RequestPhotoAccessEvent()),
+        ),
+      ),
+
       // Partial access is refusal, not permission. "Select photos…" exposes
       // only the handful the user hand-picked, so the Screenshots album this
       // app is built around is not visible at all — and a library that comes
       // back empty for that reason must say so rather than look tidy.
+      //
+      // Settings, not the dialog: this user has answered, and Android will
+      // not put the question a second time.
       ScreenshotsPermissionDeniedState(:final bool isPartialAccess) =>
         EmptyState(
           icon: Icons.photo_library_outlined,

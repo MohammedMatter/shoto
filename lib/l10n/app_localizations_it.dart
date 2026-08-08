@@ -396,6 +396,17 @@ class AppLocalizationsIt extends AppLocalizations {
       'SHOTO tiene gli screenshot che condividi al suo interno in un album tutto suo. Gli serve l\'accesso alle foto per scriverci e rileggerli: il resto della tua galleria non viene mai elencato.';
 
   @override
+  String get permissionAskTitle =>
+      'SHOTO deve vedere il suo album di screenshot';
+
+  @override
+  String get permissionAskMessage =>
+      'Solo quell’album, e solo per elencare ciò che contiene. Nulla viene caricato online, e nulla entra nella tua libreria finché non lo scegli tu.';
+
+  @override
+  String get permissionAllow => 'Consenti accesso';
+
+  @override
   String get permissionPartialTitle => 'Serve l\'accesso completo alle foto';
 
   @override

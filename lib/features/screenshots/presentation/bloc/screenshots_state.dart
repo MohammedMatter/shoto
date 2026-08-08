@@ -28,6 +28,21 @@ class ScreenshotsInitialState extends ScreenshotsState {}
 
 class ScreenshotsLoadingState extends ScreenshotsState {}
 
+/// Photo access has not been asked for yet — not refused, not granted.
+///
+/// **A separate state because it needs the opposite screen.** Somebody who
+/// refused is told where system settings are, because Android will not show
+/// the dialog a second time. Somebody who has never been asked must be offered
+/// the dialog, and telling *them* to open system settings is telling a person
+/// who installed the app a minute ago to go and repair it.
+///
+/// It exists at all because the app stopped asking at launch. The request used
+/// to fire from the first library load, which put a system dialog in front of
+/// somebody who had not yet done anything — at the one moment they have the
+/// least reason to say yes, spending the single prompt Android grants. Now the
+/// app explains itself first and the dialog follows a deliberate tap.
+class ScreenshotsPermissionUnaskedState extends ScreenshotsState {}
+
 class ScreenshotsPermissionDeniedState extends ScreenshotsState {
   /// True when the OS granted *partial* photo access ("Select photos…").
   ///

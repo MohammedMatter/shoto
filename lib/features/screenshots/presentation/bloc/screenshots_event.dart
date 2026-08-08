@@ -15,6 +15,15 @@ class LoadScreenshotsEvent extends ScreenshotsEvent {
 /// missing. Checks the permission silently — never prompts.
 class RecheckPermissionEvent extends ScreenshotsEvent {}
 
+/// **The only thing in the app that raises the system photo dialog.**
+///
+/// Deliberately its own event and not a flag on [LoadScreenshotsEvent]: a load
+/// happens on launch, on tab select and on retry, and any of those putting up
+/// a dialog is how the prompt ended up in front of somebody who had not asked
+/// for it. This one is dispatched from a button the user pressed, and from
+/// nowhere else.
+class RequestPhotoAccessEvent extends ScreenshotsEvent {}
+
 class RefreshScreenshotsEvent extends ScreenshotsEvent {}
 
 class ToggleFavoriteEvent extends ScreenshotsEvent {

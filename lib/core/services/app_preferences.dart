@@ -17,6 +17,7 @@ class AppPreferences extends ChangeNotifier {
   static const String _triageAskedKey = 'pref_triage_asked';
   static const String _triageSinceKey = 'pref_triage_since';
   static const String _triageSnoozedKey = 'pref_triage_snoozed';
+  static const String _photoAccessAskedKey = 'pref_photo_access_asked';
 
   bool _haptics = true;
   bool _confirmBeforeDelete = true;
@@ -26,6 +27,7 @@ class AppPreferences extends ChangeNotifier {
   bool _triageAsked = false;
   int _triageSince = 0;
   int _triageSnoozedAt = 0;
+  bool _photoAccessAsked = false;
 
   /// Whether taps give physical feedback. Off is a genuine accessibility
   /// preference, and some people simply find it noisy.
@@ -94,6 +96,27 @@ class AppPreferences extends ChangeNotifier {
   /// genuinely more than eleven*. Reviewing the queue clears it back to zero.
   int get triageSnoozedAt => _triageSnoozedAt;
 
+  /// Whether the system photo dialog has ever been put in front of this user.
+  ///
+  /// **Android cannot answer this itself.** `PermissionState` reports *denied*
+  /// both for somebody who refused and for somebody who has never been asked,
+  /// and the two need opposite screens: one is told how to reach system
+  /// settings, the other is offered the dialog. Getting that backwards means
+  /// a fresh install opens on "go to your phone's settings" for an app the
+  /// user installed thirty seconds ago.
+  ///
+  /// Kept next to [triageAsked] because it is the same shape of fact: the
+  /// question having been put is not the same as the answer to it.
+  bool get photoAccessAsked => _photoAccessAsked;
+
+  Future<void> markPhotoAccessAsked() async {
+    if (_photoAccessAsked) return;
+    _photoAccessAsked = true;
+    notifyListeners();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_photoAccessAskedKey, true);
+  }
+
   Future<void> snoozeTriage(int waiting) async {
     _triageSnoozedAt = waiting;
     notifyListeners();
@@ -110,6 +133,7 @@ class AppPreferences extends ChangeNotifier {
     _triageEnabled = prefs.getBool(_triageEnabledKey) ?? false;
     _triageAsked = prefs.getBool(_triageAskedKey) ?? false;
     _triageSnoozedAt = prefs.getInt(_triageSnoozedKey) ?? 0;
+    _photoAccessAsked = prefs.getBool(_photoAccessAskedKey) ?? false;
     // Defaults to *now* rather than to zero. A user switching this on today is
     // asking what they have captured since; handing them every screenshot they
     // have ever taken is the gallery-mirror this app deliberately is not.

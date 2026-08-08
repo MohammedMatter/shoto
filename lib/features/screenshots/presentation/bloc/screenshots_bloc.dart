@@ -1,5 +1,6 @@
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
+import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/extract_and_cache_text_use_case.dart';
@@ -28,6 +29,10 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.d
 class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   final RequestPhotoPermissionUseCase requestPhotoPermissionUseCase;
   final CheckPhotoPermissionUseCase checkPhotoPermissionUseCase;
+
+  /// Read for one fact only: whether the photo dialog has ever been shown.
+  /// See [_blocked].
+  final AppPreferences preferences;
   final GetScreenshotsUseCase getScreenshotsUseCase;
   final GetScreenshotsByFolderUseCase getScreenshotsByFolderUseCase;
   final SetFavoriteUseCase setFavoriteUseCase;
@@ -111,10 +116,12 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     required this.getCachedOcrTextUseCase,
     required this.extractAndCacheTextUseCase,
     required this.intentCatalog,
+    required this.preferences,
   }) : super(ScreenshotsInitialState()) {
     intentCatalog.deletions.addListener(_onCustomIntentDeleted);
     on<LoadScreenshotsEvent>(_onLoad);
     on<RecheckPermissionEvent>(_onRecheckPermission);
+    on<RequestPhotoAccessEvent>(_onRequestPhotoAccess);
     on<RefreshScreenshotsEvent>(_onRefresh);
     on<ToggleFavoriteEvent>(_onToggleFavorite);
     on<DeleteSelectedEvent>(_onDeleteSelected);
@@ -142,13 +149,18 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   ) async {
     _folderId = event.folderId;
     emit(ScreenshotsLoadingState());
-    final PermissionState permission = await requestPhotoPermissionUseCase();
+
+    // **Checks, never asks.** This runs on launch, on every Folders tab
+    // select and behind the retry button, and when it asked, the system photo
+    // dialog appeared over a user who had just finished the introduction and
+    // done nothing else. Android grants that dialog roughly once; spending it
+    // at the moment somebody has the least reason to say yes is how an app
+    // ends up permanently unable to read anything.
+    //
+    // Asking now belongs to [RequestPhotoAccessEvent], which a button sends.
+    final PermissionState permission = await checkPhotoPermissionUseCase();
     if (!permission.isAuth) {
-      emit(
-        ScreenshotsPermissionDeniedState(
-          isPartialAccess: permission == PermissionState.limited,
-        ),
-      );
+      emit(_blocked(permission));
       return;
     }
     await _loadAndEmit(emit);
@@ -157,6 +169,46 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     // a sheet opens would reshuffle the chips under a thumb already on its way
     // down. Loading the library is the natural seam: it happens before any
     // picker can be reached, and never while one is open.
+    unawaited(intentCatalog.refresh());
+    _watchLibrary();
+  }
+
+  /// Which blocked screen a refusal deserves.
+  ///
+  /// Android reports *denied* both for somebody who said no and for somebody
+  /// who was never asked, so the difference is read from preferences — see
+  /// [AppPreferences.photoAccessAsked]. The two need opposite screens: one is
+  /// offered the dialog, the other is told where system settings are, because
+  /// for them the dialog will not come back.
+  ScreenshotsState _blocked(PermissionState permission) {
+    if (permission == PermissionState.limited) {
+      return ScreenshotsPermissionDeniedState(isPartialAccess: true);
+    }
+    if (!preferences.photoAccessAsked) {
+      return ScreenshotsPermissionUnaskedState();
+    }
+    return ScreenshotsPermissionDeniedState();
+  }
+
+  /// Raises the system dialog, once, because somebody pressed a button.
+  ///
+  /// The flag is set before the result is known and never cleared: what it
+  /// records is that the question was *put*, and that stays true whichever way
+  /// it was answered. Recording it only on success would send a user who
+  /// refused back to the same screen offering the same button, which Android
+  /// will silently do nothing about.
+  Future<void> _onRequestPhotoAccess(
+    RequestPhotoAccessEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    await preferences.markPhotoAccessAsked();
+    final PermissionState permission = await requestPhotoPermissionUseCase();
+    if (!permission.isAuth) {
+      emit(_blocked(permission));
+      return;
+    }
+    emit(ScreenshotsLoadingState());
+    await _loadAndEmit(emit);
     unawaited(intentCatalog.refresh());
     _watchLibrary();
   }

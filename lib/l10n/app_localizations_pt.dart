@@ -392,6 +392,17 @@ class AppLocalizationsPt extends AppLocalizations {
       'O SHOTO guarda as capturas que você compartilha com ele num álbum próprio. Ele precisa de acesso às fotos para escrever lá e lê-las de volta — o resto da sua galeria nunca é listado.';
 
   @override
+  String get permissionAskTitle =>
+      'O SHOTO precisa de ver o seu álbum de capturas';
+
+  @override
+  String get permissionAskMessage =>
+      'Apenas esse álbum, e apenas para listar o que contém. Nada é enviado para a nuvem, e nada entra na tua biblioteca até tu escolheres.';
+
+  @override
+  String get permissionAllow => 'Permitir acesso';
+
+  @override
   String get permissionPartialTitle => 'É preciso acesso total às fotos';
 
   @override

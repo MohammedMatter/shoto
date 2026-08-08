@@ -188,6 +188,7 @@ void setupServiceLocator() {
       getCachedOcrTextUseCase: sl(),
       extractAndCacheTextUseCase: sl(),
       intentCatalog: sl(),
+      preferences: sl(),
     ),
   );
 

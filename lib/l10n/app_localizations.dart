@@ -738,6 +738,24 @@ abstract class AppLocalizations {
   /// **'SHOTO keeps the screenshots you share into it in their own album. It needs photo access to write there and read them back — it never lists the rest of your gallery.'**
   String get permissionNeededMessage;
 
+  /// No description provided for @permissionAskTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SHOTO needs to see its Screenshots album'**
+  String get permissionAskTitle;
+
+  /// No description provided for @permissionAskMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Only that album, and only to list what is in it. Nothing is uploaded, and nothing joins your library until you pick it.'**
+  String get permissionAskMessage;
+
+  /// No description provided for @permissionAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow access'**
+  String get permissionAllow;
+
   /// No description provided for @permissionPartialTitle.
   ///
   /// In en, this message translates to:
