@@ -71,15 +71,34 @@ class _HomePageState extends State<HomePage>
     ScreenshotsState state,
     List<ScreenshotEntity> all,
   ) => switch (state) {
+    // Asked, and said no. Settings is the only route left, because Android
+    // will not put the dialog up a second time.
     ScreenshotsPermissionDeniedState(:final bool isPartialAccess) =>
       HomeBlockedHeadline.permission(partial: isPartialAccess),
+
+    // Never asked. **This is the first thing a fresh install draws**, and it
+    // arrived here as a blank screen: the switch below used to end in `_`, so
+    // a state added to the bloc fell through to the loading skeleton and Home
+    // opened on nothing at all — the exact bug this switch was written to
+    // stop, reintroduced by the wildcard that was left in it.
+    ScreenshotsPermissionUnaskedState() => HomeBlockedHeadline.unasked(
+      onRetry: () =>
+          context.read<ScreenshotsBloc>().add(RequestPhotoAccessEvent()),
+    ),
+
     ScreenshotsErrorState(:final AppMessage message) =>
       HomeBlockedHeadline.failure(
         message,
         onRetry: () =>
             context.read<ScreenshotsBloc>().add(LoadScreenshotsEvent()),
       ),
-    _ => UnsortedHeadline(
+
+    // Written out rather than left to a wildcard. These two are the only
+    // states allowed to draw the skeleton, and they are the only two that
+    // resolve themselves.
+    ScreenshotsInitialState() ||
+    ScreenshotsLoadingState() ||
+    ScreenshotsLoadedState() => UnsortedHeadline(
       unsortedCount: all.where((s) => s.isUnsorted).length,
       hasLibrary: all.isNotEmpty,
       isLoading: state is! ScreenshotsLoadedState,

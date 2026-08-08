@@ -108,6 +108,32 @@ void main() {
   Future<AppLocalizations> english() =>
       AppLocalizations.delegate.load(const Locale('en'));
 
+  /// **The bug this file exists for, made again by the file's own author.**
+  ///
+  /// Home's headline switch ended in `_`, so it compiled happily when a sixth
+  /// state was added to the bloc — and a fresh install opened on the loading
+  /// skeleton: no count, no sentence, no import button, nothing to press. The
+  /// same blank first screen this test file was written to prevent, reached
+  /// through the wildcard that was left in the switch after it was fixed.
+  ///
+  /// The wildcard is gone. This asserts the behaviour, because a wildcard is
+  /// one character and comes back easily.
+  testWidgets('a permission never asked for opens on the question', (
+    tester,
+  ) async {
+    await render(tester, ScreenshotsPermissionUnaskedState());
+    final AppLocalizations l10n = await english();
+
+    expect(find.text(l10n.permissionAskTitle), findsOneWidget);
+    expect(find.text(l10n.permissionAllow), findsOneWidget);
+
+    // Not the refusal's screen: this user has answered nothing, and system
+    // settings is an instruction to repair an app that is not broken.
+    expect(find.text(l10n.permissionOpenSettings), findsNothing);
+    // And not the skeleton, which is what it actually drew.
+    expect(find.text(l10n.homeInboxEmpty), findsNothing);
+  });
+
   testWidgets('a refused photo permission is explained, not left blank', (
     tester,
   ) async {

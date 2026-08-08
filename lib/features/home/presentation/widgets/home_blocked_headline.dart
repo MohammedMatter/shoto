@@ -31,31 +31,52 @@ class HomeBlockedHeadline extends StatelessWidget {
   /// permission.
   final AppMessage? failure;
 
-  /// Only a failure can be retried. A permission is fixed in Settings, and
-  /// offering "Try again" for it sends the user in a circle.
+  /// What the one button does, or null when there is nothing to offer.
+  ///
+  /// Three different jobs, and the difference matters more than it looks:
+  /// a failure is retried, a refusal is repaired in Settings, and a question
+  /// that has never been asked is simply asked. Offering "Try again" for a
+  /// permission sends the user in a circle; offering Settings to somebody who
+  /// has not seen the dialog sends them to repair an app that is not broken.
   final VoidCallback? onRetry;
+
+  /// True for the state that has no answer yet, as opposed to a refusal.
+  final bool isUnasked;
 
   const HomeBlockedHeadline.permission({super.key, required bool partial})
     : isPartialAccess = partial,
       failure = null,
-      onRetry = null;
+      onRetry = null,
+      isUnasked = false;
+
+  /// Photo access has not been asked for. Home is the first screen a fresh
+  /// install opens on, so this is the app's opening sentence — it explains
+  /// what is wanted before Android's dialog says "photos and videos", and its
+  /// button raises that dialog rather than pointing at system settings.
+  const HomeBlockedHeadline.unasked({super.key, required this.onRetry})
+    : isPartialAccess = null,
+      failure = null,
+      isUnasked = true;
 
   const HomeBlockedHeadline.failure(this.failure, {super.key, this.onRetry})
-    : isPartialAccess = null;
+    : isPartialAccess = null,
+      isUnasked = false;
 
   @override
   Widget build(BuildContext context) {
     final bool blockedByPermission = isPartialAccess != null;
 
-    final String headline = switch ((blockedByPermission, isPartialAccess)) {
-      (false, _) => context.l10n.commonSomethingWentWrong,
-      (true, true) => context.l10n.permissionPartialTitle,
+    final String headline = switch ((isUnasked, blockedByPermission, isPartialAccess)) {
+      (true, _, _) => context.l10n.permissionAskTitle,
+      (false, false, _) => context.l10n.commonSomethingWentWrong,
+      (false, true, true) => context.l10n.permissionPartialTitle,
       _ => context.l10n.permissionNeededTitle,
     };
 
-    final String detail = switch ((blockedByPermission, isPartialAccess)) {
-      (false, _) => failure!.resolve(context),
-      (true, true) => context.l10n.permissionPartialMessage,
+    final String detail = switch ((isUnasked, blockedByPermission, isPartialAccess)) {
+      (true, _, _) => context.l10n.permissionAskMessage,
+      (false, false, _) => failure!.resolve(context),
+      (false, true, true) => context.l10n.permissionPartialMessage,
       _ => context.l10n.permissionNeededMessage,
     };
 
@@ -72,9 +93,11 @@ class HomeBlockedHeadline extends StatelessWidget {
         ),
         SizedBox(height: 16.h),
         PrimaryButton(
-          label: blockedByPermission
-              ? context.l10n.permissionOpenSettings
-              : context.l10n.commonRetry,
+          label: switch ((isUnasked, blockedByPermission)) {
+            (true, _) => context.l10n.permissionAllow,
+            (false, true) => context.l10n.permissionOpenSettings,
+            _ => context.l10n.commonRetry,
+          },
           onPressed: blockedByPermission
               ? () => PhotoManager.openSetting()
               : onRetry,
