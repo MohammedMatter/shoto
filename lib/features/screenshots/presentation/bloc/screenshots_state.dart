@@ -6,7 +6,23 @@ import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dar
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_sort.dart';
 
-class ScreenshotsState {}
+/// **Sealed so that forgetting a state is a compile error, not a blank
+/// screen.**
+///
+/// Home shipped with `isLoading: loaded == null`, which folded four states
+/// into one: a refused photo permission and a failed read both drew the
+/// loading branch, so the count, the sentence and the import button vanished
+/// and the first screen of the app sat empty with no way out of it. Nothing
+/// in the code objected, because `is!` costs nothing to write and says
+/// nothing about what was left out.
+///
+/// Sealing changes that. An exhaustive `switch` over this type — one with no
+/// `default` — will not compile while a subtype is unhandled, so the next
+/// state added here forces every screen that reads it to say what it draws.
+/// The guard is only as good as the switches: `if (state is! …)` still
+/// compiles and still hides everything, which is why the three ways the
+/// library can fail to be a library are drawn once, by [LibraryUnavailable].
+sealed class ScreenshotsState {}
 
 class ScreenshotsInitialState extends ScreenshotsState {}
 

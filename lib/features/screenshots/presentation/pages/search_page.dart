@@ -22,6 +22,7 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.d
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/pages/screenshot_detail_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_thumbnail.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/library_unavailable.dart';
 
 /// Opens [SearchPage]. Pass [bloc] to reuse an already-loaded
 /// [ScreenshotsBloc] (e.g. Home's, so favorite/move actions taken from search
@@ -276,7 +277,12 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildResults(BuildContext context) {
     return BlocBuilder<ScreenshotsBloc, ScreenshotsState>(
       builder: (context, state) {
-        if (state is! ScreenshotsLoadedState) return const SizedBox.shrink();
+        // Search is opened from a loaded library, so this is only reached
+        // when access is revoked or a refresh fails underneath it — which is
+        // exactly when a blank results area reads as "found nothing".
+        final Widget? blocked = LibraryUnavailable.maybeOf(state);
+        if (blocked != null) return blocked;
+        state as ScreenshotsLoadedState;
 
         if (_query.isEmpty) {
           return EmptyState(

@@ -17,6 +17,7 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.d
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/intent_full_picker_sheet.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/intent_visuals.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/library_unavailable.dart';
 
 /// Everything still waiting under one intent, and one gesture to finish it.
 ///
@@ -36,12 +37,19 @@ class IntentPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ScreenshotsBloc, ScreenshotsState>(
       builder: (context, state) {
-        final List<ScreenshotEntity> waiting = state is ScreenshotsLoadedState
-            ? state.waitingFor(intent)
-            : const <ScreenshotEntity>[];
-        final int done = state is ScreenshotsLoadedState
-            ? state.doneFor(intent)
-            : 0;
+        // **An unread library is not an empty one.** This used to fall back to
+        // an empty list for every state that was not loaded, and an empty
+        // waiting list here draws a green tick and "you're all done" — so a
+        // refused photo permission congratulated the user for clearing a list
+        // the app had never been allowed to see.
+        final Widget? blocked = LibraryUnavailable.maybeOf(state);
+
+        final ScreenshotsLoadedState? loaded = state is ScreenshotsLoadedState
+            ? state
+            : null;
+        final List<ScreenshotEntity> waiting =
+            loaded?.waitingFor(intent) ?? const <ScreenshotEntity>[];
+        final int done = loaded?.doneFor(intent) ?? 0;
 
         return Scaffold(
           backgroundColor: context.colors.background,
@@ -71,7 +79,9 @@ class IntentPage extends StatelessWidget {
             ),
           ),
           body: SafeArea(
-            child: waiting.isEmpty
+            // The tick is reserved for a list that was read and found clear.
+            child: blocked ??
+                (waiting.isEmpty
                 ? EmptyState(
                     icon: Icons.check_circle_rounded,
                     title: context.l10n.intentEmptyOne(
@@ -118,7 +128,7 @@ class IntentPage extends StatelessWidget {
                         ),
                       );
                     },
-                  ),
+                  )),
           ),
         );
       },

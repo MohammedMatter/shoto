@@ -6,7 +6,6 @@ import 'package:shoto/features/screenshots/presentation/widgets/intent_full_pick
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/photo_viewer_route.dart';
@@ -34,6 +33,7 @@ import 'package:shoto/features/screenshots/presentation/widgets/screenshot_limit
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_thumbnail.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshots_filter_row.dart';
 import 'package:shoto/features/stitch/presentation/pages/open_stitch_page.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/library_unavailable.dart';
 
 /// Shared body for any screen that lists screenshots from a
 /// [ScreenshotsBloc] already available above it in the widget tree — used by
@@ -111,41 +111,12 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
 
     return BlocBuilder<ScreenshotsBloc, ScreenshotsState>(
       builder: (context, state) {
-        if (state is ScreenshotsLoadingState ||
-            state is ScreenshotsInitialState) {
-          return Center(
-            child: CircularProgressIndicator(color: context.colors.primary),
-          );
-        }
-
-        if (state is ScreenshotsPermissionDeniedState) {
-          return EmptyState(
-            icon: Icons.photo_library_outlined,
-            title: state.isPartialAccess
-                ? context.l10n.permissionPartialTitle
-                : context.l10n.permissionNeededTitle,
-            message: state.isPartialAccess
-                ? context.l10n.permissionPartialMessage
-                : context.l10n.permissionNeededMessage,
-            action: PrimaryButton(
-              label: context.l10n.permissionOpenSettings,
-              onPressed: () => PhotoManager.openSetting(),
-            ),
-          );
-        }
-
-        if (state is ScreenshotsErrorState) {
-          return EmptyState(
-            icon: Icons.error_outline_rounded,
-            title: context.l10n.commonSomethingWentWrong,
-            message: state.message.resolve(context),
-            action: PrimaryButton(
-              label: context.l10n.commonRetry,
-              onPressed: () =>
-                  context.read<ScreenshotsBloc>().add(LoadScreenshotsEvent()),
-            ),
-          );
-        }
+        // Loading, refused and failed all look the same on every screen that
+        // reads this bloc, so they are drawn in one place. This is where the
+        // three of them were written out first; they moved so that the
+        // screens which had them wrong could share the version that is right.
+        final Widget? blocked = LibraryUnavailable.maybeOf(state);
+        if (blocked != null) return blocked;
 
         final ScreenshotsLoadedState loaded = state as ScreenshotsLoadedState;
         final items = loaded.visibleScreenshots;
