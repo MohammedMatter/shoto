@@ -41,29 +41,16 @@ import 'package:photo_manager/photo_manager.dart';
 class ScreenshotGalleryDataSource {
   /// The album Shoto writes into, and the folder it becomes on disk.
   ///
-  /// **Spelled `SHOTO` until the product stopped being spelled that way.**
-  /// Renaming it is not the cosmetic change it looks like, because this string
-  /// is a *path* — every screenshot any existing user has handed over lives in
-  /// `Pictures/SHOTO`, and an app that starts looking for `Pictures/Shoto`
-  /// finds an empty library and a folder full of orphans.
+  /// **This string is a path, not a label.** It decides where every screenshot
+  /// the user hands over is written and where the library is read back from,
+  /// so it is the one piece of branding that cannot simply be restyled.
   ///
-  /// Two things make the rename safe, and neither is a data migration:
-  ///
-  /// 1. **Android's storage is case-insensitive.** `Pictures/Shoto` resolves to
-  ///    the same directory as `Pictures/SHOTO`, so new saves land beside the
-  ///    old ones rather than in a second folder. Nothing is copied and nothing
-  ///    is deleted — the two operations that could lose a picture.
-  /// 2. **Lookups compare case-insensitively** — see [_ourAlbum]. An exact
-  ///    match is what would have broken: `MediaStore` reports the album under
-  ///    whatever case the directory was *created* with, so an install from
-  ///    before this change still answers "SHOTO" when asked its name.
-  ///
-  /// The visible consequence is that the gallery keeps showing the old spelling
-  /// to anyone who already had the folder. Changing that means renaming a
-  /// directory the gallery indexes, which `photo_manager` cannot do — the only
-  /// route is copy-then-delete over every asset the user owns, and that trade
-  /// is a capitalised letter against the chance of losing somebody's
-  /// screenshots.
+  /// The lookup in [_ourAlbum] folds case, which is not a stylistic choice:
+  /// `MediaStore` reports an album under whatever case its directory was
+  /// *created* with, and Android storage is case-insensitive, so a folder made
+  /// by an earlier build answers in capitals while pointing at the same
+  /// directory this one writes to. An exact match would read that as a
+  /// different album and show an empty library over a full folder.
   static const String importAlbumName = 'Shoto';
 
   /// What the OS calls the album a screen capture lands in.
@@ -224,11 +211,11 @@ class ScreenshotGalleryDataSource {
         ],
       ),
     );
-    // Case-insensitive, and that is the whole of the SHOTO → Shoto migration.
-    // MediaStore reports an album under the case its directory was created
-    // with, so every install from before the rename still calls this album
-    // SHOTO — an exact match would have handed those users an empty library
-    // with all their screenshots still on disk. See [importAlbumName].
+    // Case-insensitive on purpose. MediaStore reports an album under the
+    // case its directory was created with, so a folder made by an earlier
+    // build answers in capitals while being the same directory this build
+    // writes into. An exact match reads that as somebody else's album and
+    // shows an empty library over a full folder. See [importAlbumName].
     final String wanted = importAlbumName.toLowerCase();
     return _bestMatch(
       paths.where((path) => path.name.toLowerCase() == wanted).toList(),

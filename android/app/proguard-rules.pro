@@ -15,7 +15,7 @@
 # It *is* unreachable: `TextRecognitionDataSource` only ever asks for the Latin
 # recognizer. These four lines say so.
 #
-# If SHOTO ever needs to read Chinese, Japanese, Korean or Devanagari script,
+# If Shoto ever needs to read Chinese, Japanese, Korean or Devanagari script,
 # the fix is to add the matching artifact as a real `implementation` dependency
 # — not to widen this rule.
 -dontwarn com.google.mlkit.vision.text.chinese.**

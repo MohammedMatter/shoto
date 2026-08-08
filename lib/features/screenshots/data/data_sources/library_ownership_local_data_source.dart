@@ -5,10 +5,7 @@ import 'package:shoto/core/services/local_identity.dart';
 /// Answers the one question the device gallery cannot: is this screenshot
 /// actually *in* Shoto's library.
 ///
-/// Shoto keeps its images in a single album on the device, `Pictures/Shoto`
-/// — spelled `Pictures/SHOTO` on any install that predates the rename, which
-/// is the same directory either way; see `ScreenshotGalleryDataSource
-/// .importAlbumName`.
+/// Shoto keeps its images in a single album on the device, `Pictures/Shoto`.
 /// A folder on disk cannot distinguish an image the user deliberately saved
 /// from one that merely landed there, so membership is recorded here and the
 /// album is only ever read *through* it.

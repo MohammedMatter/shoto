@@ -13,10 +13,10 @@ import io.flutter.plugin.common.MethodChannel
 import java.io.File
 
 /**
- * Receives images shared into SHOTO from other apps.
+ * Receives images shared into Shoto from other apps.
  *
  * This is a *separate* activity from [MainActivity] on purpose. Handling the
- * share intent in the main activity meant every "share to SHOTO" tore the
+ * share intent in the main activity meant every "share to Shoto" tore the
  * user out of whatever app they were in and dropped them into the full app,
  * which they then had to back out of. Its own activity — with its own task,
  * excluded from recents — can show a small save sheet, do the work, and
@@ -73,7 +73,7 @@ class ShareActivity : FlutterFragmentActivity() {
      * Renders over whatever app the user was in, rather than covering it.
      *
      * Flutter paints an opaque surface by default, so without this the sheet
-     * would sit on a black rectangle and read as "SHOTO opened" — exactly the
+     * would sit on a black rectangle and read as "Shoto opened" — exactly the
      * interruption this whole activity exists to avoid. The theme must also
      * set android:windowIsTranslucent, or this has no effect.
      */
@@ -89,9 +89,9 @@ class ShareActivity : FlutterFragmentActivity() {
         ).setMethodCallHandler { call, result ->
             when (call.method) {
                 // Every incoming image, each with its MediaStore id when it
-                // has one. The id is what lets Dart tell "a screenshot SHOTO
+                // has one. The id is what lets Dart tell "a screenshot Shoto
                 // already shows" from "an image from another app" — without
-                // it, sharing your own screenshot back into SHOTO silently
+                // it, sharing your own screenshot back into Shoto silently
                 // wrote a second copy of it.
                 // Already running since onCreate — this usually returns
                 // immediately.
@@ -100,7 +100,7 @@ class ShareActivity : FlutterFragmentActivity() {
                 )
 
                 // Called once the sheet is done. finishAndRemoveTask (rather
-                // than finish) is what stops an empty SHOTO card being left
+                // than finish) is what stops an empty Shoto card being left
                 // behind in the recents switcher.
                 "close" -> {
                     result.success(null)

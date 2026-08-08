@@ -145,7 +145,7 @@ flutter:
         - asset: assets/fonts/IBMPlexSans.ttf
           weight: 400
     # Data: IBM Plex Mono, and this one is functional rather than decorative.
-    # SHOTO shows card numbers, IBANs, verification codes, pixel dimensions
+    # Shoto shows card numbers, IBANs, verification codes, pixel dimensions
     # and byte counts — strings people read a character at a time. A
     # proportional font makes that measurably harder.
     - family: IBMPlexMono

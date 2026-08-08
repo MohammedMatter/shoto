@@ -1,37 +1,34 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/features/screenshots/data/data_sources/screenshot_gallery_data_source.dart';
 
-/// **The album name is a path, and paths do not get renamed for branding.**
+/// **The album name is a path, and paths do not get restyled.**
 ///
-/// `importAlbumName` reads like a label and is not one: it is the folder every
-/// screenshot a user ever handed over is sitting in. When the product stopped
-/// being spelled SHOTO, changing this string could have pointed the app at
-/// `Pictures/Shoto` while every existing library stayed in `Pictures/SHOTO` —
-/// an empty app and a folder of orphans, with nothing thrown and nothing
-/// logged.
+/// `importAlbumName` reads like a label and is not one: it decides the folder
+/// every screenshot a user hands over is written to, and the folder the
+/// library is read back from. Renaming it while the lookup compared exactly
+/// would have shown an empty library over a full folder — Android storage is
+/// case-insensitive, so the new spelling writes into the directory that is
+/// already there, but `MediaStore` keeps reporting that directory under the
+/// case it was *created* with. The app would have been looking at its own
+/// pictures and not recognising them.
 ///
-/// It is safe for exactly two reasons, and this file exists to keep both of
-/// them true:
+/// Nothing shipped under the old spelling, so no user was ever exposed to
+/// that. The fold is here because development phones still hold folders made
+/// by earlier builds, and because the failure is silent: no exception, no log,
+/// just an app that says you have nothing.
 ///
-/// 1. Android storage is case-insensitive, so new saves land in the directory
-///    that is already there. Nothing is copied, nothing is deleted.
-/// 2. **The lookup compares case-insensitively.** MediaStore reports an album
-///    under the case its directory was created with, so a phone that installed
-///    the app last month still answers "SHOTO" when asked. An exact match is
-///    the version of this code that loses libraries.
-///
-/// The second is the one a future edit can quietly undo — `==` is shorter than
-/// a case fold and looks correct — so the comparison itself is asserted here
-/// rather than left to the album lookup, which needs a device to run.
+/// The comparison is asserted here rather than through the album lookup, which
+/// needs a device — and `==` is shorter than a case fold and looks correct,
+/// which is how it would come back.
 void main() {
   group('the album Shoto writes into', () {
     test('is spelled the way the product is', () {
       expect(ScreenshotGalleryDataSource.importAlbumName, 'Shoto');
     });
 
-    test('still recognises the folder older installs created', () {
+    test('still recognises a folder an earlier build created', () {
       // The exact strings MediaStore can report for the same directory,
-      // depending on when it was made.
+      // depending on which build made it.
       const List<String> reported = <String>['SHOTO', 'Shoto', 'shoto'];
       final String wanted = ScreenshotGalleryDataSource.importAlbumName
           .toLowerCase();

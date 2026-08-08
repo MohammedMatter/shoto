@@ -28,7 +28,7 @@ class AppDatabase {
   /// The album on disk is one folder shared by the whole device — it has no
   /// idea accounts exist. Without this table every account signing in on the
   /// same phone saw every other account's screenshots, because "the library"
-  /// was really just "the contents of Pictures/SHOTO". Membership is a
+  /// was really just "the contents of Pictures/Shoto". Membership is a
   /// decision the app makes, so it belongs here rather than on the filesystem.
   static const String libraryAssets = 'library_assets';
 
