@@ -72,10 +72,29 @@ class PrimaryButton extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          label,
-                          style: context.text.button.copyWith(
-                            color: context.colors.onPrimary,
+                        // **Flexible, because a button narrower than its own
+                        // label is a crash stripe, not a truncation.**
+                        //
+                        // `mainAxisSize.min` says this row wants to be as wide
+                        // as its contents; nothing said what to do when it is
+                        // not allowed to be. Merge's "Save to gallery" beside
+                        // "Discard" overflowed by 38px on a 360pt phone — and
+                        // that is the *English*. German sets the same button
+                        // to "In Galerie sichern".
+                        //
+                        // Ellipsis rather than a smaller font: a button that
+                        // resizes its own text makes two buttons side by side
+                        // disagree about their type scale, which reads as a
+                        // rendering fault even when both fit.
+                        Flexible(
+                          child: Text(
+                            label,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: context.text.button.copyWith(
+                              color: context.colors.onPrimary,
+                            ),
                           ),
                         ),
                         if (icon != null) ...[

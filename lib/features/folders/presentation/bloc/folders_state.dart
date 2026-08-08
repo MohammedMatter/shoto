@@ -1,7 +1,10 @@
 import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 
-class FoldersState {}
+/// Sealed for the reason spelled out on `ScreenshotsState`: a state nobody
+/// drew is a blank screen, and nothing about `if (state is …)` says what was
+/// left out. See `docs/decisions/screen-states.md`.
+sealed class FoldersState {}
 
 class FoldersInitialState extends FoldersState {}
 

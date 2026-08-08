@@ -84,11 +84,26 @@ class SubscriptionPackageCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
+                  // **Wrap, not Row.** The price beside this column is laid
+                  // out at its intrinsic width — it is the one thing on a
+                  // paywall that may never be shortened — so the title and
+                  // its badge get whatever is left, which at 360pt is not
+                  // enough for both. As a `Row` they overflowed by 127px in
+                  // English, and by 31px more once the title was allowed to
+                  // ellipsise, because the badge is a fixed size and could
+                  // not give anything back.
+                  //
+                  // Wrapping puts "Save 73%" on its own line instead, which
+                  // costs a few pixels of height on narrow phones and never
+                  // truncates a discount — the number the whole card exists
+                  // to advertise.
+                  Wrap(
+                    spacing: 8.w,
+                    runSpacing: 4.h,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Text(title, style: context.text.titleLarge),
                       if (badgeLabel != null) ...[
-                        SizedBox(width: 8.w),
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 8.w,

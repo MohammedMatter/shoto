@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/constants/subscription_constants.dart';
+import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
@@ -84,15 +85,31 @@ class _PaywallPageState extends State<PaywallPage> {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: context.colors.background,
+            // Exhaustive, no `default` — see
+            // `docs/decisions/screen-states.md`. A ternary here was one
+            // branch for the error and one for everything else; the three
+            // "everything else" states are now named, because a paywall that
+            // draws a blank price list is a paywall that cannot be bought
+            // from.
             body: SafeArea(
-              child: state is SubscriptionErrorState
-                  ? _ErrorBody(message: state.message.resolve(context))
-                  : _PaywallBody(
-                      state: state,
-                      selectedYearly: _selectedYearly,
-                      onSelect: (isYearly) =>
-                          setState(() => _selectedYearly = isYearly),
-                    ),
+              child: switch (state) {
+                SubscriptionErrorState(:final AppMessage message) => _ErrorBody(
+                  message: message.resolve(context),
+                ),
+
+                // Loading draws the skeleton; loaded draws the real prices.
+                SubscriptionLoadingState() ||
+                SubscriptionLoadedState() ||
+                // Purchase success is one frame — the listener above pops to
+                // the welcome screen. Until it does, the paywall it is leaving
+                // is the right thing to still be on screen.
+                SubscriptionPurchaseSuccessState() => _PaywallBody(
+                  state: state,
+                  selectedYearly: _selectedYearly,
+                  onSelect: (isYearly) =>
+                      setState(() => _selectedYearly = isYearly),
+                ),
+              },
             ),
           );
         },

@@ -2,7 +2,8 @@ import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/features/subscription/domain/entities/subscription_package_info.dart';
 import 'package:shoto/features/subscription/domain/entities/subscription_status.dart';
 
-class SubscriptionState {}
+/// Sealed — see `docs/decisions/screen-states.md`.
+sealed class SubscriptionState {}
 
 class SubscriptionLoadingState extends SubscriptionState {}
 

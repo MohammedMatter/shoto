@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/funnel_log.dart';
+import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/core/theme/app_colors.dart';
@@ -85,43 +86,51 @@ class _FoldersPageState extends State<FoldersPage> {
                 Expanded(
                   child: BlocBuilder<FoldersBloc, FoldersState>(
                     builder: (context, state) {
-                      // **Nothing at all while the folders are being read.**
-                      //
-                      // This was a centred spinner. Reading the folder table is
-                      // a local SQLite query measured in milliseconds, so what
-                      // it actually produced was a spinner appearing and
-                      // vanishing — a flash, on a screen that is re-entered
-                      // dozens of times a session because the shell reloads on
-                      // every tab select. Home settled the same question the
-                      // same way: silence is the only state here that is never
-                      // wrong, and there is nothing to fill.
-                      if (state is FoldersLoadingState ||
-                          state is FoldersInitialState) {
-                        return const SizedBox.shrink();
-                      }
-                      if (state is FoldersErrorState) {
-                        return EmptyState(
-                          icon: Icons.error_outline_rounded,
-                          title: context.l10n.commonSomethingWentWrong,
-                          message: state.message.resolve(context),
-                        );
-                      }
+                      // Exhaustive, no `default` — see
+                      // `docs/decisions/screen-states.md`.
+                      return switch (state) {
+                        // **Nothing at all while the folders are being read.**
+                        //
+                        // This was a centred spinner. Reading the folder table
+                        // is a local SQLite query measured in milliseconds, so
+                        // what it actually produced was a spinner appearing and
+                        // vanishing — a flash, on a screen that is re-entered
+                        // dozens of times a session because the shell reloads
+                        // on every tab select. Home settled the same question
+                        // the same way: silence is the only state here that is
+                        // never wrong, and there is nothing to fill.
+                        //
+                        // Silence chosen, not fallen into: this is the one
+                        // branch in the app allowed to draw nothing, and it is
+                        // written out so that the next state added here cannot
+                        // inherit the exemption by accident.
+                        FoldersLoadingState() ||
+                        FoldersInitialState() => const SizedBox.shrink(),
 
-                      final List<FolderEntity> folders =
-                          (state as FoldersLoadedState).folders;
-                      if (folders.isEmpty) {
-                        return EmptyState(
-                          icon: Icons.folder_off_rounded,
-                          title: context.l10n.foldersEmptyTitle,
-                          message: context.l10n.foldersEmptyMessage,
-                          action: PrimaryButton(
-                            label: context.l10n.foldersNew,
-                            onPressed: () => _createFolder(context),
+                        FoldersErrorState(:final AppMessage message) =>
+                          EmptyState(
+                            icon: Icons.error_outline_rounded,
+                            title: context.l10n.commonSomethingWentWrong,
+                            message: message.resolve(context),
                           ),
-                        );
-                      }
 
-                      return _FoldersGrid(folders: folders, since: _since);
+                        FoldersLoadedState(folders: final List<FolderEntity> f)
+                            when f.isEmpty =>
+                          EmptyState(
+                            icon: Icons.folder_off_rounded,
+                            title: context.l10n.foldersEmptyTitle,
+                            message: context.l10n.foldersEmptyMessage,
+                            action: PrimaryButton(
+                              label: context.l10n.foldersNew,
+                              onPressed: () => _createFolder(context),
+                            ),
+                          ),
+
+                        FoldersLoadedState(
+                          folders: final List<FolderEntity> f,
+                        ) =>
+                          _FoldersGrid(folders: f, since: _since),
+                      };
                     },
                   ),
                 ),
