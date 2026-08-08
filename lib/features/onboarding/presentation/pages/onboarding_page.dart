@@ -326,40 +326,10 @@ const List<CardPose> _chosen = [
   CardPose(x: 1.9, y: 1.2, turns: 0.08, scale: 0.8, opacity: 0),
 ];
 
-/// **Stage three — filed.** The three fan into a small stack above a folder,
-/// and take the clipped corner: the app's one signature shape, appearing at
-/// the exact moment it means something.
-const List<CardPose> _filed = [
-  CardPose(x: -1.9, y: -0.9, opacity: 0, scale: 0.8),
-  CardPose(x: -0.3, y: -0.3, turns: -0.03, scale: 0.9, mark: ShotMark.filed),
-  CardPose(x: 1.9, y: -0.9, opacity: 0, scale: 0.8),
-  CardPose(x: -1.9, y: 0.3, opacity: 0, scale: 0.8),
-  CardPose(x: 0, y: -0.34, turns: 0, scale: 0.94, mark: ShotMark.filed),
-  CardPose(x: 1.9, y: 0.3, opacity: 0, scale: 0.8),
-  CardPose(x: -1.9, y: 1.2, opacity: 0, scale: 0.8),
-  CardPose(x: 0.3, y: -0.3, turns: 0.03, scale: 0.9, mark: ShotMark.filed),
-  CardPose(x: 1.9, y: 1.2, opacity: 0, scale: 0.8),
-];
-
-/// **Stage four — found.** One card comes forward with a line of its text lit
-/// up; the other two step back and dim. This is what a search hit *is*: not a
-/// list of file names, a word found inside a picture.
-const List<CardPose> _found = [
-  CardPose(x: -1.9, y: -0.9, opacity: 0, scale: 0.8),
-  CardPose(x: -0.55, y: -0.34, turns: -0.04, scale: 0.78, opacity: 0.35),
-  CardPose(x: 1.9, y: -0.9, opacity: 0, scale: 0.8),
-  CardPose(x: -1.9, y: 0.3, opacity: 0, scale: 0.8),
-  CardPose(x: 0, y: -0.36, scale: 1.12, mark: ShotMark.found),
-  CardPose(x: 1.9, y: 0.3, opacity: 0, scale: 0.8),
-  CardPose(x: -1.9, y: 1.2, opacity: 0, scale: 0.8),
-  CardPose(x: 0.55, y: -0.34, turns: 0.04, scale: 0.78, opacity: 0.35),
-  CardPose(x: 1.9, y: 1.2, opacity: 0, scale: 0.8),
-];
-
-/// **Stage five — Pro.** The cards retreat to a tidy fan at the top and hand
-/// the screen to the paid list. One of them is covering a card number, which
-/// is the single most concrete thing SHOTO does and the last thing seen
-/// before the button.
+/// **Stage three — Safe Share.** The cards retreat to a tidy fan at the top
+/// and hand the screen to the cover itself. One of them is hiding a card
+/// number, which is the single most concrete thing SHOTO does and the last
+/// thing seen before the button.
 const List<CardPose> _pro = [
   CardPose(x: -1.9, y: -0.9, opacity: 0, scale: 0.8),
   CardPose(x: -0.48, y: -0.5, turns: -0.05, scale: 0.72, opacity: 0.9),
@@ -383,18 +353,26 @@ List<OnboardingStage> _stages(BuildContext context) => [
     body: (context) => context.l10n.onbChooseBody,
     poses: _chosen,
   ),
-  OnboardingStage(
-    title: (context) => context.l10n.onbFileTitle,
-    body: (context) => context.l10n.onbFileBody,
-    poses: _filed,
-    prop: StageProp.folder,
-  ),
-  OnboardingStage(
-    title: (context) => context.l10n.onbFindTitle,
-    body: (context) => context.l10n.onbFindBody,
-    poses: _found,
-    prop: StageProp.search,
-  ),
+  // **Three stages, and the two that went were the two about mechanics.**
+  //
+  // There were five. "Filed the moment you send it" and "Search what is
+  // inside them" each described a control, to somebody who did not yet have
+  // a single screenshot for the control to act on — and both are things the
+  // app shows on its own the first time they matter: the folder sheet
+  // appears in the share flow, the search field is the widest thing on the
+  // Library.
+  //
+  // What is left cannot be cut further without losing something the app
+  // cannot say later. The pile is the problem in one line. **SHOTO never
+  // reads your gallery** is the rule that makes every other screen make
+  // sense, and a user who misses it spends the first session waiting for
+  // their screenshots to arrive by themselves. Safe Share is the one thing
+  // the phone's own gallery will never do.
+  //
+  // Each stage costs a fifth of the people who started, so the question for
+  // anything added here is not "is this true" — all five were — but "will
+  // they still be here for the one after it".
+  //
   // Last, and no longer a price list.
   //
   // This stage used to pitch the subscription — six paid features shown to

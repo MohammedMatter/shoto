@@ -42,7 +42,11 @@ class CardPose {
 }
 
 /// What the stage shows *besides* the cards.
-enum StageProp { none, folder, search, safeShare }
+///
+/// Held `folder` and `search` while the introduction had a stage each for
+/// filing and finding. Both stages went — see `_stages` — and the props went
+/// with them rather than staying as two drawings nothing selects.
+enum StageProp { none, safeShare }
 
 /// One step of the introduction.
 @immutable

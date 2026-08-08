@@ -1455,20 +1455,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Nichts kommt von allein an. Du teilst einen Screenshot hinein – das ist die ganze Regel.';
 
   @override
-  String get onbFileTitle => 'Abgelegt in dem Moment, in dem du ihn sendest';
-
-  @override
-  String get onbFileBody =>
-      'Wähle den Ordner direkt im Teilen-Menü. Die App geht nicht einmal auf.';
-
-  @override
-  String get onbFindTitle => 'Durchsuche, was darin steht';
-
-  @override
-  String get onbFindBody =>
-      'Die Wörter in einem Screenshot und was das Bild zeigt. Tippe „Beleg“ oder „Hund“.';
-
-  @override
   String get onbSafeShareTitle =>
       'Der Screenshot, den du wirklich senden kannst';
 

@@ -1435,20 +1435,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Nothing arrives on its own. You share a screenshot in — that is the whole rule.';
 
   @override
-  String get onbFileTitle => 'Filed the moment you send it';
-
-  @override
-  String get onbFileBody =>
-      'Pick a folder right in the share sheet. The app does not even open.';
-
-  @override
-  String get onbFindTitle => 'Search what is inside them';
-
-  @override
-  String get onbFindBody =>
-      'The words printed in a screenshot, and what the picture shows. Type “receipt”, or “dog”.';
-
-  @override
   String get onbSafeShareTitle => 'The screenshot you can actually send';
 
   @override

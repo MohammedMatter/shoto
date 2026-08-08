@@ -1434,20 +1434,6 @@ class AppLocalizationsPt extends AppLocalizations {
       'Nada chega sozinho. É você que compartilha uma captura para dentro — a regra é essa.';
 
   @override
-  String get onbFileTitle => 'Arquivada no momento em que você envia';
-
-  @override
-  String get onbFileBody =>
-      'Escolha a pasta no próprio menu de compartilhamento. O app nem abre.';
-
-  @override
-  String get onbFindTitle => 'Busque o que está dentro delas';
-
-  @override
-  String get onbFindBody =>
-      'As palavras escritas numa captura, e o que a imagem mostra. Digite «recibo», ou «cachorro».';
-
-  @override
   String get onbSafeShareTitle => 'A captura que dá mesmo para enviar';
 
   @override

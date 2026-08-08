@@ -1436,20 +1436,6 @@ class AppLocalizationsEs extends AppLocalizations {
       'Nada llega solo. Tú compartes una captura con la app: esa es toda la regla.';
 
   @override
-  String get onbFileTitle => 'Archivada en cuanto la envías';
-
-  @override
-  String get onbFileBody =>
-      'Elige una carpeta desde el propio menú de compartir. La app ni se abre.';
-
-  @override
-  String get onbFindTitle => 'Busca lo que hay dentro';
-
-  @override
-  String get onbFindBody =>
-      'Las palabras escritas en la captura, y lo que muestra la imagen. Escribe «recibo» o «perro».';
-
-  @override
   String get onbSafeShareTitle => 'La captura que sí puedes enviar';
 
   @override

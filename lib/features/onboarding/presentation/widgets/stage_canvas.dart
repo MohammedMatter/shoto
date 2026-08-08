@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_shapes.dart';
@@ -295,94 +294,8 @@ class _Prop extends StatelessWidget {
       switchOutCurve: AppMotion.standard,
       child: switch (prop) {
         StageProp.none => const SizedBox.shrink(key: ValueKey('none')),
-        StageProp.folder => const _FolderProp(key: ValueKey('folder')),
-        StageProp.search => const _SearchProp(key: ValueKey('search')),
         StageProp.safeShare => const _SafeShareProp(key: ValueKey('safeShare')),
       },
-    );
-  }
-}
-
-class _FolderProp extends StatelessWidget {
-  const _FolderProp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: const Alignment(0, 0.82),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
-        decoration: BoxDecoration(
-          color: context.colors.surface,
-          borderRadius: BorderRadius.circular(AppRadius.pill),
-          border: Border.all(color: context.colors.border),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.folder_rounded,
-              size: 15.sp,
-              color: context.colors.textSecondary,
-            ),
-            SizedBox(width: 8.w),
-            Text(
-              context.l10n.onbFolderExample,
-              style: context.text.bodySmall.asMedium,
-            ),
-            SizedBox(width: 8.w),
-            Icon(
-              Icons.check_rounded,
-              size: 15.sp,
-              color: context.colors.success,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SearchProp extends StatelessWidget {
-  const _SearchProp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: const Alignment(0, 0.82),
-      child: Container(
-        width: 200.w,
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-        decoration: BoxDecoration(
-          color: context.colors.surfaceVariant,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(color: context.colors.border),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.search_rounded,
-              size: 16.sp,
-              color: context.colors.textSecondary,
-            ),
-            SizedBox(width: 9.w),
-            Text(
-              context.l10n.onbSearchExample,
-              style: context.text.bodySmall.asMedium.copyWith(
-                color: context.colors.textPrimary,
-              ),
-            ),
-            // The caret sits still. A blinking one is motion with nothing to
-            // say, on a screen already carrying a moving pile of cards.
-            Container(
-              width: 1.5,
-              height: 13.sp,
-              margin: EdgeInsetsDirectional.only(start: 2.w),
-              color: context.colors.secondary,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

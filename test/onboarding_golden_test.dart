@@ -46,12 +46,14 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  // Three, since the stages for filing and finding were cut — both described
+  // a control to somebody with nothing for it to act on. `pro` keeps its
+  // filename: it is still the same last stage, and renaming it would make the
+  // diff look like a new image rather than the same one, moved.
   for (final (int index, String name) in const <(int, String)>[
     (0, 'pile'),
     (1, 'chosen'),
-    (2, 'filed'),
-    (3, 'found'),
-    (4, 'pro'),
+    (2, 'pro'),
   ]) {
     testWidgets('onboarding — $name', (WidgetTester tester) async {
       await open(tester, Brightness.light);
@@ -73,7 +75,7 @@ void main() {
 
   testWidgets('onboarding — pro, dark', (WidgetTester tester) async {
     await open(tester, Brightness.dark);
-    await step(tester, 4);
+    await step(tester, 2);
     await expectLater(
       find.byType(OnboardingPage),
       matchesGoldenFile('goldens/onboarding_pro_dark.png'),

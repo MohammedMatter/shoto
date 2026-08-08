@@ -1443,20 +1443,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Rien n’arrive tout seul. Vous partagez une capture vers l’app : c’est toute la règle.';
 
   @override
-  String get onbFileTitle => 'Classée dès que vous l’envoyez';
-
-  @override
-  String get onbFileBody =>
-      'Choisissez un dossier depuis le menu de partage. L’app ne s’ouvre même pas.';
-
-  @override
-  String get onbFindTitle => 'Cherchez ce qu’il y a dedans';
-
-  @override
-  String get onbFindBody =>
-      'Les mots écrits dans la capture, et ce que l’image montre. Tapez « reçu » ou « chien ».';
-
-  @override
   String get onbSafeShareTitle => 'La capture que vous pouvez vraiment envoyer';
 
   @override

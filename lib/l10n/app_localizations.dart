@@ -2484,30 +2484,6 @@ abstract class AppLocalizations {
   /// **'Nothing arrives on its own. You share a screenshot in — that is the whole rule.'**
   String get onbChooseBody;
 
-  /// No description provided for @onbFileTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Filed the moment you send it'**
-  String get onbFileTitle;
-
-  /// No description provided for @onbFileBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Pick a folder right in the share sheet. The app does not even open.'**
-  String get onbFileBody;
-
-  /// No description provided for @onbFindTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Search what is inside them'**
-  String get onbFindTitle;
-
-  /// No description provided for @onbFindBody.
-  ///
-  /// In en, this message translates to:
-  /// **'The words printed in a screenshot, and what the picture shows. Type “receipt”, or “dog”.'**
-  String get onbFindBody;
-
   /// No description provided for @onbSafeShareTitle.
   ///
   /// In en, this message translates to:

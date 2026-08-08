@@ -1445,20 +1445,6 @@ class AppLocalizationsNl extends AppLocalizations {
       'Er komt niets uit zichzelf binnen. Jij deelt een screenshot naar binnen — dat is de hele regel.';
 
   @override
-  String get onbFileTitle => 'Opgeborgen op het moment dat je het stuurt';
-
-  @override
-  String get onbFileBody =>
-      'Kies de map meteen in het deelmenu. De app gaat niet eens open.';
-
-  @override
-  String get onbFindTitle => 'Zoek wat erin staat';
-
-  @override
-  String get onbFindBody =>
-      'De woorden die in een screenshot staan, en wat de afbeelding toont. Typ „bonnetje”, of „hond”.';
-
-  @override
   String get onbSafeShareTitle => 'Het screenshot dat je echt kunt versturen';
 
   @override

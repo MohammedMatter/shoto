@@ -1451,20 +1451,6 @@ class AppLocalizationsIt extends AppLocalizations {
       'Niente arriva da solo. Sei tu a condividere uno screenshot dentro: la regola è tutta qui.';
 
   @override
-  String get onbFileTitle => 'Archiviato nel momento in cui lo invii';
-
-  @override
-  String get onbFileBody =>
-      'Scegli la cartella direttamente nel menu di condivisione. L\'app non si apre nemmeno.';
-
-  @override
-  String get onbFindTitle => 'Cerca quello che c\'è dentro';
-
-  @override
-  String get onbFindBody =>
-      'Le parole scritte in uno screenshot, e quello che l\'immagine mostra. Scrivi «scontrino», o «cane».';
-
-  @override
   String get onbSafeShareTitle => 'Lo screenshot che puoi davvero inviare';
 
   @override
