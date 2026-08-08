@@ -126,6 +126,19 @@ class AppLocalizationsPt extends AppLocalizations {
   String get triageInviteDecline => 'Agora não';
 
   @override
+  String get triageInviteTitle => 'Mostrar aqui as capturas novas?';
+
+  @override
+  String get triageInviteBody =>
+      'O SHOTO pode listar o que capturares a partir de agora, para guardares as poucas que importam. Nada entra na tua biblioteca até tu decidires.';
+
+  @override
+  String get triageInviteAccept => 'Mostrar';
+
+  @override
+  String get triageInviteDismiss => 'Não, obrigado';
+
+  @override
   String get settingsTriage => 'Oferecer capturas novas';
 
   @override
@@ -554,6 +567,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get detailSafeShare => 'Safe share';
+
+  @override
+  String get detailMore => 'Mais';
 
   @override
   String get detailDeleteTitle => 'Excluir a captura?';

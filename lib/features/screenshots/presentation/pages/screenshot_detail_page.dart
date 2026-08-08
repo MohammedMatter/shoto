@@ -10,7 +10,9 @@ import 'package:shoto/core/services/haptics.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
+import 'package:shoto/core/routes/app_sheet.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
+import 'package:shoto/core/widgets/sheet_surface.dart';
 import 'package:shoto/core/widgets/asset_thumbnail_image.dart';
 import 'package:shoto/core/widgets/confirm_dialog.dart';
 import 'package:shoto/core/widgets/photo_hero.dart';
@@ -808,18 +810,27 @@ class _ActionBar extends StatelessWidget {
                   onTap: onShare,
                 ),
               ),
+              // **Move and Delete are behind this, and Delete especially.**
+              //
+              // The row used to be six equal cells, which said the six were
+              // equally ordinary. They are not: four of them are reversible —
+              // unfavourite it, close the sheet, share it again — and one
+              // permanently deletes the picture. Giving *delete the same
+              // weight as favourite*, one cell away from it, on a screen the
+              // user is swiping through quickly, is the shape of an accident.
+              //
+              // Two cells fewer also buys the four that stayed about a third
+              // more width each, which is what stops their labels crowding at
+              // 360pt in German.
               Expanded(
                 child: _BarAction(
-                  icon: Icons.folder_open_rounded,
-                  label: context.l10n.libraryActionMove,
-                  onTap: onMove,
-                ),
-              ),
-              Expanded(
-                child: _BarAction(
-                  icon: Icons.delete_outline_rounded,
-                  label: context.l10n.commonDelete,
-                  onTap: onDelete,
+                  icon: Icons.more_horiz_rounded,
+                  label: context.l10n.detailMore,
+                  onTap: () => _showMoreSheet(
+                    context,
+                    onMove: onMove,
+                    onDelete: onDelete,
+                  ),
                 ),
               ),
             ],
@@ -828,6 +839,74 @@ class _ActionBar extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The two verbs that left the bar.
+///
+/// A sheet rather than a popup menu because that is what the rest of the app
+/// uses for exactly this — see `showFolderActionsSheet`, which offers the same
+/// pair of "rename it / destroy it" choices in the same shape. Two entry
+/// points that behave differently for no reason is its own small bug.
+///
+/// The destructive item keeps its own confirmation ([_delete] still asks); the
+/// red here is not the safeguard, it is the warning that one is coming.
+Future<void> _showMoreSheet(
+  BuildContext context, {
+  required VoidCallback onMove,
+  required VoidCallback onDelete,
+}) {
+  return showAppSheet<void>(
+    context: context,
+    builder: (sheetContext) => SheetSurface(
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              width: 40.w,
+              height: 4.h,
+              margin: EdgeInsets.only(top: 10.h, bottom: 6.h),
+              decoration: BoxDecoration(
+                color: context.colors.border,
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.folder_open_rounded,
+                color: context.colors.textPrimary,
+              ),
+              title: Text(
+                context.l10n.libraryActionMove,
+                style: context.text.bodyLarge,
+              ),
+              onTap: () {
+                Navigator.of(sheetContext).pop();
+                onMove();
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.delete_outline_rounded,
+                color: context.colors.error,
+              ),
+              title: Text(
+                context.l10n.commonDelete,
+                style: context.text.bodyLarge.copyWith(
+                  color: context.colors.error,
+                ),
+              ),
+              onTap: () {
+                Navigator.of(sheetContext).pop();
+                onDelete();
+              },
+            ),
+            SizedBox(height: 8.h),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 class _BarAction extends StatelessWidget {

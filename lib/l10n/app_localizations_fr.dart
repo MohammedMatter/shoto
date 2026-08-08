@@ -126,6 +126,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get triageInviteDecline => 'Pas maintenant';
 
   @override
+  String get triageInviteTitle => 'Afficher ici les nouvelles captures ?';
+
+  @override
+  String get triageInviteBody =>
+      'SHOTO peut lister ce que vous capturez à partir de maintenant, pour ne garder que celles qui comptent. Rien n\'entre dans votre bibliothèque sans votre accord.';
+
+  @override
+  String get triageInviteAccept => 'Les afficher';
+
+  @override
+  String get triageInviteDismiss => 'Non merci';
+
+  @override
   String get settingsTriage => 'Proposer les nouvelles captures';
 
   @override
@@ -558,6 +571,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get detailSafeShare => 'Partage protégé';
+
+  @override
+  String get detailMore => 'Plus';
 
   @override
   String get detailDeleteTitle => 'Supprimer cette capture ?';

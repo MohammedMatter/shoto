@@ -125,6 +125,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get triageInviteDecline => 'Not now';
 
   @override
+  String get triageInviteTitle => 'Show new screenshots here?';
+
+  @override
+  String get triageInviteBody =>
+      'SHOTO can list what you capture from now on, so you can keep the few that matter. Nothing joins your library until you say so.';
+
+  @override
+  String get triageInviteAccept => 'Show them';
+
+  @override
+  String get triageInviteDismiss => 'No thanks';
+
+  @override
   String get settingsTriage => 'Offer new screenshots';
 
   @override
@@ -555,6 +568,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get detailSafeShare => 'Safe share';
+
+  @override
+  String get detailMore => 'More';
 
   @override
   String get detailDeleteTitle => 'Delete screenshot?';

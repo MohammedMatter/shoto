@@ -258,6 +258,30 @@ abstract class AppLocalizations {
   /// **'Not now'**
   String get triageInviteDecline;
 
+  /// No description provided for @triageInviteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Show new screenshots here?'**
+  String get triageInviteTitle;
+
+  /// No description provided for @triageInviteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'SHOTO can list what you capture from now on, so you can keep the few that matter. Nothing joins your library until you say so.'**
+  String get triageInviteBody;
+
+  /// No description provided for @triageInviteAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Show them'**
+  String get triageInviteAccept;
+
+  /// No description provided for @triageInviteDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'No thanks'**
+  String get triageInviteDismiss;
+
   /// No description provided for @settingsTriage.
   ///
   /// In en, this message translates to:
@@ -1043,6 +1067,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Safe share'**
   String get detailSafeShare;
+
+  /// No description provided for @detailMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get detailMore;
 
   /// No description provided for @detailDeleteTitle.
   ///
