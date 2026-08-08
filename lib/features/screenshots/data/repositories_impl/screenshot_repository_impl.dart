@@ -198,19 +198,40 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
   Future<void> assignFolder(List<String> assetIds, int? folderId) =>
       _metadata.assignFolder(assetIds, folderId);
 
+  /// Deletes what the OS lets it delete, and returns exactly that.
+  ///
+  /// **The gallery is asked first, and its answer decides the rest.** On
+  /// Android 11+ the delete is a system prompt the app cannot see the outcome
+  /// of in advance; `deleteWithIds` returns the ids that actually went. This
+  /// used to release ownership and erase the metadata *before* asking, and
+  /// then ignore the answer — so tapping Delete and pressing **Deny** left the
+  /// picture on the phone and threw away everything SHOTO knew about it. The
+  /// user refused a deletion and lost the folder it was filed in, the
+  /// favourite, the intent, for a screenshot still sitting in their gallery.
+  ///
+  /// Refusing is not an error and is not rare: it is one of the two buttons
+  /// the system offers, and it means "leave it alone" — which has to include
+  /// leaving the record alone.
+  ///
+  /// Every file a library holds is one SHOTO wrote into its own album —
+  /// importing copies, it never claims a picture where it already sits — so
+  /// there is no case here where this reaches a file the app didn't create.
+  ///
+  /// This used to also check whether a *second account on the same phone*
+  /// still had the image, and skip the file delete if so. There are no
+  /// second accounts any more: the library belongs to the device, so
+  /// leaving it and erasing the file are now the same decision.
   @override
-  Future<void> deleteScreenshots(List<String> assetIds) async {
-    // Every file a library holds is one SHOTO wrote into its own album —
-    // importing copies, it never claims a picture where it already sits — so
-    // there is no case here where this reaches a file the app didn't create.
-    //
-    // This used to also check whether a *second account on the same phone*
-    // still had the image, and skip the file delete if so. There are no
-    // second accounts any more: the library belongs to the device, so
-    // leaving it and erasing the file are now the same decision.
-    await _ownership.release(assetIds);
-    await _gallery.deleteAssets(assetIds);
-    await _metadata.deleteMeta(assetIds);
+  Future<List<String>> deleteScreenshots(List<String> assetIds) async {
+    final List<String> deleted = await _gallery.deleteAssets(assetIds);
+    if (deleted.isEmpty) return const <String>[];
+
+    // Scoped to what went, not to what was asked for. A partial result is
+    // possible — the system prompt is per-batch on some versions and per-item
+    // on others — and the ones that survived must keep their records.
+    await _ownership.release(deleted);
+    await _metadata.deleteMeta(deleted);
+    return deleted;
   }
 
   @override

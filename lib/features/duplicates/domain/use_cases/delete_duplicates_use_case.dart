@@ -4,6 +4,8 @@ class DeleteDuplicatesUseCase {
   final DuplicatesRepository repository;
   DeleteDuplicatesUseCase(this.repository);
 
-  Future<void> call(List<String> assetIds) =>
+  /// Returns the ids actually deleted, which the caller must report rather
+  /// than the ids it asked for.
+  Future<List<String>> call(List<String> assetIds) =>
       repository.deleteScreenshots(assetIds);
 }

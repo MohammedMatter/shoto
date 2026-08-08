@@ -67,7 +67,12 @@ abstract class ScreenshotRepository {
   /// Decides which five the picker offers without configuration.
   Future<List<String>> getIntentIdsByRecentUse();
 
-  Future<void> deleteScreenshots(List<String> assetIds);
+  /// Deletes what the OS allows, and returns the ids that actually went.
+  ///
+  /// Not `void`: the system delete prompt can be refused, and a caller that
+  /// assumes success drops a screenshot from the library that is still on the
+  /// phone.
+  Future<List<String>> deleteScreenshots(List<String> assetIds);
 
   /// The screenshots with these ids that belong to the current account,
   /// in the order given. Ids the account doesn't own are simply absent.

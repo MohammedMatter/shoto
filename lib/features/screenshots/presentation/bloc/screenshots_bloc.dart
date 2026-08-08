@@ -337,9 +337,24 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
       return;
     }
     final List<String> ids = current.selectedIds.toList();
-    await deleteScreenshotsUseCase(ids);
+
+    // Only what actually went. Refusing the system prompt used to empty the
+    // selection out of the library anyway, leaving the pictures on the phone
+    // and their folders, favourites and intents gone.
+    final Set<String> deleted = (await deleteScreenshotsUseCase(
+      ids,
+    )).toSet();
+    if (deleted.isEmpty) {
+      // Nothing was deleted, so nothing about the library changed — but the
+      // selection is cleared regardless. The user answered the question they
+      // were asked; leaving them in selection mode reads as the tap having
+      // been lost.
+      emit(current.copyWith(selectedIds: {}));
+      return;
+    }
+
     final updated = current.screenshots
-        .where((s) => !ids.contains(s.id))
+        .where((s) => !deleted.contains(s.id))
         .toList();
     emit(current.copyWith(screenshots: updated, selectedIds: {}));
   }
@@ -350,7 +365,13 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   ) async {
     final ScreenshotsState current = state;
     if (current is! ScreenshotsLoadedState) return;
-    await deleteScreenshotsUseCase([event.assetId]);
+    final List<String> deleted = await deleteScreenshotsUseCase([
+      event.assetId,
+    ]);
+    // A refused delete leaves the library exactly as it was — see
+    // `_onDeleteSelected`.
+    if (deleted.isEmpty) return;
+
     final updated = current.screenshots
         .where((s) => s.id != event.assetId)
         .toList();

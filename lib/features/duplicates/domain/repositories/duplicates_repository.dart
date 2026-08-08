@@ -12,5 +12,6 @@ abstract class DuplicatesRepository {
   });
 
   /// Permanently deletes the given screenshots from the device gallery.
-  Future<void> deleteScreenshots(List<String> assetIds);
+  /// Returns the ids actually deleted — the system prompt can be refused.
+  Future<List<String>> deleteScreenshots(List<String> assetIds);
 }

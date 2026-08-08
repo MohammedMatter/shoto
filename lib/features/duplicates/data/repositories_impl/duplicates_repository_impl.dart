@@ -38,7 +38,7 @@ class DuplicatesRepositoryImpl implements DuplicatesRepository {
   }
 
   @override
-  Future<void> deleteScreenshots(List<String> assetIds) =>
+  Future<List<String>> deleteScreenshots(List<String> assetIds) =>
       _screenshotRepository.deleteScreenshots(assetIds);
 
   /// Returns a hash per asset id, computing only the ones not already
