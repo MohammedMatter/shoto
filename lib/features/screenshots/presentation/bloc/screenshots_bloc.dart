@@ -211,6 +211,27 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     // for it — the shell also refreshes on every resume, and without this a
     // screenshot saved from the share sheet paid for both.
     _refreshDebounce?.cancel();
+
+    // A refresh must not talk its way past a permission the OS is still
+    // refusing. The shell fires one on every resume, and [_loadAndEmit] asks
+    // the gallery directly: without access that read comes back *empty*
+    // rather than failing, so it emitted an ordinary "loaded, and there is
+    // nothing here". Home then said the library was empty and offered the
+    // importer, on the same resume the Library tab was asking for photo
+    // access — two screens, two different stories, neither of them true.
+    //
+    // Nothing is re-emitted while access is still missing, so the screen the
+    // user is looking at does not flicker; same rule as
+    // [_onRecheckPermission], which this now mirrors for the granted case.
+    if (state is ScreenshotsPermissionDeniedState) {
+      final PermissionState permission = await checkPhotoPermissionUseCase();
+      if (!permission.isAuth) return;
+      emit(ScreenshotsLoadingState());
+      await _loadAndEmit(emit);
+      _watchLibrary();
+      return;
+    }
+
     await _loadAndEmit(emit);
   }
 

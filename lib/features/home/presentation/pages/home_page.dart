@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
+import 'package:shoto/features/home/presentation/widgets/home_blocked_headline.dart';
 import 'package:shoto/features/home/presentation/widgets/home_entrance.dart';
 import 'package:shoto/features/home/presentation/widgets/home_greeting.dart';
 import 'package:shoto/features/home/presentation/widgets/home_recent_strip.dart';
@@ -19,6 +21,7 @@ import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dar
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/pages/intent_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/import_screenshots_action.dart';
@@ -53,6 +56,39 @@ class _HomePageState extends State<HomePage>
     super.dispose();
   }
 
+  /// The one block Home leads with, whatever the library turned out to be.
+  ///
+  /// Every state gets a sentence here — that is the point of the switch. Home
+  /// is the first screen and the tab the app opens on, so a state it cannot
+  /// draw is a blank first impression with no way out of it: a refused photo
+  /// permission and a failed read both used to land in [UnsortedHeadline]'s
+  /// loading branch and disappear, taking the count, the sentence and the
+  /// import button with them. Only the genuinely transient states — initial
+  /// and loading — still draw nothing, and they are the only ones that fix
+  /// themselves.
+  Widget _headline(
+    BuildContext context,
+    ScreenshotsState state,
+    List<ScreenshotEntity> all,
+  ) => switch (state) {
+    ScreenshotsPermissionDeniedState(:final bool isPartialAccess) =>
+      HomeBlockedHeadline.permission(partial: isPartialAccess),
+    ScreenshotsErrorState(:final AppMessage message) =>
+      HomeBlockedHeadline.failure(
+        message,
+        onRetry: () =>
+            context.read<ScreenshotsBloc>().add(LoadScreenshotsEvent()),
+      ),
+    _ => UnsortedHeadline(
+      unsortedCount: all.where((s) => s.isUnsorted).length,
+      hasLibrary: all.isNotEmpty,
+      isLoading: state is! ScreenshotsLoadedState,
+      onTap: widget.onOpenLibrary,
+      onImport: () =>
+          importScreenshots(context, bloc: context.read<ScreenshotsBloc>()),
+    ),
+  };
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -67,8 +103,6 @@ class _HomePageState extends State<HomePage>
                   state is ScreenshotsLoadedState ? state : null;
               final List<ScreenshotEntity> all =
                   loaded?.screenshots ?? const [];
-
-              final int unsorted = all.where((s) => s.isUnsorted).length;
 
               return ListView(
                 padding: EdgeInsets.only(top: 10.h, bottom: 130.h),
@@ -90,18 +124,7 @@ class _HomePageState extends State<HomePage>
                   HomeEnter(
                     parent: _entrance,
                     index: 2,
-                    child: HomeGutter(
-                      child: UnsortedHeadline(
-                        unsortedCount: unsorted,
-                        hasLibrary: all.isNotEmpty,
-                        isLoading: loaded == null,
-                        onTap: widget.onOpenLibrary,
-                        onImport: () => importScreenshots(
-                          context,
-                          bloc: context.read<ScreenshotsBloc>(),
-                        ),
-                      ),
-                    ),
+                    child: HomeGutter(child: _headline(context, state, all)),
                   ),
                   SizedBox(height: 16.h),
                   if (loaded != null && loaded.waitingByIntent.isNotEmpty) ...[
