@@ -135,7 +135,7 @@ abstract class AppLocalizations {
   /// No description provided for @authWelcome.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to SHOTO'**
+  /// **'Welcome to Shoto'**
   String get authWelcome;
 
   /// No description provided for @authSubtitle.
@@ -207,7 +207,7 @@ abstract class AppLocalizations {
   /// No description provided for @triageBody.
   ///
   /// In en, this message translates to:
-  /// **'Keep what belongs in SHOTO. Everything else stays exactly where it is.'**
+  /// **'Keep what belongs in Shoto. Everything else stays exactly where it is.'**
   String get triageBody;
 
   /// No description provided for @triageKeep.
@@ -267,7 +267,7 @@ abstract class AppLocalizations {
   /// No description provided for @triageInviteBody.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO can list what you capture from now on, so you can keep the few that matter. Nothing joins your library until you say so.'**
+  /// **'Shoto can list what you capture from now on, so you can keep the few that matter. Nothing joins your library until you say so.'**
   String get triageInviteBody;
 
   /// No description provided for @triageInviteAccept.
@@ -423,7 +423,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeInboxEmptySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Pick a few from your phone now, or share a screenshot into SHOTO from any app.'**
+  /// **'Pick a few from your phone now, or share a screenshot into Shoto from any app.'**
   String get homeInboxEmptySubtitle;
 
   /// No description provided for @homeEmptyImportCta.
@@ -567,7 +567,7 @@ abstract class AppLocalizations {
   /// No description provided for @libraryEmptyMessage.
   ///
   /// In en, this message translates to:
-  /// **'Share a screenshot to SHOTO, or add one with the + button. Your gallery is never read — only what you hand over is kept.'**
+  /// **'Share a screenshot to Shoto, or add one with the + button. Your gallery is never read — only what you hand over is kept.'**
   String get libraryEmptyMessage;
 
   /// No description provided for @libraryNoFavoritesTitle.
@@ -735,13 +735,13 @@ abstract class AppLocalizations {
   /// No description provided for @permissionNeededMessage.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO keeps the screenshots you share into it in their own album. It needs photo access to write there and read them back — it never lists the rest of your gallery.'**
+  /// **'Shoto keeps the screenshots you share into it in their own album. It needs photo access to write there and read them back — it never lists the rest of your gallery.'**
   String get permissionNeededMessage;
 
   /// No description provided for @permissionAskTitle.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO needs to see its Screenshots album'**
+  /// **'Shoto needs to see its Screenshots album'**
   String get permissionAskTitle;
 
   /// No description provided for @permissionAskMessage.
@@ -765,7 +765,7 @@ abstract class AppLocalizations {
   /// No description provided for @permissionPartialMessage.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO can currently only see a few photos you picked manually, so it cannot reach its own album. Choose \"Allow all\" in the photo permission to continue.'**
+  /// **'Shoto can currently only see a few photos you picked manually, so it cannot reach its own album. Choose \"Allow all\" in the photo permission to continue.'**
   String get permissionPartialMessage;
 
   /// No description provided for @permissionOpenSettings.
@@ -879,13 +879,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsShare.
   ///
   /// In en, this message translates to:
-  /// **'Share SHOTO'**
+  /// **'Share Shoto'**
   String get settingsShare;
 
   /// No description provided for @settingsPrivacyNote.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO holds only the screenshots you hand it, and everything it does with them — reading text, finding duplicates — happens on this device. Your pictures are never uploaded. Three things are yours to switch on: offering new screenshots reads your Screenshots album so it can ask about them, an account sends only your email address so a subscription survives a change of phone, and crash reports send what broke — the code, never a picture.'**
+  /// **'Shoto holds only the screenshots you hand it, and everything it does with them — reading text, finding duplicates — happens on this device. Your pictures are never uploaded. Three things are yours to switch on: offering new screenshots reads your Screenshots album so it can ask about them, an account sends only your email address so a subscription survives a change of phone, and crash reports send what broke — the code, never a picture.'**
   String get settingsPrivacyNote;
 
   /// No description provided for @commonSave.
@@ -1107,7 +1107,7 @@ abstract class AppLocalizations {
   /// No description provided for @quickSaveTitleOne.
   ///
   /// In en, this message translates to:
-  /// **'Save to SHOTO'**
+  /// **'Save to Shoto'**
   String get quickSaveTitleOne;
 
   /// No description provided for @quickSaveTitleMany.
@@ -1167,7 +1167,7 @@ abstract class AppLocalizations {
   /// No description provided for @quickSaveSaved.
   ///
   /// In en, this message translates to:
-  /// **'Saved to SHOTO'**
+  /// **'Saved to Shoto'**
   String get quickSaveSaved;
 
   /// No description provided for @quickSaveFiled.
@@ -1545,7 +1545,7 @@ abstract class AppLocalizations {
   /// No description provided for @paywallTitle.
   ///
   /// In en, this message translates to:
-  /// **'Unlock SHOTO Pro'**
+  /// **'Unlock Shoto Pro'**
   String get paywallTitle;
 
   /// No description provided for @paywallSubtitle.
@@ -1605,7 +1605,7 @@ abstract class AppLocalizations {
   /// No description provided for @subPremiumTitle.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO Pro'**
+  /// **'Shoto Pro'**
   String get subPremiumTitle;
 
   /// No description provided for @subPremiumBody.
@@ -1737,7 +1737,7 @@ abstract class AppLocalizations {
   /// No description provided for @featActionsHow.
   ///
   /// In en, this message translates to:
-  /// **'Whatever is written inside a screenshot becomes something you can use. SHOTO picks out the useful parts and puts a button on each one.'**
+  /// **'Whatever is written inside a screenshot becomes something you can use. Shoto picks out the useful parts and puts a button on each one.'**
   String get featActionsHow;
 
   /// No description provided for @featActionsPoint1.
@@ -1761,7 +1761,7 @@ abstract class AppLocalizations {
   /// No description provided for @featStitchHow.
   ///
   /// In en, this message translates to:
-  /// **'Scrolling capture, on a phone that has it, has to be started while you are still on the page. SHOTO works afterwards: pick two or more shots already in your library — including ones somebody sent you — and it finds where they overlap and joins them into one tall image.'**
+  /// **'Scrolling capture, on a phone that has it, has to be started while you are still on the page. Shoto works afterwards: pick two or more shots already in your library — including ones somebody sent you — and it finds where they overlap and joins them into one tall image.'**
   String get featStitchHow;
 
   /// No description provided for @featStitchPoint1.
@@ -1785,7 +1785,7 @@ abstract class AppLocalizations {
   /// No description provided for @featDuplicatesHow.
   ///
   /// In en, this message translates to:
-  /// **'Sharing shots in one at a time rarely makes duplicates. Keeping a batch from \"Since you last looked\" does — you move fast, and two captures of the same thing both get kept. SHOTO compares by what a shot looks like, not its name or size, so it catches those, along with a resend or a different crop.'**
+  /// **'Sharing shots in one at a time rarely makes duplicates. Keeping a batch from \"Since you last looked\" does — you move fast, and two captures of the same thing both get kept. Shoto compares by what a shot looks like, not its name or size, so it catches those, along with a resend or a different crop.'**
   String get featDuplicatesHow;
 
   /// No description provided for @featDuplicatesPoint1.
@@ -1827,7 +1827,7 @@ abstract class AppLocalizations {
   /// No description provided for @featUnlimitedPoint3.
   ///
   /// In en, this message translates to:
-  /// **'Hitting the ceiling means SHOTO became where you keep things. Nothing is deleted when you do.'**
+  /// **'Hitting the ceiling means Shoto became where you keep things. Nothing is deleted when you do.'**
   String get featUnlimitedPoint3;
 
   /// No description provided for @includedSubtitle.
@@ -1965,7 +1965,7 @@ abstract class AppLocalizations {
   /// No description provided for @devModeOffBody.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO will go back to the free tier on this device, so you can test the paywall and the limits again.'**
+  /// **'Shoto will go back to the free tier on this device, so you can test the paywall and the limits again.'**
   String get devModeOffBody;
 
   /// No description provided for @devModeOffConfirm.
@@ -2187,7 +2187,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsShareText.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO keeps my screenshots organized on their own — everything stays on the phone.'**
+  /// **'Shoto keeps my screenshots organized on their own — everything stays on the phone.'**
   String get settingsShareText;
 
   /// No description provided for @settingsCacheMeasuring.
@@ -2478,41 +2478,41 @@ abstract class AppLocalizations {
   /// **'Next'**
   String get onbNext;
 
-  /// No description provided for @onbPileTitle.
+  /// No description provided for @onbInsideTitle.
   ///
   /// In en, this message translates to:
-  /// **'A thousand screenshots, one pile'**
-  String get onbPileTitle;
+  /// **'What is in your screenshots?'**
+  String get onbInsideTitle;
 
-  /// No description provided for @onbPileBody.
+  /// No description provided for @onbInsideBody.
   ///
   /// In en, this message translates to:
-  /// **'You screenshot to remember. A week later it is buried under four hundred others.'**
-  String get onbPileBody;
+  /// **'Boarding passes, verification codes, a photo of your ID. Things you would never post.'**
+  String get onbInsideBody;
 
-  /// No description provided for @onbChooseTitle.
+  /// No description provided for @onbSendTitle.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO never reads your gallery'**
-  String get onbChooseTitle;
+  /// **'Send them anyway'**
+  String get onbSendTitle;
 
-  /// No description provided for @onbChooseBody.
+  /// No description provided for @onbSendBody.
   ///
   /// In en, this message translates to:
-  /// **'Nothing arrives on its own. You share a screenshot in — that is the whole rule.'**
-  String get onbChooseBody;
+  /// **'Shoto hides the private parts first, and shows you every cover before it goes.'**
+  String get onbSendBody;
 
-  /// No description provided for @onbSafeShareTitle.
+  /// No description provided for @onbYoursTitle.
   ///
   /// In en, this message translates to:
-  /// **'The screenshot you can actually send'**
-  String get onbSafeShareTitle;
+  /// **'Nothing moves without you'**
+  String get onbYoursTitle;
 
-  /// No description provided for @onbSafeShareBody.
+  /// No description provided for @onbYoursBody.
   ///
   /// In en, this message translates to:
-  /// **'The card number goes under a solid block — the label beside it stays, so the picture still reads. You check every cover before you send.'**
-  String get onbSafeShareBody;
+  /// **'Your gallery is never opened. Only what you hand over is kept.'**
+  String get onbYoursBody;
 
   /// No description provided for @onbFolderExample.
   ///
@@ -2691,7 +2691,7 @@ abstract class AppLocalizations {
   /// No description provided for @restoreNotABackup.
   ///
   /// In en, this message translates to:
-  /// **'That file is not a SHOTO backup'**
+  /// **'That file is not a Shoto backup'**
   String get restoreNotABackup;
 
   /// No description provided for @restoreFailed.
@@ -2715,7 +2715,7 @@ abstract class AppLocalizations {
   /// No description provided for @supportSubject.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO support'**
+  /// **'Shoto support'**
   String get supportSubject;
 
   /// No description provided for @supportNoMailApp.
@@ -2727,7 +2727,7 @@ abstract class AppLocalizations {
   /// No description provided for @supportGreeting.
   ///
   /// In en, this message translates to:
-  /// **'Hi SHOTO team,'**
+  /// **'Hi Shoto team,'**
   String get supportGreeting;
 
   /// No description provided for @dateToday.

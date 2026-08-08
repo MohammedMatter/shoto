@@ -9,11 +9,11 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 /// The v17 migration is the one change in this codebase that rewrites every
 /// row a user owns, so it gets a test rather than a careful reading.
 ///
-/// What it has to be true of: a phone that has been using SHOTO signed in as a
+/// What it has to be true of: a phone that has been using Shoto signed in as a
 /// Firebase account. Every folder, every favourite, every library membership
 /// and every user-written intent is filed under that uid, and nothing asks for
 /// that uid any more. If the migration misses a table, the data in it becomes
-/// invisible — which looks exactly like SHOTO having deleted it.
+/// invisible — which looks exactly like Shoto having deleted it.
 void main() {
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;

@@ -82,7 +82,7 @@ abstract class ScreenshotRepository {
   /// id of the resulting asset.
   ///
   /// [sourceAssetId] is the gallery id the file came from, when the caller
-  /// knows it. If that image is already sitting in SHOTO's album — because
+  /// knows it. If that image is already sitting in Shoto's album — because
   /// another account imported it — it is added to this account's library as
   /// it stands instead of a second identical file being written.
   Future<String> importSharedFile(String filePath, {String? sourceAssetId});
@@ -103,7 +103,7 @@ abstract class ScreenshotRepository {
   /// Screen captures taken since [since] that the user has not answered about
   /// yet, oldest first — the triage queue.
   ///
-  /// This is the one read in the app that looks outside SHOTO's own album, and
+  /// This is the one read in the app that looks outside Shoto's own album, and
   /// it *offers* rather than imports: nothing here is in the library until
   /// [keepCaptures] is called with it. Only reached when the user has switched
   /// the queue on. See `ScreenshotGalleryDataSource`.
@@ -112,12 +112,12 @@ abstract class ScreenshotRepository {
   /// Brings the given device captures into the library.
   ///
   /// The same operation as importing a picked file, deliberately: a copy into
-  /// SHOTO's album, leaving the user's original screenshot exactly where it
+  /// Shoto's album, leaving the user's original screenshot exactly where it
   /// was. Nothing in this app moves or deletes a picture the user did not put
   /// here.
   Future<int> keepCaptures(List<String> assetIds);
 
-  /// Saves image bytes SHOTO produced itself (a stitched long screenshot,
+  /// Saves image bytes Shoto produced itself (a stitched long screenshot,
   /// for instance) into the current account's library.
   Future<String> saveGeneratedImage(
     Uint8List bytes, {
@@ -131,9 +131,9 @@ abstract class ScreenshotRepository {
   /// The id of the screenshot the *current account's* library already holds
   /// for [assetId], or null.
   ///
-  /// Used by the share sheet to tell "a screenshot already in your SHOTO"
+  /// Used by the share sheet to tell "a screenshot already in your Shoto"
   /// apart from "an image to import". Without it, sharing your own screenshot
-  /// back into SHOTO wrote a duplicate of something already on screen — and
+  /// back into Shoto wrote a duplicate of something already on screen — and
   /// scoping it per account matters just as much, since an image another
   /// account imported is not yet in yours.
   Future<String?> findLibraryAsset(String assetId);

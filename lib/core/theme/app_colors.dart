@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 /// Palette: **"Charcoal"** — warm neutrals, an achromatic accent, three
 /// semantic hues.
 ///
-/// The reasoning is specific to SHOTO rather than to taste. Every screen in
+/// The reasoning is specific to Shoto rather than to taste. Every screen in
 /// this app is mostly *other apps' screenshots*: a receipt, a chat, a poster,
-/// a design reference — hundreds of colours SHOTO does not choose and cannot
+/// a design reference — hundreds of colours Shoto does not choose and cannot
 /// predict. So the interface stays quiet and the pictures stay loud.
 ///
 /// Quiet is not the same as colourless, and this file has been to both

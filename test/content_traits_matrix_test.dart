@@ -99,7 +99,7 @@ const List<_Case> _cases = <_Case>[
   _Case('email both spaces', 'help @ example.com', want: ContentTrait.contact),
   _Case(
     'email uppercase',
-    'Write To SALES@SHOTO.APP',
+    'Write To SALES@Shoto.APP',
     want: ContentTrait.contact,
   ),
   _Case('email plus tag', 'me+news@example.com', want: ContentTrait.contact),

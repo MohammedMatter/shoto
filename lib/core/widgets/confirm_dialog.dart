@@ -55,7 +55,7 @@ Future<bool> showConfirmDialog(
 
 /// A deletion confirmation that honours the "Ask before deleting" setting.
 ///
-/// Deleting is the one action in SHOTO that cannot be undone, so the prompt
+/// Deleting is the one action in Shoto that cannot be undone, so the prompt
 /// is on by default — but forcing it on someone who has explicitly turned it
 /// off is just nagging. Returns true when the caller may proceed.
 Future<bool> confirmDeletion(

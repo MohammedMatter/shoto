@@ -38,7 +38,7 @@ import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dar
 /// **Fixing is paid.** Turning those findings into a clean copy is the work,
 /// and it is behind the paywall.
 ///
-/// Two rules the screen obeys throughout. SHOTO never decides alone: it
+/// Two rules the screen obeys throughout. Shoto never decides alone: it
 /// proposes, shows exactly where every change lands, and the user confirms —
 /// because the one thing worse than leaking a card number is an app that
 /// silently rewrote the wrong half of a screenshot and let you send it

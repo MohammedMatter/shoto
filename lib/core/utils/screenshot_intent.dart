@@ -113,7 +113,7 @@ sealed class IntentRef {
   int get hashCode => id.hashCode;
 }
 
-/// One of the verbs SHOTO ships, translated into the user's language.
+/// One of the verbs Shoto ships, translated into the user's language.
 final class BuiltInIntent extends IntentRef {
   final ScreenshotIntent intent;
 

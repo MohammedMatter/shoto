@@ -68,7 +68,7 @@ class IntentCatalog extends ChangeNotifier {
   /// row meanwhile, which is what a new account would see anyway.
   bool get isLoaded => _isLoaded;
 
-  /// Everything, in the order the full picker lists it: the verbs SHOTO ships
+  /// Everything, in the order the full picker lists it: the verbs Shoto ships
   /// first, then the user's own. Not the front row's order — see [frontRow].
   List<IntentRef> get all => <IntentRef>[
     for (final ScreenshotIntent intent in ScreenshotIntent.values)
@@ -138,7 +138,7 @@ class IntentCatalog extends ChangeNotifier {
       // row is a complete, working picker on its own, so this is a degraded
       // catalog rather than a broken screen — and the next call will retry,
       // since nothing was marked loaded.
-      debugPrint('SHOTO: intent catalog not loaded — $error');
+      debugPrint('Shoto: intent catalog not loaded — $error');
     }
   }
 

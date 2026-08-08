@@ -22,7 +22,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSignOutTitle => 'Sign out?';
 
   @override
-  String get authWelcome => 'Welcome to SHOTO';
+  String get authWelcome => 'Welcome to Shoto';
 
   @override
   String get authSubtitle =>
@@ -79,7 +79,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get triageBody =>
-      'Keep what belongs in SHOTO. Everything else stays exactly where it is.';
+      'Keep what belongs in Shoto. Everything else stays exactly where it is.';
 
   @override
   String get triageKeep => 'Keep';
@@ -129,7 +129,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get triageInviteBody =>
-      'SHOTO can list what you capture from now on, so you can keep the few that matter. Nothing joins your library until you say so.';
+      'Shoto can list what you capture from now on, so you can keep the few that matter. Nothing joins your library until you say so.';
 
   @override
   String get triageInviteAccept => 'Show them';
@@ -211,7 +211,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeInboxEmptySubtitle =>
-      'Pick a few from your phone now, or share a screenshot into SHOTO from any app.';
+      'Pick a few from your phone now, or share a screenshot into Shoto from any app.';
 
   @override
   String get homeEmptyImportCta => 'Choose from my phone';
@@ -284,7 +284,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get libraryEmptyMessage =>
-      'Share a screenshot to SHOTO, or add one with the + button. Your gallery is never read — only what you hand over is kept.';
+      'Share a screenshot to Shoto, or add one with the + button. Your gallery is never read — only what you hand over is kept.';
 
   @override
   String get libraryNoFavoritesTitle => 'No favorites yet';
@@ -389,10 +389,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get permissionNeededMessage =>
-      'SHOTO keeps the screenshots you share into it in their own album. It needs photo access to write there and read them back — it never lists the rest of your gallery.';
+      'Shoto keeps the screenshots you share into it in their own album. It needs photo access to write there and read them back — it never lists the rest of your gallery.';
 
   @override
-  String get permissionAskTitle => 'SHOTO needs to see its Screenshots album';
+  String get permissionAskTitle => 'Shoto needs to see its Screenshots album';
 
   @override
   String get permissionAskMessage =>
@@ -406,7 +406,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get permissionPartialMessage =>
-      'SHOTO can currently only see a few photos you picked manually, so it cannot reach its own album. Choose \"Allow all\" in the photo permission to continue.';
+      'Shoto can currently only see a few photos you picked manually, so it cannot reach its own album. Choose \"Allow all\" in the photo permission to continue.';
 
   @override
   String get permissionOpenSettings => 'Open Settings';
@@ -465,11 +465,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsClearCache => 'Clear image cache';
 
   @override
-  String get settingsShare => 'Share SHOTO';
+  String get settingsShare => 'Share Shoto';
 
   @override
   String get settingsPrivacyNote =>
-      'SHOTO holds only the screenshots you hand it, and everything it does with them — reading text, finding duplicates — happens on this device. Your pictures are never uploaded. Three things are yours to switch on: offering new screenshots reads your Screenshots album so it can ask about them, an account sends only your email address so a subscription survives a change of phone, and crash reports send what broke — the code, never a picture.';
+      'Shoto holds only the screenshots you hand it, and everything it does with them — reading text, finding duplicates — happens on this device. Your pictures are never uploaded. Three things are yours to switch on: offering new screenshots reads your Screenshots album so it can ask about them, an account sends only your email address so a subscription survives a change of phone, and crash reports send what broke — the code, never a picture.';
 
   @override
   String get commonSave => 'Save';
@@ -590,7 +590,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'This will permanently delete it from your device.';
 
   @override
-  String get quickSaveTitleOne => 'Save to SHOTO';
+  String get quickSaveTitleOne => 'Save to Shoto';
 
   @override
   String quickSaveTitleMany(int count) {
@@ -627,7 +627,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickSaveNewChip => 'New';
 
   @override
-  String get quickSaveSaved => 'Saved to SHOTO';
+  String get quickSaveSaved => 'Saved to Shoto';
 
   @override
   String quickSaveFiled(String folder) {
@@ -852,7 +852,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get paywallTitle => 'Unlock SHOTO Pro';
+  String get paywallTitle => 'Unlock Shoto Pro';
 
   @override
   String get paywallSubtitle => 'Everything below, on one subscription.';
@@ -885,7 +885,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subPremiumBadge => 'PRO';
 
   @override
-  String get subPremiumTitle => 'SHOTO Pro';
+  String get subPremiumTitle => 'Shoto Pro';
 
   @override
   String get subPremiumBody => 'Every feature unlocked for you.';
@@ -964,7 +964,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featActionsHow =>
-      'Whatever is written inside a screenshot becomes something you can use. SHOTO picks out the useful parts and puts a button on each one.';
+      'Whatever is written inside a screenshot becomes something you can use. Shoto picks out the useful parts and puts a button on each one.';
 
   @override
   String get featActionsPoint1 =>
@@ -980,7 +980,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featStitchHow =>
-      'Scrolling capture, on a phone that has it, has to be started while you are still on the page. SHOTO works afterwards: pick two or more shots already in your library — including ones somebody sent you — and it finds where they overlap and joins them into one tall image.';
+      'Scrolling capture, on a phone that has it, has to be started while you are still on the page. Shoto works afterwards: pick two or more shots already in your library — including ones somebody sent you — and it finds where they overlap and joins them into one tall image.';
 
   @override
   String get featStitchPoint1 =>
@@ -996,7 +996,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featDuplicatesHow =>
-      'Sharing shots in one at a time rarely makes duplicates. Keeping a batch from \"Since you last looked\" does — you move fast, and two captures of the same thing both get kept. SHOTO compares by what a shot looks like, not its name or size, so it catches those, along with a resend or a different crop.';
+      'Sharing shots in one at a time rarely makes duplicates. Keeping a batch from \"Since you last looked\" does — you move fast, and two captures of the same thing both get kept. Shoto compares by what a shot looks like, not its name or size, so it catches those, along with a resend or a different crop.';
 
   @override
   String get featDuplicatesPoint1 =>
@@ -1024,7 +1024,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featUnlimitedPoint3 =>
-      'Hitting the ceiling means SHOTO became where you keep things. Nothing is deleted when you do.';
+      'Hitting the ceiling means Shoto became where you keep things. Nothing is deleted when you do.';
 
   @override
   String get includedSubtitle => 'Every Pro feature, explained.';
@@ -1099,7 +1099,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get devModeOffBody =>
-      'SHOTO will go back to the free tier on this device, so you can test the paywall and the limits again.';
+      'Shoto will go back to the free tier on this device, so you can test the paywall and the limits again.';
 
   @override
   String get devModeOffConfirm => 'Turn off';
@@ -1249,7 +1249,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsShareText =>
-      'SHOTO keeps my screenshots organized on their own — everything stays on the phone.';
+      'Shoto keeps my screenshots organized on their own — everything stays on the phone.';
 
   @override
   String get settingsCacheMeasuring => 'Measuring…';
@@ -1431,25 +1431,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onbNext => 'Next';
 
   @override
-  String get onbPileTitle => 'A thousand screenshots, one pile';
+  String get onbInsideTitle => 'What is in your screenshots?';
 
   @override
-  String get onbPileBody =>
-      'You screenshot to remember. A week later it is buried under four hundred others.';
+  String get onbInsideBody =>
+      'Boarding passes, verification codes, a photo of your ID. Things you would never post.';
 
   @override
-  String get onbChooseTitle => 'SHOTO never reads your gallery';
+  String get onbSendTitle => 'Send them anyway';
 
   @override
-  String get onbChooseBody =>
-      'Nothing arrives on its own. You share a screenshot in — that is the whole rule.';
+  String get onbSendBody =>
+      'Shoto hides the private parts first, and shows you every cover before it goes.';
 
   @override
-  String get onbSafeShareTitle => 'The screenshot you can actually send';
+  String get onbYoursTitle => 'Nothing moves without you';
 
   @override
-  String get onbSafeShareBody =>
-      'The card number goes under a solid block — the label beside it stays, so the picture still reads. You check every cover before you send.';
+  String get onbYoursBody =>
+      'Your gallery is never opened. Only what you hand over is kept.';
 
   @override
   String get onbFolderExample => 'Receipts';
@@ -1611,7 +1611,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get restoreNotABackup => 'That file is not a SHOTO backup';
+  String get restoreNotABackup => 'That file is not a Shoto backup';
 
   @override
   String get restoreFailed => 'The restore could not be finished';
@@ -1623,14 +1623,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsContactSupport => 'Contact support';
 
   @override
-  String get supportSubject => 'SHOTO support';
+  String get supportSubject => 'Shoto support';
 
   @override
   String get supportNoMailApp =>
       'No email app found. The address is copied instead.';
 
   @override
-  String get supportGreeting => 'Hi SHOTO team,';
+  String get supportGreeting => 'Hi Shoto team,';
 
   @override
   String get dateToday => 'Today';

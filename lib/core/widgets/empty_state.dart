@@ -9,7 +9,7 @@ import 'package:shoto/core/widgets/shoto_mark.dart';
 /// An empty screen, entered rather than simply appearing.
 ///
 /// This is one of the very few places generous motion belongs. Everywhere
-/// else in SHOTO the rule is "as short as possible" — but an empty state is
+/// else in Shoto the rule is "as short as possible" — but an empty state is
 /// rare, it is a moment where the user is being told something rather than
 /// operating something, and it is the one screen with nothing else on it to
 /// carry the eye. A quiet rise and fade gives it a beginning.

@@ -1,6 +1,6 @@
 # Animation plans
 
-Findings from an `improve-animations` audit of SHOTO's motion, against
+Findings from an `improve-animations` audit of Shoto's motion, against
 `.claude/skills/improve-animations/AUDIT.md`.
 
 Every value cited comes from `lib/core/theme/app_motion.dart` or from the

@@ -41,7 +41,7 @@ void main() {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
                 children: [
-                  Text('SHOTO', style: type.displayLarge),
+                  Text('Shoto', style: type.displayLarge),
                   Text(
                     'The accent, doing every job it has',
                     style: type.bodyMedium,

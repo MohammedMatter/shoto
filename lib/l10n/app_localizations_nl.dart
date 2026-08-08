@@ -22,7 +22,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsSignOutTitle => 'Uitloggen?';
 
   @override
-  String get authWelcome => 'Welkom bij SHOTO';
+  String get authWelcome => 'Welkom bij Shoto';
 
   @override
   String get authSubtitle =>
@@ -80,7 +80,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get triageBody =>
-      'Houd wat in SHOTO thuishoort. De rest blijft precies waar het staat.';
+      'Houd wat in Shoto thuishoort. De rest blijft precies waar het staat.';
 
   @override
   String get triageKeep => 'Houden';
@@ -130,7 +130,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get triageInviteBody =>
-      'SHOTO kan vanaf nu tonen wat je vastlegt, zodat je de paar bewaart die ertoe doen. Er komt niets in je bibliotheek tot jij dat zegt.';
+      'Shoto kan vanaf nu tonen wat je vastlegt, zodat je de paar bewaart die ertoe doen. Er komt niets in je bibliotheek tot jij dat zegt.';
 
   @override
   String get triageInviteAccept => 'Toon ze';
@@ -212,7 +212,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get homeInboxEmptySubtitle =>
-      'Kies er nu een paar van je telefoon, of deel vanuit elke app een screenshot naar SHOTO.';
+      'Kies er nu een paar van je telefoon, of deel vanuit elke app een screenshot naar Shoto.';
 
   @override
   String get homeEmptyImportCta => 'Kies van mijn telefoon';
@@ -287,7 +287,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get libraryEmptyMessage =>
-      'Deel een screenshot met SHOTO, of voeg er een toe met de +-knop. Je galerij wordt nooit gelezen — alleen wat je overhandigt blijft.';
+      'Deel een screenshot met Shoto, of voeg er een toe met de +-knop. Je galerij wordt nooit gelezen — alleen wat je overhandigt blijft.';
 
   @override
   String get libraryNoFavoritesTitle => 'Nog geen favorieten';
@@ -391,11 +391,11 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get permissionNeededMessage =>
-      'SHOTO bewaart de screenshots die je erin deelt in een eigen album. Het heeft fototoegang nodig om daar te schrijven en ze terug te lezen — de rest van je galerij wordt nooit opgesomd.';
+      'Shoto bewaart de screenshots die je erin deelt in een eigen album. Het heeft fototoegang nodig om daar te schrijven en ze terug te lezen — de rest van je galerij wordt nooit opgesomd.';
 
   @override
   String get permissionAskTitle =>
-      'SHOTO moet zijn screenshot-album kunnen zien';
+      'Shoto moet zijn screenshot-album kunnen zien';
 
   @override
   String get permissionAskMessage =>
@@ -409,7 +409,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get permissionPartialMessage =>
-      'SHOTO ziet nu alleen een paar foto\'s die je met de hand koos en komt zo niet bij zijn eigen album. Kies „Alle toestaan” bij de fotorechten om verder te gaan.';
+      'Shoto ziet nu alleen een paar foto\'s die je met de hand koos en komt zo niet bij zijn eigen album. Kies „Alle toestaan” bij de fotorechten om verder te gaan.';
 
   @override
   String get permissionOpenSettings => 'Instellingen openen';
@@ -469,11 +469,11 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsClearCache => 'Afbeeldingscache legen';
 
   @override
-  String get settingsShare => 'SHOTO delen';
+  String get settingsShare => 'Shoto delen';
 
   @override
   String get settingsPrivacyNote =>
-      'SHOTO bewaart alleen de screenshots die je het geeft, en alles wat het ermee doet — tekst lezen, dubbele vinden — gebeurt op dit toestel. Je afbeeldingen worden nooit geüpload. Drie dingen zet je zelf aan: nieuwe screenshots aanbieden leest je Screenshots-album om ernaar te kunnen vragen, een account stuurt alleen je e-mailadres zodat een abonnement een nieuwe telefoon overleeft, en crashrapporten sturen wat er stukging — de code, nooit een afbeelding.';
+      'Shoto bewaart alleen de screenshots die je het geeft, en alles wat het ermee doet — tekst lezen, dubbele vinden — gebeurt op dit toestel. Je afbeeldingen worden nooit geüpload. Drie dingen zet je zelf aan: nieuwe screenshots aanbieden leest je Screenshots-album om ernaar te kunnen vragen, een account stuurt alleen je e-mailadres zodat een abonnement een nieuwe telefoon overleeft, en crashrapporten sturen wat er stukging — de code, nooit een afbeelding.';
 
   @override
   String get commonSave => 'Opslaan';
@@ -594,7 +594,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Dit verwijdert het definitief van je toestel.';
 
   @override
-  String get quickSaveTitleOne => 'Bewaren in SHOTO';
+  String get quickSaveTitleOne => 'Bewaren in Shoto';
 
   @override
   String quickSaveTitleMany(int count) {
@@ -631,7 +631,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get quickSaveNewChip => 'Nieuw';
 
   @override
-  String get quickSaveSaved => 'Bewaard in SHOTO';
+  String get quickSaveSaved => 'Bewaard in Shoto';
 
   @override
   String quickSaveFiled(String folder) {
@@ -856,7 +856,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get paywallTitle => 'SHOTO Pro ontgrendelen';
+  String get paywallTitle => 'Shoto Pro ontgrendelen';
 
   @override
   String get paywallSubtitle => 'Alles hieronder, met één abonnement.';
@@ -889,7 +889,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get subPremiumBadge => 'PRO';
 
   @override
-  String get subPremiumTitle => 'SHOTO Pro';
+  String get subPremiumTitle => 'Shoto Pro';
 
   @override
   String get subPremiumBody => 'Elke functie voor je ontgrendeld.';
@@ -968,7 +968,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get featActionsHow =>
-      'Wat er in een screenshot staat, wordt iets wat je kunt gebruiken. SHOTO haalt de bruikbare stukken eruit en zet op elk een knop.';
+      'Wat er in een screenshot staat, wordt iets wat je kunt gebruiken. Shoto haalt de bruikbare stukken eruit en zet op elk een knop.';
 
   @override
   String get featActionsPoint1 =>
@@ -984,7 +984,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get featStitchHow =>
-      'Een scrollopname moet op telefoons die het kunnen gestart worden terwijl je nog op de pagina bent. SHOTO werkt daarna: kies twee of meer opnamen die al in je bibliotheek staan — ook die iemand je stuurde — en het vindt waar ze overlappen en voegt ze tot één hoge afbeelding.';
+      'Een scrollopname moet op telefoons die het kunnen gestart worden terwijl je nog op de pagina bent. Shoto werkt daarna: kies twee of meer opnamen die al in je bibliotheek staan — ook die iemand je stuurde — en het vindt waar ze overlappen en voegt ze tot één hoge afbeelding.';
 
   @override
   String get featStitchPoint1 =>
@@ -1000,7 +1000,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get featDuplicatesHow =>
-      'Opnamen één voor één indelen levert zelden dubbele op. Een reeks houden uit „Sinds je laatste blik” wel — je gaat snel, en twee opnamen van hetzelfde blijven allebei staan. SHOTO vergelijkt hoe een opname eruitziet, niet de naam of de grootte, dus het pakt ook een doorstuur of een andere uitsnede.';
+      'Opnamen één voor één indelen levert zelden dubbele op. Een reeks houden uit „Sinds je laatste blik” wel — je gaat snel, en twee opnamen van hetzelfde blijven allebei staan. Shoto vergelijkt hoe een opname eruitziet, niet de naam of de grootte, dus het pakt ook een doorstuur of een andere uitsnede.';
 
   @override
   String get featDuplicatesPoint1 =>
@@ -1028,7 +1028,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get featUnlimitedPoint3 =>
-      'Tegen het plafond aanlopen betekent dat SHOTO je bewaarplek is geworden. Er wordt daarbij niets verwijderd.';
+      'Tegen het plafond aanlopen betekent dat Shoto je bewaarplek is geworden. Er wordt daarbij niets verwijderd.';
 
   @override
   String get includedSubtitle => 'Elke Pro-functie, uitgelegd.';
@@ -1103,7 +1103,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get devModeOffBody =>
-      'SHOTO gaat op dit toestel terug naar de gratis versie, zodat je de paywall en de limieten opnieuw kunt testen.';
+      'Shoto gaat op dit toestel terug naar de gratis versie, zodat je de paywall en de limieten opnieuw kunt testen.';
 
   @override
   String get devModeOffConfirm => 'Uitzetten';
@@ -1253,7 +1253,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get settingsShareText =>
-      'SHOTO houdt mijn screenshots vanzelf op orde — alles blijft op de telefoon.';
+      'Shoto houdt mijn screenshots vanzelf op orde — alles blijft op de telefoon.';
 
   @override
   String get settingsCacheMeasuring => 'Wordt gemeten…';
@@ -1442,25 +1442,25 @@ class AppLocalizationsNl extends AppLocalizations {
   String get onbNext => 'Volgende';
 
   @override
-  String get onbPileTitle => 'Duizend screenshots, één stapel';
+  String get onbInsideTitle => 'Wat zit er in je screenshots?';
 
   @override
-  String get onbPileBody =>
-      'Je maakt een screenshot om iets te onthouden. Een week later ligt het onder vierhonderd andere.';
+  String get onbInsideBody =>
+      'Instapkaarten, verificatiecodes, een foto van je ID. Dingen die je nooit zou posten.';
 
   @override
-  String get onbChooseTitle => 'SHOTO leest nooit je galerij';
+  String get onbSendTitle => 'Stuur ze toch';
 
   @override
-  String get onbChooseBody =>
-      'Er komt niets uit zichzelf binnen. Jij deelt een screenshot naar binnen — dat is de hele regel.';
+  String get onbSendBody =>
+      'Shoto dekt het privégedeelte eerst af en laat je elke afdekking zien voordat hij weggaat.';
 
   @override
-  String get onbSafeShareTitle => 'Het screenshot dat je echt kunt versturen';
+  String get onbYoursTitle => 'Niets beweegt zonder jou';
 
   @override
-  String get onbSafeShareBody =>
-      'Het kaartnummer verdwijnt onder een dicht blok — het label ernaast blijft staan, dus het beeld blijft leesbaar. Je controleert elke afdekking voor je verstuurt.';
+  String get onbYoursBody =>
+      'Je galerij wordt nooit geopend. Alleen wat je overhandigt blijft bewaard.';
 
   @override
   String get onbFolderExample => 'Bonnetjes';
@@ -1623,7 +1623,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get restoreNotABackup => 'Dat bestand is geen SHOTO-back-up';
+  String get restoreNotABackup => 'Dat bestand is geen Shoto-back-up';
 
   @override
   String get restoreFailed => 'Het herstellen kon niet worden afgemaakt';
@@ -1635,14 +1635,14 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsContactSupport => 'Contact met support';
 
   @override
-  String get supportSubject => 'SHOTO-support';
+  String get supportSubject => 'Shoto-support';
 
   @override
   String get supportNoMailApp =>
       'Geen e-mailapp gevonden. Het adres is in plaats daarvan gekopieerd.';
 
   @override
-  String get supportGreeting => 'Hallo SHOTO-team,';
+  String get supportGreeting => 'Hallo Shoto-team,';
 
   @override
   String get dateToday => 'Vandaag';

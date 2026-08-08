@@ -10,7 +10,7 @@ import 'package:shoto/core/utils/visual_vocabulary.dart';
 /// Names what is *in* a picture, on the device, so a rule or a search can
 /// reach a photo that contains no readable text at all.
 ///
-/// Every other way SHOTO understands a screenshot reads words: search, safe
+/// Every other way Shoto understands a screenshot reads words: search, safe
 /// share and smart actions all run on OCR. That leaves a real hole — a saved
 /// photo, a meme, a design reference has nothing to read. This is the only
 /// part of the app that looks at the image itself.

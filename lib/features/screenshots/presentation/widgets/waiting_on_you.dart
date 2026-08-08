@@ -11,7 +11,7 @@ import 'package:shoto/features/screenshots/presentation/widgets/intent_visuals.d
 ///
 /// Everything above it counts what has accumulated — screenshots, folders,
 /// things not filed yet. This counts what the user said they would do and has
-/// not done, and it is the only figure in SHOTO that a person can make fall.
+/// not done, and it is the only figure in Shoto that a person can make fall.
 ///
 /// **It is absent when there is nothing waiting**, rather than showing zeroes.
 /// A permanent row of "0 to buy · 0 to read" would be five reminders that a

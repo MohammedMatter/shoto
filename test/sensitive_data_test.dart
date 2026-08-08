@@ -216,7 +216,7 @@ void _emailRecallAfterOcrDamage() {
     const List<String> notEmails = [
       'Total 1,000.50 SAR',
       'See you at 5 pm',
-      'Copyright © 2026 SHOTO',
+      'Copyright © 2026 Shoto',
       'version 2.5.1',
       'read the docs . thanks',
     ];

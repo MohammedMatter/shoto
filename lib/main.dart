@@ -26,10 +26,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  // Sharing an image into SHOTO starts a different Android activity, which
+  // Sharing an image into Shoto starts a different Android activity, which
   // asks Flutter to begin on "/share". Branching here rather than inside the
   // router keeps the share sheet completely outside the app's navigation —
-  // it is a self-contained screen, not a page of SHOTO.
+  // it is a self-contained screen, not a page of Shoto.
   //
   // Decided *first* because it also decides how much has to finish loading
   // before anything can be drawn.
@@ -144,10 +144,10 @@ class QuickSaveApp extends StatelessWidget {
       builder: (context, child) {
         final AppLanguage language = sl<LocaleController>().effectiveLanguage;
 
-        // Follows the theme the user picked *inside SHOTO*, not the system's.
+        // Follows the theme the user picked *inside Shoto*, not the system's.
         // Reading platform brightness here made the sheet appear dark over a
         // light app whenever the two disagreed, which reads as a different
-        // app's UI rather than SHOTO's.
+        // app's UI rather than Shoto's.
         final ThemeMode themeMode = sl<ThemeController>().themeMode;
 
         return MaterialApp(

@@ -7,12 +7,12 @@ import 'package:shoto/core/theme/app_shapes.dart';
 ///
 /// Three cards in a fanned stack: two loose screenshots, and one in front
 /// that has been filed and so carries the clipped corner. It is the whole
-/// product in one shape — *these are yours, this one SHOTO is holding* — and
+/// product in one shape — *these are yours, this one Shoto is holding* — and
 /// every part of it is a rule the app already had.
 ///
 /// It is deliberately **not a creature**. A character with a face would be
 /// the one thing on screen that could not be defended from the app's own
-/// design notes: the palette is achromatic because SHOTO frames other
+/// design notes: the palette is achromatic because Shoto frames other
 /// people's pictures, the onboarding refuses to illustrate anything, and the
 /// promise the whole product rests on is that it is discreet. A mascot with
 /// eyes contradicts all three, and it would read as borrowed — every app has

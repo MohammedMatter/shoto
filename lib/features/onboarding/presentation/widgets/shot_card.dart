@@ -15,7 +15,7 @@ enum ShotMark {
   /// A number covered, as Safe Share does before you send it.
   covered,
 
-  /// Held by SHOTO — draws the clipped corner.
+  /// Held by Shoto — draws the clipped corner.
   filed,
 }
 
@@ -30,7 +30,7 @@ enum ShotMark {
 /// — the same anonymous shape their library is full of — and it can then do
 /// things a photograph cannot: light up the line a search matched, black out
 /// the digits Safe Share would cover, take the clipped corner the moment it
-/// belongs to SHOTO. The onboarding demonstrates the app on the thing it is
+/// belongs to Shoto. The onboarding demonstrates the app on the thing it is
 /// talking about.
 ///
 /// It also costs nothing: a handful of boxes, no decode, no image cache, no
@@ -65,7 +65,7 @@ class ShotCard extends StatelessWidget {
     );
 
     // The clipped corner is the app's one signature shape and means exactly
-    // one thing: SHOTO is holding this. So it appears at the moment the card
+    // one thing: Shoto is holding this. So it appears at the moment the card
     // is filed, and never before.
     return mark == ShotMark.filed
         ? ClippedCorner(cut: 14.w, radius: AppRadius.sm, child: body)

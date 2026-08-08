@@ -186,7 +186,7 @@ class _ActionRow extends StatelessWidget {
               : context.text.bodyLarge.asSemiBold,
         ),
         // The second line only exists for the intent kinds, and it carries
-        // the part SHOTO worked out rather than the part it read: an event's
+        // the part Shoto worked out rather than the part it read: an event's
         // date in the reader's own calendar conventions, the network a
         // password belongs to, the carrier holding a parcel.
         if (subtitle != null) ...[

@@ -22,7 +22,7 @@ import 'package:shoto/features/screenshots/presentation/widgets/library_unavaila
 /// Everything still waiting under one intent, and one gesture to finish it.
 ///
 /// **This is the screen the whole feature exists for.** Every other number in
-/// SHOTO only goes up — screenshots, folders, unsorted. This is the one place
+/// Shoto only goes up — screenshots, folders, unsorted. This is the one place
 /// where the user does something and the number falls, and the design is
 /// arranged entirely around making that moment land: one column so each item
 /// is a decision rather than a thumbnail in a wall, the tick as the largest

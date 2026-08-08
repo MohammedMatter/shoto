@@ -66,7 +66,7 @@ void main() {
   /// **No locale left a value in English by accident.**
   ///
   /// Only checks the handful of keys that are plain prose in every language.
-  /// Brand words (`SHOTO`, `PRO`, `Pro`) and short shared loanwords are
+  /// Brand words (`Shoto`, `PRO`, `Pro`) and short shared loanwords are
   /// legitimately identical across locales, so a blanket "must differ" rule
   /// would be noise; these six are sentences, and a sentence identical to the
   /// English one is a translation that never happened.

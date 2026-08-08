@@ -1,6 +1,6 @@
 # Decisions
 
-Why things in SHOTO are the way they are, when the reason is a *history*
+Why things in Shoto are the way they are, when the reason is a *history*
 rather than a rule.
 
 ## What belongs here, and what belongs in the source

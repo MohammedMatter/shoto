@@ -1,11 +1,11 @@
 # Library intake
 
-How screenshots get into SHOTO, and the two reversals it took to get here.
+How screenshots get into Shoto, and the two reversals it took to get here.
 
 ## The library used to be the gallery
 
-SHOTO read the device's Screenshots album and listed all of it. That made the
-library a mirror of the gallery: opening SHOTO answered *"what do I have?"* —
+Shoto read the device's Screenshots album and listed all of it. That made the
+library a mirror of the gallery: opening Shoto answered *"what do I have?"* —
 a question the photo app already answers — and the app could see pictures the
 user had never chosen to give it.
 
@@ -13,7 +13,7 @@ It was reversed. Nothing enters the library except by the share sheet or the
 system picker, both of which are the user handing something over.
 
 **Still true in the source:** `ScreenshotGalleryDataSource.getScreenshotAssets`
-reads SHOTO's own album and nothing else, and it is the only read the library
+reads Shoto's own album and nothing else, and it is the only read the library
 is built on.
 
 ## And then the app was an empty room

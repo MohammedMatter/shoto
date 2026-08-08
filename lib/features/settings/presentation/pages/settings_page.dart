@@ -77,7 +77,7 @@ class SettingsPage extends StatelessWidget {
                 // Who this is, answered at the top of the screen where
                 // the question gets asked. It was taken out while there
                 // were no accounts — a grey silhouette beside the word
-                // "SHOTO" is a box that says nothing — and it is back
+                // "Shoto" is a box that says nothing — and it is back
                 // because there is a name and an address to put in it
                 // again.
                 _ProfileCard(user: sl<AuthRepository>().currentUser),
@@ -419,7 +419,7 @@ class _ProfileCard extends StatelessWidget {
                           child: Text(
                             (user?.name?.isNotEmpty ?? false)
                                 ? user!.name!
-                                : 'SHOTO',
+                                : 'Shoto',
                             style: context.text.titleLarge,
                             overflow: TextOverflow.ellipsis,
                           ),

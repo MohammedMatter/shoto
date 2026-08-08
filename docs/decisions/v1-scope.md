@@ -8,7 +8,7 @@ from scratch.
 
 The case for cutting them:
 
-- **Duplicates.** Both features were written while SHOTO read the whole device
+- **Duplicates.** Both features were written while Shoto read the whole device
   gallery. In a library assembled by hand, one deliberate share at a time, you
   do not accumulate duplicates — so the honest result of a scan is "nothing
   found", which is a poor thing to charge for.

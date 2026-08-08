@@ -5,7 +5,7 @@ rather than in the source.
 
 ## Home stopped being a gallery
 
-Home was a full-bleed grid of every screenshot. That made SHOTO look like a
+Home was a full-bleed grid of every screenshot. That made Shoto look like a
 copy of the system photo app: opening it answered *"what do I have?"* — a
 question the gallery already answers — instead of *"what should I do?"*.
 
@@ -54,7 +54,7 @@ non-empty, and search has exactly one entry point per screen.
 
 ## The tools section has been renamed twice
 
-It was "What SHOTO can do" — a brochure heading, describing the software to
+It was "What Shoto can do" — a brochure heading, describing the software to
 you. That became "Do something", which fixed the brochure problem and
 introduced a vaguer one: it is an instruction, and a faintly condescending one
 to give somebody who has just opened an empty app.

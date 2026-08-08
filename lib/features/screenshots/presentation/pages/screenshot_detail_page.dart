@@ -960,7 +960,7 @@ class _BarAction extends StatelessWidget {
 
 /// Chrome that floats over somebody else's picture.
 ///
-/// Every control on this screen sits on top of a screenshot SHOTO did not
+/// Every control on this screen sits on top of a screenshot Shoto did not
 /// choose and cannot predict, and all three of them used to be **white glass**:
 /// a white fill at 14%, a white hairline, white glyphs. Over a dark screenshot
 /// that is a beautiful pane of frosted glass. Over a white one — a receipt, a

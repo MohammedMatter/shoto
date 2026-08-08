@@ -92,7 +92,7 @@ class _AppVersionBlockState extends State<AppVersionBlock> {
               padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 6.h),
               child: Column(
                 children: [
-                  Text('SHOTO', style: context.text.overline),
+                  Text('Shoto', style: context.text.overline),
                   SizedBox(height: 3.h),
                   Text(
                     context.l10n.appVersion(AppInfo.version),

@@ -20,7 +20,7 @@ import 'package:shoto/features/folders/presentation/widgets/folder_colors.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_name_limit.dart';
 import 'package:shoto/features/screenshots/domain/repositories/screenshot_repository.dart';
 
-/// The sheet that rises when an image is shared into SHOTO.
+/// The sheet that rises when an image is shared into Shoto.
 ///
 /// It runs in its own translucent Android activity, so what the user sees is
 /// their current app dimmed slightly with a small panel sliding up over it —
@@ -35,7 +35,7 @@ class QuickSavePage extends StatefulWidget {
 }
 
 // `signedOut` is gone. It was a dead end that could only be escaped by
-// leaving the sheet, opening SHOTO, handing over a Google account and
+// leaving the sheet, opening Shoto, handing over a Google account and
 // sharing the image again — in front of the one flow whose entire value is
 // that it takes two seconds and never leaves the app you were in. There is
 // always a library to save into now.
@@ -114,7 +114,7 @@ class _QuickSavePageState extends State<QuickSavePage>
       _images.isNotEmpty && _alreadyInLibraryCount == _images.length;
 
   /// A folder is the point. Saving to the library and stopping there just
-  /// makes another pile to sort later, which is the problem SHOTO exists to
+  /// makes another pile to sort later, which is the problem Shoto exists to
   /// solve — so the button waits until somewhere has been chosen.
   bool get _inert => _selected == null;
 
@@ -174,7 +174,7 @@ class _QuickSavePageState extends State<QuickSavePage>
         final String? path = map['path'] as String?;
         if (path == null) continue;
 
-        // Sharing a screenshot SHOTO already shows used to write a *second*
+        // Sharing a screenshot Shoto already shows used to write a *second*
         // copy into the gallery, so the app then listed the same picture
         // twice and the whole feature looked pointless. Resolving the
         // MediaStore id means anything already in the library is only filed.
@@ -288,7 +288,7 @@ class _QuickSavePageState extends State<QuickSavePage>
           try {
             await repository.setIntent(assetId, intent);
           } catch (error) {
-            debugPrint('SHOTO: intent not recorded for $assetId — $error');
+            debugPrint('Shoto: intent not recorded for $assetId — $error');
           }
         }
       }
@@ -306,7 +306,7 @@ class _QuickSavePageState extends State<QuickSavePage>
       // no longer swallowed. Everything that goes wrong in here used to
       // surface as "Could not read that image", which points at the file and
       // sends anyone debugging it to the wrong place.
-      debugPrint('SHOTO: quick save failed — $error\n$stack');
+      debugPrint('Shoto: quick save failed — $error\n$stack');
       if (mounted) setState(() => _stage = _Stage.failed);
       return;
     }
@@ -875,12 +875,12 @@ class _QuickSavePageState extends State<QuickSavePage>
   }
 }
 
-/// One image handed over by another app, and whether SHOTO already has it.
+/// One image handed over by another app, and whether Shoto already has it.
 class _SharedImage {
   final String path;
 
   /// The gallery id it came from, when Android gave one. Lets an image
-  /// already sitting in SHOTO's album be taken into this account's library
+  /// already sitting in Shoto's album be taken into this account's library
   /// rather than copied a second time.
   final String? mediaId;
 

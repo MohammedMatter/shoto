@@ -299,7 +299,7 @@ class ScreenshotThumbnail extends StatelessWidget {
 ///
 /// The first version marked done by going *quiet* — the same glyph at half
 /// opacity — on the theory that a finished task is not news. That was wrong
-/// about which moment this feature is for. Every other number in SHOTO only
+/// about which moment this feature is for. Every other number in Shoto only
 /// goes up; this is the one thing a person can complete, and a reward you
 /// have to squint at is not a reward. Worse, dimmed-glyph and lit-glyph are
 /// the same shape, so a grid told you nothing at a glance — the exact place a

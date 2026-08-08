@@ -16,7 +16,7 @@ import 'package:shoto/core/widgets/glass_layer.dart';
 /// Asks for the four-digit code that turns the developer unlock on.
 ///
 /// Returns true once it is on. Styled like [showConfirmDialog] so it reads as
-/// part of SHOTO rather than a debug panel bolted on — this dialog can appear
+/// part of Shoto rather than a debug panel bolted on — this dialog can appear
 /// in a release build, and anything that looks like a leftover test screen
 /// makes the app feel unfinished.
 Future<bool> showDevUnlockDialog(BuildContext context) async {

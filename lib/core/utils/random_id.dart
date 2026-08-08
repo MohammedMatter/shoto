@@ -1,6 +1,6 @@
 import 'dart:math';
 
-/// A random string, for the one id SHOTO mints: the device's own.
+/// A random string, for the one id Shoto mints: the device's own.
 ///
 /// This was `NonceGenerator`, and it had a second method that hashed a nonce
 /// with SHA-256 for Sign in with Apple. Apple is gone along with the rest of

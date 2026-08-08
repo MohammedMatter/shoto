@@ -65,7 +65,7 @@ class RevenueCatDataSource {
   /// Detaches the account, leaving this device anonymous again.
   ///
   /// The entitlement stays with the account on RevenueCat's side; signing back
-  /// in brings it back. Signing out of SHOTO does not cancel anything, and
+  /// in brings it back. Signing out of Shoto does not cancel anything, and
   /// nothing local is touched — the library belongs to the device.
   Future<void> logOut() async {
     if (!_configured) return;

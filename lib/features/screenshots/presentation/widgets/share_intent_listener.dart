@@ -10,9 +10,9 @@ import 'package:shoto/features/screenshots/domain/use_cases/assign_folder_use_ca
 import 'package:shoto/features/screenshots/domain/use_cases/import_shared_screenshot_use_case.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_limit_gate.dart';
 
-/// Wraps the app shell and listens for images shared into SHOTO from other
+/// Wraps the app shell and listens for images shared into Shoto from other
 /// apps (via the OS share sheet). Each image is saved into the device
-/// gallery under the "SHOTO" album straight away (so it shows up on Home
+/// gallery under the "Shoto" album straight away (so it shows up on Home
 /// immediately), then the user is prompted to file it into a folder.
 class ShareIntentListener extends StatefulWidget {
   final Widget child;

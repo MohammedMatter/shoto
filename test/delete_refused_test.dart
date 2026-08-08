@@ -18,7 +18,7 @@ import 'support/fake_gallery.dart';
 /// that prompt has two buttons. The app used to act on one of them: it
 /// released ownership and erased the metadata *before* asking, then discarded
 /// what the OS said. Press **Deny** and the picture stayed in the gallery
-/// while SHOTO forgot it existed — the folder it was filed in, the favourite,
+/// while Shoto forgot it existed — the folder it was filed in, the favourite,
 /// the intent, all gone, for a screenshot the user had just refused to delete.
 ///
 /// Found by pressing Deny once on a device. It is not an edge case: it is one

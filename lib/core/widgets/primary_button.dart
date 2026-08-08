@@ -9,7 +9,7 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 /// It used to be an [InkWell], which is the wrong feedback twice over: the
 /// ripple is invisible on a saturated gradient, and it starts on *release*,
 /// so the button gave no answer at all during the part of the tap the user is
-/// actually watching. Every other pressable surface in SHOTO shrinks on press
+/// actually watching. Every other pressable surface in Shoto shrinks on press
 /// down; the most prominent control in the app was the one that didn't.
 class PrimaryButton extends StatelessWidget {
   final String label;

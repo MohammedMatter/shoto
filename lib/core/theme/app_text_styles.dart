@@ -205,7 +205,7 @@ class AppTypography extends ThemeExtension<AppTypography> {
   /// Quiet section markers, in sentence case.
   ///
   /// [overline] is still here for anywhere that genuinely wants small caps,
-  /// but Home no longer shouts `RECENT` and `WHAT SHOTO CAN DO` at itself.
+  /// but Home no longer shouts `RECENT` and `WHAT Shoto CAN DO` at itself.
   /// All-caps everywhere is a tell: it is what a layout reaches for when the
   /// hierarchy is not doing the work.
   TextStyle get sectionLabel => _sans(

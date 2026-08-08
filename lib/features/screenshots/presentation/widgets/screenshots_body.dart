@@ -86,7 +86,7 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
   }
 
   /// Granting photo access happens in the system settings app, which means
-  /// SHOTO is backgrounded at the time and never learns the answer. Without
+  /// Shoto is backgrounded at the time and never learns the answer. Without
   /// this, a user who taps "Open Settings", allows access, and comes back
   /// is still staring at the "Photo access needed" screen with no way
   /// forward except force-quitting the app.

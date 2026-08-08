@@ -28,7 +28,7 @@ import 'package:shoto/features/screenshots/domain/use_cases/keep_captures_use_ca
 /// can answer by looking. The count in the corner is what makes it bearable —
 /// it is the only number in this app that is *supposed* to run out.
 ///
-/// Nothing here deletes. Skip means "not for SHOTO", never "remove from my
+/// Nothing here deletes. Skip means "not for Shoto", never "remove from my
 /// phone", and the original stays in the gallery either way — including the
 /// ones that are kept, which are copied rather than moved.
 class TriagePage extends StatefulWidget {

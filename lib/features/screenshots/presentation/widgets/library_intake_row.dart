@@ -68,7 +68,7 @@ class _LibraryIntakeRowState extends State<LibraryIntakeRow>
   /// **Because taking a screenshot does not background the app.**
   ///
   /// The lifecycle hook below covers the ordinary route — capture something
-  /// in another app, come back to SHOTO — and it is not enough on its own.
+  /// in another app, come back to Shoto — and it is not enough on its own.
   /// Android leaves the foreground app resumed while a screenshot is taken,
   /// so anyone capturing *this* app, or capturing from a floating window or
   /// split screen, gets no `resumed` at all and the count never moves. The
@@ -86,7 +86,7 @@ class _LibraryIntakeRowState extends State<LibraryIntakeRow>
   /// **Counted again every time the app comes back to the foreground**, and
   /// this is the whole flow rather than a refinement.
   ///
-  /// Taking a screenshot means leaving SHOTO, capturing something in another
+  /// Taking a screenshot means leaving Shoto, capturing something in another
   /// app, and coming back. The Library is kept alive inside the shell's stack
   /// for the whole session, so a count read once at mount is read *before the
   /// screenshots exist* — open the Library, go and capture five things,

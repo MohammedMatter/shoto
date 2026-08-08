@@ -14,17 +14,17 @@ static HTML/CSS/JS, no build step (user's explicit choice — deploys directly t
 
 Primary: everyday smartphone users whose camera roll fills up with hundreds of untracked screenshots (reels, chats, receipts, articles, ideas) and who can no longer find a specific one later.
 
-Landing page audience specifically: people discovering SHOTO through its Instagram account (an active marketing channel — bio, launch post, feature-explainer post series already drafted) and following a link-in-bio to this page. Mobile-first traffic.
+Landing page audience specifically: people discovering Shoto through its Instagram account (an active marketing channel — bio, launch post, feature-explainer post series already drafted) and following a link-in-bio to this page. Mobile-first traffic.
 
 ## Product Purpose
 
-SHOTO turns a messy screenshot camera roll into a deliberately curated, searchable library. Users choose what to save (via the OS share sheet), and the app takes over from there — finding, organizing, and protecting anything they've filed. Success means a user can locate any screenshot they saved in seconds, without scrolling a giant camera roll.
+Shoto turns a messy screenshot camera roll into a deliberately curated, searchable library. Users choose what to save (via the OS share sheet), and the app takes over from there — finding, organizing, and protecting anything they've filed. Success means a user can locate any screenshot they saved in seconds, without scrolling a giant camera roll.
 
 ## Positioning
 
 **Lead with Safe Share: "the screenshot you can actually send."**
 
-Organizing screenshots is a commodity. Google Photos and Apple Photos already OCR every screenshot for free, index it, search it and auto-album it, with no import step and across devices — so "find your screenshots" cannot be the headline claim against them, and a page that leads with it invites the comparison SHOTO loses.
+Organizing screenshots is a commodity. Google Photos and Apple Photos already OCR every screenshot for free, index it, search it and auto-album it, with no import step and across devices — so "find your screenshots" cannot be the headline claim against them, and a page that leads with it invites the comparison Shoto loses.
 
 Safe Share is the one capability neither platform will ever ship, because a platform owner cannot approve a feature that writes a *different, plausible* card number into a user's photo. It is also the only one that is genuinely novel rather than merely well-executed:
 
@@ -36,7 +36,7 @@ Search, folders and the share sheet are the reason people stay, and they support
 
 ## Operating Context
 
-- Primary capture flow: share a screenshot from any other app (Instagram, WhatsApp, browser, etc.) into SHOTO via the OS share sheet; a bottom sheet immediately asks which folder to file it into.
+- Primary capture flow: share a screenshot from any other app (Instagram, WhatsApp, browser, etc.) into Shoto via the OS share sheet; a bottom sheet immediately asks which folder to file it into.
 - Search: type a word to search screenshot text (OCR) or visual content (on-device image recognition) — works even for images with no text at all.
 - Organization: colored folders, chosen by the user at save time. There is no automation — see the note on filing rules below.
 - Outbound sharing (**the headline flow**): Safe Share finds sensitive data (card numbers, IBANs, IDs, verification codes, names, addresses) and substitutes plausible stand-ins before a screenshot is sent elsewhere.
@@ -60,7 +60,7 @@ Search, folders and the share sheet are the reason people stay, and they support
 
 ## Brand Commitments
 
-- Name: **SHOTO**.
+- Name: **Shoto**.
 - Tone is an explicit, repeatedly confirmed constraint: professional and official-feeling — never playful, cute, or mascot/cartoon-character-driven. A cute mascot logo concept was explicitly rejected this session for breaking this tone.
 - Tagline: **"The screenshot you can actually send."** This replaces "Never lose a screenshot again" and "A pile becomes a library" as the headline — both describe the organizer, which is the commodity half of the product. The pile line survives as the app's own onboarding hook, where it is doing a different job (naming the problem, not the differentiator).
 - No aesthetic direction (palette, typography, page concept) is decided for this landing page yet.

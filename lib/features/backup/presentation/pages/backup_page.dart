@@ -187,7 +187,7 @@ class _BackupPageState extends State<BackupPage> {
         kind: result.isComplete ? SnackKind.success : SnackKind.neutral,
       );
     } on BackupFormatException {
-      // Told apart from a crash on purpose. "That is not a SHOTO backup" is
+      // Told apart from a crash on purpose. "That is not a Shoto backup" is
       // something the user can act on; "something went wrong" is not.
       if (!mounted) return;
       showAppSnackBar(

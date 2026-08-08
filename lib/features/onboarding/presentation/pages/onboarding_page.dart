@@ -22,7 +22,7 @@ import 'package:shoto/features/onboarding/presentation/widgets/stage_canvas.dart
 /// stating, because they are the reasons this exists.
 ///
 /// It described the app instead of showing it — and what it described was no
-/// longer true. It promised SHOTO "automatically finds every screenshot you
+/// longer true. It promised Shoto "automatically finds every screenshot you
 /// take", which was reversed three sessions ago: the library is opt-in now,
 /// and the first thing a new user was told was the one thing the app
 /// deliberately does not do.
@@ -30,7 +30,7 @@ import 'package:shoto/features/onboarding/presentation/widgets/stage_canvas.dart
 /// So the sequence is built out of the app's own material. Nine drawn
 /// screenshots start as a pile — angled, overlapping, the way a thousand
 /// screenshots actually feel — and **the same nine cards** are then dealt
-/// with in front of you: most of them leave, because you choose what SHOTO
+/// with in front of you: most of them leave, because you choose what Shoto
 /// keeps; the survivors square up and take the clipped corner, because they
 /// have been filed; one lights up a line of its own text, because that is
 /// what searching inside a picture looks like; one covers its card number,
@@ -311,10 +311,10 @@ const List<CardPose> _pile = [
   CardPose(x: 0.86, y: 0.68, turns: 0.04, scale: 0.86),
 ];
 
-/// **Stage two — you choose.** Six cards leave the way they came in; three
+/// **Stage three — what is kept.** Six cards leave the way they came in; three
 /// stay, straighten and line up. The rule the whole app is built on, shown
 /// as an act of subtraction.
-const List<CardPose> _chosen = [
+const List<CardPose> _kept = [
   CardPose(x: -1.9, y: -0.9, turns: -0.12, scale: 0.8, opacity: 0),
   CardPose(x: -0.62, y: -0.06, turns: 0, scale: 0.96),
   CardPose(x: 1.9, y: -0.9, turns: 0.12, scale: 0.8, opacity: 0),
@@ -326,11 +326,11 @@ const List<CardPose> _chosen = [
   CardPose(x: 1.9, y: 1.2, turns: 0.08, scale: 0.8, opacity: 0),
 ];
 
-/// **Stage three — Safe Share.** The cards retreat to a tidy fan at the top
+/// **Stage two — Safe Share.** The cards retreat to a tidy fan at the top
 /// and hand the screen to the cover itself. One of them is hiding a card
-/// number, which is the single most concrete thing SHOTO does and the last
+/// number, which is the single most concrete thing Shoto does and the last
 /// thing seen before the button.
-const List<CardPose> _pro = [
+const List<CardPose> _covered = [
   CardPose(x: -1.9, y: -0.9, opacity: 0, scale: 0.8),
   CardPose(x: -0.48, y: -0.5, turns: -0.05, scale: 0.72, opacity: 0.9),
   CardPose(x: 1.9, y: -0.9, opacity: 0, scale: 0.8),
@@ -343,49 +343,52 @@ const List<CardPose> _pro = [
 ];
 
 List<OnboardingStage> _stages(BuildContext context) => [
-  OnboardingStage(
-    title: (context) => context.l10n.onbPileTitle,
-    body: (context) => context.l10n.onbPileBody,
-    poses: _pile,
-  ),
-  OnboardingStage(
-    title: (context) => context.l10n.onbChooseTitle,
-    body: (context) => context.l10n.onbChooseBody,
-    poses: _chosen,
-  ),
-  // **Three stages, and the two that went were the two about mechanics.**
+  // **Three stages, and the order is the argument.**
   //
-  // There were five. "Filed the moment you send it" and "Search what is
-  // inside them" each described a control, to somebody who did not yet have
-  // a single screenshot for the control to act on — and both are things the
-  // app shows on its own the first time they matter: the folder sheet
-  // appears in the share flow, the search field is the widest thing on the
-  // Library.
+  // There were five, and the two that went — "Filed the moment you send it"
+  // and "Search what is inside them" — each described a control to somebody
+  // who did not yet have a screenshot for the control to act on. Both are
+  // things the app shows on its own the first time they matter: the folder
+  // sheet appears in the share flow, the search field is the widest thing on
+  // the Library.
   //
-  // What is left cannot be cut further without losing something the app
-  // cannot say later. The pile is the problem in one line. **SHOTO never
-  // reads your gallery** is the rule that makes every other screen make
-  // sense, and a user who misses it spends the first session waiting for
-  // their screenshots to arrive by themselves. Safe Share is the one thing
-  // the phone's own gallery will never do.
+  // The three that stayed are a question, its answer, and the rule that makes
+  // the answer safe to believe — in that order, because the first screen is
+  // the only one that gets read by everybody. It asks what is *in* their own
+  // screenshots rather than describing a pile, so the problem is remembered
+  // instead of argued.
+  //
+  // Safe Share moved to second, ahead of the privacy rule. It is the reason
+  // to keep the app, and the rule is the reason to trust it — which is a
+  // sentence that only lands once there is something to trust it *with*.
   //
   // Each stage costs a fifth of the people who started, so the question for
   // anything added here is not "is this true" — all five were — but "will
   // they still be here for the one after it".
-  //
-  // Last, and no longer a price list.
+  OnboardingStage(
+    title: (context) => context.l10n.onbInsideTitle,
+    body: (context) => context.l10n.onbInsideBody,
+    poses: _pile,
+  ),
+
+  // The cover itself, and no longer a price list.
   //
   // This stage used to pitch the subscription — six paid features shown to
-  // somebody who had not yet saved a single screenshot, as the final thing
-  // before the button that lets them start. Its copy also still promised
-  // rules that file screenshots for you, three releases after filing rules
-  // were deleted.
-  //
-  // It now ends on the one thing the phone's own gallery will never do.
+  // somebody who had not yet saved a single screenshot. Its copy also still
+  // promised rules that file screenshots for you, three releases after filing
+  // rules were deleted.
   OnboardingStage(
-    title: (context) => context.l10n.onbSafeShareTitle,
-    body: (context) => context.l10n.onbSafeShareBody,
-    poses: _pro,
+    title: (context) => context.l10n.onbSendTitle,
+    body: (context) => context.l10n.onbSendBody,
+    poses: _covered,
     prop: StageProp.safeShare,
+  ),
+
+  // Six cards leave, three stay — which is the rule drawn rather than stated,
+  // and the reason this pose ended up last rather than second.
+  OnboardingStage(
+    title: (context) => context.l10n.onbYoursTitle,
+    body: (context) => context.l10n.onbYoursBody,
+    poses: _kept,
   ),
 ];

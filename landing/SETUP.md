@@ -9,7 +9,7 @@
 
 1. افتح **https://sheets.google.com** وسجّل دخول بحساب Gmail تبعك.
 2. اضغط **Blank spreadsheet** (جدول فاضي).
-3. سمّي الملف من فوق: `SHOTO Waitlist`.
+3. سمّي الملف من فوق: `Shoto Waitlist`.
 4. تحت بالأسفل، في تاب اسمه `Sheet1` — اضغط عليه دبل كليك وغيّر الاسم لـ **`Waitlist`** بالضبط (حرف W كبير).
 5. بالصف الأول اكتب العناوين:
 
@@ -85,7 +85,7 @@ function json(obj) {
 5. رح يطلب صلاحيات أول مرة:
    - **Authorize access** ← اختار حسابك
    - رح تطلع شاشة تحذير "Google hasn't verified this app" — هاد طبيعي لأنه سكربتك انت
-   - اضغط **Advanced** ← **Go to SHOTO Waitlist (unsafe)** ← **Allow**
+   - اضغط **Advanced** ← **Go to Shoto Waitlist (unsafe)** ← **Allow**
 6. رح يعطيك رابط شكله هيك:
 
    ```

@@ -1,4 +1,4 @@
-// Generates every raster the SHOTO mark needs, from the one painter that
+// Generates every raster the Shoto mark needs, from the one painter that
 // defines it.
 //
 //     flutter test tool/generate_brand_assets.dart

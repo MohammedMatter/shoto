@@ -8,7 +8,7 @@
       Declaring it makes Android 14+ offer "Select photos…" (partial access)
       in the permission dialog. Partial access is structurally useless here:
       it exposes only the handful of images the user hand-picked, so the
-      "Screenshots" album SHOTO is built around simply isn't visible and the
+      "Screenshots" album Shoto is built around simply isn't visible and the
       library comes back empty. Leaving it out gives the plain
       Allow / Don't allow choice, which is the only one this app can work
       with.
@@ -26,7 +26,7 @@
     -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <application
-        android:label="SHOTO"
+        android:label="Shoto"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -52,12 +52,12 @@
         </activity>
 
         <!--
-            Sharing an image into SHOTO lands here, not in MainActivity.
+            Sharing an image into Shoto lands here, not in MainActivity.
 
             Its own task (taskAffinity="") and excludeFromRecents are what
             make it behave like a sheet rather than a second copy of the app:
             it appears over whatever the user was doing, saves, and is gone
-            without ever leaving a SHOTO entry in the recents switcher.
+            without ever leaving a Shoto entry in the recents switcher.
         -->
         <activity
             android:name=".ShareActivity"

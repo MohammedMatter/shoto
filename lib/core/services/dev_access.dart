@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// A switch, local to this phone, that makes SHOTO behave as if the user is
+/// A switch, local to this phone, that makes Shoto behave as if the user is
 /// subscribed.
 ///
 /// It exists because the paid features currently cannot be reached at all on

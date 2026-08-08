@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/widgets/shoto_brand_mark.dart';
 
-/// SHOTO's logo, wherever the app needs to show itself to the user.
+/// Shoto's logo, wherever the app needs to show itself to the user.
 ///
 /// This used to be a rounded slab in the accent colour with a Font Awesome
 /// phone glyph dropped in the middle, which is a placeholder — it said "an

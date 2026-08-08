@@ -14,7 +14,7 @@ constructs its recogniser with `TextRecognitionScript.latin`, and that is the
 only model bundled. ML Kit's on-device text recognition has no Arabic model at
 all.
 
-Almost everything SHOTO sells reads the words inside a screenshot:
+Almost everything Shoto sells reads the words inside a screenshot:
 
 - **Search** matches recognised text.
 - **Safe Share** finds what is private in recognised text.

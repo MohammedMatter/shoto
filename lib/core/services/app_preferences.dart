@@ -42,7 +42,7 @@ class AppPreferences extends ChangeNotifier {
   ///
   /// Not a user-facing setting — a fact. Onboarding explains what the app is
   /// to somebody who has never opened it; showing it again to somebody who
-  /// has been using SHOTO for a month and simply signed out is telling them
+  /// has been using Shoto for a month and simply signed out is telling them
   /// something they already know, in the way of what they were trying to do.
   bool get hasSeenOnboarding => _hasSeenOnboarding;
 
@@ -58,12 +58,12 @@ class AppPreferences extends ChangeNotifier {
   /// optional, and never leaves the device.
   String get ownerName => _ownerName;
 
-  /// Whether SHOTO may look at the device's Screenshots album to *offer* what
+  /// Whether Shoto may look at the device's Screenshots album to *offer* what
   /// is new.
   ///
   /// **Off until the user says otherwise, and it is asked as a question rather
   /// than assumed.** The library is opt-in and stays opt-in: this permits
-  /// SHOTO to show you what you captured, not to keep any of it. Everything
+  /// Shoto to show you what you captured, not to keep any of it. Everything
   /// still enters the library one deliberate decision at a time.
   ///
   /// It exists because opt-in on its own left a new install as an empty room,

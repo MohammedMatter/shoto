@@ -1,4 +1,4 @@
-# SHOTO
+# Shoto
 
 A screenshot app built around one question: **can I send this picture without
 sending what is in it?**
@@ -13,7 +13,7 @@ capture back into one tall image.
 ## The rule the whole app is built on
 
 **Your gallery is never read.** Nothing enters the library except what you hand
-over — shared into SHOTO, picked in the system picker, or answered in the
+over — shared into Shoto, picked in the system picker, or answered in the
 optional queue of new captures. That constraint decides more of this codebase
 than any framework choice, and where a feature would have been easier without
 it, the feature changed instead.
@@ -38,7 +38,7 @@ Requires the Dart SDK in `pubspec.yaml`'s `environment` block.
 
 **Android only, deliberately.** `ios/` builds, and the pure-Dart core — the
 stitcher, the sensitive-data matchers, the redaction compositor — has no
-platform in it. The capture flow does: sharing into SHOTO without opening it is
+platform in it. The capture flow does: sharing into Shoto without opening it is
 a Kotlin activity, and the iOS equivalent is a Share Extension with its own
 bundle, an App Group holding the database, and a second implementation of the
 save flow to keep in agreement with this one forever. The reasoning is written

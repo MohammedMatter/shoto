@@ -7,7 +7,7 @@ while a paragraph faded in and out on top, loaded through a data source, a
 repository, a use case and a bloc — four layers to fetch five sentences that
 have to be translated anyway.
 
-It promised that SHOTO "automatically finds every screenshot you take", which
+It promised that Shoto "automatically finds every screenshot you take", which
 had been reversed three sessions earlier. The first thing a new user was told
 was the one thing the app deliberately does not do.
 
@@ -34,7 +34,7 @@ do — performed on a card rather than described.
 ## Nothing is illustrated
 
 Nine drawn screenshots start as a pile, and the *same nine cards* are then
-dealt with in front of you: most leave, because you choose what SHOTO keeps;
+dealt with in front of you: most leave, because you choose what Shoto keeps;
 the survivors square up and take the clipped corner, because they have been
 filed; one lights a line of its own text, because that is what searching inside
 a picture looks like; one covers its card number.

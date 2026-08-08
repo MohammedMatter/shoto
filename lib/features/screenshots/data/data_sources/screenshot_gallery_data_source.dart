@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-/// Owns SHOTO's own album — and, only when the user has switched it on, reads
+/// Owns Shoto's own album — and, only when the user has switched it on, reads
 /// the device's Screenshots album to *offer* what is new.
 ///
-/// **The library is still opt-in and nothing here changes that.** SHOTO used
+/// **The library is still opt-in and nothing here changes that.** Shoto used
 /// to list every screenshot on the phone automatically, which made the library
 /// a mirror of the gallery; that was reversed on purpose, and a screenshot
-/// still only enters SHOTO when the user hands it over. [getScreenshotAssets]
+/// still only enters Shoto when the user hands it over. [getScreenshotAssets]
 /// — the one method the library is built on — reads [importAlbumName] and
 /// nothing else.
 ///
@@ -52,7 +52,7 @@ class ScreenshotGalleryDataSource {
 
   StreamController<void>? _changeController;
 
-  /// Images only — SHOTO never reads video, and asking for more than the app
+  /// Images only — Shoto never reads video, and asking for more than the app
   /// needs actively breaks it.
   ///
   /// photo_manager defaults to [RequestType.common], which is image **and**
@@ -88,7 +88,7 @@ class ScreenshotGalleryDataSource {
     return PhotoManager.getPermissionState(requestOption: _imagesOnly);
   }
 
-  /// Every image the user has saved into SHOTO, newest first.
+  /// Every image the user has saved into Shoto, newest first.
   ///
   /// Scoped to [importAlbumName] on purpose — see the class doc. There is no
   /// fallback that widens the search, because widening it is exactly the
@@ -109,7 +109,7 @@ class ScreenshotGalleryDataSource {
   }
 
   /// Screen captures taken after [since], **oldest first**, that are not
-  /// already SHOTO's own.
+  /// already Shoto's own.
   ///
   /// Oldest first is not a display preference, it is what makes a half-done
   /// review resumable. The caller advances its watermark to the last capture
@@ -151,7 +151,7 @@ class ScreenshotGalleryDataSource {
       end: count < limit ? count : limit,
     );
 
-    // Anything already in SHOTO's album is something the user has answered
+    // Anything already in Shoto's album is something the user has answered
     // about — asking again is how a queue loses its credibility.
     final List<AssetEntity> fresh = [];
     for (final AssetEntity asset in assets) {
@@ -221,7 +221,7 @@ class ScreenshotGalleryDataSource {
   }
 
   /// Saves a file (e.g. one shared into the app from another app) into the
-  /// device gallery under the dedicated "SHOTO" album, so it becomes a real
+  /// device gallery under the dedicated "Shoto" album, so it becomes a real
   /// asset that shows up in [getScreenshotAssets] like any other screenshot.
   Future<AssetEntity> saveSharedImage(String filePath, {String? title}) {
     return PhotoManager.editor.saveImageWithPath(
@@ -232,7 +232,7 @@ class ScreenshotGalleryDataSource {
   }
 
   /// Writes raw image bytes into the gallery under the app's own album —
-  /// used for images SHOTO generates itself, such as a merged long
+  /// used for images Shoto generates itself, such as a merged long
   /// screenshot, as opposed to [saveSharedImage] which copies an existing
   /// file in.
   Future<AssetEntity> saveImageBytes(
@@ -252,11 +252,11 @@ class ScreenshotGalleryDataSource {
     );
   }
 
-  /// Whether [assetId] points at an image already sitting in SHOTO's own
+  /// Whether [assetId] points at an image already sitting in Shoto's own
   /// album on disk.
   ///
   /// Only our own album counts: a screenshot sitting elsewhere in the user's
-  /// gallery is *not* in SHOTO — that is the entire point of the opt-in
+  /// gallery is *not* in Shoto — that is the entire point of the opt-in
   /// model — so sharing one in is a genuine import.
   ///
   /// This says nothing about *whose* library the image belongs to. The album

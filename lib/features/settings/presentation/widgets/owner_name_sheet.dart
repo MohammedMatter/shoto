@@ -16,7 +16,7 @@ import 'package:shoto/core/widgets/sheet_surface.dart';
 /// Card numbers carry a Luhn checksum and IBANs a mod-97 one, so the app can
 /// *prove* it found those. A name has no arithmetic behind it: "Ahmed Khalil"
 /// on a line by itself is a name only if you already know whose screenshot
-/// this is. This is that knowledge, and it is the only personal detail SHOTO
+/// this is. This is that knowledge, and it is the only personal detail Shoto
 /// ever asks anybody to type.
 ///
 /// It used to be read from the signed-in Google account, which is where a
@@ -104,7 +104,7 @@ class _OwnerNameContentState extends State<_OwnerNameContent> {
               ),
               SizedBox(height: 8.h),
               // The explanation is not fine print here. Every other screen in
-              // SHOTO can promise that nothing is collected; this one asks for
+              // Shoto can promise that nothing is collected; this one asks for
               // something, so it says what for and where it goes before the
               // field it is asking into.
               Padding(

@@ -3,14 +3,14 @@ import 'package:shoto/core/database/app_database.dart';
 import 'package:shoto/core/services/local_identity.dart';
 
 /// Answers the one question the device gallery cannot: is this screenshot
-/// actually *in* SHOTO's library.
+/// actually *in* Shoto's library.
 ///
 /// SHOTO keeps its images in a single album on the device, `Pictures/SHOTO`.
 /// A folder on disk cannot distinguish an image the user deliberately saved
 /// from one that merely landed there, so membership is recorded here and the
 /// album is only ever read *through* it.
 ///
-/// Note this is about visibility inside SHOTO, not secrecy: the files still
+/// Note this is about visibility inside Shoto, not secrecy: the files still
 /// sit in the shared gallery, where the phone's own photo app can show them
 /// to anyone holding the device. Hiding them from the gallery entirely would
 /// mean giving up being real gallery assets, which the share, delete and
@@ -25,7 +25,7 @@ class LibraryOwnershipLocalDataSource {
   /// therefore nullable, which made every read below carry an "empty library"
   /// branch and every write a StateError it could throw. The device's own
   /// identity exists from first launch and never goes away, so all of that
-  /// is gone: there is no state in which SHOTO does not know whose library
+  /// is gone: there is no state in which Shoto does not know whose library
   /// this is.
   String get _userId => _localIdentity.id;
 

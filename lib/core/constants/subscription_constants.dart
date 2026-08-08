@@ -34,7 +34,7 @@ abstract class SubscriptionConstants {
   //
   // One number can be stated on the paywall in one line, understood without
   // reading it twice, and felt: a hundred screenshots is enough that hitting
-  // the ceiling means SHOTO has genuinely become the place you keep things.
+  // the ceiling means Shoto has genuinely become the place you keep things.
   // Folders and intents are now unlimited, because they are the *organizing*
   // — charging for the containers while giving away the contents had it
   // backwards.

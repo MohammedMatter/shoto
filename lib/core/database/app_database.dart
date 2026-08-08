@@ -23,7 +23,7 @@ class AppDatabase {
   static const String folders = 'folders';
   static const String screenshotMeta = 'screenshot_meta';
 
-  /// Which account each image in SHOTO's album belongs to.
+  /// Which account each image in Shoto's album belongs to.
   ///
   /// The album on disk is one folder shared by the whole device — it has no
   /// idea accounts exist. Without this table every account signing in on the
@@ -32,7 +32,7 @@ class AppDatabase {
   /// decision the app makes, so it belongs here rather than on the filesystem.
   static const String libraryAssets = 'library_assets';
 
-  /// Intents the user wrote themselves, as opposed to the ones SHOTO ships.
+  /// Intents the user wrote themselves, as opposed to the ones Shoto ships.
   ///
   /// A table rather than a JSON blob in preferences because the ids in it are
   /// foreign keys in spirit — `screenshot_meta.intent` points at them — and
@@ -53,7 +53,7 @@ class AppDatabase {
   /// and v12 still carry the table until they are upgraded.
   static const String filingRules = 'filing_rules';
 
-  /// Set to '1' once the images that were already in SHOTO's album before
+  /// Set to '1' once the images that were already in Shoto's album before
   /// ownership existed have been handed to an account. Absent on a fresh
   /// install, because there is nothing there to hand over.
   static const String legacyLibraryAdoptedFlag = 'legacy_library_adopted';
@@ -297,7 +297,7 @@ class AppDatabase {
     ''');
   }
 
-  /// Decides who owns the screenshots that were already in SHOTO's album
+  /// Decides who owns the screenshots that were already in Shoto's album
   /// before ownership was recorded.
   ///
   /// Only deliberate organization counts as proof: favoriting a screenshot or
@@ -325,7 +325,7 @@ class AppDatabase {
   /// Hands every row on this device to [LocalIdentity], whatever account it
   /// was filed under before.
   ///
-  /// Signing in is no longer how you get into SHOTO, so `user_id` can no
+  /// Signing in is no longer how you get into Shoto, so `user_id` can no
   /// longer mean "which Google account". If it kept meaning that, the first
   /// launch after this upgrade would show an empty library to somebody whose
   /// screenshots are all still there — filed under a uid nothing asks for any

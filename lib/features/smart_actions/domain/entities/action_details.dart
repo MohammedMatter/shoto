@@ -92,7 +92,7 @@ class TrackingDetails extends ActionDetails {
   const TrackingDetails({required this.carrier, required this.number});
 }
 
-/// The carriers SHOTO can send a tracking number to.
+/// The carriers Shoto can send a tracking number to.
 ///
 /// Brand names, so they are not translated — "Aramex" is "Aramex" in every
 /// language the app speaks, and a localised spelling would only make the row

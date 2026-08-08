@@ -35,7 +35,7 @@ import 'package:shoto/features/screenshots/presentation/widgets/library_unavaila
 /// field, placed second on Home precisely to be reachable and obvious — was
 /// a paywall trigger. "Find any screenshot in seconds" is the sentence the
 /// whole product is sold on; withholding it does not make the free tier a
-/// smaller version of SHOTO, it makes it a demo with the point removed. The
+/// smaller version of Shoto, it makes it a demo with the point removed. The
 /// paid line now sits at Safe Share, Stitch, and volume: things somebody
 /// reaches for after the app has already proved it works.
 Future<void> openSearchPage(

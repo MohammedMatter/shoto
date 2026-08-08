@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// The colours of the SHOTO **mark** — and nothing else.
+/// The colours of the Shoto **mark** — and nothing else.
 ///
 /// This is deliberately a separate file from [AppPalette] rather than six more
 /// getters inside it, because the two obey different rules and mixing them
@@ -28,7 +28,7 @@ import 'package:flutter/material.dart';
 /// * It was a **folder**, which is the shape every file app on the phone
 ///   already owns, in the blue those apps are already painted.
 /// * It looked like a different product's icon. Nothing about it appeared
-///   anywhere else in SHOTO: not the palette, not the shapes, not the
+///   anywhere else in Shoto: not the palette, not the shapes, not the
 ///   restraint.
 ///
 /// So the mark is now the same thing the app draws for itself — paper on ink,

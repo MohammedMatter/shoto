@@ -77,7 +77,7 @@ class CrashReporting extends ChangeNotifier {
     } catch (error) {
       // A device with no Play services, or a Firebase app that failed to
       // initialize, must not take the app down over an *optional* diagnostic.
-      debugPrint('SHOTO: could not set crash collection: $error');
+      debugPrint('Shoto: could not set crash collection: $error');
     }
   }
 

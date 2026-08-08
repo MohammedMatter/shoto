@@ -20,7 +20,7 @@ class TextRecognitionDataSource {
   /// The recognised lines together with **where each one sits** in the image.
   ///
   /// ML Kit has always returned this geometry and the app used to throw all
-  /// of it away, keeping only `result.text`. That made SHOTO able to read a
+  /// of it away, keeping only `result.text`. That made Shoto able to read a
   /// screenshot but blind to the position of anything it read — which is
   /// fine for search, and useless for covering a card number up.
   ///

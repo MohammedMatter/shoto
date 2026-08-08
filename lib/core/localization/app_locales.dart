@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Every language SHOTO ships in, and what each one needs beyond translation.
+/// Every language Shoto ships in, and what each one needs beyond translation.
 ///
 /// A language is more than a string table: some run right to left, some are
 /// set in scripts that need more vertical room than Latin, and some have not

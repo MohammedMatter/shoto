@@ -209,7 +209,7 @@ extension DetectedActionOptions on DetectedAction {
   ];
 }
 
-/// A Google Calendar event template with every field SHOTO managed to read.
+/// A Google Calendar event template with every field Shoto managed to read.
 ///
 /// `dates` is written as a floating local stamp with no `Z` and no offset,
 /// which Google reads in the calendar's own timezone. That is exactly right

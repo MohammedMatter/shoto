@@ -42,7 +42,7 @@ class HomeGreeting extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'SHOTO',
+                    'Shoto',
                     style: context.text.headlineLarge.copyWith(
                       color: context.colors.textPrimary,
                       letterSpacing: -1,

@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:shoto/core/localization/l10n.dart';
 
-/// The kinds of private detail SHOTO knows how to find in a screenshot.
+/// The kinds of private detail Shoto knows how to find in a screenshot.
 ///
 /// Ordered by how badly it hurts to leak one, because that's the order the
 /// review list is shown in — the card number has to be the first thing the

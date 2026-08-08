@@ -146,7 +146,7 @@ class _FoldersPageState extends State<FoldersPage> {
   ///
   /// Making a fourth folder used to open the paywall. A folder is not a
   /// feature somebody enjoys — it is the work of tidying up, which is the
-  /// thing SHOTO asked them to do in the first place. Charging for it
+  /// thing Shoto asked them to do in the first place. Charging for it
   /// interrupted the one behaviour the app most needs to encourage, and it
   /// was the second of three different free-tier currencies to keep track
   /// of. The volume cap on screenshots is the whole free tier now.

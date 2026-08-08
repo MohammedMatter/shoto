@@ -6,7 +6,7 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 
 /// States the app's central promise plainly.
 ///
-/// It is the reason a person can let SHOTO read every screenshot they own, so
+/// It is the reason a person can let Shoto read every screenshot they own, so
 /// it belongs in the open rather than buried in a policy nobody opens. Shared
 /// rather than private to Settings because the same claim now closes the
 /// "What is included" screen — and a promise that is worded two slightly

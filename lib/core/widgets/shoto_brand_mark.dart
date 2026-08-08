@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:shoto/core/theme/app_brand.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 
-/// The SHOTO **brand** mark: three screenshots, and the filed one in front.
+/// The Shoto **brand** mark: three screenshots, and the filed one in front.
 ///
 /// It is the same object `ShotoMark` draws inside the app — a small fan of
-/// cards with the clipped corner on the one SHOTO is holding — in the brand's
+/// cards with the clipped corner on the one Shoto is holding — in the brand's
 /// fixed values rather than the interface's theme-aware ones. There used to be
 /// two different marks here, a blue moulded tray for the launcher and this fan
 /// for the empty states, and no user has ever been shown a reason for the
@@ -62,7 +62,7 @@ const double _frontCut = 14;
 ///
 /// Two loose ones leaning back and to the left, and the filed one square in
 /// front of them: the two behind are the screenshots you took, the one in
-/// front is the one SHOTO did something with.
+/// front is the one Shoto did something with.
 ///
 /// **They lean one way rather than fanning both ways, and the cut corner is
 /// the reason.** A symmetric fan puts a card directly behind the chamfer, and
@@ -411,10 +411,10 @@ class ShotoBrandMarkPainter extends CustomPainter {
   }
 
   /// Two short rules on the filed card — the only place in the mark where
-  /// SHOTO says what it is holding.
+  /// Shoto says what it is holding.
   ///
   /// A picture was tried here and it is the wrong claim: a photograph says
-  /// *gallery*, which is the app SHOTO deliberately is not. Two lines of
+  /// *gallery*, which is the app Shoto deliberately is not. Two lines of
   /// something written say *screenshot*, and they are what makes searching
   /// inside a picture make sense as an idea before anybody has read a word
   /// about it. The two cards behind are blank on purpose — three sets of rules

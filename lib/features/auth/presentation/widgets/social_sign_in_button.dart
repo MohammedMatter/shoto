@@ -20,7 +20,7 @@ class SocialSignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // This is the very first thing anyone touches in SHOTO, and it was the
+    // This is the very first thing anyone touches in Shoto, and it was the
     // one control with no press response at all — an ink ripple on a plain
     // surface card, starting only once the finger came off. First impressions
     // of "does this app feel solid" are decided here.

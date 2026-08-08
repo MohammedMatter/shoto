@@ -112,7 +112,7 @@ class _IntentSectionState extends State<IntentSection> {
   }
 }
 
-/// The one control in SHOTO that makes a number go down.
+/// The one control in Shoto that makes a number go down.
 ///
 /// **It used to be a line of text with a small circle beside it**, which is
 /// what a checkbox in a settings list looks like — and this is not that. Every

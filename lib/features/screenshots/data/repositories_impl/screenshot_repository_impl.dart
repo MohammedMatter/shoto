@@ -13,7 +13,7 @@ import 'package:shoto/features/screenshots/data/data_sources/text_recognition_da
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/domain/repositories/screenshot_repository.dart';
 
-/// Joins three things into one library: the images in SHOTO's gallery album,
+/// Joins three things into one library: the images in Shoto's gallery album,
 /// which account each of them belongs to, and how that account organized
 /// them.
 ///
@@ -83,7 +83,7 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
         await importSharedFile(path);
         imported++;
       } catch (error, stack) {
-        debugPrint('SHOTO import failed for $path: $error');
+        debugPrint('Shoto import failed for $path: $error');
         debugPrintStack(stackTrace: stack, maxFrames: 6);
       }
     }
@@ -205,7 +205,7 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
   /// of in advance; `deleteWithIds` returns the ids that actually went. This
   /// used to release ownership and erase the metadata *before* asking, and
   /// then ignore the answer — so tapping Delete and pressing **Deny** left the
-  /// picture on the phone and threw away everything SHOTO knew about it. The
+  /// picture on the phone and threw away everything Shoto knew about it. The
   /// user refused a deletion and lost the folder it was filed in, the
   /// favourite, the intent, for a screenshot still sitting in their gallery.
   ///
@@ -213,7 +213,7 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
   /// the system offers, and it means "leave it alone" — which has to include
   /// leaving the record alone.
   ///
-  /// Every file a library holds is one SHOTO wrote into its own album —
+  /// Every file a library holds is one Shoto wrote into its own album —
   /// importing copies, it never claims a picture where it already sits — so
   /// there is no case here where this reaches a file the app didn't create.
   ///
@@ -240,7 +240,7 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
     String? sourceAssetId,
   }) async {
     if (sourceAssetId != null && await _gallery.isInOurAlbum(sourceAssetId)) {
-      // The file is already in SHOTO's album, put there by another account
+      // The file is already in Shoto's album, put there by another account
       // (or by this one before it was signed in). Copying it would leave two
       // identical pictures in the user's gallery for no reason, so this
       // account just takes it into its own library as it stands.
@@ -271,7 +271,7 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
   @override
   Future<String?> findLibraryAsset(String assetId) async {
     if (!await _ownership.owns(assetId)) return null;
-    // Owned but no longer on disk means the file was removed outside SHOTO;
+    // Owned but no longer on disk means the file was removed outside Shoto;
     // treating that as "already here" would leave the user unable to re-add
     // a screenshot the app can't actually show them.
     return await _gallery.isInOurAlbum(assetId) ? assetId : null;

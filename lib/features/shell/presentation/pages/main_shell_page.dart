@@ -27,7 +27,7 @@ class MainShellPage extends StatefulWidget {
 class _MainShellPageState extends State<MainShellPage>
     with WidgetsBindingObserver {
   /// Always Home. The dashboard is where the app tells you what needs doing;
-  /// starting anywhere else buries that behind a tap and makes SHOTO look
+  /// starting anywhere else buries that behind a tap and makes Shoto look
   /// like a gallery again.
   int _currentIndex = 0;
 
@@ -113,7 +113,7 @@ class _MainShellPageState extends State<MainShellPage>
   /// Android activity running its own Flutter engine** — a different process
   /// as far as Dart is concerned. It writes to the same database, but the
   /// blocs living in *this* engine never hear about it, so coming back to
-  /// SHOTO showed the library exactly as it was before: the screenshot
+  /// Shoto showed the library exactly as it was before: the screenshot
   /// missing and its folder's count unchanged, until the app was killed and
   /// reopened. That was the "I have to hot reload" symptom.
   ///

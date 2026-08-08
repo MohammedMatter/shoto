@@ -46,14 +46,15 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  // Three, since the stages for filing and finding were cut — both described
-  // a control to somebody with nothing for it to act on. `pro` keeps its
-  // filename: it is still the same last stage, and renaming it would make the
-  // diff look like a new image rather than the same one, moved.
+  // Named for what each stage says, not for the drawing on it. The names used
+  // to be `pile`, `chosen` and `pro` — from an introduction with five stages
+  // in a different order, where `pro` was a price list. A golden called
+  // `chosen` showing the Safe Share cover is a filename that has to be opened
+  // to be disbelieved.
   for (final (int index, String name) in const <(int, String)>[
-    (0, 'pile'),
-    (1, 'chosen'),
-    (2, 'pro'),
+    (0, 'inside'),
+    (1, 'send'),
+    (2, 'yours'),
   ]) {
     testWidgets('onboarding — $name', (WidgetTester tester) async {
       await open(tester, Brightness.light);
@@ -65,20 +66,20 @@ void main() {
     });
   }
 
-  testWidgets('onboarding — pile, dark', (WidgetTester tester) async {
+  testWidgets('onboarding — inside, dark', (WidgetTester tester) async {
     await open(tester, Brightness.dark);
     await expectLater(
       find.byType(OnboardingPage),
-      matchesGoldenFile('goldens/onboarding_pile_dark.png'),
+      matchesGoldenFile('goldens/onboarding_inside_dark.png'),
     );
   });
 
-  testWidgets('onboarding — pro, dark', (WidgetTester tester) async {
+  testWidgets('onboarding — yours, dark', (WidgetTester tester) async {
     await open(tester, Brightness.dark);
     await step(tester, 2);
     await expectLater(
       find.byType(OnboardingPage),
-      matchesGoldenFile('goldens/onboarding_pro_dark.png'),
+      matchesGoldenFile('goldens/onboarding_yours_dark.png'),
     );
   });
 }

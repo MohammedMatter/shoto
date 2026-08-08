@@ -316,7 +316,7 @@ class RedactionService {
   /// Whether a run reads right to left.
   ///
   /// Decided by which script the letters are in rather than by the app's
-  /// language: SHOTO's interface being in English says nothing about the
+  /// language: Shoto's interface being in English says nothing about the
   /// screenshot, which may well be an Arabic banking app. Digits are ignored
   /// because they are written left to right in both.
   static bool _isRtl(String text) {

@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// The handful of moments that say whether SHOTO worked for somebody.
+/// The handful of moments that say whether Shoto worked for somebody.
 ///
 /// Deliberately short. A list of every tap produces a number for everything
 /// and an answer to nothing; these are the steps where a person either
@@ -43,7 +43,7 @@ enum FunnelStep {
 ///
 /// **Why this is local-only.**
 ///
-/// SHOTO's whole claim is that nothing leaves the phone, and that claim is
+/// Shoto's whole claim is that nothing leaves the phone, and that claim is
 /// structural rather than a policy promise — there is no server to send to.
 /// Bolting on a third-party analytics SDK would make the claim false in the
 /// most embarrassing way possible: the app that never uploads your

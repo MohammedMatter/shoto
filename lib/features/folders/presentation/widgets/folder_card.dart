@@ -228,7 +228,7 @@ class _Cover extends StatelessWidget {
 /// glyph and the spine are both still the folder's colour, at full strength,
 /// which is what identifies it.
 ///
-/// What changed is the *area*. SHOTO's stated rule is that the interface has
+/// What changed is the *area*. Shoto's stated rule is that the interface has
 /// no colour and the screenshots do — the whole palette is built on it, and
 /// it is the argument that makes a screen full of other apps' screenshots
 /// readable at all. A grid of empty folders was the one place that rule broke

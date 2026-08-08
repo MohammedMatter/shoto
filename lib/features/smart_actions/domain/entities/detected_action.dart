@@ -1,6 +1,6 @@
 import 'package:shoto/features/smart_actions/domain/entities/action_details.dart';
 
-/// The kinds of thing SHOTO can pull out of a screenshot and act on.
+/// The kinds of thing Shoto can pull out of a screenshot and act on.
 ///
 /// Deliberately narrow. Each entry here is something that can be recognised
 /// with near-certainty and that has an obvious, single next step — that is

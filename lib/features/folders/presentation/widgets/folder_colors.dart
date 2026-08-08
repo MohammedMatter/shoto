@@ -1,6 +1,6 @@
 /// Colours a user can tag a folder with.
 ///
-/// These are the one place in SHOTO where saturated colour is still correct:
+/// These are the one place in Shoto where saturated colour is still correct:
 /// they are labels the user chooses, and telling six folders apart at a
 /// glance is exactly what colour is good at. They are not the interface
 /// speaking, they are the user's own filing marks.
