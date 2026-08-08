@@ -46,6 +46,9 @@ void main() {
     required int waiting,
     bool fresh = true,
     String mount = 'first',
+    /// Left false to reach the one-time invite, which is what a real first run
+    /// sees before any count is ever shown.
+    bool answered = true,
   }) async {
     await loadTestFonts();
     if (fresh) {
@@ -53,7 +56,7 @@ void main() {
       await sl.reset();
       preferences = AppPreferences();
       await preferences.load();
-      await preferences.setTriageEnabled(true);
+      if (answered) await preferences.setTriageEnabled(true);
       sl.registerSingleton<AppPreferences>(preferences);
     } else {
       sl.unregister<GetNewCapturesUseCase>();
@@ -91,6 +94,67 @@ void main() {
   tearDownAll(FakeGallery.uninstall);
 
   tearDown(() async => sl.reset());
+
+  /// **The switch nobody could find.**
+  ///
+  /// `triageEnabled` defaults to off, which is the right default — the library
+  /// is opt-in. But `triageAsked` was written and never read, so the only way
+  /// to turn it on was a switch in Settings, under a heading nobody scrolls to,
+  /// for the feature that exists to stop a new install being an empty room. A
+  /// default that cannot be discovered is the same as a feature that never
+  /// shipped, and this is where it is discovered.
+  group('the question is put once, in the Library', () {
+    testWidgets('a first run is asked rather than left off quietly', (
+      WidgetTester tester,
+    ) async {
+      await pumpRow(tester, waiting: 0, answered: false);
+
+      expect(find.text('Show new screenshots here?'), findsOneWidget);
+      // Asked *before* counting: reading the gallery to decide whether the
+      // offer is worth making is the one thing Home promises the app does not
+      // do. The invite states what it would do and waits — so the count row's
+      // own affordance must not be on screen yet.
+      expect(find.text('Review'), findsNothing);
+    });
+
+    testWidgets('accepting turns it on and hands over to the count', (
+      WidgetTester tester,
+    ) async {
+      await pumpRow(tester, waiting: 0, answered: false);
+      await tester.tap(find.text('Show them'));
+      await tester.pumpAndSettle();
+
+      expect(preferences.triageEnabled, isTrue);
+      expect(preferences.triageAsked, isTrue);
+      expect(find.text('Show new screenshots here?'), findsNothing);
+    });
+
+    testWidgets('declining is an answer, and is not asked again', (
+      WidgetTester tester,
+    ) async {
+      await pumpRow(tester, waiting: 0, answered: false);
+      await tester.tap(find.text('No thanks'));
+      await tester.pumpAndSettle();
+
+      expect(preferences.triageEnabled, isFalse);
+      // The half that matters: "no" and "not yet asked" are different states,
+      // and an app that cannot tell them apart either nags or never offers.
+      expect(preferences.triageAsked, isTrue);
+      expect(find.text('Show new screenshots here?'), findsNothing);
+    });
+
+    testWidgets('a declined install stays silent on remount', (
+      WidgetTester tester,
+    ) async {
+      await pumpRow(tester, waiting: 0, answered: false);
+      await tester.tap(find.text('No thanks'));
+      await tester.pumpAndSettle();
+
+      await pumpRow(tester, waiting: 20, fresh: false, mount: 'second');
+      expect(find.text('Show new screenshots here?'), findsNothing);
+      expect(find.byIcon(Icons.inbox_rounded), findsNothing);
+    });
+  });
 
   testWidgets('says nothing below the threshold', (WidgetTester tester) async {
     await pumpRow(tester, waiting: LibraryIntakeRow.minimum - 1);

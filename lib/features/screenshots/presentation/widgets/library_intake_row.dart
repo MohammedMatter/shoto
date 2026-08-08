@@ -125,6 +125,26 @@ class _LibraryIntakeRowState extends State<LibraryIntakeRow>
       builder: (BuildContext context, Widget? _) {
         final AppPreferences prefs = sl<AppPreferences>();
 
+        // **The question, once, before the count.**
+        //
+        // `triageAsked` was written and never read, so the only way to turn
+        // this on was to find a switch in Settings — under a heading nobody
+        // scrolls to, for a feature whose whole purpose is to stop a new
+        // install being an empty room. A default nobody can discover is the
+        // same as a feature that does not ship.
+        //
+        // **Asked without counting first.** Reading the gallery to decide
+        // whether the offer is worth making would be reading the gallery
+        // before being allowed to — the one thing this app promises on its own
+        // Home screen it does not do. So the invite states what it would do
+        // and waits, rather than opening with "you have 47 waiting".
+        //
+        // Either answer is final and both are recorded: declining is an
+        // answer, not a postponement, which is why it does not say "not now"
+        // the way the dismiss on the count row does. The Settings switch stays
+        // for anyone who changes their mind.
+        if (!prefs.triageAsked) return _Invite(prefs: prefs);
+
         if (_waiting < LibraryIntakeRow.minimum) {
           return const SizedBox.shrink();
         }
@@ -182,6 +202,87 @@ class _LibraryIntakeRowState extends State<LibraryIntakeRow>
           ),
         );
       },
+    );
+  }
+}
+
+/// The one-time offer to start listing new captures.
+///
+/// Shaped like the count row it will be replaced by — same card, same place —
+/// so accepting it does not move anything on screen. It answers "what is this
+/// row" before the row ever shows a number.
+class _Invite extends StatelessWidget {
+  final AppPreferences prefs;
+
+  const _Invite({required this.prefs});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 8.h),
+      child: Container(
+        padding: EdgeInsets.fromLTRB(14.w, 12.h, 14.w, 8.h),
+        decoration: BoxDecoration(
+          color: context.colors.surface,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: context.colors.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Icon(
+                  Icons.inbox_rounded,
+                  size: 19.sp,
+                  color: context.colors.textSecondary,
+                ),
+                SizedBox(width: 10.w),
+                Expanded(
+                  child: Text(
+                    context.l10n.triageInviteTitle,
+                    style: context.text.bodyMedium.asMedium,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 6.h),
+            Text(
+              context.l10n.triageInviteBody,
+              style: context.text.caption.copyWith(
+                color: context.colors.textSecondary,
+              ),
+            ),
+            SizedBox(height: 4.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                // Declining is written plainly and sits first, because the
+                // honest default for something that watches for new captures
+                // is the one that does not.
+                TextButton(
+                  onPressed: () => prefs.setTriageEnabled(false),
+                  child: Text(
+                    context.l10n.triageInviteDismiss,
+                    style: context.text.button.copyWith(
+                      color: context.colors.textSecondary,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => prefs.setTriageEnabled(true),
+                  child: Text(
+                    context.l10n.triageInviteAccept,
+                    style: context.text.button.copyWith(
+                      color: context.colors.primary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
