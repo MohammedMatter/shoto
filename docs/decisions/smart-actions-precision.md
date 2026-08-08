@@ -82,6 +82,66 @@ recogniser that reports a phone-number entity rather than characters, or a
 labelled field the OCR preserved. "A better regex" is not one, and the five
 guards above are the evidence.
 
+## The other half: one source of truth for "private"
+
+Removing the phone rule fixed the sheet. It did not fix the *disagreement*,
+and the disagreement was the worse half of what the user saw on that IBAN
+page: Safe Share offered to cover the account numbers in the same second this
+sheet offered to call fragments of them. Two features, one image, opposite
+verdicts. Somebody who notices that stops trusting both — including the
+feature whose whole job is to be trusted with the things worth hiding.
+
+Both were answering "is this private?" from their own patterns. Two card
+regexes existed, one in each file, and the copy in `ActionExtractor` carried a
+comment saying it matched the one in `SensitiveData` — a promise nothing
+enforced and nothing would have reported breaking.
+
+So the actions sheet now *asks*. `SensitiveData.findIn` runs during
+extraction, and every span it returns whose kind has no action worth offering
+is claimed before the entity passes see the text. The duplicated card patterns
+are gone.
+
+### Sensitive and actionable are not opposites
+
+The gate is a list, not "everything Safe Share found", because three kinds are
+both at once — and all three are the product:
+
+| Kind | Private | Action | Gated |
+|---|---|---|---|
+| email | yes | write to it | no |
+| iban | yes | copy it | no |
+| code | yes | copy it before it expires | no |
+| card, nationalId, orderNumber, address, personName, phone, number | yes | *nothing* | **yes** |
+
+Covering something before sharing a picture of it, and acting on it yourself,
+are different questions with different right answers. Collapsing them would
+have deleted the feature in the name of protecting it.
+
+### Order: a label beats a shape
+
+The gate runs *after* the intent passes and before the entity ones. This is
+not cosmetic. A tracking number is an order reference by another name, and
+`SensitiveData` calls "Order number 4567890" an order number — so running the
+gate first would silently delete the tracking action on every delivery
+notification the app was built to read. The intent passes have a label from
+the screenshot; the gate has a shape derived from digits.
+
+### What it costs
+
+One extra scan of the text, on a sheet the user opened deliberately. The
+alternative is two detectors that agree by inspection until one of them is
+edited.
+
+### What it exposed
+
+With both features reading one answer, a flaw in that answer stops being
+invisible. `SensitiveData._claimCode` labels "Account number 4820193" a
+*verification code* when the words "verification code" appear on the following
+line — its window is 20 non-digit characters and does not stop at a line
+break, which is the exact bug `TextCues.maxLineGap` exists to prevent on this
+side. Now that the label decides whether a span is offered, it is worth
+fixing; before the gate, the two features simply disagreed quietly.
+
 ## The paid list moved with it
 
 `featActionsBody`, `featActionsPoint1` and `featActionsPoint2` all advertised

@@ -851,4 +851,84 @@ void main() {
           hasLength(1));
     });
   });
+
+  /// **The two features may not disagree about the same pixels.**
+  ///
+  /// Safe Share and the actions sheet used to answer "is this private?"
+  /// separately. On a page of generated IBANs they answered it opposite ways
+  /// in the same second: Safe Share offered to cover the account numbers,
+  /// this sheet offered to call three fragments of them. A user who notices
+  /// that concludes there is no single mind behind the app — and Safe Share
+  /// is the feature that needs to be trusted with the most.
+  ///
+  /// So the private spans now come *from* `SensitiveData`. These tests hold
+  /// both halves of that: what it takes away, and what it must never take.
+  group('what Safe Share hides, Actions does not offer', () {
+    test('a national ID is covered, so its digits are not offered', () {
+      // Eight digits with nothing to act on. `SensitiveData` claims it, so
+      // this sheet never sees it — the answer is inherited rather than
+      // derived a second time from the same shape.
+      expect(ActionExtractor.extract('National ID: 29481027'), isEmpty);
+    });
+
+    test('an order reference is covered, not offered', () {
+      expect(ActionExtractor.extract('Order number 4567890'), isEmpty);
+    });
+
+    test('an address is covered while the code beside it survives', () {
+      // The clearest shape of the rule: one screenshot, two private things,
+      // and only one of them is worth doing something about.
+      final List<DetectedAction> actions = ActionExtractor.extract(
+        'Delivery to 221 Baker Street\nDoor code 4821',
+      );
+      expect(
+        actions.where((a) => a.kind == DetectedActionKind.code).map((a) => a.value),
+        contains('4821'),
+      );
+      // The street is claimed by the place pass, which runs before the gate —
+      // so it is offered as a *destination*, never as digits to copy.
+      expect(
+        actions.where((a) => a.kind == DetectedActionKind.code),
+        hasLength(1),
+      );
+    });
+
+    test('a card number produces nothing at all', () {
+      // Luhn-valid, so `SensitiveData` is certain about it.
+      expect(ActionExtractor.extract('Card 4539 1488 0343 6467'), isEmpty);
+    });
+
+    /// The half that stops this becoming a deletion.
+    ///
+    /// All three of these are private *and* actionable, and all three are the
+    /// product. If the gate ever widens to "everything sensitive", these fail
+    /// before any user finds out the feature is gone.
+    test('the three private-and-actionable kinds survive the gate', () {
+      expect(
+        valuesOf('Write to us at help@shoto.test', DetectedActionKind.email),
+        contains('help@shoto.test'),
+      );
+      expect(
+        of('IBAN: DE89 3704 0044 0532 0130 00', DetectedActionKind.iban),
+        hasLength(1),
+      );
+      expect(
+        valuesOf('Your verification code is 481920', DetectedActionKind.code),
+        contains('481920'),
+      );
+    });
+
+    test('a labelled shipment still wins over the private reading', () {
+      // `SensitiveData` calls "Order number …" an order number, and order
+      // numbers are gated. The tracking pass runs first and claims it, which
+      // is the whole reason for that ordering — a label from the screenshot
+      // beats a shape derived from digits.
+      final List<DetectedAction> parcels = of(
+        'DHL — Tracking number: 4512378901',
+        DetectedActionKind.tracking,
+      );
+      expect(parcels, hasLength(1));
+      expect(parcels.single.value, '4512378901');
+    });
+  });
 }

@@ -95,14 +95,21 @@ abstract class ActionExtractor {
     _collect(text, _urlPattern, claimed, found, _buildLink);
     _collect(text, _ibanPattern, claimed, found, _buildIban);
 
-    // Cards are claimed but never offered, which is the point: there is no
-    // useful action to take on somebody's card number, and the code rule
-    // after this one would otherwise read its 4-digit groups as codes.
+    // **One source of truth for what is private.**
     //
-    // Luhn is what makes claiming safe. Roughly nine in ten same-length
-    // reference numbers fail it, so this removes cards without quietly
-    // swallowing order numbers that a person might still want.
-    _claimCards(text, claimed);
+    // Safe Share and this file used to answer the same question separately,
+    // and on one screenshot they answered it opposite ways: a page of IBANs
+    // where Safe Share offered to cover the account numbers while this sheet
+    // offered to *call* three fragments of them. Two features, one image, two
+    // contradictory verdicts — and a user who sees that stops believing
+    // either.
+    //
+    // So the private spans are read from `SensitiveData` and claimed here,
+    // which makes "what counts as private" a thing this file asks rather than
+    // a thing it re-derives. It also deletes the two card patterns that used
+    // to live here carrying a comment promising they matched
+    // `SensitiveData`'s — a promise nothing enforced.
+    _claimSensitive(text, claimed);
     _claimGroupedRuns(text, claimed);
 
     _collectCodes(text, claimed, found);
@@ -227,22 +234,6 @@ abstract class ActionExtractor {
     r'(?:[a-z0-9]{11,30}'
     r'|(?:\s[a-z0-9]{4}){2,7}(?:\s[a-z0-9]{1,3})?)\b',
     caseSensitive: false,
-  );
-
-  /// A 12-19 digit run, separators allowed — the shape of a bank card.
-  ///
-  /// Matches `SensitiveData`'s candidate pattern deliberately; the two must
-  /// agree on what a card looks like or one of them will claim a span the
-  /// other does not.
-  static final RegExp _cardCandidate = RegExp(
-    r'(?<![0-9+])(?:[0-9][ -]?){12,19}(?![0-9])',
-  );
-
-  /// The wrapped 4-4-4-4 spelling, matching `SensitiveData`. Claimed here for
-  /// the same reason the unwrapped one is: without it the code and phone rules
-  /// read the halves of a card number as two numbers of their own.
-  static final RegExp _wrappedCardCandidate = RegExp(
-    r'(?<![0-9+])[0-9]{4}(?:[ \-\n\r]{1,2}[0-9]{4}){3}(?![0-9])',
   );
 
   static final RegExp _standaloneNumber = RegExp(r'\b[0-9]{4,8}\b');
@@ -520,31 +511,55 @@ abstract class ActionExtractor {
     }
   }
 
-  /// Marks Luhn-valid card runs as spoken for, producing no action.
+  /// The kinds Safe Share covers that this sheet must not offer anything on.
   ///
-  /// The trailing-separator trim mirrors `SensitiveData._claimCard`: the
-  /// candidate pattern allows a run to end on a space or dash, and claiming
-  /// that character would hide a separator the next rule needs to see.
-  static void _claimCards(String text, List<_Span> claimed) {
-    for (final RegExpMatch match in <RegExpMatch>[
-      ..._cardCandidate.allMatches(text),
-      ..._wrappedCardCandidate.allMatches(text),
-    ]) {
+  /// **Sensitive and actionable are not opposites**, which is why this is a
+  /// list and not "everything `SensitiveData` found". Three kinds are both at
+  /// once, and all three are the product:
+  ///
+  /// - an **email** is private, and writing to it is the whole point;
+  /// - an **IBAN** is private, and copying it is why people screenshot one;
+  /// - a **code** is private, and copying it before it expires is the single
+  ///   most-used action in the app.
+  ///
+  /// Covering those before *sharing a picture* and acting on them *yourself*
+  /// are different questions with different right answers, and collapsing
+  /// them would delete the feature in the name of protecting it.
+  ///
+  /// What is left is the set with no answer to "and then what?" — a card
+  /// number, a national ID, an order reference, a home address, somebody's
+  /// name, or a run of digits that refuses to say what it is. There is
+  /// nothing to offer on any of them, and every one of them is a shape some
+  /// later rule here would otherwise misread.
+  static const Set<SensitiveKind> _neverActionable = <SensitiveKind>{
+    SensitiveKind.card,
+    SensitiveKind.nationalId,
+    SensitiveKind.orderNumber,
+    SensitiveKind.postalAddress,
+    SensitiveKind.personName,
+    SensitiveKind.phone,
+    SensitiveKind.number,
+  };
+
+  /// Claims every private span that has no action worth offering.
+  ///
+  /// Runs *after* the intent passes and before the entity ones. The order is
+  /// the point: a tracking number is an order reference by another name, and
+  /// `SensitiveData` calls "Order number 4567890" an order number — so
+  /// running this first would silently delete the tracking action on every
+  /// delivery notification the app was built to read. The intent passes have
+  /// a label from the screenshot; this pass has a shape. A label wins.
+  ///
+  /// One extra scan of the text, on a sheet the user opened deliberately.
+  /// The alternative is two detectors that agree by inspection until one of
+  /// them is edited.
+  static void _claimSensitive(String text, List<_Span> claimed) {
+    for (final SensitiveMatch match in SensitiveData.findIn(text)) {
+      if (!_neverActionable.contains(match.kind)) continue;
       if (_overlaps(claimed, match.start, match.end)) continue;
-
-      final String digits = match.group(0)!.replaceAll(RegExp(r'[^0-9]'), '');
-      if (digits.length < 13 || digits.length > 19) continue;
-      if (!SensitiveData.passesLuhn(digits)) continue;
-
-      int end = match.end;
-      while (end > match.start && !_isAsciiDigit(text.codeUnitAt(end - 1))) {
-        end--;
-      }
-      claimed.add(_Span(match.start, end));
+      claimed.add(_Span(match.start, match.end));
     }
   }
-
-  static bool _isAsciiDigit(int unit) => unit >= 0x30 && unit <= 0x39;
 
   static bool _overlaps(List<_Span> claimed, int start, int end) {
     for (final _Span span in claimed) {
