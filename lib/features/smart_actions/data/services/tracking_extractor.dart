@@ -98,8 +98,20 @@ abstract class TrackingExtractor {
     '(?:tracking$_gap(?:number|no|id|code)?|track$_gap(?:number|no|id)|'
     'air$_gap?way$_gap?bill|waybill|awb|consignment$_gap(?:number|no)?|'
     'shipment$_gap(?:number|no|id)|parcel$_gap(?:number|no|id)|'
-    'رقم التتبع|رقم التتبّع|رقم التتبع|رقم الشحنة|رقم الشحنه|'
-    'رقم البوليصة|بوليصة الشحن|رقم الإرسالية|رقم الارسالية|'
+    // German. "Sendungsverfolgung" is the page title on almost every German
+    // shipping mail, and "Sendungsnummer" the field beside the number.
+    'sendungsnummer|sendungsverfolgung|paketnummer|frachtbrief|'
+    // Dutch. "Track & trace" is written more often than any Dutch word for it.
+    'track$_gap&?$_gap?trace|barcode$_gap(?:nummer)?|zendingsnummer|'
+    'pakketnummer|'
+    // Italian
+    'numero$_gap di$_gap spedizione|codice$_gap di$_gap spedizione|'
+    'lettera$_gap di$_gap vettura|'
+    // Portuguese
+    'n(?:ú|u)mero$_gap de$_gap(?:objecto|objeto|envio)|'
+    'c(?:ó|o)digo$_gap de$_gap rastreio|'
+    // Spanish / French
+    'n(?:ú|u)mero$_gap de$_gap seguimiento|num(?:é|e)ro$_gap de$_gap suivi|'
     'numéro de suivi|número de seguimiento)'
     '$_gap(?:[:：#№.]$_gap)*'
     r'([A-Za-z0-9][A-Za-z0-9\-]{6,25})',
@@ -134,31 +146,56 @@ abstract class TrackingExtractor {
   // Carriers
   // -------------------------------------------------------------------
 
-  /// Brand names as they appear on a shipping notification, in Latin and in
-  /// Arabic transliteration.
+  /// Brand names as they appear on a shipping notification.
   ///
-  /// `ups` is the one that needs care: three letters that sit inside
-  /// "backups", "groups" and "startups", so it is matched with boundaries
-  /// while everything else can be found anywhere in the text.
+  /// **Latin only, because that is all the recogniser returns.** The Arabic
+  /// transliterations that used to sit beside each entry — `ارامكس`, `سمسا`,
+  /// `البريد السعودي` — could never match: `TextRecognitionScript.latin` has
+  /// no model for the script. The *carriers* stayed; only the unreachable
+  /// spellings went. See `docs/decisions/shipped-languages.md`.
+  ///
+  /// Aliases of three characters or fewer are matched with word boundaries and
+  /// the rest anywhere in the text. That is not a style choice: `ups` sits
+  /// inside "backups", "groups" and "startups", `gls` is safe but follows the
+  /// same rule, and `ctt` would otherwise match inside any accidental triple.
   static const Map<ShipmentCarrier, List<String>> _aliases =
       <ShipmentCarrier, List<String>>{
-        ShipmentCarrier.aramex: <String>['aramex', 'ارامكس', 'أرامكس'],
-        ShipmentCarrier.dhl: <String>['dhl', 'دي اتش ال'],
-        ShipmentCarrier.fedex: <String>['fedex', 'fed ex', 'فيدكس', 'فيديكس'],
-        ShipmentCarrier.ups: <String>['ups', 'يو بي اس'],
+        ShipmentCarrier.aramex: <String>['aramex'],
+        ShipmentCarrier.dhl: <String>['dhl'],
+        ShipmentCarrier.fedex: <String>['fedex', 'fed ex'],
+        ShipmentCarrier.ups: <String>['ups'],
         ShipmentCarrier.usps: <String>['usps', 'united states postal'],
-        ShipmentCarrier.smsa: <String>['smsa', 'سمسا'],
-        ShipmentCarrier.jt: <String>['j&t', 'jt express', 'جي اند تي'],
-        ShipmentCarrier.bosta: <String>['bosta', 'بوسطة', 'بوسطه'],
+        // Germany and the Benelux. "Hermes" is also a brand name in fashion,
+        // but a tracking number only reaches this table when a label or an
+        // S10-shaped code already put it in play, so the collision costs
+        // nothing.
+        ShipmentCarrier.dpd: <String>['dpd'],
+        ShipmentCarrier.gls: <String>['gls'],
+        ShipmentCarrier.hermes: <String>['hermes', 'evri'],
+        ShipmentCarrier.postnl: <String>['postnl', 'post nl'],
+        // Southern Europe.
+        ShipmentCarrier.ctt: <String>['ctt expresso', 'ctt'],
+        ShipmentCarrier.poste: <String>[
+          'poste italiane',
+          'sda express',
+          'sda',
+        ],
+        ShipmentCarrier.correos: <String>['correos'],
+        ShipmentCarrier.colissimo: <String>['colissimo', 'chronopost'],
+        // The Gulf and Egypt, kept because the brand names are readable.
+        ShipmentCarrier.smsa: <String>['smsa'],
+        ShipmentCarrier.jt: <String>['j&t', 'jt express'],
+        ShipmentCarrier.bosta: <String>['bosta'],
         ShipmentCarrier.post: <String>[
           'saudi post',
           'splonline',
           'egypt post',
           'jordan post',
           'emirates post',
-          'البريد السعودي',
-          'البريد المصري',
-          'بريد الاردن',
+          'deutsche post',
+          'la poste',
+          'bpost',
+          'an post',
         ],
       };
 

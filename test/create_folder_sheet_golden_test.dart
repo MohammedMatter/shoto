@@ -133,23 +133,25 @@ void main() {
     );
   }
 
-  /// **Arabic, which is the real test of "the whole app follows the
+  /// **German, which is the real test of "the whole app follows the
   /// language".**
   ///
-  /// Two separate things have to be right and only one of them is translation:
-  /// every string comes from the .arb files, *and* the layout mirrors — the
-  /// drag handle stays centred, the title moves to the right edge, the switch
-  /// moves to the left, and the text field's cursor starts on the right. Any
-  /// `EdgeInsets.only(left:)` left in the tree shows up here immediately,
-  /// which is why this is a picture rather than an assertion.
-  testWidgets('create folder sheet — Arabic, private on', (
+  /// Every string comes from the .arb files, and this sheet is where that gets
+  /// tight: "Privat (Gesichts- oder Fingerabdrucksperre)" is more than twice
+  /// the length of its English label, on a row that also has to hold a switch.
+  ///
+  /// This slot was Arabic until Arabic stopped shipping, and it was doing a
+  /// second job then — proving the layout mirrors. That half lives on in the
+  /// forced-RTL golden in `home_golden_test.dart`; nothing about mirroring was
+  /// deleted from the widgets, only from the shipped language set.
+  testWidgets('create folder sheet — German, private on', (
     WidgetTester tester,
   ) async {
-    await openSheet(tester, Brightness.dark, locale: 'ar');
+    await openSheet(tester, Brightness.dark, locale: 'de');
     await togglePrivate(tester);
     await expectLater(
       find.byType(BottomSheet),
-      matchesGoldenFile('goldens/create_folder_arabic.png'),
+      matchesGoldenFile('goldens/create_folder_german.png'),
     );
   });
 }

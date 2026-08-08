@@ -110,6 +110,10 @@ void main() {
     Brightness brightness, {
     String locale = 'en',
     bool filled = false,
+    // Forced rather than inferred from [locale], because no shipped language
+    // is right-to-left any more and the mirroring code is still in the tree.
+    // See the RTL golden below.
+    TextDirection? forceDirection,
   }) async {
     await loadTestFonts();
 
@@ -163,10 +167,17 @@ void main() {
                 ),
               ),
             ],
-            child: HomePage(
-              onOpenLibrary: (_) {},
-              onOpenLibraryForIntent: (_) {},
-              onOpenFolders: () {},
+            child: Builder(
+              builder: (BuildContext context) {
+                final Widget page = HomePage(
+                  onOpenLibrary: (_) {},
+                  onOpenLibraryForIntent: (_) {},
+                  onOpenFolders: () {},
+                );
+                final TextDirection? forced = forceDirection;
+                if (forced == null) return page;
+                return Directionality(textDirection: forced, child: page);
+              },
             ),
           ),
         ),
@@ -194,11 +205,46 @@ void main() {
     );
   });
 
-  testWidgets('home — Arabic', (WidgetTester tester) async {
-    await render(tester, Brightness.dark, locale: 'ar');
+  /// **German, which is where a layout runs out of room.**
+  ///
+  /// This slot used to be Arabic, and it was carrying two jobs: proving that
+  /// every string comes from the .arb files, and proving the layout mirrors.
+  /// Arabic no longer ships, so the two jobs are split — mirroring moved to
+  /// the forced-RTL golden below, and translation coverage came here.
+  ///
+  /// German is the right replacement rather than an arbitrary one. Its
+  /// compounds are the longest strings the app will ever be asked to draw —
+  /// "Bestätigungscode", "Rasterdichte", "Fototoegang" — so the failure this
+  /// picture catches is the one the shipped set can actually produce: a label
+  /// that fits in English and truncates everywhere else.
+  testWidgets('home — German', (WidgetTester tester) async {
+    await render(tester, Brightness.dark, locale: 'de');
     await expectLater(
       find.byType(HomePage),
-      matchesGoldenFile('goldens/home_arabic.png'),
+      matchesGoldenFile('goldens/home_german.png'),
+    );
+  });
+
+  /// **Right-to-left, with no right-to-left language shipping.**
+  ///
+  /// The direction is forced rather than chosen through a locale, because
+  /// every language in [AppLanguage] is left-to-right today and the mirroring
+  /// code is still in the widget tree — kept deliberately, so that bringing a
+  /// language like Arabic back is a string table rather than a layout audit.
+  ///
+  /// Untested, that code rots invisibly: an `EdgeInsets.only(left:)` added
+  /// next month breaks nothing anybody can see until the day somebody needs
+  /// it. This picture is what keeps the promise honest.
+  testWidgets('home — forced RTL', (WidgetTester tester) async {
+    await render(
+      tester,
+      Brightness.dark,
+      filled: true,
+      forceDirection: TextDirection.rtl,
+    );
+    await expectLater(
+      find.byType(HomePage),
+      matchesGoldenFile('goldens/home_rtl.png'),
     );
   });
 
@@ -218,11 +264,11 @@ void main() {
     );
   });
 
-  testWidgets('home — filled, Arabic', (WidgetTester tester) async {
-    await render(tester, Brightness.dark, locale: 'ar', filled: true);
+  testWidgets('home — filled, German', (WidgetTester tester) async {
+    await render(tester, Brightness.dark, locale: 'de', filled: true);
     await expectLater(
       find.byType(HomePage),
-      matchesGoldenFile('goldens/home_filled_arabic.png'),
+      matchesGoldenFile('goldens/home_filled_german.png'),
     );
   });
 }

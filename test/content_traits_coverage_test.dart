@@ -21,6 +21,23 @@ import 'package:shoto/core/utils/content_traits.dart';
 /// Three misses are left and all three are deliberate, asserted at the bottom
 /// so that a regression cannot hide among them.
 void main() {
+  /// The clock every case in this file is measured against.
+  ///
+  /// The event rules accept a date only between thirty days back and three
+  /// years ahead, so a table of literal dates measured against the real clock
+  /// does not stay correct — it goes amber on its own, on a date nobody wrote
+  /// down. Pinning is the only fix: there is no year that is future enough to
+  /// last and near enough to count.
+  ///
+  /// Every date in the `events` block below is written relative to this day.
+  final DateTime today = DateTime(2026, 3, 1);
+
+  /// [ContentTraits.of] with the clock pinned. Every call in this file goes
+  /// through it, including the blocks that hold no dates — a case moved
+  /// between blocks should not change its answer.
+  Set<ContentTrait> traitsOf(String text) =>
+      ContentTraits.of(text, now: today, dayFirst: true);
+
   void report(String name, Map<String, bool> results) {
     final int hit = results.values.where((bool v) => v).length;
     // ignore: avoid_print
@@ -68,7 +85,7 @@ void main() {
     };
     expectAtLeast('phone formats', <String, bool>{
       for (final MapEntry<String, String> e in phones.entries)
-        e.key: ContentTraits.of(e.value).contains(ContentTrait.contact),
+        e.key: traitsOf(e.value).contains(ContentTrait.contact),
     }, 17);
 
     // ---------------- email forms ----------------
@@ -89,7 +106,7 @@ void main() {
     };
     expectAtLeast('email forms', <String, bool>{
       for (final MapEntry<String, String> e in emails.entries)
-        e.key: ContentTraits.of(e.value).contains(ContentTrait.contact),
+        e.key: traitsOf(e.value).contains(ContentTrait.contact),
     }, 13);
 
     // ---------------- link forms ----------------
@@ -137,7 +154,7 @@ void main() {
     };
     expectAtLeast('link forms', <String, bool>{
       for (final MapEntry<String, String> e in links.entries)
-        e.key: ContentTraits.of(e.value).contains(ContentTrait.link),
+        e.key: traitsOf(e.value).contains(ContentTrait.link),
     }, 40);
 
     // ---------------- verification code phrasings ----------------
@@ -149,22 +166,26 @@ void main() {
       'en one-time': 'Your one-time password is 481920',
       'en G- prefix': 'G-481920 is your Google verification code',
       'en do not share': '481920 is your code. Do not share it.',
-      'ar rmz': 'رمز التحقق 481920',
-      'ar kod': 'كود التفعيل 481920',
-      'ar arabic digits': 'رمز التحقق ٤٨١٩٢٠',
       'es': 'Su código de verificación es 481920',
       'fr': 'Votre code de vérification est 481920',
-      'hi': 'आपका सत्यापन कोड 481920 है',
-      'ur': 'آپ کا تصدیقی کوڈ 481920 ہے',
       'de': 'Ihr Bestätigungscode lautet 481920',
+      'de Sicherheitscode': 'Sicherheitscode 481920',
+      'it': 'Il tuo codice di verifica è 481920',
+      'pt': 'O seu código de verificação é 481920',
+      'nl': 'Je verificatiecode is 481920',
+      'nl bevestiging': 'Bevestigingscode 481920',
       'tr': 'Doğrulama kodunuz 481920',
     };
     expectAtLeast('verification code phrasings', <String, bool>{
       for (final MapEntry<String, String> e in codes.entries)
-        e.key: ContentTraits.of(e.value).contains(ContentTrait.code),
+        e.key: traitsOf(e.value).contains(ContentTrait.code),
     }, 14);
 
-    // ---------------- date / event forms (all future) ----------------
+    // ------- date / event forms (all future, measured against `today`) ------
+    //
+    // Every date here is 15 September 2026 or a lunar date converting near it,
+    // which is future only because the clock above says 1 March 2026. Change
+    // that constant and this whole block has to move with it.
     const Map<String, String> events = <String, String>{
       'dd/mm/yyyy + time': 'Meeting 15/09/2026 at 15:00',
       'dd-mm-yyyy + time': 'Meeting 15-09-2026 at 15:00',
@@ -176,19 +197,31 @@ void main() {
       'cue no time': 'Invitation for 15/09/2026',
       'appointment word': 'Appointment 15/09/2026',
       'booking word': 'Booking confirmed 15/09/2026',
-      'arabic month': 'موعد الاجتماع 15 سبتمبر 2026 الساعة 3:00',
-      'arabic numerals': 'موعد ١٥/٠٩/٢٠٢٦ الساعة ٣:٠٠',
+      // German writes the day as an ordinal - "15. Oktober" - which is the
+      // commonest date form in the language and matched nothing until the day
+      // separator learned to carry a dot.
+      'de ordinal day': 'Besprechung am 15. Oktober 2026 um 15:00',
+      'de abbreviated': 'Besprechung am 15. Okt. 2026 um 15:00',
+      'de hour word': 'Einladung 15/09/2026, 20 Uhr',
+      'de': 'Besprechung 15/09/2026 um 15:00',
+      'nl': 'Vergadering 15/09/2026 om 15:00',
+      'it': 'Riunione 15/09/2026 alle 15:00',
+      'pt': 'Reunião 15/09/2026 às 15:00',
       'es': 'Reunión el 15/09/2026 a las 15:00',
       'fr': 'Réunion le 15/09/2026 à 15:00',
-      'hi': 'बैठक 15/09/2026 को 3:00 बजे',
-      'ur': 'ملاقات 15/09/2026 کو 3:00 بجے',
+      // Not vocabulary - the digits fold to ASCII before any rule sees them.
+      'arabic-indic numerals': 'Termin ١٥/٠٩/٢٠٢٦ 15:00',
+      // Latin transliteration and a Hijri year, the two spellings of a lunar
+      // date that a Latin recogniser can actually deliver.
+      'hijri romanised': 'Einladung 15 Ramadan 1447',
+      'hijri numeric': 'Einladung 15/9/1447',
       'flight': 'Departure 15/09/2026 08:30',
       'deadline': 'Deadline 15/09/2026',
     };
     expectAtLeast('event / date forms', <String, bool>{
       for (final MapEntry<String, String> e in events.entries)
-        e.key: ContentTraits.of(e.value).contains(ContentTrait.event),
-    }, 18);
+        e.key: traitsOf(e.value).contains(ContentTrait.event),
+    }, 24);
 
     // ---------------- card / IBAN forms ----------------
     const Map<String, String> cards = <String, String>{
@@ -198,7 +231,10 @@ void main() {
       'visa wrapped': 'Card\n4539 1488\n0343 6467',
       'mastercard': 'Card 5425 2334 3010 9903',
       'amex 15': 'Card 3782 822463 10005',
-      'arabic digits': 'البطاقة ٤٥٣٩ ١٤٨٨ ٠٣٤٣ ٦٤٦٧',
+      // The digit fold is preprocessing, not vocabulary: it runs before any
+      // rule looks at the text, so it survived the Latin-only cut that took
+      // the Arabic cue words. Kept as a case because the code still does it.
+      'arabic-indic digits': 'Karte ٤٥٣٩ ١٤٨٨ ٠٣٤٣ ٦٤٦٧',
       'IBAN DE spaced': 'IBAN DE43 7635 0000 0000 1597 59',
       'IBAN DE solid': 'IBAN DE43763500000000159759',
       'IBAN GB': 'IBAN GB33BUKB20201555555555',
@@ -208,7 +244,7 @@ void main() {
     };
     expectAtLeast('card / IBAN forms', <String, bool>{
       for (final MapEntry<String, String> e in cards.entries)
-        e.key: ContentTraits.of(e.value).contains(ContentTrait.sensitive),
+        e.key: traitsOf(e.value).contains(ContentTrait.sensitive),
     }, 13);
   });
 
@@ -217,22 +253,27 @@ void main() {
       // The filter's stricter bar. Ten digits alone are indistinguishable from
       // a reference number, and this trait would rather miss than claim.
       expect(
-        ContentTraits.of('0599123456'),
+        traitsOf('0599123456'),
         isNot(contains(ContentTrait.contact)),
       );
     });
 
     test('code cues cover the shipped languages, not every language', () {
-      // German "Bestätigungscode" and Turkish "kod" are unrecognised. Neither
-      // is a language the app ships in; adding cues for languages nobody has
-      // asked for is vocabulary nobody can review.
+      // Turkish "Doğrulama kodunuz" is unrecognised, and deliberately so: it
+      // is not a language the app ships in, and cue vocabulary for a language
+      // nobody on the project reads is vocabulary nobody can review.
+      //
+      // German used to be the other half of this test and has moved to the
+      // covered side — it ships now. That swap is the whole point of the
+      // assertion: the line between recognised and not is the shipped set,
+      // and it moves when the set does.
       expect(
-        ContentTraits.of('Ihr Bestätigungscode lautet 481920'),
+        traitsOf('Doğrulama kodunuz 481920'),
         isNot(contains(ContentTrait.code)),
       );
       expect(
-        ContentTraits.of('Doğrulama kodunuz 481920'),
-        isNot(contains(ContentTrait.code)),
+        traitsOf('Ihr Bestätigungscode lautet 481920'),
+        contains(ContentTrait.code),
       );
     });
   });

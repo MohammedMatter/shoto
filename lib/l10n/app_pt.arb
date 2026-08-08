@@ -1,0 +1,961 @@
+{
+  "@@locale": "pt",
+  "settingsCrashReports": "Relatórios de falhas",
+  "settingsCrashReportsHint": "Enviar detalhes técnicos quando algo dá errado",
+  "settingsSignOut": "Sair",
+  "settingsSignOutTitle": "Sair da conta?",
+  "authWelcome": "Boas-vindas ao SHOTO",
+  "authSubtitle": "Entrar mantém a sua assinatura com você quando trocar de telefone. As suas capturas ficam neste aparelho de qualquer forma — uma conta nunca as leva.",
+  "authGoogle": "Continuar com o Google",
+  "authApple": "Continuar com a Apple",
+  "authLegal": "Ao continuar, você concorda com os nossos Termos de Serviço e a Política de Privacidade.",
+  "settingsAccount": "Conta",
+  "settingsSignOutHint": "As suas capturas ficam neste aparelho",
+  "settingsSignIn": "Entrar",
+  "settingsSignInHint": "Opcional. Só é preciso para levar uma compra para outro telefone.",
+  "paywallTrialCta": "{days, plural, =1{Começar 1 dia grátis} other{Começar {days} dias grátis}}",
+  "@paywallTrialCta": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "paywallTrialNote": "{days, plural, =1{Grátis por um dia, depois {price}. Cancele quando quiser antes do fim.} other{Grátis por {days} dias, depois {price}. Cancele quando quiser antes do fim.}}",
+  "@paywallTrialNote": {
+    "placeholders": { "days": { "type": "int" }, "price": { "type": "String" } }
+  },
+  "triageTitle": "Desde a última vez",
+  "triageBody": "Guarde o que faz sentido no SHOTO. Todo o resto fica exatamente onde está.",
+  "triageKeep": "Guardar",
+  "triageSkip": "Pular",
+  "triageFinish": "Pronto",
+  "triageProgress": "{index} de {total}",
+  "@triageProgress": {
+    "placeholders": { "index": { "type": "int" }, "total": { "type": "int" } }
+  },
+  "triageNewCount": "{count, plural, =1{1 captura nova} other{{count} capturas novas}}",
+  "@triageNewCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageKept": "{count, plural, =0{Nada guardado} =1{1 guardada} other{{count} guardadas}}",
+  "@triageKept": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageReview": "Rever",
+  "triageInviteDecline": "Agora não",
+  "settingsTriage": "Oferecer capturas novas",
+  "settingsTriageHint": "Mostra o que você captura; sozinho não guarda nada",
+  "triageNothingNew": "Nada de novo para rever",
+  "settingsYourName": "O seu nome",
+  "settingsYourNameHint": "Para o Safe Share poder cobri-lo quando aparecer",
+  "settingsYourNameNotSet": "Não definido",
+  "ownerNameTitle": "O seu nome",
+  "ownerNameBody": "O Safe Share encontra números de cartão e códigos pela aritmética deles. Um nome só encontra se já souber o seu. Digitado uma vez, fica neste telefone, nunca é enviado a lugar nenhum.",
+  "ownerNameFieldHint": "O nome que o seu banco imprime",
+  "commonCancel": "Cancelar",
+  "commonDelete": "Excluir",
+  "commonRetry": "Tentar de novo",
+  "commonSomethingWentWrong": "Algo deu errado",
+  "commonPro": "PRO",
+  "navHome": "Início",
+  "navLibrary": "Biblioteca",
+  "navFolders": "Pastas",
+  "navSettings": "Ajustes",
+  "tagline": "As suas capturas, organizadas",
+  "homeGreetingMorning": "Bom dia",
+  "homeGreetingAfternoon": "Boa tarde",
+  "homeGreetingEvening": "Boa noite",
+  "homeInboxEmpty": "Nada guardado ainda",
+  "homeInboxEmptySubtitle": "Escolha algumas do seu telefone agora, ou compartilhe uma captura no SHOTO a partir de qualquer app.",
+  "homeEmptyImportCta": "Escolher do meu telefone",
+  "homeInboxClear": "Tudo arquivado",
+  "homeInboxClearSubtitle": "Nada esperando para ser organizado",
+  "homeInboxCountSubtitle": "Capturas que você ainda não arquivou",
+  "homeStatScreenshots": "Capturas",
+  "homeStatFavorites": "Favoritas",
+  "homeStatFolders": "Pastas",
+  "homeToolsTitle": "Ferramentas",
+  "homeToolsTitleEmpty": "Comece por aqui",
+  "homeToolSafeShare": "Safe share",
+  "homeToolSafeShareSubtitle": "Esconda os dados privados primeiro",
+  "homeToolDuplicates": "Encontrar duplicadas",
+  "homeToolDuplicatesSubtitle": "Liberar espaço",
+  "homeToolSearch": "Buscar dentro",
+  "homeToolSearchSubtitle": "Encontre texto nas suas imagens",
+  "homeToolStitch": "Juntar capturas longas",
+  "homeToolStitchSubtitle": "Recomponha uma captura com rolagem",
+  "homeRecent": "Recentes",
+  "libraryPickForMerge": "Escolha duas ou mais capturas da mesma página",
+  "libraryPickForProtect": "Escolha a captura a proteger",
+  "libraryActionProtect": "Proteger",
+  "homeSeeAll": "Ver todas",
+  "libraryEmptyTitle": "Nada guardado ainda",
+  "libraryEmptyMessage": "Compartilhe uma captura com o SHOTO, ou adicione uma com o botão +. A sua galeria nunca é lida — só fica o que você entrega.",
+  "libraryNoFavoritesTitle": "Nenhuma favorita ainda",
+  "libraryNoFavoritesMessage": "Toque no coração de uma captura para guardá-la aqui.",
+  "libraryFilterAll": "Todas",
+  "libraryFilterFavorites": "Favoritas",
+  "libraryTraitSensitive": "Sensíveis",
+  "libraryTraitLink": "Links",
+  "libraryTraitContact": "Telefone ou e-mail",
+  "libraryTraitCode": "Códigos",
+  "libraryTraitEvent": "Datas",
+  "libraryCertaintyVerified": "Verificado por checksum",
+  "libraryCertaintyRead": "Lido do texto nas suas capturas",
+  "libraryLensNoteWithUnread": "{basis} · {count} ainda não lidas",
+  "@libraryLensNoteWithUnread": {
+    "placeholders": {
+      "basis": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryNoTraitTitle": "Nenhuma captura com {trait}",
+  "@libraryNoTraitTitle": {
+    "placeholders": {
+      "trait": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryNoTraitMessage": "Nenhuma captura já lida contém isso.",
+  "libraryNoTraitUnreadMessage": "Nada encontrado no que foi lido. {count} capturas nunca foram lidas, então ainda não dá para casar com elas.",
+  "@libraryNoTraitUnreadMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryShowAll": "Mostrar todas",
+  "libraryFilterUnsorted": "Sem organizar",
+  "libraryNoUnsortedTitle": "Está tudo arquivado",
+  "libraryNoUnsortedMessage": "Nada espera por você. Capturas novas ficam aqui até você arquivar ou marcar.",
+  "librarySelectedCount": "{count} selecionadas",
+  "@librarySelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "librarySelectAll": "Selecionar tudo",
+  "libraryActionMerge": "Juntar",
+  "libraryActionMove": "Mover",
+  "libraryActionDelete": "Excluir",
+  "libraryDeleteTitle": "Excluir capturas?",
+  "libraryDeleteMessage": "{count, plural, =1{Isto vai excluir 1 captura do seu aparelho para sempre.} other{Isto vai excluir {count} capturas do seu aparelho para sempre.}}",
+  "@libraryDeleteMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "permissionNeededTitle": "É preciso acesso às fotos",
+  "permissionNeededMessage": "O SHOTO guarda as capturas que você compartilha com ele num álbum próprio. Ele precisa de acesso às fotos para escrever lá e lê-las de volta — o resto da sua galeria nunca é listado.",
+  "permissionPartialTitle": "É preciso acesso total às fotos",
+  "permissionPartialMessage": "No momento o SHOTO só vê algumas fotos que você escolheu à mão, então não alcança o próprio álbum. Escolha «Permitir todas» na permissão de fotos para continuar.",
+  "permissionOpenSettings": "Abrir Ajustes",
+  "settingsTitle": "Ajustes",
+  "settingsAppearance": "Aparência",
+  "settingsTheme": "Tema",
+  "settingsThemeSystem": "Sistema",
+  "settingsThemeLight": "Claro",
+  "settingsThemeDark": "Escuro",
+  "settingsGridDensity": "Densidade da grade",
+  "settingsLanguage": "Idioma",
+  "settingsLanguageSystem": "Igual ao meu telefone",
+  "settingsLanguageSystemHint": "Mostrando {language}",
+  "@settingsLanguageSystemHint": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsBehaviour": "Comportamento",
+  "settingsHaptics": "Retorno tátil",
+  "settingsHapticsHint": "Um toque leve quando você pressiona",
+  "settingsConfirmDelete": "Perguntar antes de excluir",
+  "settingsConfirmDeleteHint": "Excluir não dá para desfazer",
+  "settingsFindDuplicates": "Encontrar duplicadas",
+  "settingsClearCache": "Limpar cache de imagens",
+  "settingsShare": "Compartilhar o SHOTO",
+  "settingsPrivacyNote": "O SHOTO guarda só as capturas que você entrega, e tudo o que faz com elas — ler texto, encontrar duplicadas — acontece neste aparelho. As suas imagens nunca são enviadas. Três coisas são você quem liga: oferecer capturas novas lê o seu álbum de capturas para poder perguntar sobre elas, uma conta envia só o seu e-mail para a assinatura sobreviver a uma troca de telefone, e os relatórios de falha enviam o que quebrou — o código, nunca uma imagem.",
+  "commonSave": "Salvar",
+  "commonConfirm": "Confirmar",
+  "commonRename": "Renomear",
+  "commonShare": "Compartilhar",
+  "commonUnlock": "Desbloquear",
+  "foldersEmptyTitle": "Nenhuma pasta ainda",
+  "foldersEmptyMessage": "As pastas são como você encontra as coisas depois. Faça uma para recibos, uma para receitas — o que você realmente vai procurar.",
+  "foldersNew": "Nova pasta",
+  "foldersCreate": "Criar pasta",
+  "foldersNameLabel": "Nome da pasta",
+  "foldersNameHint": "Recibos, Receitas, Trabalho…",
+  "foldersPrivate": "Privada (bloqueio por rosto ou digital)",
+  "foldersPrivateFace": "Privada (bloqueio por rosto)",
+  "foldersPrivateFingerprint": "Privada (bloqueio por digital)",
+  "foldersPrivateGeneric": "Privada (bloqueada)",
+  "foldersOptions": "Opções da pasta",
+  "foldersDelete": "Excluir pasta",
+  "foldersDeleteKept": "As capturas de dentro continuam",
+  "foldersDeleteTitle": "Excluir «{name}»?",
+  "@foldersDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "foldersDeleteMessage": "A pasta some, mas as capturas de dentro continuam na sua biblioteca.",
+  "foldersRenameTitle": "Renomear pasta",
+  "foldersMoveTitle": "Mover para a pasta",
+  "foldersMoveRemove": "Tirar da pasta",
+  "foldersMoveNone": "Nenhuma pasta ainda. Crie uma na aba Pastas.",
+  "folderLockedTitle": "Desbloquear «{name}»",
+  "@folderLockedTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "folderLockedMessage": "Esta pasta é protegida. Autentique-se para vê-la.",
+  "folderEmptyTitle": "Ainda não há nada aqui",
+  "folderEmptyMessage": "Mova capturas da sua biblioteca para esta pasta.",
+  "detailFavorite": "Favorita",
+  "detailUnfavorite": "Tirar dos favoritos",
+  "detailAddFavorite": "Adicionar aos favoritos",
+  "detailActions": "Ações",
+  "detailSafeShare": "Safe share",
+  "detailDeleteTitle": "Excluir a captura?",
+  "detailDeleteMessage": "Isto vai excluí-la do seu aparelho para sempre.",
+  "quickSaveTitleOne": "Salvar no SHOTO",
+  "quickSaveTitleMany": "Salvar {count} capturas",
+  "@quickSaveTitleMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSaveFileOne": "Arquivar esta captura",
+  "quickSaveFileMany": "Arquivar {count} capturas",
+  "@quickSaveFileMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSavePickFolder": "Escolha uma pasta",
+  "quickSaveNeedFolder": "Crie uma pasta para colocá-las",
+  "quickSaveFileIn": "Arquivar em {folder}",
+  "@quickSaveFileIn": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveCreateFirstFolder": "Crie a sua primeira pasta",
+  "quickSaveCreateFirstFolderWhy": "As pastas são como você encontra as coisas depois",
+  "quickSaveNewChip": "Nova",
+  "quickSaveSaved": "Salvo no SHOTO",
+  "quickSaveFiled": "Arquivado em {folder}.",
+  "@quickSaveFiled": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveFailedTitle": "Não deu para ler essa imagem",
+  "quickSaveFailedBody": "Tente compartilhar de novo.",
+  "quickSaveSkipped": "Só as primeiras {count} foram aceitas",
+  "@quickSaveSkipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupTitle": "Encontrar duplicadas",
+  "dupScanning": "Procurando duplicadas",
+  "dupReading": "Lendo a sua biblioteca…",
+  "dupProgress": "{done} de {total} capturas verificadas",
+  "@dupProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dupNoneTitle": "Nenhuma duplicada encontrada",
+  "dupNoneBody": "A sua biblioteca de capturas já está limpa.",
+  "dupScanAgain": "Procurar de novo",
+  "dupReclaimable": "Dá para liberar até {size}",
+  "@dupReclaimable": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupNothingSelected": "Nada selecionado",
+  "dupDeleteButton": "Excluir {count} · liberar {size}",
+  "@dupDeleteButton": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupDeleteTitle": "Excluir {count} cópias?",
+  "@dupDeleteTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupDeleteMessage": "Isto as exclui do seu aparelho para sempre. As cópias marcadas para ficar não são afetadas.",
+  "dupDeleted": "{count} excluídas · {size} liberados",
+  "@dupDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupSets": "{count} grupos",
+  "@dupSets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupBest": "MELHOR",
+  "dupKeepAll": "Ficar com todas",
+  "dupKeepingAll": "Ficando com todas — nada será excluído",
+  "dupUndo": "Desfazer",
+  "dupFrees": "Libera {size}",
+  "@dupFrees": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "safeShareTitle": "Safe share",
+  "safeShareScanning": "Verificando dados privados",
+  "safeShareOnDevice": "A leitura acontece no seu telefone.",
+  "safeShareCleanTitle": "Nada privado encontrado",
+  "safeShareCleanBody": "Nesta captura não foram vistos números de cartão, números de conta, códigos nem contatos. Você pode compartilhá-la como está.",
+  "safeShareUnreadableTitle": "Não deu para ler esta captura",
+  "safeShareUnreadableBody": "O texto dela não foi reconhecido.",
+  "safeShareShareUnchanged": "Compartilhar sem mudar",
+  "safeShareShareAnyway": "Compartilhar mesmo assim",
+  "safeShareShareProtected": "Compartilhar a cópia protegida",
+  "safeShareFailed": "Não deu para montar a cópia protegida.",
+  "safeShareFoundTitle": "{count, plural, =1{1 dado privado encontrado} other{{count} dados privados encontrados}}",
+  "@safeShareFoundTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFreeScan": "Verificar é sempre grátis.",
+  "safeShareCleanAction": "Limpar esta captura",
+  "safeShareShareAsIs": "Compartilhar sem alterações",
+  "safeShareHowTitle": "Tapado, de vez",
+  "safeShareHowBody": "Cada dado privado é coberto com um bloco sólido antes de a cópia sair do seu telefone. Nada fica borrado e nada dá para ler de volta — a cópia coberta é a única versão que existe.",
+  "safeShareTreatmentCover": "Cobrir",
+  "safeShareTreatmentKeep": "Manter",
+  "safeShareBuilding": "Montando a sua cópia limpa",
+  "safeShareNothingSelected": "Nada vai mudar",
+  "safeShareLockedPreview": "Desbloqueie para ver a versão limpa",
+  "safeShareReviewTitle": "Confira uma por uma",
+  "safeShareFound": "{count} coisas cobertas",
+  "@safeShareFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchTitle": "Juntar capturas",
+  "stitchWorking": "Procurando a sobreposição",
+  "stitchWorkingBody": "Casando onde cada captura continua a anterior.",
+  "stitchFailed": "Não deu para juntar",
+  "stitchSave": "Salvar na galeria",
+  "stitchSaved": "Salvo na sua galeria",
+  "stitchDiscard": "Descartar",
+  "commonDone": "Pronto",
+  "commonBack": "Voltar",
+  "commonClose": "Fechar",
+  "searchTitle": "Buscar nas suas capturas",
+  "searchHint": "Busque palavras ou o que a imagem mostra",
+  "searchIntro": "Qualquer palavra escrita dentro de uma imagem, ou o que a imagem mostra — tente «gato», «animal», «comida» ou «recibo».",
+  "searchNoneTitle": "Nenhum resultado",
+  "searchNoneBody": "Aqui nada diz nem se parece com «{query}».",
+  "@searchNoneBody": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallTitle": "Desbloquear o SHOTO Pro",
+  "paywallSubtitle": "Tudo abaixo, numa assinatura só.",
+  "paywallMonthly": "Mensal",
+  "paywallYearly": "Anual",
+  "paywallSave": "Economize {percent}%",
+  "@paywallSave": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallContinue": "Continuar",
+  "paywallUnavailable": "Ainda não disponível",
+  "paywallRestore": "Restaurar compras",
+  "paywallLegal": "Renova automaticamente até você cancelar. Cancele quando quiser nos ajustes da sua conta na App Store ou no Google Play. Ao continuar você concorda com os nossos Termos de Serviço e a Política de Privacidade.",
+  "subPremiumBadge": "PRO",
+  "subPremiumTitle": "SHOTO Pro",
+  "subPremiumBody": "Todos os recursos desbloqueados para você.",
+  "subDevUnlock": "Acesso de testador",
+  "subDevUnlockBody": "Desbloqueado neste aparelho — não é uma assinatura de verdade",
+  "subUnlockEverything": "Desbloquear tudo",
+  "proWelcomeTitle": "Você está no Pro",
+  "proWelcomeBody": "Todos os recursos estão desbloqueados. Não há mais nada para configurar.",
+  "proWelcomeAction": "Começar a usar",
+  "featSafeShare": "Safe share",
+  "featSafeShareBody": "Troca números de cartão, endereços, nomes e contatos por substitutos realistas — mesmo tamanho, mesmo formato, mesmo lugar. A cópia que você envia não parece editada.",
+  "featActions": "Transforme capturas em ações",
+  "featActionsBody": "Abra um link, escreva para um endereço, copie um código de verificação ou um IBAN — direto da imagem, sem redigitar nada.",
+  "featDuplicates": "Encontrar duplicadas",
+  "featDuplicatesBody": "Acha capturas quase iguais que você guardou duas vezes e tira do caminho — sempre com uma revisão antes.",
+  "featStitch": "Juntar capturas longas",
+  "featStitchBody": "Recompõe uma captura com rolagem numa imagem alta só, achando e removendo a sobreposição sozinho.",
+  "featUnlimited": "Sem teto para a sua biblioteca",
+  "featUnlimitedBody": "A versão grátis organiza {count} capturas. O Pro tira o número.",
+  "featSafeShareHow": "Achar o que é privado numa captura é grátis e ilimitado. O que se paga é transformar esses achados numa cópia limpa: cada dado é redesenhado nas cores da própria captura como um valor diferente e igualmente comum.",
+  "featSafeSharePoint1": "Números de cartão passam por Luhn e IBANs por módulo 97 — e os substitutos passam nas mesmas checagens, então nada parece inventado.",
+  "featSafeSharePoint2": "Também pega nomes, endereços, números de pedido, códigos de verificação, telefones e e-mails.",
+  "featSafeSharePoint3": "Você vê cada mudança antes de enviar, e pode cobrir ou manter qualquer uma. A captura original nunca é tocada.",
+  "featActionsHow": "O que estiver escrito dentro de uma captura vira algo que dá para usar. O SHOTO separa as partes úteis e põe um botão em cada uma.",
+  "featActionsPoint1": "Links, e-mails, IBANs, códigos de verificação, datas e números de encomenda são achados para você.",
+  "featActionsPoint2": "Um toque para abrir ou copiar — sem ler caracteres de uma imagem.",
+  "featActionsPoint3": "Funciona nas capturas que você já tem, não só nas novas.",
+  "featStitchHow": "A captura com rolagem, nos telefones que têm, precisa começar enquanto você ainda está na página. O SHOTO trabalha depois: escolha duas ou mais capturas já na sua biblioteca — inclusive as que alguém te mandou — e ele acha onde elas se sobrepõem e junta tudo numa imagem alta.",
+  "featStitchPoint1": "A faixa repetida entre duas capturas é achada e removida sozinha.",
+  "featStitchPoint2": "Você vê a emenda antes de salvar qualquer coisa — a detecção automática é boa, mas nunca certa.",
+  "featStitchPoint3": "A imagem juntada é salva na sua galeria como qualquer outra foto.",
+  "featDuplicatesHow": "Compartilhar uma de cada vez raramente cria duplicadas. Guardar um lote de «Desde a última vez» cria — você vai rápido, e duas capturas da mesma coisa ficam as duas. O SHOTO compara pela aparência da captura, não pelo nome ou tamanho, então também pega um reenvio ou um corte diferente.",
+  "featDuplicatesPoint1": "Agrupa o que parece igual e sugere a cópia que vale a pena guardar.",
+  "featDuplicatesPoint2": "Mostra quanto espaço cada grupo libera antes de você decidir qualquer coisa.",
+  "featDuplicatesPoint3": "Nada é excluído até você rever o grupo e confirmar.",
+  "featUnlimitedHow": "A versão grátis é um app de verdade e utilizável: salvar, pastas, favoritas e busca completa, sem conta e sem enviar nada. Ela tem exatamente um teto — quantas capturas organiza — e o Pro tira. Tudo o que você já organizou fica exatamente onde está.",
+  "featUnlimitedPoint1": "As pastas são ilimitadas na versão grátis, e sempre foi para ser assim.",
+  "featUnlimitedPoint2": "Dar nome ao que serve uma captura também é grátis e sem limite.",
+  "featUnlimitedPoint3": "Bater no teto quer dizer que o SHOTO virou o lugar onde você guarda as coisas. Nada é excluído quando isso acontece.",
+  "includedSubtitle": "Cada recurso Pro, explicado.",
+  "includedHint": "Toque num recurso para ver como funciona",
+  "includedHowLabel": "Como funciona",
+  "includedActiveTitle": "O seu plano está ativo",
+  "includedActiveBody": "Tudo abaixo está desbloqueado nesta conta.",
+  "includedLockedTitle": "Ainda não desbloqueado",
+  "includedLockedBody": "Leia o que cada um faz de verdade e depois decida.",
+  "includedFreeTitle": "O que a versão grátis te dá",
+  "includedFreeBody": "{count} capturas organizadas, pastas ilimitadas e busca completa — grátis para sempre.",
+  "@includedFreeBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingCta": "Começar",
+  "onboardingPromise": "As suas capturas ficam no seu telefone.",
+  "actionsTitle": "Ações",
+  "actionsWorking": "Lendo a captura",
+  "actionsWorkingBody": "Procurando números, links e códigos.",
+  "actionsNoneTitle": "Nada para fazer",
+  "actionsNoneBody": "Nesta captura não foram encontrados links, códigos nem números de conta.",
+  "actionsCopy": "Copiar",
+  "actionsCopied": "Copiado",
+  "actionsNoApp": "Nenhum app deste aparelho consegue fazer isso.",
+  "devModeOn": "Modo desenvolvedor ligado — todos os recursos desbloqueados",
+  "devModeBadge": "MODO DESENVOLVEDOR",
+  "devModeOffTitle": "Desligar o modo desenvolvedor?",
+  "devModeOffBody": "O SHOTO volta para a versão grátis neste aparelho, para você testar o paywall e os limites de novo.",
+  "devModeOffConfirm": "Desligar",
+  "devAccessTitle": "Acesso de desenvolvedor",
+  "devAccessBody": "Digite o código de 4 dígitos para desbloquear todos os recursos Pro neste aparelho.",
+  "devWrongCode": "Código errado",
+  "devTapToDisable": "Toque {count}× para desligar",
+  "@devTapToDisable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appVersion": "Versão {version}",
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "kindCard": "um número de cartão",
+  "kindIban": "uma conta bancária",
+  "kindCode": "um código de verificação",
+  "kindNationalId": "um número de documento",
+  "kindEmail": "um endereço de e-mail",
+  "kindLink": "um link",
+  "actionEmailAction": "Escrever",
+  "actionOpen": "Abrir",
+  "kindEvent": "um evento",
+  "kindPlace": "um lugar",
+  "kindWifi": "uma rede Wi-Fi",
+  "kindTracking": "uma encomenda",
+  "actionAddToCalendar": "Adicionar ao calendário",
+  "actionOpenMaps": "Abrir no Maps",
+  "actionDirections": "Como chegar",
+  "actionCopyNetwork": "Copiar o nome",
+  "actionTrack": "Rastrear",
+  "actionEventUntitled": "Evento",
+  "countScreenshots": "{count, plural, =0{Nenhuma captura} =1{1 captura} other{{count} capturas}}",
+  "@countScreenshots": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countPosition": "{position} de {total}",
+  "@countPosition": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "countChip": "{label} · {count}",
+  "@countChip": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSetsFound": "{count, plural, =1{1 grupo de duplicadas} other{{count} grupos de duplicadas}}",
+  "@dupSetsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSimilarCopies": "{count} cópias parecidas",
+  "@dupSimilarCopies": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFoundCount": "{count, plural, =1{1 coisa encontrada} other{{count} coisas encontradas}}",
+  "@safeShareFoundCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsStorage": "Armazenamento",
+  "settingsDuplicatesHint": "Ache capturas que você tirou duas vezes",
+  "settingsPremium": "Pro",
+  "settingsWhatsIncluded": "O que está incluído",
+  "settingsFeatureCount": "{count} recursos, um plano",
+  "@settingsFeatureCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsShareHint": "Conte para alguém que precisa",
+  "settingsShareText": "O SHOTO mantém as minhas capturas organizadas sozinho — fica tudo no telefone.",
+  "settingsCacheMeasuring": "Medindo…",
+  "settingsCacheSize": "{size} de miniaturas",
+  "@settingsCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSafeShareHint": "Abra uma captura e toque em Safe share.",
+  "homeStitchHint": "Segure duas ou mais capturas na sua biblioteca e toque em Juntar.",
+  "stitchLimit": "Junte até {count} capturas por vez.",
+  "@stitchLimit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareSavedPrompt": "{count, plural, =1{Captura salva. Colocar numa pasta?} other{Capturas salvas. Colocar numa pasta?}}",
+  "@shareSavedPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultMerged": "{count} capturas juntadas",
+  "@stitchResultMerged": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultTrimmed": "{count} px de conteúdo repetido removidos",
+  "@stitchResultTrimmed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorLoadScreenshots": "Não deu para carregar as suas capturas.",
+  "errorLoadFolders": "Não deu para carregar as suas pastas.",
+  "errorScanDuplicates": "Não deu para procurar duplicadas.",
+  "errorDeleteSelected": "Não deu para excluir as capturas selecionadas.",
+  "errorStitchFailed": "Não deu para juntar estas capturas.",
+  "errorStitchSave": "Não deu para salvar a imagem juntada.",
+  "errorOnboarding": "Não deu para carregar. Abra o app de novo.",
+  "errorSignInCancelled": "A entrada foi cancelada.",
+  "errorSignInInterrupted": "A entrada foi interrompida. Tente de novo.",
+  "errorNetwork": "Erro de rede. Verifique a sua conexão.",
+  "errorGeneric": "Algo deu errado. Tente de novo.",
+  "errorPlans": "Não deu para carregar os planos de assinatura.",
+  "errorPurchase": "A compra falhou. Tente de novo.",
+  "errorNoSubscription": "Nenhuma assinatura ativa encontrada para esta conta.",
+  "errorRestore": "Não deu para restaurar as compras.",
+  "errorStitchTooFew": "Escolha pelo menos duas capturas para juntar.",
+  "errorStitchTooMany": "Dá para juntar até {count} capturas de uma vez.",
+  "@errorStitchTooMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorStitchUnreadable": "Não deu para ler uma das capturas.",
+  "errorStitchWidths": "Estas capturas têm larguras diferentes, então não podem ser da mesma rolagem.",
+  "errorStitchNoOverlap": "Estas capturas não se sobrepõem. Juntar só funciona com capturas da mesma página feitas durante a rolagem.",
+  "errorStitchOverlap": "Não deu para resolver a sobreposição entre estas capturas.",
+  "errorStitchTooTall": "A imagem juntada ficaria alta demais. Tente juntar menos capturas.",
+  "errorStitchEncode": "Não deu para codificar a imagem juntada.",
+  "errorRedactionSave": "Não deu para salvar a cópia protegida.",
+  "shareSavedCount": "{count, plural, =1{Captura salva} other{{count} capturas salvas}}",
+  "@shareSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "densityLarge": "Grande",
+  "densityMedium": "Média",
+  "densitySmall": "Pequena",
+  "sensitiveCard": "Número de cartão",
+  "sensitiveIban": "Conta bancária",
+  "sensitiveCode": "Código de verificação",
+  "sensitiveNationalId": "Número de documento",
+  "sensitiveEmail": "Endereço de e-mail",
+  "sensitivePhone": "Número de telefone",
+  "sensitiveAddress": "Endereço",
+  "sensitiveName": "Nome",
+  "sensitiveOrderNumber": "Número do pedido",
+  "sensitiveNumber": "Número",
+  "onbSkip": "Pular",
+  "onbNext": "Avançar",
+  "onbPileTitle": "Mil capturas, uma pilha só",
+  "onbPileBody": "Você captura para lembrar. Uma semana depois está enterrada embaixo de outras quatrocentas.",
+  "onbChooseTitle": "O SHOTO nunca lê a sua galeria",
+  "onbChooseBody": "Nada chega sozinho. É você que compartilha uma captura para dentro — a regra é essa.",
+  "onbFileTitle": "Arquivada no momento em que você envia",
+  "onbFileBody": "Escolha a pasta no próprio menu de compartilhamento. O app nem abre.",
+  "onbFindTitle": "Busque o que está dentro delas",
+  "onbFindBody": "As palavras escritas numa captura, e o que a imagem mostra. Digite «recibo», ou «cachorro».",
+  "onbSafeShareTitle": "A captura que dá mesmo para enviar",
+  "onbSafeShareBody": "Um número de cartão vira outro número de cartão — mesmo tamanho, mesmo lugar, ainda válido. Ninguém percebe que foi editado.",
+  "onbFolderExample": "Recibos",
+  "onbSearchExample": "recibo",
+  "importTitle": "Adicionar capturas",
+  "importDone": "{count, plural, =1{1 captura importada} other{{count} capturas importadas}}",
+  "@importDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importPartial": "{imported} de {picked} importadas",
+  "@importPartial": {
+    "placeholders": {
+      "imported": {
+        "type": "int"
+      },
+      "picked": {
+        "type": "int"
+      }
+    }
+  },
+  "importFailed": "Não deu para salvar essas capturas",
+  "homeToolImportSubtitle": "Escolha do seu telefone — a galeria nunca é lida",
+  "importPickerUnavailable": "O seletor de fotos não abriu",
+  "searchWorking": "Lendo as suas capturas…",
+  "settingsBackup": "Backup e restauração",
+  "settingsBackupHint": "Guarde uma cópia da sua biblioteca num arquivo",
+  "backupTitle": "Backup",
+  "backupIntro": "A sua biblioteca vive neste telefone e em nenhum outro lugar. Um backup é a cópia que sobrevive à perda dele.",
+  "backupCreateTitle": "Criar um backup",
+  "backupCreateBody": "Empacota cada captura, pasta e etiqueta num arquivo só, e depois deixa você escolher onde guardar.",
+  "backupCreateAction": "Criar backup",
+  "backupWorking": "Empacotando a sua biblioteca…",
+  "backupDone": "{screenshots, plural, =1{1 captura salva no backup} other{{screenshots} capturas salvas no backup}} e {folders, plural, =1{1 pasta} other{{folders} pastas}}",
+  "@backupDone": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "folders": {
+        "type": "int"
+      }
+    }
+  },
+  "backupDoneWithSkips": "{screenshots, plural, =1{1 captura salva no backup} other{{screenshots} capturas salvas no backup}}. {skipped, plural, =1{1 não deu para ler} other{{skipped} não deu para ler}}.",
+  "@backupDoneWithSkips": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "backupFailed": "Não deu para terminar o backup",
+  "backupPrivacyNote": "O arquivo é montado neste telefone e só vai para onde você mandar. Nada é enviado.",
+  "restoreTitle": "Restaurar um backup",
+  "restoreBody": "Adiciona tudo de um arquivo de backup a esta biblioteca. Nada do que já está aqui é removido.",
+  "restoreAction": "Restaurar",
+  "restoreWorking": "Colocando a sua biblioteca de volta…",
+  "restoreConfirmTitle": "Restaurar este backup?",
+  "restoreConfirmMessage": "Tudo o que está no arquivo é adicionado à sua biblioteca. As suas capturas atuais ficam exatamente como estão.",
+  "restoreDone": "{screenshots, plural, =1{1 captura restaurada} other{{screenshots} capturas restauradas}} e {folders, plural, =1{1 pasta} other{{folders} pastas}}",
+  "@restoreDone": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "folders": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreDoneWithSkips": "{screenshots, plural, =1{1 captura restaurada} other{{screenshots} capturas restauradas}}. {skipped, plural, =1{1 foi pulada} other{{skipped} foram puladas}}.",
+  "@restoreDoneWithSkips": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreNotABackup": "Esse arquivo não é um backup do SHOTO",
+  "restoreFailed": "Não deu para terminar a restauração",
+  "settingsHelp": "Ajuda",
+  "settingsContactSupport": "Falar com o suporte",
+  "supportSubject": "Suporte SHOTO",
+  "supportNoMailApp": "Nenhum app de e-mail encontrado. O endereço foi copiado.",
+  "supportGreeting": "Olá, equipe SHOTO,",
+  "dateToday": "Hoje",
+  "dateYesterday": "Ontem",
+  "dateThisWeek": "No começo desta semana",
+  "dateThisMonth": "No começo deste mês",
+  "librarySortNewest": "Mais recentes primeiro",
+  "librarySortOldest": "Mais antigas primeiro",
+  "librarySortLabel": "Ordem",
+  "libraryShowOnly": "Mostrar só",
+  "libraryShowEverything": "Tudo",
+  "libraryScanPrompt": "Ler {count} capturas",
+  "libraryScanning": "Lendo…",
+  "@libraryScanPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashTitle": "{count, plural, =1{1 pasta já existe aqui} other{{count} pastas já existem aqui}}",
+  "@restoreClashTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashBody": "Estes nomes estão na sua biblioteca e no backup. Mesmo nome nem sempre quer dizer mesma pasta, então esta é você quem decide.",
+  "restoreClashMore": "{count, plural, =1{e mais 1} other{e mais {count}}}",
+  "@restoreClashMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashMerge": "Juntar as duas",
+  "restoreClashMergeBody": "As capturas vão para as pastas que você já tem.",
+  "restoreClashSeparate": "Manter separadas",
+  "restoreClashSeparateBody": "Cria uma segunda pasta com o mesmo nome. Nada do que existe é tocado.",
+  "intentBuy": "Comprar",
+  "intentRead": "Ler",
+  "intentReply": "Responder",
+  "intentTry": "Testar",
+  "intentVisit": "Visitar",
+  "intentBuyWaiting": "Para comprar",
+  "intentReadWaiting": "Para ler",
+  "intentReplyWaiting": "Para responder",
+  "intentTryWaiting": "Para testar",
+  "intentVisitWaiting": "Para visitar",
+  "intentWatch": "Assistir",
+  "intentListen": "Ouvir",
+  "intentCook": "Cozinhar",
+  "intentBook": "Reservar",
+  "intentPay": "Pagar",
+  "intentSend": "Enviar",
+  "intentDownload": "Baixar",
+  "intentApply": "Candidatar-se",
+  "intentCompare": "Comparar",
+  "intentFix": "Consertar",
+  "intentWatchWaiting": "Para assistir",
+  "intentListenWaiting": "Para ouvir",
+  "intentCookWaiting": "Para cozinhar",
+  "intentBookWaiting": "Para reservar",
+  "intentPayWaiting": "Para pagar",
+  "intentSendWaiting": "Para enviar",
+  "intentDownloadWaiting": "Para baixar",
+  "intentApplyWaiting": "Para se candidatar",
+  "intentCompareWaiting": "Para comparar",
+  "intentFixWaiting": "Para consertar",
+  "intentMore": "Mais",
+  "intentSectionCommon": "Prontos",
+  "intentSectionYours": "Seus",
+  "intentYoursEmpty": "Um verbo que você escreve funciona igualzinho aos de cima.",
+  "intentNewAction": "Escreva o seu",
+  "intentNewTitle": "Dê o nome você mesmo",
+  "intentEditTitle": "Editar este",
+  "intentNameLabel": "O verbo",
+  "intentNameHint": "Devolver, cancelar, ligar para eles…",
+  "intentIconLabel": "Ícone",
+  "intentDeleteTitle": "Excluir «{label}»?",
+  "@intentDeleteTitle": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "intentDeleteMessage": "As capturas ficam onde estão. Só param de esperar por algo.",
+  "intentSelectionAction": "Marcar como",
+  "intentSelectionApplied": "{count, plural, =1{1 captura marcada} other{{count} capturas marcadas}}",
+  "@intentSelectionApplied": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "intentPrompt": "Para que serve, se você quiser",
+  "intentSkip": "Nada em especial",
+  "intentWaitingTitle": "Esperando por você",
+  "intentNothingWaiting": "Nada esperando por você",
+  "intentAllDone": "Você terminou tudo o que tinha guardado para depois.",
+  "intentMarkDone": "Feito",
+  "intentUndo": "Colocar de volta",
+  "intentDoneToast": "Riscado da lista",
+  "intentChange": "Mudar para que isto serve",
+  "intentClear": "Não é para nada",
+  "intentEmptyOne": "Aqui não há nada para {verb}",
+  "@intentEmptyOne": {
+    "placeholders": {
+      "verb": {
+        "type": "String"
+      }
+    }
+  },
+  "intentEmptyBody": "As capturas que você marca ficam aqui até você riscar da lista.",
+  "intentDoneCount": "{count} concluídas",
+  "@intentDoneCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateDaysAgo": "{count, plural, =1{há 1 dia} other{há {count} dias}}",
+  "@dateDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateWeeksAgo": "{count, plural, =1{há 1 semana} other{há {count} semanas}}",
+  "@dateWeeksAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateMonthsAgo": "{count, plural, =1{há 1 mês} other{há {count} meses}}",
+  "@dateMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

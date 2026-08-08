@@ -11,8 +11,8 @@ import 'package:shoto/features/smart_actions/domain/entities/detected_action.dar
 /// screenshot — and, since the intent extractors were added, out of what that
 /// text *means*.
 ///
-/// The original five detectors answer "what is on this screen": a number to
-/// call, a link to open, a code to copy. The four intent detectors answer the
+/// The entity detectors answer "what is on this screen": a link to open, an
+/// address to write to, a code to copy. The four intent detectors answer the
 /// more useful question, "what is the user about to have to do": be somewhere
 /// at three on Thursday, get to an address, join a network, find out where a
 /// parcel is. Each of those replaces four taps and a retyped value, which is
@@ -20,16 +20,31 @@ import 'package:shoto/features/smart_actions/domain/entities/detected_action.dar
 ///
 /// Two ideas shape the whole design:
 ///
-/// **Precision beats recall.** A missed phone number costs the user a long
-/// press and a manual copy. A *wrong* one offers to dial a stranger. Every
-/// pattern here is therefore tightened until it only fires on things that
-/// really are what they claim to be — IBANs are checksum-verified rather
-/// than merely shaped right, and a bare number is only treated as a
-/// verification code when nearby words say so.
+/// **Precision beats recall, and a rule that cannot reach it does not ship.**
+/// A missed detection costs the user a long press and a manual copy. A wrong
+/// one costs them their trust in every other row on the sheet. Every pattern
+/// here is therefore tightened until it only fires on things that really are
+/// what they claim to be — IBANs are checksum-verified rather than merely
+/// shaped right, and a bare number is only treated as a verification code
+/// when nearby words say so.
+///
+/// **There is deliberately no phone rule**, and it is the clearest thing this
+/// file has to say about that principle. One lived here for a long time,
+/// wrapped in guard after guard — no letters on either end, no date shapes,
+/// seven to fifteen digits, twelve-plus only with a country code. It still
+/// read a screenshot of a table of IBANs as three numbers to dial, and the
+/// sheet offered Call, WhatsApp and Message on every one of them. The failure
+/// is not in the guards; it is that a bare run of digits *has no feature that
+/// distinguishes a phone number from an account number*, and no regex over
+/// OCR text can invent one. Recognising a thing wrongly is worse than not
+/// recognising it, because the user cannot tell which rows to check. If this
+/// is ever re-proposed it needs a source of truth that is not the digits —
+/// a `tel:` link, a contact card, a labelled field — not another guard.
+/// See `docs/decisions/smart-actions-precision.md`.
 ///
 /// **Matches must not overlap.** An email address contains something that
 /// looks exactly like a web domain; a URL is full of digits that look like a
-/// phone number. Patterns are applied in a fixed order and each one skips
+/// verification code. Patterns are applied in a fixed order and each one skips
 /// any span already claimed, so a single piece of text can only ever produce
 /// one action.
 abstract class ActionExtractor {
@@ -60,12 +75,10 @@ abstract class ActionExtractor {
     //
     // - A Wi-Fi key is four to eight characters next to the word "password",
     //   which is the verification-code rule's exact definition of a code.
-    // - An event's "12/05/2026 3:00" is thirteen digits with separators, and
-    //   the phone rule is happy to take it.
-    // - A ten-digit Aramex number and a ten-digit mobile number are the same
-    //   characters; only the label beside them tells them apart.
-    // - A street line contains a house number, and coordinates are two long
-    //   decimals that the phone pattern reads as one long number.
+    // - A tracking number and a code are the same digits; only the label
+    //   beside them tells them apart.
+    // - A street line contains a house number the code rule would read as a
+    //   code of its own.
     //
     // In every case the intent reading is both more specific and more useful,
     // so it claims the text first and the entity passes see what is left.
@@ -83,19 +96,16 @@ abstract class ActionExtractor {
     _collect(text, _ibanPattern, claimed, found, _buildIban);
 
     // Cards are claimed but never offered, which is the point: there is no
-    // useful action to take on somebody's card number, and every rule after
-    // this one would otherwise misread it. The code rule sees 4-digit groups
-    // and the phone rule sees a long run of digits with separators — a
-    // screenshot listing card numbers came back as a screen full of numbers
-    // to *dial*.
+    // useful action to take on somebody's card number, and the code rule
+    // after this one would otherwise read its 4-digit groups as codes.
     //
     // Luhn is what makes claiming safe. Roughly nine in ten same-length
     // reference numbers fail it, so this removes cards without quietly
     // swallowing order numbers that a person might still want.
     _claimCards(text, claimed);
+    _claimGroupedRuns(text, claimed);
 
     _collectCodes(text, claimed, found);
-    _collect(text, _phonePattern, claimed, found, _buildPhone);
 
     // Sorting by kind rather than by position groups the chips into
     // something scannable, and keeps the most immediately useful ones first.
@@ -219,25 +229,6 @@ abstract class ActionExtractor {
     caseSensitive: false,
   );
 
-  /// A run of digits with optional separators. Deliberately loose, because
-  /// [_buildPhone] is where the real filtering happens.
-  ///
-  /// **Separators are spaces, not whitespace.** `\s` includes the newline, so
-  /// this used to reach across a line break and weld the tail of one line to
-  /// the head of the next — on a real screenshot of a numbers table it
-  /// produced "76350000\n159759" and called it a phone number. Worse than the
-  /// bogus match itself is that the greedy span then swallowed a genuine
-  /// number sitting alone on one of those lines.
-  /// **Letters on either end disqualify it.** Without the boundaries this
-  /// pattern happily started inside a word: an IBAN printed as
-  /// `ABNA0417164300` on a reference page produced `0417164300`, and the app
-  /// offered to dial it. Nothing writes a phone number welded to letters, so
-  /// demanding a clear edge costs nothing and removes a whole class of account
-  /// and reference numbers.
-  static final RegExp _phonePattern = RegExp(
-    r'(?<![0-9A-Za-z])\+?[0-9][0-9 \-().]{5,20}[0-9](?![0-9A-Za-z])',
-  );
-
   /// A 12-19 digit run, separators allowed — the shape of a bank card.
   ///
   /// Matches `SensitiveData`'s candidate pattern deliberately; the two must
@@ -256,19 +247,25 @@ abstract class ActionExtractor {
 
   static final RegExp _standaloneNumber = RegExp(r'\b[0-9]{4,8}\b');
 
-  /// Rejects date-shaped runs that the loose phone pattern would otherwise
-  /// swallow — "12/05/2024" and "12-05-2024" are eight digits with
-  /// separators, exactly like a phone number.
-  static final RegExp _datePattern = RegExp(
-    r'^\s*[0-9]{1,4}\s*[-/.]\s*[0-9]{1,2}\s*[-/.]\s*[0-9]{2,4}\s*$',
-  );
-
   /// Words that turn a bare number into a verification code. Without one of
   /// these nearby, four to eight digits is just a number.
   ///
   /// Matched as whole words via [TextCues] — `code` inside "barcode" and `pin`
   /// inside "shipping" were both turning ordinary numbers into codes, the
   /// former on a real screenshot from the test device.
+  /// **One entry per shipped language, and no entry for a script the
+  /// recogniser cannot read.**
+  ///
+  /// This list held Arabic, Hindi and Urdu cues for a long time and not one of
+  /// them could ever match: `TextRecognitionScript.latin` is the only model
+  /// bundled, so those characters never appear in the text this rule searches.
+  /// They were careful, translated, and dead — which is the exact trap that
+  /// decided the shipped language set (see
+  /// `docs/decisions/shipped-languages.md`). The rule now is simple: a cue
+  /// belongs here only if the recogniser can produce it.
+  ///
+  /// French needs no entry of its own beyond the accented spelling: "code" is
+  /// the same word.
   static const List<String> _codeCues = [
     'code',
     'otp',
@@ -277,26 +274,37 @@ abstract class ActionExtractor {
     'verify',
     'password',
     'passcode',
-    'رمز',
-    'كود',
-    'التحقق',
-    'تحقق',
-    'السري',
-    // The app ships in six languages and this list held only two of them, so
-    // a Spanish, Hindi or Urdu one-time password was never recognised as one.
-    // French needs no entry of its own: "code" is the same word.
+    // Spanish
     'código',
     'codigo',
     'verificación',
     'verificacion',
     'contraseña',
+    // French
     'vérification',
-    'कोड',
-    'सत्यापन',
-    'ओटीपी',
-    'کوڈ',
-    'تصدیقی',
-    'پاس ورڈ',
+    // German. "Code" is shared, but the compounds are what actually appear on
+    // a German one-time-password screen, and TextCues matches whole words —
+    // so "Bestätigungscode" needs to be listed, not inferred from "code".
+    'bestätigungscode',
+    'bestatigungscode',
+    'sicherheitscode',
+    'verifizierungscode',
+    'kennwort',
+    'passwort',
+    // Italian
+    'codice',
+    'verifica',
+    'parola',
+    // Portuguese
+    'código de verificação',
+    'verificação',
+    'verificacao',
+    'senha',
+    // Dutch
+    'verificatiecode',
+    'bevestigingscode',
+    'wachtwoord',
+    'toegangscode',
   ];
 
   /// How far either side of a number the cue may sit.
@@ -391,47 +399,6 @@ abstract class ActionExtractor {
     );
   }
 
-  static DetectedAction? _buildPhone(String match) {
-    if (_datePattern.hasMatch(match)) return null;
-
-    final String digits = match.replaceAll(RegExp(r'[^0-9]'), '');
-    if (digits.length < 7 || digits.length > 15) return null;
-
-    // **Twelve or more digits without a country code is not a phone number.**
-    //
-    // E.164 allows up to fifteen, but a number that long is by definition
-    // international, and an international number written for a human to use
-    // carries its `+` (or a 00 prefix, which normalises to the same length
-    // with a leading zero). What actually turns up at twelve-plus bare digits
-    // is reference numbers, account numbers and meter readings — every single
-    // false positive on the test device's library was one of these.
-    //
-    // Local numbers are untouched: the longest national formats here are
-    // eleven digits.
-    // `00` is the international prefix everywhere the `+` is not typed, and a
-    // number carrying it is exactly as self-identifying — "00962791234567"
-    // was being thrown away by the twelve-digit rule below for want of one
-    // character it spells differently.
-    final String trimmed0 = match.trim();
-    final bool international =
-        trimmed0.startsWith('+') || trimmed0.startsWith('00');
-    if (!international && digits.length >= 12) return null;
-
-    // A number wrapped in brackets that never close, or littered with more
-    // punctuation than digits, is layout noise rather than a phone number.
-    final int separators = match.length - digits.length;
-    if (separators > digits.length) return null;
-
-    final String trimmed = match.trim();
-    final String value = trimmed.startsWith('+') ? '+$digits' : digits;
-
-    return DetectedAction(
-      kind: DetectedActionKind.phone,
-      value: value,
-      display: trimmed,
-    );
-  }
-
   static String _groupIban(String iban) {
     final StringBuffer buffer = StringBuffer();
     for (int i = 0; i < iban.length; i += 4) {
@@ -482,6 +449,40 @@ abstract class ActionExtractor {
   /// Verification codes need context, so they can't be expressed as one
   /// regex: the number is found first, then the surrounding words decide
   /// whether it means anything.
+  /// Three or more groups of digits joined by single separators — the shape of
+  /// an identifier somebody typed out to be read back.
+  ///
+  /// Claimed and never offered, exactly like a card. **A four-digit group
+  /// inside a longer grouped run is part of a reference, not a verification
+  /// code**, and nothing downstream can tell the difference once the run has
+  /// been cut up: `\b[0-9]{4,8}\b` sees `8629` and `9487` in
+  /// `GBFD 8629-9487-4145` as two perfectly ordinary standalone numbers.
+  ///
+  /// Found on the device, on the same IBAN reference page that cost the actions
+  /// sheet its phone rule. With that rule gone the page came back offering four
+  /// *verification codes* instead — chopped out of the account numbers, and
+  /// vouched for by the words "country code" and "2 digit checksum" sitting a
+  /// few characters away. The cue was doing its job; there was simply nothing
+  /// left to cue about, because the number had already been broken into
+  /// pieces that looked like codes.
+  ///
+  /// [_claimCards] does not cover this: it takes 12-19 digit runs that pass
+  /// Luhn, and roughly nine in ten reference numbers fail Luhn — which is what
+  /// makes claiming cards safe and what leaves this gap open.
+  ///
+  /// A real verification code is one group. Requiring three keeps every one of
+  /// them reachable.
+  static final RegExp _groupedRun = RegExp(
+    r'(?<![0-9A-Za-z])[0-9]{3,6}(?:[ \-][0-9]{2,6}){2,}(?![0-9A-Za-z])',
+  );
+
+  static void _claimGroupedRuns(String text, List<_Span> claimed) {
+    for (final RegExpMatch match in _groupedRun.allMatches(text)) {
+      if (_overlaps(claimed, match.start, match.end)) continue;
+      claimed.add(_Span(match.start, match.end));
+    }
+  }
+
   static void _collectCodes(
     String text,
     List<_Span> claimed,

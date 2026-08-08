@@ -1,21 +1,23 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/utils/content_traits.dart';
 
-/// The app ships in six languages, and until this file existed the detection
-/// behind the library's content filters was only ever exercised in two of
-/// them. Running the same four realistic screenshots through every language
-/// found one outright bug and two whole-language gaps:
+/// The app ships in seven languages, and until this file existed the detection
+/// behind the library's content filters was only ever exercised in one of
+/// them. Running the same four realistic screenshots through every language is
+/// what found the whole-language gaps — a verification-code cue list holding
+/// only English, a bare-domain TLD list with no `es` or `fr` — none of which
+/// are visible in English, which is exactly why this is a table rather than a
+/// handful of hand-picked cases.
 ///
-/// * an Arabic phone number could never satisfy the cue test, because the
-///   match is cut from digit-normalised text and was being looked up in the
-///   raw string — `٠٥٩٩١٢٣٤٥٦` and `0599123456` share no characters;
-/// * the verification-code cues held English and Arabic only, so a Spanish,
-///   Hindi or Urdu one-time password was never a code;
-/// * the bare-domain TLD list had no `es`, `fr`, `in` or `pk`, so a plain
-///   domain was invisible in four of the six.
-///
-/// None of these are visible in English, which is exactly why the table is
-/// here rather than a handful of hand-picked cases.
+/// **Every language here is one the recogniser can actually read.** The table
+/// used to include Arabic, Hindi and Urdu and they passed, because a test
+/// hands `ContentTraits` a string directly. On a phone nothing ever handed it
+/// one: `TextRecognitionScript.latin` cannot produce those characters, so the
+/// rows were green over a feature that did not exist. That gap is the reason
+/// the shipped language set changed — see
+/// `docs/decisions/shipped-languages.md`. Adding a language to
+/// [AppLanguage] means adding a row here, and it means checking the model can
+/// read it first.
 void main() {
   const Map<String, Map<ContentTrait, String>> byLanguage =
       <String, Map<ContentTrait, String>>{
@@ -25,11 +27,11 @@ void main() {
           ContentTrait.event: 'Meeting on 12/05/2027 at 3:00 PM',
           ContentTrait.link: 'visit example.com today',
         },
-        'Arabic': <ContentTrait, String>{
-          ContentTrait.code: 'رمز التحقق الخاص بك هو ٤٨١٩٢٠',
-          ContentTrait.contact: 'جوال ٠٥٩٩١٢٣٤٥٦',
-          ContentTrait.event: 'موعد الاجتماع ١٢/٠٥/٢٠٢٧ الساعة ٣:٠٠',
-          ContentTrait.link: 'زوروا example.com اليوم',
+        'German': <ContentTrait, String>{
+          ContentTrait.code: 'Ihr Bestätigungscode lautet 481920',
+          ContentTrait.contact: 'Telefon 0599123456',
+          ContentTrait.event: 'Termin am 12/05/2027 um 15:00',
+          ContentTrait.link: 'besuchen Sie beispiel.de heute',
         },
         'Spanish': <ContentTrait, String>{
           ContentTrait.code: 'Su código de verificación es 481920',
@@ -43,54 +45,62 @@ void main() {
           ContentTrait.event: 'Réunion le 12/05/2027 à 15:00',
           ContentTrait.link: 'visitez exemple.fr maintenant',
         },
-        'Hindi': <ContentTrait, String>{
-          ContentTrait.code: 'आपका सत्यापन कोड 481920 है',
-          ContentTrait.contact: 'मोबाइल 0599123456',
-          ContentTrait.event: 'बैठक 12/05/2027 को 3:00 बजे',
-          ContentTrait.link: 'देखें udaharan.in आज',
+        'Italian': <ContentTrait, String>{
+          ContentTrait.code: 'Il tuo codice di verifica è 481920',
+          ContentTrait.contact: 'Cellulare 0599123456',
+          ContentTrait.event: 'Riunione il 12/05/2027 alle 15:00',
+          ContentTrait.link: 'visita esempio.it oggi',
         },
-        'Urdu': <ContentTrait, String>{
-          ContentTrait.code: 'آپ کا تصدیقی کوڈ 481920 ہے',
-          ContentTrait.contact: 'فون 0599123456',
-          ContentTrait.event: 'ملاقات 12/05/2027 کو 3:00 بجے',
-          ContentTrait.link: 'دیکھیں misal.pk آج',
+        'Portuguese': <ContentTrait, String>{
+          ContentTrait.code: 'O seu código de verificação é 481920',
+          ContentTrait.contact: 'Telemóvel 0599123456',
+          ContentTrait.event: 'Reunião em 12/05/2027 às 15:00',
+          ContentTrait.link: 'visite exemplo.pt hoje',
+        },
+        'Dutch': <ContentTrait, String>{
+          ContentTrait.code: 'Je verificatiecode is 481920',
+          ContentTrait.contact: 'Telefoonnummer 0599123456',
+          ContentTrait.event: 'Afspraak op 12/05/2027 om 15:00',
+          ContentTrait.link: 'bezoek voorbeeld.nl vandaag',
         },
       };
+
+  /// The clock the event samples are measured against. Every one of them is
+  /// dated 12/05/2027, which is only in the future because of this line — and
+  /// `dayFirst` because that date is ambiguous, so without it the answer
+  /// depends on the region the test happens to run in.
+  final DateTime today = DateTime(2026, 3, 1);
+
+  Set<ContentTrait> traitsOf(String text) =>
+      ContentTraits.of(text, now: today, dayFirst: true);
 
   byLanguage.forEach((String language, Map<ContentTrait, String> samples) {
     group(language, () {
       samples.forEach((ContentTrait trait, String text) {
         test('finds ${trait.name}', () {
-          expect(ContentTraits.of(text), contains(trait));
+          expect(traitsOf(text), contains(trait));
         });
       });
     });
   });
 
-  group('digit systems', () {
-    // The bug this file was written for. Arabic-Indic and Persian/Urdu digits
-    // are different code points again, and both have to survive the round trip
-    // through normalisation and back into the cue lookup.
-    test('Arabic-Indic digits reach the cue test', () {
-      expect(
-        ContentTraits.of('هاتف ٠٥٩٩١٢٣٤٥٦'),
-        contains(ContentTrait.contact),
-      );
-    });
+  group('a cue is required, in every language', () {
+    /// The other half of the contract, and the half a cue list makes easy to
+    /// break: adding words until everything matches. A bare run of digits with
+    /// no word vouching for it is a reference number, whatever language the
+    /// rest of the screen is in.
+    const List<String> uncued = <String>[
+      'Bestellnummer 5551234',
+      'Numero ordine 5551234',
+      'Número do pedido 5551234',
+      'Bestelnummer 5551234',
+      'Order 5551234',
+    ];
 
-    test('Persian and Urdu digits reach it too', () {
-      expect(
-        ContentTraits.of('فون ۰۵۹۹۱۲۳۴۵۶'),
-        contains(ContentTrait.contact),
-      );
-    });
-
-    test('an uncued Arabic-Indic run is still rejected', () {
-      // The fix must not turn into "any Arabic number is a phone".
-      expect(
-        ContentTraits.of('رقم الطلب ٥٥٥١٢٣٤'),
-        isNot(contains(ContentTrait.contact)),
-      );
-    });
+    for (final String text in uncued) {
+      test('"$text" is not a contact', () {
+        expect(traitsOf(text), isNot(contains(ContentTrait.contact)));
+      });
+    }
   });
 }

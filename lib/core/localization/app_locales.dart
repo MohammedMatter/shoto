@@ -2,52 +2,56 @@ import 'package:flutter/material.dart';
 
 /// Every language SHOTO ships in, and what each one needs beyond translation.
 ///
-/// A language is more than a string table. Arabic and Urdu run right to left,
-/// Urdu is set in a sloping calligraphic script that needs more vertical room
-/// than Latin, and none of Arabic, Urdu or Hindi have a single glyph in the
-/// app's Latin typeface. Keeping those facts next to the locale — rather than
-/// scattered through `if (locale == 'ar')` checks — is what stops adding the
-/// seventh language from turning into an audit of the whole codebase.
+/// A language is more than a string table: some run right to left, some are
+/// set in scripts that need more vertical room than Latin, and some have not
+/// one glyph in the app's own typeface. Keeping those facts next to the locale
+/// — rather than scattered through `if (locale == 'ar')` checks — is what
+/// stops adding the eighth language from turning into an audit of the whole
+/// codebase.
+///
+/// **The shipped set is every language the recogniser can actually read.**
+/// Arabic, Urdu and Hindi were here first, and were replaced by German,
+/// Italian, Portuguese and Dutch because ML Kit's on-device text recognition
+/// has no model for their scripts — see
+/// `docs/decisions/shipped-languages.md`. Every feature that matters in this
+/// app reads the words inside a screenshot, so a UI translated into a language
+/// the OCR is blind to promises a product that cannot be delivered.
+///
+/// **[isRightToLeft], [fontFallback] and [lineHeightScale] are all unused
+/// today and none of them is dead code.** Every current language is Latin and
+/// left-to-right, so all three sit at their defaults — and they are the exact
+/// three things a non-Latin language needs. They stay so that adding one back
+/// is these three fields and a string table, which is what it cost the first
+/// time and what it must cost the next.
 enum AppLanguage {
   english(code: 'en', endonym: 'English', englishName: 'English'),
 
-  /// Listed second on purpose: it is the author's own language and the first
-  /// one this app was ever asked for.
-  arabic(
-    code: 'ar',
-    endonym: 'العربية',
-    englishName: 'Arabic',
-    fontFallback: 'NotoSansArabic',
-  ),
-
-  urdu(
-    code: 'ur',
-    endonym: 'اردو',
-    englishName: 'Urdu',
-    fontFallback: 'NotoNastaliqUrdu',
-    // Nastaliq letterforms cascade downward within a word, so they occupy far
-    // more vertical space than any upright script. At the app's own line
-    // heights the descenders of one line collide with the next; this widens
-    // every line for Urdu only.
-    lineHeightScale: 1.45,
-  ),
+  german(code: 'de', endonym: 'Deutsch', englishName: 'German'),
 
   spanish(code: 'es', endonym: 'Español', englishName: 'Spanish'),
 
   french(code: 'fr', endonym: 'Français', englishName: 'French'),
 
-  hindi(
-    code: 'hi',
-    endonym: 'हिन्दी',
-    englishName: 'Hindi',
-    fontFallback: 'NotoSansDevanagari',
-  );
+  italian(code: 'it', endonym: 'Italiano', englishName: 'Italian'),
 
+  portuguese(code: 'pt', endonym: 'Português', englishName: 'Portuguese'),
+
+  dutch(code: 'nl', endonym: 'Nederlands', englishName: 'Dutch');
+
+  // The three optional parameters are unused *today* and that is the point —
+  // see the class doc. The lint reports an argument nobody passes; here that
+  // is the shipped language set being all-Latin, not dead code, and deleting
+  // them would move the cost of the next non-Latin language from three fields
+  // to an audit of the type scale and the whole widget tree.
   const AppLanguage({
     required this.code,
     required this.endonym,
     required this.englishName,
+    // ignore: unused_element_parameter
+    this.isRightToLeft = false,
+    // ignore: unused_element_parameter
     this.fontFallback,
+    // ignore: unused_element_parameter
     this.lineHeightScale = 1,
   });
 
@@ -65,15 +69,31 @@ enum AppLanguage {
   /// else set the app up can still find the row.
   final String englishName;
 
+  /// Whether the interface mirrors for this language.
+  ///
+  /// Read by [LocaleController.isRightToLeft], which the app consults before
+  /// the first frame — earlier than [Directionality] exists. Everything drawn
+  /// *after* that reads the inherited direction instead and needs no flag.
+  ///
+  /// Nothing about **content** direction goes through here. A screenshot full
+  /// of Arabic is redacted right-to-left inside a Dutch-language app, because
+  /// `RedactionService` decides that from the runs of text it recognised — the
+  /// app's language says nothing about what somebody photographed.
+  final bool isRightToLeft;
+
   /// The family that supplies the glyphs the app's own faces don't have.
   ///
-  /// Archivo and IBM Plex Sans are Latin, so Arabic, Urdu and Devanagari each
-  /// need a Noto face behind them — see the `fonts:` block in pubspec.yaml and
-  /// [fontFallbacks], which hands the whole list to every style so a folder
-  /// named in Arabic still renders inside a French-language app.
+  /// Null for every language today, because Archivo and IBM Plex Sans cover
+  /// Latin and Latin is all that ships. The three Noto faces that used to be
+  /// listed here went with the languages that needed them — 2.2MB of assets
+  /// for scripts no shipped string is written in.
   ///
-  /// Null means Latin covers it. Chinese would also be null if it shipped:
-  /// bundling a CJK face costs ~17MB, and every phone already has one.
+  /// **User-typed text in another script now falls back to the platform.**
+  /// A folder named in Arabic inside a German-language app is drawn with
+  /// Android's or iOS's own Noto, which both ship. That is a weaker guarantee
+  /// than bundling the face and it is the right trade at this size; bundle
+  /// again here if a shipped language ever needs it. Chinese would stay null
+  /// either way — a CJK face costs ~17MB and every phone already has one.
   final String? fontFallback;
 
   /// Multiplies every line height in the type scale.

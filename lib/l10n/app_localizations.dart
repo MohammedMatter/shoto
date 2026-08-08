@@ -5,12 +5,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
-import 'app_localizations_ar.dart';
+import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
 import 'app_localizations_fr.dart';
-import 'app_localizations_hi.dart';
-import 'app_localizations_ur.dart';
+import 'app_localizations_it.dart';
+import 'app_localizations_nl.dart';
+import 'app_localizations_pt.dart';
 
 // ignore_for_file: type=lint
 
@@ -98,12 +99,13 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
-    Locale('ar'),
+    Locale('de'),
     Locale('en'),
     Locale('es'),
     Locale('fr'),
-    Locale('hi'),
-    Locale('ur'),
+    Locale('it'),
+    Locale('nl'),
+    Locale('pt'),
   ];
 
   /// No description provided for @settingsCrashReports.
@@ -1621,7 +1623,7 @@ abstract class AppLocalizations {
   /// No description provided for @featActionsBody.
   ///
   /// In en, this message translates to:
-  /// **'Call a number, open a link, copy a verification code or an IBAN — straight from the picture, without retyping anything.'**
+  /// **'Open a link, write to an address, copy a verification code or an IBAN — straight from the picture, without retyping anything.'**
   String get featActionsBody;
 
   /// No description provided for @featDuplicates.
@@ -1693,13 +1695,13 @@ abstract class AppLocalizations {
   /// No description provided for @featActionsPoint1.
   ///
   /// In en, this message translates to:
-  /// **'Phone numbers, links, email addresses, IBANs and verification codes are found for you.'**
+  /// **'Links, email addresses, IBANs, verification codes, dates and parcel numbers are found for you.'**
   String get featActionsPoint1;
 
   /// No description provided for @featActionsPoint2.
   ///
   /// In en, this message translates to:
-  /// **'One tap to call, open or copy — no reading digits off a picture.'**
+  /// **'One tap to open or copy — no reading characters off a picture.'**
   String get featActionsPoint2;
 
   /// No description provided for @featActionsPoint3.
@@ -1711,7 +1713,7 @@ abstract class AppLocalizations {
   /// No description provided for @featStitchHow.
   ///
   /// In en, this message translates to:
-  /// **'Take a few shots as you scroll through a long chat or page, and SHOTO works out where they overlap and joins them back into one tall image.'**
+  /// **'Scrolling capture, on a phone that has it, has to be started while you are still on the page. SHOTO works afterwards: pick two or more shots already in your library — including ones somebody sent you — and it finds where they overlap and joins them into one tall image.'**
   String get featStitchHow;
 
   /// No description provided for @featStitchPoint1.
@@ -1735,7 +1737,7 @@ abstract class AppLocalizations {
   /// No description provided for @featDuplicatesHow.
   ///
   /// In en, this message translates to:
-  /// **'SHOTO compares screenshots by what they look like rather than by name or size, so it catches the near-identical ones too — a resend, a different crop, the same thing captured twice.'**
+  /// **'Sharing shots in one at a time rarely makes duplicates. Keeping a batch from \"Since you last looked\" does — you move fast, and two captures of the same thing both get kept. SHOTO compares by what a shot looks like, not its name or size, so it catches those, along with a resend or a different crop.'**
   String get featDuplicatesHow;
 
   /// No description provided for @featDuplicatesPoint1.
@@ -1984,35 +1986,11 @@ abstract class AppLocalizations {
   /// **'an email address'**
   String get kindEmail;
 
-  /// No description provided for @kindPhone.
-  ///
-  /// In en, this message translates to:
-  /// **'a phone number'**
-  String get kindPhone;
-
   /// No description provided for @kindLink.
   ///
   /// In en, this message translates to:
   /// **'a link'**
   String get kindLink;
-
-  /// No description provided for @actionCall.
-  ///
-  /// In en, this message translates to:
-  /// **'Call'**
-  String get actionCall;
-
-  /// No description provided for @actionWhatsapp.
-  ///
-  /// In en, this message translates to:
-  /// **'WhatsApp'**
-  String get actionWhatsapp;
-
-  /// No description provided for @actionSms.
-  ///
-  /// In en, this message translates to:
-  /// **'Message'**
-  String get actionSms;
 
   /// No description provided for @actionEmailAction.
   ///
@@ -3103,7 +3081,7 @@ abstract class AppLocalizations {
   /// No description provided for @intentPrompt.
   ///
   /// In en, this message translates to:
-  /// **'What will you do with it?'**
+  /// **'What it\'s for, if you like'**
   String get intentPrompt;
 
   /// No description provided for @intentSkip.
@@ -3208,12 +3186,13 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) => <String>[
-    'ar',
+    'de',
     'en',
     'es',
     'fr',
-    'hi',
-    'ur',
+    'it',
+    'nl',
+    'pt',
   ].contains(locale.languageCode);
 
   @override
@@ -3223,18 +3202,20 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'ar':
-      return AppLocalizationsAr();
+    case 'de':
+      return AppLocalizationsDe();
     case 'en':
       return AppLocalizationsEn();
     case 'es':
       return AppLocalizationsEs();
     case 'fr':
       return AppLocalizationsFr();
-    case 'hi':
-      return AppLocalizationsHi();
-    case 'ur':
-      return AppLocalizationsUr();
+    case 'it':
+      return AppLocalizationsIt();
+    case 'nl':
+      return AppLocalizationsNl();
+    case 'pt':
+      return AppLocalizationsPt();
   }
 
   throw FlutterError(

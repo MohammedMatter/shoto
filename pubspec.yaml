@@ -154,33 +154,17 @@ flutter:
           weight: 400
         - asset: assets/fonts/IBMPlexMono-SemiBold.ttf
           weight: 600
-    # IBM Plex Sans carries Latin only. Without these, every Arabic, Urdu
-    # and Hindi string renders as empty boxes.
+    # Three Noto faces — Arabic, Nastaliq Urdu and Devanagari — used to follow
+    # here, 2.2MB of them, because those three languages shipped and IBM Plex
+    # Sans carries Latin only. The languages went (see
+    # docs/decisions/shipped-languages.md) and the faces went with them: every
+    # string the app draws is now Latin.
     #
-    # They are declared as their own families and attached through
-    # fontFamilyFallback (see app_text_styles.dart) rather than merged into
-    # the family above, because a fallback supplies only the characters the
-    # primary font lacks — so Latin keeps IBM Plex's shapes in every
-    # language and the app still looks like one app.
-    #
-    # Being variable too, they follow the `wght` axis the text styles set, and
-    # each clamps it to its own range — so an Arabic screen gets the same
-    # weights as an English one instead of a synthesised approximation.
-    - family: NotoSansArabic
-      fonts:
-        - asset: assets/fonts/NotoSansArabic.ttf
-          weight: 400
-    # Urdu is written in Nastaliq, a sloping calligraphic style. Setting it in
-    # the same upright Naskh used for Arabic is legible but reads as foreign
-    # to Urdu speakers — roughly how all-caps Latin reads to everyone else.
-    - family: NotoNastaliqUrdu
-      fonts:
-        - asset: assets/fonts/NotoNastaliqUrdu.ttf
-          weight: 400
-    - family: NotoSansDevanagari
-      fonts:
-        - asset: assets/fonts/NotoSansDevanagari.ttf
-          weight: 400
+    # The mechanism did not go. AppLanguage.fontFallback still exists and
+    # app_text_styles.dart still hands AppLanguage.fontFallbacks to every
+    # style, so re-adding a script is a family here and one field there.
+    # Text the *user* types in another script falls back to the platform's own
+    # Noto, which Android and iOS both ship.
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -896,7 +896,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featActionsBody =>
-      'Call a number, open a link, copy a verification code or an IBAN — straight from the picture, without retyping anything.';
+      'Open a link, write to an address, copy a verification code or an IBAN — straight from the picture, without retyping anything.';
 
   @override
   String get featDuplicates => 'Find duplicates';
@@ -942,11 +942,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featActionsPoint1 =>
-      'Phone numbers, links, email addresses, IBANs and verification codes are found for you.';
+      'Links, email addresses, IBANs, verification codes, dates and parcel numbers are found for you.';
 
   @override
   String get featActionsPoint2 =>
-      'One tap to call, open or copy — no reading digits off a picture.';
+      'One tap to open or copy — no reading characters off a picture.';
 
   @override
   String get featActionsPoint3 =>
@@ -954,7 +954,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featStitchHow =>
-      'Take a few shots as you scroll through a long chat or page, and SHOTO works out where they overlap and joins them back into one tall image.';
+      'Scrolling capture, on a phone that has it, has to be started while you are still on the page. SHOTO works afterwards: pick two or more shots already in your library — including ones somebody sent you — and it finds where they overlap and joins them into one tall image.';
 
   @override
   String get featStitchPoint1 =>
@@ -970,7 +970,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get featDuplicatesHow =>
-      'SHOTO compares screenshots by what they look like rather than by name or size, so it catches the near-identical ones too — a resend, a different crop, the same thing captured twice.';
+      'Sharing shots in one at a time rarely makes duplicates. Keeping a batch from \"Since you last looked\" does — you move fast, and two captures of the same thing both get kept. SHOTO compares by what a shot looks like, not its name or size, so it catches those, along with a resend or a different crop.';
 
   @override
   String get featDuplicatesPoint1 =>
@@ -1114,19 +1114,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get kindEmail => 'an email address';
 
   @override
-  String get kindPhone => 'a phone number';
-
-  @override
   String get kindLink => 'a link';
-
-  @override
-  String get actionCall => 'Call';
-
-  @override
-  String get actionWhatsapp => 'WhatsApp';
-
-  @override
-  String get actionSms => 'Message';
 
   @override
   String get actionEmailAction => 'Write';
@@ -1852,7 +1840,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get intentPrompt => 'What will you do with it?';
+  String get intentPrompt => 'What it\'s for, if you like';
 
   @override
   String get intentSkip => 'Nothing in particular';

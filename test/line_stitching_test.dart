@@ -178,11 +178,15 @@ void main() {
       );
     });
 
-    test('the same in Arabic', () {
+    test('the same in another shipped language', () {
+      // The stitching is language-agnostic — it joins a label line to the line
+      // under it and re-runs the ordinary patterns — but that only holds if
+      // the label is one the patterns know. This used to be checked in Arabic,
+      // which the recogniser cannot read; German is a label it can return.
       expect(
         kindsOf(<RecognizedLine>[
-          _line('رقم الهوية', 0),
-          _line('9876543210', 1),
+          _line('Steuer-ID', 0),
+          _line('98765432109', 1),
         ]),
         contains(SensitiveKind.nationalId),
       );

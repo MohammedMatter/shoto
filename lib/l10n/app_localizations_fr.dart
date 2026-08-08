@@ -898,7 +898,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get featActionsBody =>
-      'Appelez un numéro, ouvrez un lien, copiez un code ou un IBAN — directement depuis l’image, sans rien retaper.';
+      'Ouvrez un lien, écrivez à une adresse, copiez un code de vérification ou un IBAN — directement depuis l\'image, sans rien retaper.';
 
   @override
   String get featDuplicates => 'Trouver les doublons';
@@ -944,11 +944,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get featActionsPoint1 =>
-      'Numéros de téléphone, liens, adresses e-mail, IBAN et codes de vérification sont repérés pour vous.';
+      'Les liens, adresses e-mail, IBAN, codes de vérification, dates et numéros de colis sont trouvés pour vous.';
 
   @override
   String get featActionsPoint2 =>
-      'Une seule touche pour appeler, ouvrir ou copier — sans relire des chiffres sur une image.';
+      'Un appui pour ouvrir ou copier — sans lire les caractères sur une image.';
 
   @override
   String get featActionsPoint3 =>
@@ -956,7 +956,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get featStitchHow =>
-      'Prenez plusieurs captures en parcourant une longue conversation ou page : SHOTO calcule où elles se recouvrent et les réassemble en une seule image haute.';
+      'La capture avec défilement, sur les téléphones qui l’ont, doit être lancée pendant que vous êtes encore sur la page. SHOTO intervient après : choisissez deux captures ou plus déjà dans votre bibliothèque — y compris celles qu’on vous a envoyées — et il calcule où elles se recouvrent et les réassemble en une seule image haute.';
 
   @override
   String get featStitchPoint1 =>
@@ -972,7 +972,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get featDuplicatesHow =>
-      'SHOTO compare les captures d’après leur apparence plutôt que leur nom ou leur taille : il repère donc aussi les quasi-identiques — un renvoi, un autre recadrage, la même chose capturée deux fois.';
+      'Partager les captures une par une ne crée presque jamais de doublons. En garder un lot depuis « Depuis votre dernière visite », si : vous allez vite et vous gardez deux captures de la même chose. SHOTO les compare d’après leur apparence plutôt que leur nom ou leur taille : il repère donc celles-là, ainsi qu’un renvoi ou un autre recadrage.';
 
   @override
   String get featDuplicatesPoint1 =>
@@ -1118,19 +1118,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get kindEmail => 'une adresse e-mail';
 
   @override
-  String get kindPhone => 'un numéro de téléphone';
-
-  @override
   String get kindLink => 'un lien';
-
-  @override
-  String get actionCall => 'Appeler';
-
-  @override
-  String get actionWhatsapp => 'WhatsApp';
-
-  @override
-  String get actionSms => 'Message';
 
   @override
   String get actionEmailAction => 'Écrire';
@@ -1862,7 +1850,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get intentPrompt => 'Qu\'allez-vous en faire ?';
+  String get intentPrompt => 'À quoi elle sert, si vous voulez';
 
   @override
   String get intentSkip => 'Rien de particulier';

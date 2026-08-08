@@ -23,20 +23,14 @@ Future<void> loadTestFonts() async {
     'IBMPlexMono-SemiBold.ttf',
   ]);
 
-  // The script fallbacks, without which every non-Latin golden is a grid of
-  // empty rectangles.
+  // Three Noto fallbacks — Arabic, Devanagari and Nastaliq — used to be
+  // loaded here, because a golden rendered in Arabic came out as boxes
+  // without them. Every shipped language is Latin now and the faces are no
+  // longer bundled, so there is nothing to load; `_loadFamily` skips a file
+  // that is not there, but naming a font the app does not have would make
+  // this list stale in exactly the way its comment above warns about.
   //
-  // The three Latin families above carry no Arabic, Devanagari or Nastaliq
-  // glyphs, so a golden rendered in Arabic came out as boxes — and a boxed
-  // golden cannot answer the only question it was generated to answer, which
-  // is whether the screen reads correctly in that language. The app declares
-  // all three as `fontFamilyFallback` on every style it builds (see
-  // `AppTypography._variable`), so loading them here is what makes the test
-  // renderer agree with the phone.
-  await _loadFamily('NotoSansArabic', ['NotoSansArabic.ttf']);
-  await _loadFamily('NotoSansDevanagari', ['NotoSansDevanagari.ttf']);
-  await _loadFamily('NotoNastaliqUrdu', ['NotoNastaliqUrdu.ttf']);
-
+  // Whatever brings a non-Latin language back adds its face to both places.
   await _loadIconFont();
 }
 

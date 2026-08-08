@@ -247,19 +247,19 @@ void main() {
       'library_strip_3_lens_note',
     );
 
-    // 4. Arabic, RTL. The row must start from the right and the note must not
-    //    flip its punctuation to the front.
+    // 4. German. The pills carry the longest labels the shipped set can
+    //    produce, and the note has to stay on one line beside them.
     await _shoot(
       tester,
       _wrap(
         () => _strip(
-          locale: const Locale('ar'),
+          locale: const Locale('de'),
           filter: LibraryFilter.unsorted,
           lens: ContentTrait.link,
           unreadCount: 87,
         ),
       ),
-      'library_strip_4_arabic_rtl',
+      'library_strip_4_german',
     );
 
     await _shoot(
@@ -338,26 +338,34 @@ void main() {
       _wrap(
         () => _sheetHost(
           slot: 'scanning',
-          locale: const Locale('ar'),
+          locale: const Locale('de'),
           unreadCount: 12,
           isScanning: true,
           counts: const <ContentTrait, int>{},
         ),
       ),
-      'library_sheet_4_scanning_arabic',
+      'library_sheet_4_scanning_german',
       target: sheet,
       openSheet: true,
       settle: false,
     );
 
-    // 5-8. The remaining shipped languages. "Teléfono o correo" is more than
+    // 5-9. The remaining shipped languages. "Teléfono o correo" is more than
     //      twice the width of "Codes", and a sheet that fits in English says
     //      nothing about whether it fits at all.
+    //
+    //      **This list must hold locales the app actually ships.** It read
+    //      `hi` and `ur` until the language swap left them behind, and neither
+    //      was removed with the rest — so `Locale('hi')` fell back to English,
+    //      both shots rendered the same screen, and the two goldens were
+    //      byte-for-byte identical. Two green tests measuring nothing, which
+    //      is the failure this whole file exists to prevent.
     for (final (String code, String name) in <(String, String)>[
       ('es', '5_spanish'),
       ('fr', '6_french'),
-      ('hi', '7_hindi'),
-      ('ur', '8_urdu'),
+      ('it', '7_italian'),
+      ('pt', '8_portuguese'),
+      ('nl', '9_dutch'),
     ]) {
       await _shoot(
         tester,

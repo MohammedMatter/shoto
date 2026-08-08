@@ -59,13 +59,31 @@ void main() {
   group('codes and identifiers', () {
     test('a verification code needs a cue word', () {
       expect(of('Your code is 483920'), contains(SensitiveKind.code));
-      expect(of('رمز التحقق 4821'), contains(SensitiveKind.code));
+      // One per shipped language, because a cue list is exactly the kind of
+      // thing that gets extended in English and forgotten everywhere else.
+      expect(of('Ihr Sicherheitscode 4821'), contains(SensitiveKind.code));
+      expect(of('Je verificatiecode is 4821'), contains(SensitiveKind.code));
+      expect(of('Il codice è 4821'), contains(SensitiveKind.code));
+      expect(of('O código de verificação é 4821'),
+          contains(SensitiveKind.code));
+      expect(of('Su código de verificación es 4821'),
+          contains(SensitiveKind.code));
+      expect(of('Votre code de vérification est 4821'),
+          contains(SensitiveKind.code));
       expect(of('Room 4821, floor 3'), isNot(contains(SensitiveKind.code)));
     });
 
     test('a national ID needs its label', () {
       expect(of('National ID 1234567890'), contains(SensitiveKind.nationalId));
-      expect(of('رقم الهوية 1234567890'), contains(SensitiveKind.nationalId));
+      // Nine to eleven digits is the range this rule covers, so the labels
+      // tested here are the ones whose numbers actually fall in it: the Dutch
+      // BSN is nine, the Portuguese NIF nine, the German Steuer-ID eleven.
+      expect(of('BSN: 123456789'), contains(SensitiveKind.nationalId));
+      expect(of('NIF 123456789'), contains(SensitiveKind.nationalId));
+      expect(
+        of('Steuer-ID 12345678901'),
+        contains(SensitiveKind.nationalId),
+      );
       // Unlabelled, so far more likely an order number.
       expect(of('1234567890'), isNot(contains(SensitiveKind.nationalId)));
     });
@@ -75,7 +93,10 @@ void main() {
     test('email and phone', () {
       expect(of('write to sara@example.com'), contains(SensitiveKind.email));
       expect(of('call +962 7 9123 4567'), contains(SensitiveKind.phone));
-      expect(of('اتصل ٠٧٩١٢٣٤٥٦٧'), contains(SensitiveKind.phone));
+      expect(of('Handy 0599123456'), contains(SensitiveKind.phone));
+      expect(of('Telefoonnummer 0599123456'), contains(SensitiveKind.phone));
+      expect(of('Cellulare 0599123456'), contains(SensitiveKind.phone));
+      expect(of('Telemóvel 0599123456'), contains(SensitiveKind.phone));
     });
 
     test('a date is not a phone number', () {
@@ -205,6 +226,70 @@ void _emailRecallAfterOcrDamage() {
         expect(
           SensitiveData.kindsIn(text),
           isNot(contains(SensitiveKind.email)),
+        );
+      });
+    }
+  });
+
+  /// **The house number comes last outside the English-speaking world**, and
+  /// until the shipped languages changed nothing in this file could express
+  /// that. The unlabelled street rule required the number to *lead* — the
+  /// English form — so `Hauptstraße 12` and `Via Roma 12` were invisible, and
+  /// a German user sharing a screenshot of a delivery confirmation had their
+  /// home address go out uncovered.
+  ///
+  /// This is the one place in the language swap where a translation gap was
+  /// really a *missing rule*, which is why it gets its own group.
+  group('street lines in the shipped word orders', () {
+    const List<String> streets = <String>[
+      // Number last, type welded to the name.
+      'Hauptstraße 12',
+      'Hauptstrasse 12',
+      'Kerkstraat 5a',
+      'Prinsengracht 263',
+      'Lindenallee 7',
+      'Bahnhofsplatz 3',
+      // Number last, type leading.
+      'Via Roma 12',
+      'Piazza del Duomo 4',
+      'Rua Augusta 24',
+      'Avenida da Liberdade 110',
+      'Calle Mayor 8',
+      'Rue de Rivoli 15',
+      // The English form still works.
+      '221 Baker Street',
+    ];
+
+    for (final String text in streets) {
+      test('"$text" is an address', () {
+        expect(
+          SensitiveData.kindsIn('Lieferung an $text, bitte klingeln'),
+          contains(SensitiveKind.postalAddress),
+          reason: 'an uncovered home address is a leak the user cannot undo',
+        );
+      });
+    }
+  });
+
+  group('the street rules do not invent addresses', () {
+    /// The words carrying the street rules are ordinary nouns in the same
+    /// languages — *Weg*, *Ring*, *hof*, *place*, *corso* — so each of these
+    /// is a sentence the rule must stay out of. The house number is what
+    /// separates the two, which is why it is required.
+    const List<String> notStreets = <String>[
+      'Der Weg war lang und ruhig',
+      'Ring mich morgen an',
+      'Wir treffen uns im Hof',
+      'De kade was druk vandaag',
+      'Il corso di italiano inizia lunedì',
+    ];
+
+    for (final String text in notStreets) {
+      test('"$text" is not an address', () {
+        expect(
+          SensitiveData.kindsIn(text),
+          isNot(contains(SensitiveKind.postalAddress)),
+          reason: text,
         );
       });
     }

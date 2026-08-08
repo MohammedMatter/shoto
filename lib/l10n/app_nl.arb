@@ -1,0 +1,961 @@
+{
+  "@@locale": "nl",
+  "settingsCrashReports": "Crashrapporten",
+  "settingsCrashReportsHint": "Technische details sturen als er iets misgaat",
+  "settingsSignOut": "Uitloggen",
+  "settingsSignOutTitle": "Uitloggen?",
+  "authWelcome": "Welkom bij SHOTO",
+  "authSubtitle": "Inloggen houdt je abonnement bij je als je van telefoon wisselt. Je screenshots blijven hoe dan ook op dit toestel — een account neemt ze nooit mee.",
+  "authGoogle": "Doorgaan met Google",
+  "authApple": "Doorgaan met Apple",
+  "authLegal": "Door verder te gaan ga je akkoord met onze Servicevoorwaarden en het Privacybeleid.",
+  "settingsAccount": "Account",
+  "settingsSignOutHint": "Je screenshots blijven op dit toestel",
+  "settingsSignIn": "Inloggen",
+  "settingsSignInHint": "Optioneel. Alleen nodig om een aankoop naar een andere telefoon te verhuizen.",
+  "paywallTrialCta": "{days, plural, =1{Start 1 dag gratis} other{Start {days} dagen gratis}}",
+  "@paywallTrialCta": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "paywallTrialNote": "{days, plural, =1{Een dag gratis, daarna {price}. Je kunt altijd opzeggen voordat het afloopt.} other{{days} dagen gratis, daarna {price}. Je kunt altijd opzeggen voordat het afloopt.}}",
+  "@paywallTrialNote": {
+    "placeholders": { "days": { "type": "int" }, "price": { "type": "String" } }
+  },
+  "triageTitle": "Sinds je laatste blik",
+  "triageBody": "Houd wat in SHOTO thuishoort. De rest blijft precies waar het staat.",
+  "triageKeep": "Houden",
+  "triageSkip": "Overslaan",
+  "triageFinish": "Klaar",
+  "triageProgress": "{index} van {total}",
+  "@triageProgress": {
+    "placeholders": { "index": { "type": "int" }, "total": { "type": "int" } }
+  },
+  "triageNewCount": "{count, plural, =1{1 nieuw screenshot} other{{count} nieuwe screenshots}}",
+  "@triageNewCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageKept": "{count, plural, =0{Niets gehouden} =1{1 gehouden} other{{count} gehouden}}",
+  "@triageKept": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageReview": "Bekijken",
+  "triageInviteDecline": "Nu niet",
+  "settingsTriage": "Nieuwe screenshots aanbieden",
+  "settingsTriageHint": "Laat zien wat je vastlegt; houdt uit zichzelf niets",
+  "triageNothingNew": "Niets nieuws om te bekijken",
+  "settingsYourName": "Je naam",
+  "settingsYourNameHint": "Zodat Safe Share hem kan afdekken als hij opduikt",
+  "settingsYourNameNotSet": "Niet ingesteld",
+  "ownerNameTitle": "Je naam",
+  "ownerNameBody": "Safe Share vindt kaartnummers en codes via hun eigen rekenregels. Een naam vindt het alleen als het de jouwe al kent. Eén keer getypt, blijft op deze telefoon, gaat nergens heen.",
+  "ownerNameFieldHint": "De naam die je bank afdrukt",
+  "commonCancel": "Annuleren",
+  "commonDelete": "Verwijderen",
+  "commonRetry": "Opnieuw proberen",
+  "commonSomethingWentWrong": "Er ging iets mis",
+  "commonPro": "PRO",
+  "navHome": "Start",
+  "navLibrary": "Bibliotheek",
+  "navFolders": "Mappen",
+  "navSettings": "Instellingen",
+  "tagline": "Je screenshots, op orde",
+  "homeGreetingMorning": "Goedemorgen",
+  "homeGreetingAfternoon": "Goedemiddag",
+  "homeGreetingEvening": "Goedenavond",
+  "homeInboxEmpty": "Nog niets bewaard",
+  "homeInboxEmptySubtitle": "Kies er nu een paar van je telefoon, of deel vanuit elke app een screenshot naar SHOTO.",
+  "homeEmptyImportCta": "Kies van mijn telefoon",
+  "homeInboxClear": "Alles opgeborgen",
+  "homeInboxClearSubtitle": "Niets wacht om gesorteerd te worden",
+  "homeInboxCountSubtitle": "Screenshots die je nog niet hebt opgeborgen",
+  "homeStatScreenshots": "Screenshots",
+  "homeStatFavorites": "Favorieten",
+  "homeStatFolders": "Mappen",
+  "homeToolsTitle": "Gereedschap",
+  "homeToolsTitleEmpty": "Begin hier",
+  "homeToolSafeShare": "Safe share",
+  "homeToolSafeShareSubtitle": "Verberg eerst privégegevens",
+  "homeToolDuplicates": "Dubbele vinden",
+  "homeToolDuplicatesSubtitle": "Ruimte vrijmaken",
+  "homeToolSearch": "Erin zoeken",
+  "homeToolSearchSubtitle": "Vind tekst in je afbeeldingen",
+  "homeToolStitch": "Lange shots samenvoegen",
+  "homeToolStitchSubtitle": "Zet een scrollopname weer in elkaar",
+  "homeRecent": "Recent",
+  "libraryPickForMerge": "Kies twee of meer opnamen van dezelfde pagina",
+  "libraryPickForProtect": "Kies het screenshot om te beschermen",
+  "libraryActionProtect": "Beschermen",
+  "homeSeeAll": "Alles bekijken",
+  "libraryEmptyTitle": "Nog niets bewaard",
+  "libraryEmptyMessage": "Deel een screenshot met SHOTO, of voeg er een toe met de +-knop. Je galerij wordt nooit gelezen — alleen wat je overhandigt blijft.",
+  "libraryNoFavoritesTitle": "Nog geen favorieten",
+  "libraryNoFavoritesMessage": "Tik op het hartje bij een screenshot om het hier te bewaren.",
+  "libraryFilterAll": "Alle",
+  "libraryFilterFavorites": "Favorieten",
+  "libraryTraitSensitive": "Gevoelig",
+  "libraryTraitLink": "Links",
+  "libraryTraitContact": "Telefoon of e-mail",
+  "libraryTraitCode": "Codes",
+  "libraryTraitEvent": "Data",
+  "libraryCertaintyVerified": "Met controlegetal bevestigd",
+  "libraryCertaintyRead": "Gelezen uit de tekst in je screenshots",
+  "libraryLensNoteWithUnread": "{basis} · {count} nog niet gelezen",
+  "@libraryLensNoteWithUnread": {
+    "placeholders": {
+      "basis": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryNoTraitTitle": "Geen screenshots met {trait}",
+  "@libraryNoTraitTitle": {
+    "placeholders": {
+      "trait": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryNoTraitMessage": "Geen enkel gelezen screenshot bevat hiervan iets.",
+  "libraryNoTraitUnreadMessage": "Niets gevonden in wat gelezen is. {count} screenshots zijn nooit gelezen en kunnen dus nog niet meedoen.",
+  "@libraryNoTraitUnreadMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryShowAll": "Alles tonen",
+  "libraryFilterUnsorted": "Ongesorteerd",
+  "libraryNoUnsortedTitle": "Alles is opgeborgen",
+  "libraryNoUnsortedMessage": "Er wacht niets op je. Nieuwe screenshots blijven hier tot je ze opbergt of markeert.",
+  "librarySelectedCount": "{count} geselecteerd",
+  "@librarySelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "librarySelectAll": "Alles selecteren",
+  "libraryActionMerge": "Samenvoegen",
+  "libraryActionMove": "Verplaatsen",
+  "libraryActionDelete": "Verwijderen",
+  "libraryDeleteTitle": "Screenshots verwijderen?",
+  "libraryDeleteMessage": "{count, plural, =1{Dit verwijdert 1 screenshot definitief van je toestel.} other{Dit verwijdert {count} screenshots definitief van je toestel.}}",
+  "@libraryDeleteMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "permissionNeededTitle": "Fototoegang nodig",
+  "permissionNeededMessage": "SHOTO bewaart de screenshots die je erin deelt in een eigen album. Het heeft fototoegang nodig om daar te schrijven en ze terug te lezen — de rest van je galerij wordt nooit opgesomd.",
+  "permissionPartialTitle": "Volledige fototoegang nodig",
+  "permissionPartialMessage": "SHOTO ziet nu alleen een paar foto's die je met de hand koos en komt zo niet bij zijn eigen album. Kies „Alle toestaan” bij de fotorechten om verder te gaan.",
+  "permissionOpenSettings": "Instellingen openen",
+  "settingsTitle": "Instellingen",
+  "settingsAppearance": "Weergave",
+  "settingsTheme": "Thema",
+  "settingsThemeSystem": "Systeem",
+  "settingsThemeLight": "Licht",
+  "settingsThemeDark": "Donker",
+  "settingsGridDensity": "Rasterdichtheid",
+  "settingsLanguage": "Taal",
+  "settingsLanguageSystem": "Zoals mijn telefoon",
+  "settingsLanguageSystemHint": "Toont nu {language}",
+  "@settingsLanguageSystemHint": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsBehaviour": "Gedrag",
+  "settingsHaptics": "Trilfeedback",
+  "settingsHapticsHint": "Een klein tikje als je iets indrukt",
+  "settingsConfirmDelete": "Vragen voor het verwijderen",
+  "settingsConfirmDeleteHint": "Verwijderen kan niet ongedaan worden gemaakt",
+  "settingsFindDuplicates": "Dubbele vinden",
+  "settingsClearCache": "Afbeeldingscache legen",
+  "settingsShare": "SHOTO delen",
+  "settingsPrivacyNote": "SHOTO bewaart alleen de screenshots die je het geeft, en alles wat het ermee doet — tekst lezen, dubbele vinden — gebeurt op dit toestel. Je afbeeldingen worden nooit geüpload. Drie dingen zet je zelf aan: nieuwe screenshots aanbieden leest je Screenshots-album om ernaar te kunnen vragen, een account stuurt alleen je e-mailadres zodat een abonnement een nieuwe telefoon overleeft, en crashrapporten sturen wat er stukging — de code, nooit een afbeelding.",
+  "commonSave": "Opslaan",
+  "commonConfirm": "Bevestigen",
+  "commonRename": "Hernoemen",
+  "commonShare": "Delen",
+  "commonUnlock": "Ontgrendelen",
+  "foldersEmptyTitle": "Nog geen mappen",
+  "foldersEmptyMessage": "Mappen zijn hoe je dingen later terugvindt. Maak er een voor bonnetjes, een voor recepten — waar je echt naar gaat zoeken.",
+  "foldersNew": "Nieuwe map",
+  "foldersCreate": "Map maken",
+  "foldersNameLabel": "Mapnaam",
+  "foldersNameHint": "Bonnetjes, Recepten, Werk…",
+  "foldersPrivate": "Privé (gezichts- of vingerafdrukslot)",
+  "foldersPrivateFace": "Privé (gezichtsslot)",
+  "foldersPrivateFingerprint": "Privé (vingerafdrukslot)",
+  "foldersPrivateGeneric": "Privé (vergrendeld)",
+  "foldersOptions": "Mapopties",
+  "foldersDelete": "Map verwijderen",
+  "foldersDeleteKept": "De screenshots erin blijven bestaan",
+  "foldersDeleteTitle": "„{name}” verwijderen?",
+  "@foldersDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "foldersDeleteMessage": "De map verdwijnt, maar de screenshots erin blijven in je bibliotheek.",
+  "foldersRenameTitle": "Map hernoemen",
+  "foldersMoveTitle": "Naar map verplaatsen",
+  "foldersMoveRemove": "Uit de map halen",
+  "foldersMoveNone": "Nog geen mappen. Maak er een via het tabblad Mappen.",
+  "folderLockedTitle": "„{name}” ontgrendelen",
+  "@folderLockedTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "folderLockedMessage": "Deze map is beveiligd. Verifieer jezelf om hem te bekijken.",
+  "folderEmptyTitle": "Hier staat nog niets",
+  "folderEmptyMessage": "Verplaats screenshots vanuit je bibliotheek naar deze map.",
+  "detailFavorite": "Favoriet",
+  "detailUnfavorite": "Uit favorieten halen",
+  "detailAddFavorite": "Aan favorieten toevoegen",
+  "detailActions": "Acties",
+  "detailSafeShare": "Safe share",
+  "detailDeleteTitle": "Screenshot verwijderen?",
+  "detailDeleteMessage": "Dit verwijdert het definitief van je toestel.",
+  "quickSaveTitleOne": "Bewaren in SHOTO",
+  "quickSaveTitleMany": "{count} screenshots bewaren",
+  "@quickSaveTitleMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSaveFileOne": "Dit screenshot opbergen",
+  "quickSaveFileMany": "{count} screenshots opbergen",
+  "@quickSaveFileMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSavePickFolder": "Kies een map",
+  "quickSaveNeedFolder": "Maak een map om ze in te zetten",
+  "quickSaveFileIn": "Opbergen in {folder}",
+  "@quickSaveFileIn": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveCreateFirstFolder": "Maak je eerste map",
+  "quickSaveCreateFirstFolderWhy": "Mappen zijn hoe je dingen later terugvindt",
+  "quickSaveNewChip": "Nieuw",
+  "quickSaveSaved": "Bewaard in SHOTO",
+  "quickSaveFiled": "Opgeborgen in {folder}.",
+  "@quickSaveFiled": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveFailedTitle": "Kon die afbeelding niet lezen",
+  "quickSaveFailedBody": "Probeer hem opnieuw te delen.",
+  "quickSaveSkipped": "Alleen de eerste {count} zijn overgenomen",
+  "@quickSaveSkipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupTitle": "Dubbele vinden",
+  "dupScanning": "Op zoek naar dubbele",
+  "dupReading": "Je bibliotheek wordt gelezen…",
+  "dupProgress": "{done} van {total} screenshots gecontroleerd",
+  "@dupProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dupNoneTitle": "Geen dubbele gevonden",
+  "dupNoneBody": "Je screenshotbibliotheek is al opgeruimd.",
+  "dupScanAgain": "Opnieuw scannen",
+  "dupReclaimable": "Er kan tot {size} vrijkomen",
+  "@dupReclaimable": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupNothingSelected": "Niets geselecteerd",
+  "dupDeleteButton": "{count} verwijderen · {size} vrij",
+  "@dupDeleteButton": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupDeleteTitle": "{count} kopieën verwijderen?",
+  "@dupDeleteTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupDeleteMessage": "Dit verwijdert ze definitief van je toestel. De kopieën die je wilt houden blijven ongemoeid.",
+  "dupDeleted": "{count} verwijderd · {size} vrijgemaakt",
+  "@dupDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupSets": "{count} groepen",
+  "@dupSets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupBest": "BESTE",
+  "dupKeepAll": "Alle houden",
+  "dupKeepingAll": "Je houdt ze allemaal — er wordt niets verwijderd",
+  "dupUndo": "Ongedaan maken",
+  "dupFrees": "Maakt {size} vrij",
+  "@dupFrees": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "safeShareTitle": "Safe share",
+  "safeShareScanning": "Op zoek naar privégegevens",
+  "safeShareOnDevice": "Het lezen gebeurt op je telefoon.",
+  "safeShareCleanTitle": "Niets privés gevonden",
+  "safeShareCleanBody": "In dit screenshot zijn geen kaartnummers, rekeningnummers, codes of contactgegevens gezien. Je kunt het delen zoals het is.",
+  "safeShareUnreadableTitle": "Kon dit screenshot niet lezen",
+  "safeShareUnreadableBody": "De tekst erin werd niet herkend.",
+  "safeShareShareUnchanged": "Ongewijzigd delen",
+  "safeShareShareAnyway": "Toch delen",
+  "safeShareShareProtected": "Beschermde kopie delen",
+  "safeShareFailed": "Kon de beschermde kopie niet maken.",
+  "safeShareFoundTitle": "{count, plural, =1{1 privégegeven gevonden} other{{count} privégegevens gevonden}}",
+  "@safeShareFoundTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFreeScan": "Controleren is altijd gratis.",
+  "safeShareCleanAction": "Dit screenshot schoonmaken",
+  "safeShareShareAsIs": "Delen zonder wijzigingen",
+  "safeShareHowTitle": "Afgedekt, voorgoed",
+  "safeShareHowBody": "Elk privégegeven wordt met een dicht blok afgedekt voordat de kopie je telefoon verlaat. Niets is vervaagd en niets is terug te lezen — de afgedekte kopie is de enige versie die bestaat.",
+  "safeShareTreatmentCover": "Afdekken",
+  "safeShareTreatmentKeep": "Houden",
+  "safeShareBuilding": "Je schone kopie wordt gemaakt",
+  "safeShareNothingSelected": "Er verandert niets",
+  "safeShareLockedPreview": "Ontgrendel om de schone versie te zien",
+  "safeShareReviewTitle": "Bekijk ze stuk voor stuk",
+  "safeShareFound": "{count} dingen afgedekt",
+  "@safeShareFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchTitle": "Screenshots samenvoegen",
+  "stitchWorking": "Op zoek naar de overlap",
+  "stitchWorkingBody": "Er wordt gezocht waar elk screenshot verdergaat waar het vorige stopte.",
+  "stitchFailed": "Samenvoegen lukte niet",
+  "stitchSave": "Bewaren in galerij",
+  "stitchSaved": "Bewaard in je galerij",
+  "stitchDiscard": "Weggooien",
+  "commonDone": "Klaar",
+  "commonBack": "Terug",
+  "commonClose": "Sluiten",
+  "searchTitle": "Zoek in je screenshots",
+  "searchHint": "Zoek woorden of wat een afbeelding toont",
+  "searchIntro": "Elk woord dat in een afbeelding staat, of wat de afbeelding toont — probeer „kat”, „dier”, „eten” of „bonnetje”.",
+  "searchNoneTitle": "Geen resultaten",
+  "searchNoneBody": "Hier staat of lijkt niets op „{query}”.",
+  "@searchNoneBody": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallTitle": "SHOTO Pro ontgrendelen",
+  "paywallSubtitle": "Alles hieronder, met één abonnement.",
+  "paywallMonthly": "Maandelijks",
+  "paywallYearly": "Jaarlijks",
+  "paywallSave": "Bespaar {percent}%",
+  "@paywallSave": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallContinue": "Doorgaan",
+  "paywallUnavailable": "Nog niet beschikbaar",
+  "paywallRestore": "Aankopen herstellen",
+  "paywallLegal": "Verlengt automatisch tot je opzegt. Opzeggen kan altijd via je account-instellingen in de App Store of Google Play. Door verder te gaan ga je akkoord met onze Servicevoorwaarden en het Privacybeleid.",
+  "subPremiumBadge": "PRO",
+  "subPremiumTitle": "SHOTO Pro",
+  "subPremiumBody": "Elke functie voor je ontgrendeld.",
+  "subDevUnlock": "Testertoegang",
+  "subDevUnlockBody": "Ontgrendeld op dit toestel — geen echt abonnement",
+  "subUnlockEverything": "Alles ontgrendelen",
+  "proWelcomeTitle": "Je zit op Pro",
+  "proWelcomeBody": "Elke functie is ontgrendeld. Er valt verder niets in te stellen.",
+  "proWelcomeAction": "Aan de slag",
+  "featSafeShare": "Safe share",
+  "featSafeShareBody": "Vervangt kaartnummers, adressen, namen en contactgegevens door realistische vervangers — zelfde lengte, zelfde opmaak, zelfde plek. Aan de kopie die je stuurt is niets te zien.",
+  "featActions": "Maak van screenshots acties",
+  "featActionsBody": "Open een link, schrijf naar een adres, kopieer een verificatiecode of een IBAN — rechtstreeks uit de afbeelding, zonder iets over te typen.",
+  "featDuplicates": "Dubbele vinden",
+  "featDuplicatesBody": "Spot bijna identieke opnamen die je dubbel bewaarde en ruimt ze op — altijd eerst met een controle.",
+  "featStitch": "Lange screenshots samenvoegen",
+  "featStitchBody": "Zet een scrollopname weer in elkaar tot één hoge afbeelding, met de overlap automatisch gevonden en weggehaald.",
+  "featUnlimited": "Geen plafond voor je bibliotheek",
+  "featUnlimitedBody": "De gratis versie ordent {count} screenshots. Pro haalt het getal weg.",
+  "featSafeShareHow": "Vinden wat privé is in een screenshot is gratis en onbeperkt. Je betaalt om die vondsten om te zetten in een schone kopie: elk gegeven wordt in de kleuren van het screenshot opnieuw getekend als een andere, even gewone waarde.",
+  "featSafeSharePoint1": "Kaartnummers worden met Luhn gecontroleerd en IBANs met modulo 97 — en de vervangers doorstaan dezelfde controles, dus niets oogt verzonnen.",
+  "featSafeSharePoint2": "Pikt ook namen, adressen, bestelnummers, verificatiecodes, telefoonnummers en e-mailadressen op.",
+  "featSafeSharePoint3": "Je ziet elke wijziging voor je verstuurt, en kunt er elk afdekken of houden. Het originele screenshot wordt nooit aangeraakt.",
+  "featActionsHow": "Wat er in een screenshot staat, wordt iets wat je kunt gebruiken. SHOTO haalt de bruikbare stukken eruit en zet op elk een knop.",
+  "featActionsPoint1": "Links, e-mailadressen, IBANs, verificatiecodes, data en pakketnummers worden voor je gevonden.",
+  "featActionsPoint2": "Eén tik om te openen of te kopiëren — geen tekens meer van een plaatje aflezen.",
+  "featActionsPoint3": "Werkt op de screenshots die je al hebt, niet alleen op nieuwe.",
+  "featStitchHow": "Een scrollopname moet op telefoons die het kunnen gestart worden terwijl je nog op de pagina bent. SHOTO werkt daarna: kies twee of meer opnamen die al in je bibliotheek staan — ook die iemand je stuurde — en het vindt waar ze overlappen en voegt ze tot één hoge afbeelding.",
+  "featStitchPoint1": "De herhaalde strook tussen twee opnamen wordt automatisch gevonden en weggehaald.",
+  "featStitchPoint2": "Je ziet de naad voordat er iets bewaard wordt — automatisch herkennen is goed, maar nooit zeker.",
+  "featStitchPoint3": "De samengevoegde afbeelding komt als elke andere foto in je galerij.",
+  "featDuplicatesHow": "Opnamen één voor één indelen levert zelden dubbele op. Een reeks houden uit „Sinds je laatste blik” wel — je gaat snel, en twee opnamen van hetzelfde blijven allebei staan. SHOTO vergelijkt hoe een opname eruitziet, niet de naam of de grootte, dus het pakt ook een doorstuur of een andere uitsnede.",
+  "featDuplicatesPoint1": "Groepeert wat er hetzelfde uitziet en stelt de kopie voor die het waard is te houden.",
+  "featDuplicatesPoint2": "Laat zien hoeveel ruimte elke groep vrijmaakt voordat je iets beslist.",
+  "featDuplicatesPoint3": "Er wordt niets verwijderd tot je de groep hebt bekeken en bevestigd.",
+  "featUnlimitedHow": "De gratis versie is een echte, bruikbare app: bewaren, mappen, favorieten en volledige zoekfunctie, zonder account en zonder uploads. Er is precies één plafond — hoeveel screenshots het ordent — en Pro haalt dat weg. Alles wat je al geordend hebt blijft precies waar het staat.",
+  "featUnlimitedPoint1": "Mappen zijn onbeperkt in de gratis versie, en dat was altijd de bedoeling.",
+  "featUnlimitedPoint2": "Benoemen waar een screenshot voor is, is ook gratis en onbeperkt.",
+  "featUnlimitedPoint3": "Tegen het plafond aanlopen betekent dat SHOTO je bewaarplek is geworden. Er wordt daarbij niets verwijderd.",
+  "includedSubtitle": "Elke Pro-functie, uitgelegd.",
+  "includedHint": "Tik op een functie om te zien hoe die werkt",
+  "includedHowLabel": "Hoe het werkt",
+  "includedActiveTitle": "Je abonnement is actief",
+  "includedActiveBody": "Alles hieronder is ontgrendeld op dit account.",
+  "includedLockedTitle": "Nog niet ontgrendeld",
+  "includedLockedBody": "Lees wat elk ding echt doet en beslis daarna.",
+  "includedFreeTitle": "Wat de gratis versie je geeft",
+  "includedFreeBody": "{count} geordende screenshots, onbeperkt mappen en volledig zoeken — voorgoed gratis.",
+  "@includedFreeBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingCta": "Aan de slag",
+  "onboardingPromise": "Je screenshots blijven op je telefoon.",
+  "actionsTitle": "Acties",
+  "actionsWorking": "Het screenshot wordt gelezen",
+  "actionsWorkingBody": "Op zoek naar nummers, links en codes.",
+  "actionsNoneTitle": "Niets om mee te doen",
+  "actionsNoneBody": "In dit screenshot zijn geen links, codes of rekeningnummers gevonden.",
+  "actionsCopy": "Kopiëren",
+  "actionsCopied": "Gekopieerd",
+  "actionsNoApp": "Geen app op dit toestel kan dat.",
+  "devModeOn": "Ontwikkelaarsmodus aan — elke functie ontgrendeld",
+  "devModeBadge": "ONTWIKKELAARSMODUS",
+  "devModeOffTitle": "Ontwikkelaarsmodus uitzetten?",
+  "devModeOffBody": "SHOTO gaat op dit toestel terug naar de gratis versie, zodat je de paywall en de limieten opnieuw kunt testen.",
+  "devModeOffConfirm": "Uitzetten",
+  "devAccessTitle": "Ontwikkelaarstoegang",
+  "devAccessBody": "Voer de 4-cijferige code in om elke Pro-functie op dit toestel te ontgrendelen.",
+  "devWrongCode": "Verkeerde code",
+  "devTapToDisable": "Tik {count}× om uit te zetten",
+  "@devTapToDisable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appVersion": "Versie {version}",
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "kindCard": "een kaartnummer",
+  "kindIban": "een bankrekening",
+  "kindCode": "een verificatiecode",
+  "kindNationalId": "een identiteitsnummer",
+  "kindEmail": "een e-mailadres",
+  "kindLink": "een link",
+  "actionEmailAction": "Schrijven",
+  "actionOpen": "Openen",
+  "kindEvent": "een afspraak",
+  "kindPlace": "een plek",
+  "kindWifi": "een wifinetwerk",
+  "kindTracking": "een zending",
+  "actionAddToCalendar": "Aan agenda toevoegen",
+  "actionOpenMaps": "Openen in Maps",
+  "actionDirections": "Route",
+  "actionCopyNetwork": "Naam kopiëren",
+  "actionTrack": "Volgen",
+  "actionEventUntitled": "Afspraak",
+  "countScreenshots": "{count, plural, =0{Geen screenshots} =1{1 screenshot} other{{count} screenshots}}",
+  "@countScreenshots": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countPosition": "{position} van {total}",
+  "@countPosition": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "countChip": "{label} · {count}",
+  "@countChip": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSetsFound": "{count, plural, =1{1 groep dubbele} other{{count} groepen dubbele}}",
+  "@dupSetsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSimilarCopies": "{count} vergelijkbare kopieën",
+  "@dupSimilarCopies": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFoundCount": "{count, plural, =1{1 ding gevonden} other{{count} dingen gevonden}}",
+  "@safeShareFoundCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsStorage": "Opslag",
+  "settingsDuplicatesHint": "Spot screenshots die je twee keer nam",
+  "settingsPremium": "Pro",
+  "settingsWhatsIncluded": "Wat erbij zit",
+  "settingsFeatureCount": "{count} functies, één abonnement",
+  "@settingsFeatureCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsShareHint": "Vertel het iemand die het nodig heeft",
+  "settingsShareText": "SHOTO houdt mijn screenshots vanzelf op orde — alles blijft op de telefoon.",
+  "settingsCacheMeasuring": "Wordt gemeten…",
+  "settingsCacheSize": "{size} aan miniaturen",
+  "@settingsCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSafeShareHint": "Open een screenshot en tik dan op Safe share.",
+  "homeStitchHint": "Houd twee of meer screenshots in je bibliotheek ingedrukt en tik dan op Samenvoegen.",
+  "stitchLimit": "Voeg tot {count} screenshots tegelijk samen.",
+  "@stitchLimit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareSavedPrompt": "{count, plural, =1{Screenshot bewaard. In een map zetten?} other{Screenshots bewaard. In een map zetten?}}",
+  "@shareSavedPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultMerged": "{count} screenshots samengevoegd",
+  "@stitchResultMerged": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultTrimmed": "{count} px herhaalde inhoud weggehaald",
+  "@stitchResultTrimmed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorLoadScreenshots": "Je screenshots konden niet worden geladen.",
+  "errorLoadFolders": "Je mappen konden niet worden geladen.",
+  "errorScanDuplicates": "Er kon niet op dubbele worden gescand.",
+  "errorDeleteSelected": "De geselecteerde screenshots konden niet worden verwijderd.",
+  "errorStitchFailed": "Deze screenshots konden niet worden samengevoegd.",
+  "errorStitchSave": "De samengevoegde afbeelding kon niet worden bewaard.",
+  "errorOnboarding": "Laden lukte niet. Open de app opnieuw.",
+  "errorSignInCancelled": "Het inloggen is geannuleerd.",
+  "errorSignInInterrupted": "Het inloggen werd onderbroken. Probeer het opnieuw.",
+  "errorNetwork": "Netwerkfout. Controleer je verbinding.",
+  "errorGeneric": "Er ging iets mis. Probeer het opnieuw.",
+  "errorPlans": "De abonnementen konden niet worden geladen.",
+  "errorPurchase": "De aankoop is mislukt. Probeer het opnieuw.",
+  "errorNoSubscription": "Geen actief abonnement gevonden voor dit account.",
+  "errorRestore": "Aankopen konden niet worden hersteld.",
+  "errorStitchTooFew": "Kies minstens twee screenshots om samen te voegen.",
+  "errorStitchTooMany": "Er kunnen tot {count} screenshots tegelijk worden samengevoegd.",
+  "@errorStitchTooMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorStitchUnreadable": "Een van de screenshots kon niet worden gelezen.",
+  "errorStitchWidths": "Deze screenshots zijn verschillend breed en kunnen dus niet bij dezelfde scroll horen.",
+  "errorStitchNoOverlap": "Deze screenshots overlappen niet. Samenvoegen werkt alleen bij opnamen van dezelfde pagina die tijdens het scrollen zijn gemaakt.",
+  "errorStitchOverlap": "De overlap tussen deze screenshots kon niet worden bepaald.",
+  "errorStitchTooTall": "De samengevoegde afbeelding zou te hoog worden. Probeer minder screenshots samen te voegen.",
+  "errorStitchEncode": "De samengevoegde afbeelding kon niet worden gecodeerd.",
+  "errorRedactionSave": "De beschermde kopie kon niet worden bewaard.",
+  "shareSavedCount": "{count, plural, =1{Screenshot bewaard} other{{count} screenshots bewaard}}",
+  "@shareSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "densityLarge": "Groot",
+  "densityMedium": "Gemiddeld",
+  "densitySmall": "Klein",
+  "sensitiveCard": "Kaartnummer",
+  "sensitiveIban": "Bankrekening",
+  "sensitiveCode": "Verificatiecode",
+  "sensitiveNationalId": "Identiteitsnummer",
+  "sensitiveEmail": "E-mailadres",
+  "sensitivePhone": "Telefoonnummer",
+  "sensitiveAddress": "Adres",
+  "sensitiveName": "Naam",
+  "sensitiveOrderNumber": "Bestelnummer",
+  "sensitiveNumber": "Nummer",
+  "onbSkip": "Overslaan",
+  "onbNext": "Volgende",
+  "onbPileTitle": "Duizend screenshots, één stapel",
+  "onbPileBody": "Je maakt een screenshot om iets te onthouden. Een week later ligt het onder vierhonderd andere.",
+  "onbChooseTitle": "SHOTO leest nooit je galerij",
+  "onbChooseBody": "Er komt niets uit zichzelf binnen. Jij deelt een screenshot naar binnen — dat is de hele regel.",
+  "onbFileTitle": "Opgeborgen op het moment dat je het stuurt",
+  "onbFileBody": "Kies de map meteen in het deelmenu. De app gaat niet eens open.",
+  "onbFindTitle": "Zoek wat erin staat",
+  "onbFindBody": "De woorden die in een screenshot staan, en wat de afbeelding toont. Typ „bonnetje”, of „hond”.",
+  "onbSafeShareTitle": "Het screenshot dat je echt kunt versturen",
+  "onbSafeShareBody": "Een kaartnummer wordt een ander kaartnummer — zelfde lengte, zelfde plek, nog steeds geldig. Niemand ziet dat het bewerkt is.",
+  "onbFolderExample": "Bonnetjes",
+  "onbSearchExample": "bonnetje",
+  "importTitle": "Screenshots toevoegen",
+  "importDone": "{count, plural, =1{1 screenshot geïmporteerd} other{{count} screenshots geïmporteerd}}",
+  "@importDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importPartial": "{imported} van {picked} geïmporteerd",
+  "@importPartial": {
+    "placeholders": {
+      "imported": {
+        "type": "int"
+      },
+      "picked": {
+        "type": "int"
+      }
+    }
+  },
+  "importFailed": "Die screenshots konden niet worden bewaard",
+  "homeToolImportSubtitle": "Kies van je telefoon — je galerij wordt nooit gelezen",
+  "importPickerUnavailable": "De fotokiezer ging niet open",
+  "searchWorking": "Je screenshots worden gelezen…",
+  "settingsBackup": "Back-up & herstel",
+  "settingsBackupHint": "Bewaar een kopie van je bibliotheek in een bestand",
+  "backupTitle": "Back-up",
+  "backupIntro": "Je bibliotheek leeft op deze telefoon en nergens anders. Een back-up is de kopie die het overleeft als je hem kwijtraakt.",
+  "backupCreateTitle": "Een back-up maken",
+  "backupCreateBody": "Stopt elk screenshot, elke map en elk label in één bestand, en laat je dan kiezen waar je het bewaart.",
+  "backupCreateAction": "Back-up maken",
+  "backupWorking": "Je bibliotheek wordt ingepakt…",
+  "backupDone": "{screenshots, plural, =1{1 screenshot in de back-up} other{{screenshots} screenshots in de back-up}} en {folders, plural, =1{1 map} other{{folders} mappen}}",
+  "@backupDone": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "folders": {
+        "type": "int"
+      }
+    }
+  },
+  "backupDoneWithSkips": "{screenshots, plural, =1{1 screenshot in de back-up} other{{screenshots} screenshots in de back-up}}. {skipped, plural, =1{1 kon niet worden gelezen} other{{skipped} konden niet worden gelezen}}.",
+  "@backupDoneWithSkips": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "backupFailed": "De back-up kon niet worden afgemaakt",
+  "backupPrivacyNote": "Het bestand wordt op deze telefoon gemaakt en gaat alleen waar jij het heen stuurt. Er wordt niets geüpload.",
+  "restoreTitle": "Een back-up herstellen",
+  "restoreBody": "Voegt alles uit een back-upbestand toe aan deze bibliotheek. Niets wat er al staat wordt verwijderd.",
+  "restoreAction": "Herstellen",
+  "restoreWorking": "Je bibliotheek wordt teruggezet…",
+  "restoreConfirmTitle": "Deze back-up herstellen?",
+  "restoreConfirmMessage": "Alles in het bestand wordt aan je bibliotheek toegevoegd. Je huidige screenshots blijven precies zoals ze zijn.",
+  "restoreDone": "{screenshots, plural, =1{1 screenshot hersteld} other{{screenshots} screenshots hersteld}} en {folders, plural, =1{1 map} other{{folders} mappen}}",
+  "@restoreDone": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "folders": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreDoneWithSkips": "{screenshots, plural, =1{1 screenshot hersteld} other{{screenshots} screenshots hersteld}}. {skipped, plural, =1{1 is overgeslagen} other{{skipped} zijn overgeslagen}}.",
+  "@restoreDoneWithSkips": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreNotABackup": "Dat bestand is geen SHOTO-back-up",
+  "restoreFailed": "Het herstellen kon niet worden afgemaakt",
+  "settingsHelp": "Hulp",
+  "settingsContactSupport": "Contact met support",
+  "supportSubject": "SHOTO-support",
+  "supportNoMailApp": "Geen e-mailapp gevonden. Het adres is in plaats daarvan gekopieerd.",
+  "supportGreeting": "Hallo SHOTO-team,",
+  "dateToday": "Vandaag",
+  "dateYesterday": "Gisteren",
+  "dateThisWeek": "Eerder deze week",
+  "dateThisMonth": "Eerder deze maand",
+  "librarySortNewest": "Nieuwste eerst",
+  "librarySortOldest": "Oudste eerst",
+  "librarySortLabel": "Volgorde",
+  "libraryShowOnly": "Alleen tonen",
+  "libraryShowEverything": "Alles",
+  "libraryScanPrompt": "{count} screenshots lezen",
+  "libraryScanning": "Wordt gelezen…",
+  "@libraryScanPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashTitle": "{count, plural, =1{1 map bestaat hier al} other{{count} mappen bestaan hier al}}",
+  "@restoreClashTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashBody": "Deze namen staan in je bibliotheek én in de back-up. Dezelfde naam betekent niet altijd dezelfde map, dus deze beslis jij.",
+  "restoreClashMore": "{count, plural, =1{en nog 1} other{en nog {count}}}",
+  "@restoreClashMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashMerge": "Bij elkaar zetten",
+  "restoreClashMergeBody": "Screenshots gaan naar de mappen die je al hebt.",
+  "restoreClashSeparate": "Apart houden",
+  "restoreClashSeparateBody": "Maakt een tweede map met dezelfde naam. Er wordt niets bestaands aangeraakt.",
+  "intentBuy": "Kopen",
+  "intentRead": "Lezen",
+  "intentReply": "Antwoorden",
+  "intentTry": "Proberen",
+  "intentVisit": "Bezoeken",
+  "intentBuyWaiting": "Te kopen",
+  "intentReadWaiting": "Te lezen",
+  "intentReplyWaiting": "Te beantwoorden",
+  "intentTryWaiting": "Te proberen",
+  "intentVisitWaiting": "Te bezoeken",
+  "intentWatch": "Kijken",
+  "intentListen": "Luisteren",
+  "intentCook": "Koken",
+  "intentBook": "Boeken",
+  "intentPay": "Betalen",
+  "intentSend": "Versturen",
+  "intentDownload": "Downloaden",
+  "intentApply": "Solliciteren",
+  "intentCompare": "Vergelijken",
+  "intentFix": "Repareren",
+  "intentWatchWaiting": "Te kijken",
+  "intentListenWaiting": "Te beluisteren",
+  "intentCookWaiting": "Te koken",
+  "intentBookWaiting": "Te boeken",
+  "intentPayWaiting": "Te betalen",
+  "intentSendWaiting": "Te versturen",
+  "intentDownloadWaiting": "Te downloaden",
+  "intentApplyWaiting": "Op te solliciteren",
+  "intentCompareWaiting": "Te vergelijken",
+  "intentFixWaiting": "Te repareren",
+  "intentMore": "Meer",
+  "intentSectionCommon": "Kant-en-klaar",
+  "intentSectionYours": "Van jou",
+  "intentYoursEmpty": "Een werkwoord dat je zelf schrijft werkt precies zoals die hierboven.",
+  "intentNewAction": "Schrijf je eigen",
+  "intentNewTitle": "Geef het zelf een naam",
+  "intentEditTitle": "Deze bewerken",
+  "intentNameLabel": "Het werkwoord",
+  "intentNameHint": "Terugsturen, annuleren, ze bellen…",
+  "intentIconLabel": "Pictogram",
+  "intentDeleteTitle": "„{label}” verwijderen?",
+  "@intentDeleteTitle": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "intentDeleteMessage": "De screenshots blijven waar ze zijn. Ze wachten alleen nergens meer op.",
+  "intentSelectionAction": "Markeren als",
+  "intentSelectionApplied": "{count, plural, =1{1 screenshot gemarkeerd} other{{count} screenshots gemarkeerd}}",
+  "@intentSelectionApplied": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "intentPrompt": "Waar het voor is, als je wilt",
+  "intentSkip": "Niets in het bijzonder",
+  "intentWaitingTitle": "Wacht op jou",
+  "intentNothingWaiting": "Niets wacht op jou",
+  "intentAllDone": "Je hebt alles afgerond wat je voor later bewaarde.",
+  "intentMarkDone": "Afgerond",
+  "intentUndo": "Terugzetten",
+  "intentDoneToast": "Afgevinkt",
+  "intentChange": "Wijzig waar dit voor is",
+  "intentClear": "Nergens voor",
+  "intentEmptyOne": "Hier is niets te {verb}",
+  "@intentEmptyOne": {
+    "placeholders": {
+      "verb": {
+        "type": "String"
+      }
+    }
+  },
+  "intentEmptyBody": "Screenshots die je markeert blijven hier tot je ze afvinkt.",
+  "intentDoneCount": "{count} afgerond",
+  "@intentDoneCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateDaysAgo": "{count, plural, =1{1 dag geleden} other{{count} dagen geleden}}",
+  "@dateDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateWeeksAgo": "{count, plural, =1{1 week geleden} other{{count} weken geleden}}",
+  "@dateWeeksAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateMonthsAgo": "{count, plural, =1{1 maand geleden} other{{count} maanden geleden}}",
+  "@dateMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

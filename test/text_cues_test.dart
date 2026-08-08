@@ -147,4 +147,34 @@ void main() {
     expect(TextCues.has('anything at all', ''), isFalse);
     expect(TextCues.has('anything at all', '*'), isFalse);
   });
+
+  group('a cue that begins or ends with an accented letter', () {
+    // The reason this file cannot be simplified to `\b`, pinned as a test
+    // because the failure it prevents is invisible: Dart's word class is
+    // ASCII-only, so `\bévénement\b` finds no boundary to anchor to and
+    // matches nothing in any text at all. `événement` is a live entry in
+    // EventExtractor's cue list.
+    test('is matched here', () {
+      expect(TextCues.has('un événement demain', 'événement'), isTrue);
+      expect(TextCues.has('la réunion demain', 'réunion'), isTrue);
+      expect(TextCues.has('einladung am 12. märz', 'märz'), isTrue);
+    });
+
+    test('is still held to whole words', () {
+      // The accent buys no exemption from the rule the file exists for.
+      expect(TextCues.has('événements', 'événement'), isFalse);
+      expect(TextCues.has('réunions', 'réunion'), isFalse);
+    });
+
+    test('is exactly what a naive word boundary would drop', () {
+      // Partial and quiet: only the *ends* of the cue matter, so a `\b`
+      // rewrite passes for réunion and märz and silently loses événement.
+      bool boundary(String cue, String hay) =>
+          RegExp('\\b$cue\\b', caseSensitive: false).hasMatch(hay);
+
+      expect(boundary('réunion', 'la réunion demain'), isTrue);
+      expect(boundary('märz', 'einladung am 12. märz'), isTrue);
+      expect(boundary('événement', 'un événement demain'), isFalse);
+    });
+  });
 }

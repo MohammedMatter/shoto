@@ -1,0 +1,961 @@
+{
+  "@@locale": "de",
+  "settingsCrashReports": "Absturzberichte",
+  "settingsCrashReportsHint": "Technische Details senden, wenn etwas schiefgeht",
+  "settingsSignOut": "Abmelden",
+  "settingsSignOutTitle": "Abmelden?",
+  "authWelcome": "Willkommen bei SHOTO",
+  "authSubtitle": "Mit einer Anmeldung bleibt dein Abo dir erhalten, wenn du das Handy wechselst. Deine Screenshots bleiben so oder so auf diesem Gerät – ein Konto nimmt sie nie mit.",
+  "authGoogle": "Weiter mit Google",
+  "authApple": "Weiter mit Apple",
+  "authLegal": "Wenn du fortfährst, stimmst du unseren Nutzungsbedingungen und der Datenschutzerklärung zu.",
+  "settingsAccount": "Konto",
+  "settingsSignOutHint": "Deine Screenshots bleiben auf diesem Gerät",
+  "settingsSignIn": "Anmelden",
+  "settingsSignInHint": "Optional. Nur nötig, um einen Kauf auf ein anderes Handy zu übertragen.",
+  "paywallTrialCta": "{days, plural, =1{1 Tag gratis starten} other{{days} Tage gratis starten}}",
+  "@paywallTrialCta": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "paywallTrialNote": "{days, plural, =1{Einen Tag gratis, danach {price}. Jederzeit vorher kündbar.} other{{days} Tage gratis, danach {price}. Jederzeit vorher kündbar.}}",
+  "@paywallTrialNote": {
+    "placeholders": { "days": { "type": "int" }, "price": { "type": "String" } }
+  },
+  "triageTitle": "Seit deinem letzten Blick",
+  "triageBody": "Behalte, was zu SHOTO gehört. Alles andere bleibt genau dort, wo es ist.",
+  "triageKeep": "Behalten",
+  "triageSkip": "Überspringen",
+  "triageFinish": "Fertig",
+  "triageProgress": "{index} von {total}",
+  "@triageProgress": {
+    "placeholders": { "index": { "type": "int" }, "total": { "type": "int" } }
+  },
+  "triageNewCount": "{count, plural, =1{1 neuer Screenshot} other{{count} neue Screenshots}}",
+  "@triageNewCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageKept": "{count, plural, =0{Nichts behalten} =1{1 behalten} other{{count} behalten}}",
+  "@triageKept": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "triageReview": "Ansehen",
+  "triageInviteDecline": "Jetzt nicht",
+  "settingsTriage": "Neue Screenshots anbieten",
+  "settingsTriageHint": "Zeigt, was du aufnimmst; behält von allein nichts",
+  "triageNothingNew": "Nichts Neues zum Ansehen",
+  "settingsYourName": "Dein Name",
+  "settingsYourNameHint": "Damit Safe Share ihn abdecken kann, wenn er auftaucht",
+  "settingsYourNameNotSet": "Nicht festgelegt",
+  "ownerNameTitle": "Dein Name",
+  "ownerNameBody": "Safe Share findet Kartennummern und Codes über ihre eigene Rechenlogik. Einen Namen findet es nur, wenn es deinen schon kennt. Einmal eingetippt, bleibt auf diesem Handy, wird nirgendwohin gesendet.",
+  "ownerNameFieldHint": "Der Name, den deine Bank druckt",
+  "commonCancel": "Abbrechen",
+  "commonDelete": "Löschen",
+  "commonRetry": "Erneut versuchen",
+  "commonSomethingWentWrong": "Etwas ist schiefgegangen",
+  "commonPro": "PRO",
+  "navHome": "Start",
+  "navLibrary": "Mediathek",
+  "navFolders": "Ordner",
+  "navSettings": "Einstellungen",
+  "tagline": "Deine Screenshots, geordnet",
+  "homeGreetingMorning": "Guten Morgen",
+  "homeGreetingAfternoon": "Guten Tag",
+  "homeGreetingEvening": "Guten Abend",
+  "homeInboxEmpty": "Noch nichts gespeichert",
+  "homeInboxEmptySubtitle": "Wähle jetzt ein paar von deinem Handy oder teile aus jeder App einen Screenshot in SHOTO.",
+  "homeEmptyImportCta": "Von meinem Handy wählen",
+  "homeInboxClear": "Alles abgelegt",
+  "homeInboxClearSubtitle": "Nichts wartet aufs Sortieren",
+  "homeInboxCountSubtitle": "Screenshots, die du noch nicht abgelegt hast",
+  "homeStatScreenshots": "Screenshots",
+  "homeStatFavorites": "Favoriten",
+  "homeStatFolders": "Ordner",
+  "homeToolsTitle": "Werkzeuge",
+  "homeToolsTitleEmpty": "Hier anfangen",
+  "homeToolSafeShare": "Safe Share",
+  "homeToolSafeShareSubtitle": "Erst Privates verbergen",
+  "homeToolDuplicates": "Duplikate finden",
+  "homeToolDuplicatesSubtitle": "Speicher freimachen",
+  "homeToolSearch": "Darin suchen",
+  "homeToolSearchSubtitle": "Text in deinen Bildern finden",
+  "homeToolStitch": "Lange Shots verbinden",
+  "homeToolStitchSubtitle": "Eine Scroll-Aufnahme zusammenfügen",
+  "homeRecent": "Zuletzt",
+  "libraryPickForMerge": "Wähle zwei oder mehr Aufnahmen derselben Seite",
+  "libraryPickForProtect": "Wähle den Screenshot zum Schützen",
+  "libraryActionProtect": "Schützen",
+  "homeSeeAll": "Alle ansehen",
+  "libraryEmptyTitle": "Noch nichts gespeichert",
+  "libraryEmptyMessage": "Teile einen Screenshot mit SHOTO oder füge einen über + hinzu. Deine Galerie wird nie gelesen – behalten wird nur, was du übergibst.",
+  "libraryNoFavoritesTitle": "Noch keine Favoriten",
+  "libraryNoFavoritesMessage": "Tippe das Herz auf einem Screenshot, um ihn hier abzulegen.",
+  "libraryFilterAll": "Alle",
+  "libraryFilterFavorites": "Favoriten",
+  "libraryTraitSensitive": "Sensibel",
+  "libraryTraitLink": "Links",
+  "libraryTraitContact": "Telefon oder E-Mail",
+  "libraryTraitCode": "Codes",
+  "libraryTraitEvent": "Termine",
+  "libraryCertaintyVerified": "Per Prüfsumme bestätigt",
+  "libraryCertaintyRead": "Aus dem Text in deinen Screenshots gelesen",
+  "libraryLensNoteWithUnread": "{basis} · {count} noch nicht gelesen",
+  "@libraryLensNoteWithUnread": {
+    "placeholders": {
+      "basis": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryNoTraitTitle": "Keine Screenshots mit {trait}",
+  "@libraryNoTraitTitle": {
+    "placeholders": {
+      "trait": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryNoTraitMessage": "Kein gelesener Screenshot enthält davon etwas.",
+  "libraryNoTraitUnreadMessage": "Im Gelesenen nichts gefunden. {count} Screenshots wurden nie gelesen und lassen sich daher noch nicht zuordnen.",
+  "@libraryNoTraitUnreadMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryShowAll": "Alle anzeigen",
+  "libraryFilterUnsorted": "Unsortiert",
+  "libraryNoUnsortedTitle": "Alles ist abgelegt",
+  "libraryNoUnsortedMessage": "Nichts wartet auf dich. Neue Screenshots landen hier, bis du sie ablegst oder markierst.",
+  "librarySelectedCount": "{count} ausgewählt",
+  "@librarySelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "librarySelectAll": "Alle auswählen",
+  "libraryActionMerge": "Verbinden",
+  "libraryActionMove": "Verschieben",
+  "libraryActionDelete": "Löschen",
+  "libraryDeleteTitle": "Screenshots löschen?",
+  "libraryDeleteMessage": "{count, plural, =1{Dies löscht 1 Screenshot endgültig von deinem Gerät.} other{Dies löscht {count} Screenshots endgültig von deinem Gerät.}}",
+  "@libraryDeleteMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "permissionNeededTitle": "Fotozugriff nötig",
+  "permissionNeededMessage": "SHOTO bewahrt die Screenshots, die du hineinteilst, in einem eigenen Album auf. Für das Schreiben und Zurücklesen braucht es Fotozugriff – den Rest deiner Galerie listet es nie auf.",
+  "permissionPartialTitle": "Voller Fotozugriff nötig",
+  "permissionPartialMessage": "SHOTO sieht derzeit nur ein paar von dir ausgewählte Fotos und kommt so nicht an sein eigenes Album. Wähle in der Fotoberechtigung „Alle zulassen“, um fortzufahren.",
+  "permissionOpenSettings": "Einstellungen öffnen",
+  "settingsTitle": "Einstellungen",
+  "settingsAppearance": "Darstellung",
+  "settingsTheme": "Design",
+  "settingsThemeSystem": "System",
+  "settingsThemeLight": "Hell",
+  "settingsThemeDark": "Dunkel",
+  "settingsGridDensity": "Rasterdichte",
+  "settingsLanguage": "Sprache",
+  "settingsLanguageSystem": "Wie mein Handy",
+  "settingsLanguageSystemHint": "Zeigt gerade {language}",
+  "@settingsLanguageSystemHint": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsBehaviour": "Verhalten",
+  "settingsHaptics": "Haptisches Feedback",
+  "settingsHapticsHint": "Ein kurzer Impuls beim Drücken",
+  "settingsConfirmDelete": "Vor dem Löschen fragen",
+  "settingsConfirmDeleteHint": "Löschen lässt sich nicht rückgängig machen",
+  "settingsFindDuplicates": "Duplikate finden",
+  "settingsClearCache": "Bild-Cache leeren",
+  "settingsShare": "SHOTO teilen",
+  "settingsPrivacyNote": "SHOTO behält nur die Screenshots, die du ihm gibst, und alles, was damit geschieht – Text lesen, Duplikate finden – passiert auf diesem Gerät. Deine Bilder werden nie hochgeladen. Drei Dinge schaltest du selbst ein: das Anbieten neuer Screenshots liest dein Screenshots-Album, um danach zu fragen; ein Konto sendet nur deine E-Mail-Adresse, damit ein Abo einen Handywechsel übersteht; und Absturzberichte senden, was kaputtging – den Code, nie ein Bild.",
+  "commonSave": "Speichern",
+  "commonConfirm": "Bestätigen",
+  "commonRename": "Umbenennen",
+  "commonShare": "Teilen",
+  "commonUnlock": "Freischalten",
+  "foldersEmptyTitle": "Noch keine Ordner",
+  "foldersEmptyMessage": "Ordner sind, wie du später etwas wiederfindest. Mach einen für Belege, einen für Rezepte – was auch immer du wirklich suchst.",
+  "foldersNew": "Neuer Ordner",
+  "foldersCreate": "Ordner erstellen",
+  "foldersNameLabel": "Ordnername",
+  "foldersNameHint": "Belege, Rezepte, Arbeit …",
+  "foldersPrivate": "Privat (Gesichts- oder Fingerabdrucksperre)",
+  "foldersPrivateFace": "Privat (Gesichtssperre)",
+  "foldersPrivateFingerprint": "Privat (Fingerabdrucksperre)",
+  "foldersPrivateGeneric": "Privat (gesperrt)",
+  "foldersOptions": "Ordneroptionen",
+  "foldersDelete": "Ordner löschen",
+  "foldersDeleteKept": "Screenshots darin bleiben erhalten",
+  "foldersDeleteTitle": "„{name}“ löschen?",
+  "@foldersDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "foldersDeleteMessage": "Der Ordner verschwindet, aber die Screenshots darin bleiben in deiner Mediathek.",
+  "foldersRenameTitle": "Ordner umbenennen",
+  "foldersMoveTitle": "In Ordner verschieben",
+  "foldersMoveRemove": "Aus dem Ordner nehmen",
+  "foldersMoveNone": "Noch keine Ordner. Erstelle einen im Tab „Ordner“.",
+  "folderLockedTitle": "„{name}“ entsperren",
+  "@folderLockedTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "folderLockedMessage": "Dieser Ordner ist geschützt. Authentifiziere dich, um ihn zu sehen.",
+  "folderEmptyTitle": "Hier ist noch nichts",
+  "folderEmptyMessage": "Verschiebe Screenshots aus deiner Mediathek in diesen Ordner.",
+  "detailFavorite": "Favorit",
+  "detailUnfavorite": "Aus Favoriten entfernen",
+  "detailAddFavorite": "Zu Favoriten hinzufügen",
+  "detailActions": "Aktionen",
+  "detailSafeShare": "Safe Share",
+  "detailDeleteTitle": "Screenshot löschen?",
+  "detailDeleteMessage": "Dies löscht ihn endgültig von deinem Gerät.",
+  "quickSaveTitleOne": "In SHOTO sichern",
+  "quickSaveTitleMany": "{count} Screenshots sichern",
+  "@quickSaveTitleMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSaveFileOne": "Diesen Screenshot ablegen",
+  "quickSaveFileMany": "{count} Screenshots ablegen",
+  "@quickSaveFileMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSavePickFolder": "Ordner wählen",
+  "quickSaveNeedFolder": "Erstelle einen Ordner dafür",
+  "quickSaveFileIn": "In {folder} ablegen",
+  "@quickSaveFileIn": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveCreateFirstFolder": "Erstelle deinen ersten Ordner",
+  "quickSaveCreateFirstFolderWhy": "Ordner sind, wie du später etwas wiederfindest",
+  "quickSaveNewChip": "Neu",
+  "quickSaveSaved": "In SHOTO gesichert",
+  "quickSaveFiled": "In {folder} abgelegt.",
+  "@quickSaveFiled": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveFailedTitle": "Bild konnte nicht gelesen werden",
+  "quickSaveFailedBody": "Versuche, es noch einmal zu teilen.",
+  "quickSaveSkipped": "Nur die ersten {count} wurden übernommen",
+  "@quickSaveSkipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupTitle": "Duplikate finden",
+  "dupScanning": "Suche nach Duplikaten",
+  "dupReading": "Deine Mediathek wird gelesen …",
+  "dupProgress": "{done} von {total} Screenshots geprüft",
+  "@dupProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dupNoneTitle": "Keine Duplikate gefunden",
+  "dupNoneBody": "Deine Screenshot-Mediathek ist bereits aufgeräumt.",
+  "dupScanAgain": "Erneut scannen",
+  "dupReclaimable": "Bis zu {size} können frei werden",
+  "@dupReclaimable": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupNothingSelected": "Nichts ausgewählt",
+  "dupDeleteButton": "{count} löschen · {size} frei",
+  "@dupDeleteButton": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupDeleteTitle": "{count} Kopien löschen?",
+  "@dupDeleteTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupDeleteMessage": "Dies löscht sie endgültig von deinem Gerät. Die zum Behalten markierten Kopien sind nicht betroffen.",
+  "dupDeleted": "{count} gelöscht · {size} frei",
+  "@dupDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupSets": "{count} Gruppen",
+  "@dupSets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupBest": "BESTE",
+  "dupKeepAll": "Alle behalten",
+  "dupKeepingAll": "Alle bleiben – es wird nichts gelöscht",
+  "dupUndo": "Rückgängig",
+  "dupFrees": "Macht {size} frei",
+  "@dupFrees": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "safeShareTitle": "Safe Share",
+  "safeShareScanning": "Suche nach privaten Angaben",
+  "safeShareOnDevice": "Gelesen wird auf deinem Handy.",
+  "safeShareCleanTitle": "Nichts Privates gefunden",
+  "safeShareCleanBody": "In diesem Screenshot wurden keine Kartennummern, Kontonummern, Codes oder Kontaktdaten entdeckt. Du kannst ihn so teilen.",
+  "safeShareUnreadableTitle": "Screenshot konnte nicht gelesen werden",
+  "safeShareUnreadableBody": "Der Text darin ließ sich nicht erkennen.",
+  "safeShareShareUnchanged": "Unverändert teilen",
+  "safeShareShareAnyway": "Trotzdem teilen",
+  "safeShareShareProtected": "Geschützte Kopie teilen",
+  "safeShareFailed": "Die geschützte Kopie ließ sich nicht erstellen.",
+  "safeShareFoundTitle": "{count, plural, =1{1 private Angabe gefunden} other{{count} private Angaben gefunden}}",
+  "@safeShareFoundTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFreeScan": "Das Prüfen ist immer gratis.",
+  "safeShareCleanAction": "Diesen Screenshot säubern",
+  "safeShareShareAsIs": "Ohne Änderungen teilen",
+  "safeShareHowTitle": "Abgedeckt, endgültig",
+  "safeShareHowBody": "Jede private Angabe wird mit einem vollen Block abgedeckt, bevor die Kopie dein Handy verlässt. Nichts wird verwischt und nichts lässt sich zurücklesen – die abgedeckte Kopie ist die einzige Fassung, die existiert.",
+  "safeShareTreatmentCover": "Abdecken",
+  "safeShareTreatmentKeep": "Behalten",
+  "safeShareBuilding": "Deine saubere Kopie entsteht",
+  "safeShareNothingSelected": "Es ändert sich nichts",
+  "safeShareLockedPreview": "Freischalten, um die saubere Fassung zu sehen",
+  "safeShareReviewTitle": "Sieh dir jede an",
+  "safeShareFound": "{count} Stellen abgedeckt",
+  "@safeShareFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchTitle": "Screenshots verbinden",
+  "stitchWorking": "Überlappung wird gesucht",
+  "stitchWorkingBody": "Es wird abgeglichen, wo jeder Screenshot den letzten fortsetzt.",
+  "stitchFailed": "Verbinden nicht möglich",
+  "stitchSave": "In Galerie sichern",
+  "stitchSaved": "In deiner Galerie gesichert",
+  "stitchDiscard": "Verwerfen",
+  "commonDone": "Fertig",
+  "commonBack": "Zurück",
+  "commonClose": "Schließen",
+  "searchTitle": "Deine Screenshots durchsuchen",
+  "searchHint": "Nach Wörtern oder Bildinhalten suchen",
+  "searchIntro": "Jedes Wort, das in einem Bild steht, oder was das Bild zeigt – probier „Katze“, „Tier“, „Essen“ oder „Beleg“.",
+  "searchNoneTitle": "Keine Treffer",
+  "searchNoneBody": "Hier steht oder zeigt nichts „{query}“.",
+  "@searchNoneBody": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallTitle": "SHOTO Pro freischalten",
+  "paywallSubtitle": "Alles unten, mit einem Abo.",
+  "paywallMonthly": "Monatlich",
+  "paywallYearly": "Jährlich",
+  "paywallSave": "{percent} % sparen",
+  "@paywallSave": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallContinue": "Weiter",
+  "paywallUnavailable": "Noch nicht verfügbar",
+  "paywallRestore": "Käufe wiederherstellen",
+  "paywallLegal": "Verlängert sich automatisch bis zur Kündigung. Jederzeit in den Kontoeinstellungen im App Store oder bei Google Play kündbar. Mit dem Fortfahren stimmst du unseren Nutzungsbedingungen und der Datenschutzerklärung zu.",
+  "subPremiumBadge": "PRO",
+  "subPremiumTitle": "SHOTO Pro",
+  "subPremiumBody": "Jede Funktion für dich freigeschaltet.",
+  "subDevUnlock": "Testerzugang",
+  "subDevUnlockBody": "Auf diesem Gerät freigeschaltet – kein echtes Abo",
+  "subUnlockEverything": "Alles freischalten",
+  "proWelcomeTitle": "Du bist auf Pro",
+  "proWelcomeBody": "Jede Funktion ist freigeschaltet. Es gibt nichts weiter einzurichten.",
+  "proWelcomeAction": "Loslegen",
+  "featSafeShare": "Safe Share",
+  "featSafeShareBody": "Tauscht Kartennummern, Adressen, Namen und Kontaktdaten gegen realistische Platzhalter – gleiche Länge, gleiches Format, gleiche Stelle. Der Kopie sieht man die Bearbeitung nicht an.",
+  "featActions": "Screenshots zu Aktionen machen",
+  "featActionsBody": "Einen Link öffnen, an eine Adresse schreiben, einen Bestätigungscode oder eine IBAN kopieren – direkt aus dem Bild, ohne etwas abzutippen.",
+  "featDuplicates": "Duplikate finden",
+  "featDuplicatesBody": "Erkennt fast identische Aufnahmen, die du doppelt behalten hast, und räumt sie weg – immer erst mit einer Durchsicht.",
+  "featStitch": "Lange Screenshots verbinden",
+  "featStitchBody": "Fügt eine Scroll-Aufnahme wieder zu einem hohen Bild zusammen, mit automatisch gefundener und entfernter Überlappung.",
+  "featUnlimited": "Keine Grenze für deine Mediathek",
+  "featUnlimitedBody": "Die Gratisstufe ordnet {count} Screenshots. Pro nimmt die Zahl weg.",
+  "featSafeShareHow": "Zu finden, was in einem Screenshot privat ist, ist gratis und unbegrenzt. Bezahlt wird dafür, aus diesen Funden eine saubere Kopie zu machen: jede Angabe wird in den Farben des Screenshots als anderer, genauso gewöhnlicher Wert neu gezeichnet.",
+  "featSafeSharePoint1": "Kartennummern werden per Luhn und IBANs per Modulo 97 geprüft – und die Platzhalter bestehen dieselben Prüfungen, sodass nichts erfunden wirkt.",
+  "featSafeSharePoint2": "Erkennt außerdem Namen, Adressen, Bestellnummern, Bestätigungscodes, Telefonnummern und E-Mail-Adressen.",
+  "featSafeSharePoint3": "Du siehst jede Änderung vor dem Senden und kannst jede stattdessen abdecken oder behalten. Der ursprüngliche Screenshot wird nie angetastet.",
+  "featActionsHow": "Was in einem Screenshot steht, wird zu etwas, das du benutzen kannst. SHOTO greift die nützlichen Teile heraus und setzt auf jeden eine Schaltfläche.",
+  "featActionsPoint1": "Links, E-Mail-Adressen, IBANs, Bestätigungscodes, Termine und Paketnummern werden für dich gefunden.",
+  "featActionsPoint2": "Ein Tippen zum Öffnen oder Kopieren – kein Zeichen mehr vom Bild ablesen.",
+  "featActionsPoint3": "Funktioniert mit den Screenshots, die du schon hast, nicht nur mit neuen.",
+  "featStitchHow": "Eine Scroll-Aufnahme muss auf Handys, die sie können, gestartet werden, solange du noch auf der Seite bist. SHOTO arbeitet danach: Wähle zwei oder mehr Aufnahmen aus deiner Mediathek – auch solche, die dir jemand geschickt hat – und es findet die Überlappung und fügt sie zu einem hohen Bild.",
+  "featStitchPoint1": "Der wiederholte Streifen zwischen zwei Aufnahmen wird automatisch gefunden und entfernt.",
+  "featStitchPoint2": "Du siehst die Naht, bevor etwas gesichert wird – automatische Erkennung ist gut, aber nie sicher.",
+  "featStitchPoint3": "Das verbundene Bild wird wie jedes andere in deiner Galerie gesichert.",
+  "featDuplicatesHow": "Einzeln hineingeteilte Aufnahmen erzeugen selten Duplikate. Ein Schwung aus „Seit deinem letzten Blick“ schon – du bist schnell, und zwei Aufnahmen derselben Sache bleiben beide. SHOTO vergleicht, wie eine Aufnahme aussieht, nicht Name oder Größe, und fängt so auch ein erneutes Senden oder einen anderen Zuschnitt.",
+  "featDuplicatesPoint1": "Gruppiert, was gleich aussieht, und schlägt die Kopie zum Behalten vor.",
+  "featDuplicatesPoint2": "Zeigt, wie viel Platz jede Gruppe freimacht, bevor du irgendetwas entscheidest.",
+  "featDuplicatesPoint3": "Es wird nichts gelöscht, bevor du die Gruppe durchgesehen und bestätigt hast.",
+  "featUnlimitedHow": "Die Gratisstufe ist eine echte, brauchbare App: Sichern, Ordner, Favoriten und volle Suche, ohne Konto und ohne Upload. Sie hat genau eine Grenze – wie viele Screenshots sie ordnet – und Pro hebt sie auf. Alles, was du schon geordnet hast, bleibt genau dort.",
+  "featUnlimitedPoint1": "Ordner sind in der Gratisstufe unbegrenzt und waren immer so gedacht.",
+  "featUnlimitedPoint2": "Zu benennen, wofür ein Screenshot ist, ist ebenfalls gratis und unbegrenzt.",
+  "featUnlimitedPoint3": "An die Grenze zu stoßen heißt, dass SHOTO dein Aufbewahrungsort geworden ist. Dabei wird nichts gelöscht.",
+  "includedSubtitle": "Jede Pro-Funktion, erklärt.",
+  "includedHint": "Tippe eine Funktion an, um zu sehen, wie sie arbeitet",
+  "includedHowLabel": "So funktioniert es",
+  "includedActiveTitle": "Dein Plan ist aktiv",
+  "includedActiveBody": "Alles unten ist für dieses Konto freigeschaltet.",
+  "includedLockedTitle": "Noch nicht freigeschaltet",
+  "includedLockedBody": "Lies, was jede Funktion wirklich tut, und entscheide dann.",
+  "includedFreeTitle": "Was dir die Gratisstufe gibt",
+  "includedFreeBody": "{count} geordnete Screenshots, unbegrenzte Ordner und volle Suche – dauerhaft gratis.",
+  "@includedFreeBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingCta": "Loslegen",
+  "onboardingPromise": "Deine Screenshots bleiben auf deinem Handy.",
+  "actionsTitle": "Aktionen",
+  "actionsWorking": "Screenshot wird gelesen",
+  "actionsWorkingBody": "Suche nach Nummern, Links und Codes.",
+  "actionsNoneTitle": "Nichts zu tun",
+  "actionsNoneBody": "In diesem Screenshot wurden keine Links, Codes oder Kontonummern gefunden.",
+  "actionsCopy": "Kopieren",
+  "actionsCopied": "Kopiert",
+  "actionsNoApp": "Keine App auf diesem Gerät kann das.",
+  "devModeOn": "Entwicklermodus an – jede Funktion freigeschaltet",
+  "devModeBadge": "ENTWICKLERMODUS",
+  "devModeOffTitle": "Entwicklermodus ausschalten?",
+  "devModeOffBody": "SHOTO fällt auf diesem Gerät auf die Gratisstufe zurück, damit du Paywall und Grenzen erneut testen kannst.",
+  "devModeOffConfirm": "Ausschalten",
+  "devAccessTitle": "Entwicklerzugang",
+  "devAccessBody": "Gib den vierstelligen Code ein, um jede Pro-Funktion auf diesem Gerät freizuschalten.",
+  "devWrongCode": "Falscher Code",
+  "devTapToDisable": "{count}× tippen zum Ausschalten",
+  "@devTapToDisable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appVersion": "Version {version}",
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "kindCard": "eine Kartennummer",
+  "kindIban": "ein Bankkonto",
+  "kindCode": "ein Bestätigungscode",
+  "kindNationalId": "eine Ausweisnummer",
+  "kindEmail": "eine E-Mail-Adresse",
+  "kindLink": "ein Link",
+  "actionEmailAction": "Schreiben",
+  "actionOpen": "Öffnen",
+  "kindEvent": "ein Termin",
+  "kindPlace": "ein Ort",
+  "kindWifi": "ein WLAN",
+  "kindTracking": "eine Sendung",
+  "actionAddToCalendar": "Zum Kalender hinzufügen",
+  "actionOpenMaps": "In Maps öffnen",
+  "actionDirections": "Route",
+  "actionCopyNetwork": "Namen kopieren",
+  "actionTrack": "Verfolgen",
+  "actionEventUntitled": "Termin",
+  "countScreenshots": "{count, plural, =0{Keine Screenshots} =1{1 Screenshot} other{{count} Screenshots}}",
+  "@countScreenshots": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countPosition": "{position} von {total}",
+  "@countPosition": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "countChip": "{label} · {count}",
+  "@countChip": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSetsFound": "{count, plural, =1{1 Gruppe Duplikate} other{{count} Gruppen Duplikate}}",
+  "@dupSetsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSimilarCopies": "{count} ähnliche Kopien",
+  "@dupSimilarCopies": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFoundCount": "{count, plural, =1{1 Fund} other{{count} Funde}}",
+  "@safeShareFoundCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsStorage": "Speicher",
+  "settingsDuplicatesHint": "Screenshots erkennen, die du doppelt gemacht hast",
+  "settingsPremium": "Pro",
+  "settingsWhatsIncluded": "Was enthalten ist",
+  "settingsFeatureCount": "{count} Funktionen, ein Plan",
+  "@settingsFeatureCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsShareHint": "Erzähl es jemandem, der es braucht",
+  "settingsShareText": "SHOTO hält meine Screenshots von allein geordnet – alles bleibt auf dem Handy.",
+  "settingsCacheMeasuring": "Wird gemessen …",
+  "settingsCacheSize": "{size} an Vorschaubildern",
+  "@settingsCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSafeShareHint": "Öffne einen Screenshot und tippe dann auf Safe Share.",
+  "homeStitchHint": "Halte zwei oder mehr Screenshots in deiner Mediathek gedrückt und tippe dann auf Verbinden.",
+  "stitchLimit": "Bis zu {count} Screenshots auf einmal verbinden.",
+  "@stitchLimit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareSavedPrompt": "{count, plural, =1{Screenshot gesichert. In einen Ordner legen?} other{Screenshots gesichert. In einen Ordner legen?}}",
+  "@shareSavedPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultMerged": "{count} Screenshots verbunden",
+  "@stitchResultMerged": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultTrimmed": "{count} px wiederholter Inhalt entfernt",
+  "@stitchResultTrimmed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorLoadScreenshots": "Deine Screenshots konnten nicht geladen werden.",
+  "errorLoadFolders": "Deine Ordner konnten nicht geladen werden.",
+  "errorScanDuplicates": "Es konnte nicht nach Duplikaten gesucht werden.",
+  "errorDeleteSelected": "Die ausgewählten Screenshots konnten nicht gelöscht werden.",
+  "errorStitchFailed": "Diese Screenshots konnten nicht verbunden werden.",
+  "errorStitchSave": "Das verbundene Bild konnte nicht gesichert werden.",
+  "errorOnboarding": "Laden fehlgeschlagen. Bitte öffne die App erneut.",
+  "errorSignInCancelled": "Die Anmeldung wurde abgebrochen.",
+  "errorSignInInterrupted": "Die Anmeldung wurde unterbrochen. Bitte versuche es erneut.",
+  "errorNetwork": "Netzwerkfehler. Bitte prüfe deine Verbindung.",
+  "errorGeneric": "Etwas ist schiefgegangen. Bitte versuche es erneut.",
+  "errorPlans": "Die Abopläne konnten nicht geladen werden.",
+  "errorPurchase": "Der Kauf ist fehlgeschlagen. Bitte versuche es erneut.",
+  "errorNoSubscription": "Für dieses Konto wurde kein aktives Abo gefunden.",
+  "errorRestore": "Käufe konnten nicht wiederhergestellt werden.",
+  "errorStitchTooFew": "Wähle mindestens zwei Screenshots zum Verbinden.",
+  "errorStitchTooMany": "Es können bis zu {count} Screenshots auf einmal verbunden werden.",
+  "@errorStitchTooMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorStitchUnreadable": "Einer der Screenshots konnte nicht gelesen werden.",
+  "errorStitchWidths": "Diese Screenshots sind unterschiedlich breit und können daher nicht zum selben Scroll gehören.",
+  "errorStitchNoOverlap": "Diese Screenshots überlappen sich nicht. Verbinden klappt nur bei Aufnahmen derselben Seite, die beim Scrollen entstanden sind.",
+  "errorStitchOverlap": "Die Überlappung zwischen diesen Screenshots ließ sich nicht auflösen.",
+  "errorStitchTooTall": "Das verbundene Bild wäre zu hoch. Versuche, weniger Screenshots zu verbinden.",
+  "errorStitchEncode": "Das verbundene Bild konnte nicht kodiert werden.",
+  "errorRedactionSave": "Die geschützte Kopie konnte nicht gesichert werden.",
+  "shareSavedCount": "{count, plural, =1{Screenshot gesichert} other{{count} Screenshots gesichert}}",
+  "@shareSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "densityLarge": "Groß",
+  "densityMedium": "Mittel",
+  "densitySmall": "Klein",
+  "sensitiveCard": "Kartennummer",
+  "sensitiveIban": "Bankkonto",
+  "sensitiveCode": "Bestätigungscode",
+  "sensitiveNationalId": "Ausweisnummer",
+  "sensitiveEmail": "E-Mail-Adresse",
+  "sensitivePhone": "Telefonnummer",
+  "sensitiveAddress": "Adresse",
+  "sensitiveName": "Name",
+  "sensitiveOrderNumber": "Bestellnummer",
+  "sensitiveNumber": "Nummer",
+  "onbSkip": "Überspringen",
+  "onbNext": "Weiter",
+  "onbPileTitle": "Tausend Screenshots, ein Haufen",
+  "onbPileBody": "Du machst einen Screenshot, um dich zu erinnern. Eine Woche später liegt er unter vierhundert anderen.",
+  "onbChooseTitle": "SHOTO liest nie deine Galerie",
+  "onbChooseBody": "Nichts kommt von allein an. Du teilst einen Screenshot hinein – das ist die ganze Regel.",
+  "onbFileTitle": "Abgelegt in dem Moment, in dem du ihn sendest",
+  "onbFileBody": "Wähle den Ordner direkt im Teilen-Menü. Die App geht nicht einmal auf.",
+  "onbFindTitle": "Durchsuche, was darin steht",
+  "onbFindBody": "Die Wörter in einem Screenshot und was das Bild zeigt. Tippe „Beleg“ oder „Hund“.",
+  "onbSafeShareTitle": "Der Screenshot, den du wirklich senden kannst",
+  "onbSafeShareBody": "Aus einer Kartennummer wird eine andere Kartennummer – gleiche Länge, gleiche Stelle, weiterhin gültig. Niemand merkt, dass sie bearbeitet wurde.",
+  "onbFolderExample": "Belege",
+  "onbSearchExample": "beleg",
+  "importTitle": "Screenshots hinzufügen",
+  "importDone": "{count, plural, =1{1 Screenshot importiert} other{{count} Screenshots importiert}}",
+  "@importDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importPartial": "{imported} von {picked} importiert",
+  "@importPartial": {
+    "placeholders": {
+      "imported": {
+        "type": "int"
+      },
+      "picked": {
+        "type": "int"
+      }
+    }
+  },
+  "importFailed": "Diese Screenshots konnten nicht gesichert werden",
+  "homeToolImportSubtitle": "Von deinem Handy wählen – deine Galerie wird nie gelesen",
+  "importPickerUnavailable": "Die Fotoauswahl ließ sich nicht öffnen",
+  "searchWorking": "Deine Screenshots werden gelesen …",
+  "settingsBackup": "Sichern & wiederherstellen",
+  "settingsBackupHint": "Eine Kopie deiner Mediathek in einer Datei behalten",
+  "backupTitle": "Sicherung",
+  "backupIntro": "Deine Mediathek lebt auf diesem Handy und nirgends sonst. Eine Sicherung ist die Kopie, die es überlebt, wenn du es verlierst.",
+  "backupCreateTitle": "Sicherung erstellen",
+  "backupCreateBody": "Packt jeden Screenshot, jeden Ordner und jede Markierung in eine Datei und lässt dich dann wählen, wo sie liegt.",
+  "backupCreateAction": "Sicherung erstellen",
+  "backupWorking": "Deine Mediathek wird gepackt …",
+  "backupDone": "{screenshots, plural, =1{1 Screenshot gesichert} other{{screenshots} Screenshots gesichert}} und {folders, plural, =1{1 Ordner} other{{folders} Ordner}}",
+  "@backupDone": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "folders": {
+        "type": "int"
+      }
+    }
+  },
+  "backupDoneWithSkips": "{screenshots, plural, =1{1 Screenshot gesichert} other{{screenshots} Screenshots gesichert}}. {skipped, plural, =1{1 konnte nicht gelesen werden} other{{skipped} konnten nicht gelesen werden}}.",
+  "@backupDoneWithSkips": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "backupFailed": "Die Sicherung konnte nicht abgeschlossen werden",
+  "backupPrivacyNote": "Die Datei entsteht auf diesem Handy und geht nur dorthin, wohin du sie sendest. Es wird nichts hochgeladen.",
+  "restoreTitle": "Sicherung wiederherstellen",
+  "restoreBody": "Fügt alles aus einer Sicherungsdatei zu dieser Mediathek hinzu. Nichts, was schon hier ist, wird entfernt.",
+  "restoreAction": "Wiederherstellen",
+  "restoreWorking": "Deine Mediathek wird zurückgelegt …",
+  "restoreConfirmTitle": "Diese Sicherung wiederherstellen?",
+  "restoreConfirmMessage": "Alles in der Datei wird deiner Mediathek hinzugefügt. Deine jetzigen Screenshots bleiben genau so, wie sie sind.",
+  "restoreDone": "{screenshots, plural, =1{1 Screenshot wiederhergestellt} other{{screenshots} Screenshots wiederhergestellt}} und {folders, plural, =1{1 Ordner} other{{folders} Ordner}}",
+  "@restoreDone": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "folders": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreDoneWithSkips": "{screenshots, plural, =1{1 Screenshot wiederhergestellt} other{{screenshots} Screenshots wiederhergestellt}}. {skipped, plural, =1{1 wurde übersprungen} other{{skipped} wurden übersprungen}}.",
+  "@restoreDoneWithSkips": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreNotABackup": "Diese Datei ist keine SHOTO-Sicherung",
+  "restoreFailed": "Die Wiederherstellung konnte nicht abgeschlossen werden",
+  "settingsHelp": "Hilfe",
+  "settingsContactSupport": "Support kontaktieren",
+  "supportSubject": "SHOTO Support",
+  "supportNoMailApp": "Keine E-Mail-App gefunden. Die Adresse wurde stattdessen kopiert.",
+  "supportGreeting": "Hallo SHOTO-Team,",
+  "dateToday": "Heute",
+  "dateYesterday": "Gestern",
+  "dateThisWeek": "Früher diese Woche",
+  "dateThisMonth": "Früher diesen Monat",
+  "librarySortNewest": "Neueste zuerst",
+  "librarySortOldest": "Älteste zuerst",
+  "librarySortLabel": "Reihenfolge",
+  "libraryShowOnly": "Nur zeigen",
+  "libraryShowEverything": "Alles",
+  "libraryScanPrompt": "{count} Screenshots lesen",
+  "libraryScanning": "Wird gelesen …",
+  "@libraryScanPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashTitle": "{count, plural, =1{1 Ordner gibt es hier schon} other{{count} Ordner gibt es hier schon}}",
+  "@restoreClashTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashBody": "Diese Namen stehen in deiner Mediathek und in der Sicherung. Gleicher Name heißt nicht immer gleicher Ordner, also entscheidest du das hier.",
+  "restoreClashMore": "{count, plural, =1{und 1 weiterer} other{und {count} weitere}}",
+  "@restoreClashMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashMerge": "Zusammenlegen",
+  "restoreClashMergeBody": "Screenshots kommen in die Ordner, die du schon hast.",
+  "restoreClashSeparate": "Getrennt halten",
+  "restoreClashSeparateBody": "Erstellt einen zweiten Ordner mit demselben Namen. Nichts Bestehendes wird angetastet.",
+  "intentBuy": "Kaufen",
+  "intentRead": "Lesen",
+  "intentReply": "Antworten",
+  "intentTry": "Ausprobieren",
+  "intentVisit": "Besuchen",
+  "intentBuyWaiting": "Zu kaufen",
+  "intentReadWaiting": "Zu lesen",
+  "intentReplyWaiting": "Zu beantworten",
+  "intentTryWaiting": "Auszuprobieren",
+  "intentVisitWaiting": "Zu besuchen",
+  "intentWatch": "Ansehen",
+  "intentListen": "Anhören",
+  "intentCook": "Kochen",
+  "intentBook": "Buchen",
+  "intentPay": "Bezahlen",
+  "intentSend": "Senden",
+  "intentDownload": "Herunterladen",
+  "intentApply": "Bewerben",
+  "intentCompare": "Vergleichen",
+  "intentFix": "Reparieren",
+  "intentWatchWaiting": "Anzusehen",
+  "intentListenWaiting": "Anzuhören",
+  "intentCookWaiting": "Zu kochen",
+  "intentBookWaiting": "Zu buchen",
+  "intentPayWaiting": "Zu bezahlen",
+  "intentSendWaiting": "Zu senden",
+  "intentDownloadWaiting": "Herunterzuladen",
+  "intentApplyWaiting": "Zu bewerben",
+  "intentCompareWaiting": "Zu vergleichen",
+  "intentFixWaiting": "Zu reparieren",
+  "intentMore": "Mehr",
+  "intentSectionCommon": "Vorgefertigt",
+  "intentSectionYours": "Deine",
+  "intentYoursEmpty": "Ein Verb, das du selbst schreibst, arbeitet genau wie die oben.",
+  "intentNewAction": "Selbst schreiben",
+  "intentNewTitle": "Benenne es selbst",
+  "intentEditTitle": "Diesen bearbeiten",
+  "intentNameLabel": "Das Verb",
+  "intentNameHint": "Zurückschicken, stornieren, anrufen …",
+  "intentIconLabel": "Symbol",
+  "intentDeleteTitle": "„{label}“ löschen?",
+  "@intentDeleteTitle": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "intentDeleteMessage": "Die Screenshots bleiben, wo sie sind. Sie warten nur auf nichts mehr.",
+  "intentSelectionAction": "Markieren als",
+  "intentSelectionApplied": "{count, plural, =1{1 Screenshot markiert} other{{count} Screenshots markiert}}",
+  "@intentSelectionApplied": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "intentPrompt": "Wofür er ist, wenn du magst",
+  "intentSkip": "Nichts Bestimmtes",
+  "intentWaitingTitle": "Wartet auf dich",
+  "intentNothingWaiting": "Nichts wartet auf dich",
+  "intentAllDone": "Du hast alles erledigt, was du dir aufgehoben hast.",
+  "intentMarkDone": "Erledigt",
+  "intentUndo": "Zurücklegen",
+  "intentDoneToast": "Abgehakt",
+  "intentChange": "Ändern, wofür das ist",
+  "intentClear": "Für nichts Bestimmtes",
+  "intentEmptyOne": "Hier gibt es nichts zu {verb}",
+  "@intentEmptyOne": {
+    "placeholders": {
+      "verb": {
+        "type": "String"
+      }
+    }
+  },
+  "intentEmptyBody": "Screenshots, die du markierst, landen hier, bis du sie abhakst.",
+  "intentDoneCount": "{count} erledigt",
+  "@intentDoneCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateDaysAgo": "{count, plural, =1{vor 1 Tag} other{vor {count} Tagen}}",
+  "@dateDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateWeeksAgo": "{count, plural, =1{vor 1 Woche} other{vor {count} Wochen}}",
+  "@dateWeeksAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateMonthsAgo": "{count, plural, =1{vor 1 Monat} other{vor {count} Monaten}}",
+  "@dateMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

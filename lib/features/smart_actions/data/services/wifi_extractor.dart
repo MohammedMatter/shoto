@@ -128,7 +128,12 @@ abstract class WifiExtractor {
   /// missing on purpose — "network error" is on every failed request.
   static final RegExp _wifiCue = RegExp(
     r'wi[\s\-]?fi|wireless|hotspot|ssid|network[\s\-]?name|'
-    r'واي[\s\-]?فاي|الواي[\s\-]?فاي|شبكة لاسلكية|اسم الشبكة|هوت سبوت',
+    // German / Dutch — "WLAN" is what German routers and cafés print, and
+    // "draadloos" is the Dutch word a network card uses.
+    r'wlan|drahtlos|netzwerkname|draadloos|netwerknaam|'
+    // Italian / Portuguese / Spanish / French
+    r'rete\s?wireless|nome\s?rete|nome\s?da\s?rede|nome\s?de\s?la\s?red|'
+    r'r(?:é|e)seau\s?sans\s?fil|nom\s?du\s?r(?:é|e)seau',
     caseSensitive: false,
   );
 
@@ -139,11 +144,40 @@ abstract class WifiExtractor {
   /// The value is a run of non-space characters, which is what a key looks
   /// like when it is printed. A key containing a space cannot be recovered
   /// from OCR anyway — there is nothing in the text that says where it ends.
+  /// **Two tiers, and the split is a left word boundary.**
+  ///
+  /// A blanket boundary would be wrong here, because German and Dutch build
+  /// the compound around the head word: *Gastpasswort*, *WLAN-Kennwort*,
+  /// *Netzwerksleutel* all end in the label and all mean exactly what the
+  /// label says. Matching inside a longer word is the *feature* for those.
+  ///
+  /// It is a bug for the short ones, which is not a theory — `pass` matched
+  /// inside **By**`pass`**:** and `key` inside **Mon**`key`**:**, and each
+  /// handed the user an invented network password. `Bypass:` and
+  /// `Gastpasswort:` are the same shape; only specificity tells them apart,
+  /// so specificity is what the tiers encode.
+  ///
+  /// The rule: six letters or more may sit inside a compound, five or fewer
+  /// must start a word. Anything short enough to be a syllable is guarded.
   static final RegExp _passwordLabel = RegExp(
     '(?:wi[\\s\\-]?fi$_gap)?'
-    '(?:password|passcode|pass|pwd|key|'
-    'كلمة السر|كلمة المرور|كلمه السر|رمز الشبكة|الباسورد|باسورد|الرمز|'
-    'mot de passe|contraseña|clave)'
+    '(?:'
+    // Long enough to mean only one thing, so a compound may carry them.
+    'password|passcode|'
+    // German
+    'passwort|kennwort|netzwerkschl(?:ü|u)ssel|schl(?:ü|u)ssel|zugangsdaten|'
+    // Dutch
+    'wachtwoord|netwerksleutel|sleutel|toegangscode|'
+    // Italian
+    'password$_gap di$_gap rete|chiave|'
+    // Portuguese
+    'palavra$_gap passe|palavra-passe|'
+    // Spanish / French
+    'mot de passe|contrase(?:ñ|n)a'
+    // Short and generic — these must begin a word. `senha` sits in the
+    // Portuguese *resenha*, `clave` in *enclave*, `cle` in *article*.
+    '|(?<![A-Za-z])(?:pass|pwd|key|senha|clave|cl(?:é|e))'
+    ')'
     '$_gap[:：=]$_gap'
     r'(\S{6,63})',
     caseSensitive: false,
@@ -151,9 +185,28 @@ abstract class WifiExtractor {
 
   /// The network's own name, which is nice to have and never required — a
   /// café card that only prints the key is still worth a Copy button.
+  /// Same two tiers as [_passwordLabel], and this one is where the language
+  /// swap actually drew blood: `red` is Spanish for network, and it also ends
+  /// **Sha**`red`**:**, *Hundred:*, *Required:* and *Entered:*. A screenshot
+  /// with Wi-Fi on it and the word "Shared:" anywhere was reporting whatever
+  /// followed as the network's name.
+  ///
+  /// A wrong name here costs a wrong subtitle rather than a wrong password,
+  /// which is why bare `netzwerk` and `netwerk` stay unguarded — German and
+  /// Dutch compound them (*Gastnetzwerk*) and they are long enough to be safe.
   static final RegExp _networkLabel = RegExp(
-    '(?:wi[\\s\\-]?fi$_gap(?:name)?|ssid|network${_gap}name|network|'
-    'اسم الشبكة|الشبكة|شبكة|واي فاي|الواي فاي)'
+    '(?:'
+    'wi[\\s\\-]?fi$_gap(?:name)?|network${_gap}name|network|'
+    // German / Dutch. Longest first, so the bare forms never claim a compound
+    // label's opening letters.
+    'wlan${_gap}name|netzwerkname|netzwerk|netwerknaam|netwerk|'
+    // Italian / Portuguese / Spanish / French
+    'nome${_gap}rete|nome${_gap}da${_gap}rede|'
+    'nombre${_gap}de${_gap}la${_gap}red|'
+    'nom${_gap}du${_gap}r(?:é|e)seau|r(?:é|e)seau'
+    // Four letters or fewer: must begin a word.
+    '|(?<![A-Za-z])(?:ssid|wlan|rete|rede|red)'
+    ')'
     '$_gap[:：=]$_gap'
     r'([^\n]{1,32})',
     caseSensitive: false,
@@ -187,10 +240,37 @@ abstract class WifiExtractor {
     'saved',
     'settings',
     'manager',
-    'مطلوبة',
-    'خاطئة',
-    'محفوظة',
-    'مطلوب',
+    // The same words on a screen that is refusing a password rather than
+    // printing one.
+    //
+    // **Plain strings, compared with `==` after lower-casing** — this is a
+    // `Set`, not a list of patterns, so every spelling that needs to be caught
+    // is written out in full. An entry like `ge(?:ä|a)ndert` would compile,
+    // ship, and never equal anything.
+    'erforderlich',
+    'falsch',
+    'geändert',
+    'geandert',
+    'gespeichert',
+    'vergessen',
+    'vereist',
+    'onjuist',
+    'opgeslagen',
+    'vergeten',
+    'richiesta',
+    'errata',
+    'salvata',
+    'dimenticata',
+    'obrigatória',
+    'obrigatoria',
+    'incorrecta',
+    'guardada',
+    'esquecida',
+    'requerida',
+    'olvidada',
+    'requis',
+    'oublié',
+    'oublie',
   };
 
   /// A key is at least six characters, is not one of the words above, and is

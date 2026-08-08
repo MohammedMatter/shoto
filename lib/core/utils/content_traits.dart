@@ -1,3 +1,4 @@
+import 'package:shoto/core/utils/phone_candidates.dart';
 import 'package:shoto/core/utils/sensitive_data.dart';
 import 'package:shoto/core/utils/text_cues.dart';
 import 'package:shoto/features/smart_actions/data/services/action_extractor.dart';
@@ -81,9 +82,15 @@ abstract class ContentTraits {
   /// here is a screenshot going uncounted rather than a wrong claim — which is
   /// the direction this trait is deliberately biased in.
   ///
-  /// Deliberately excludes the bare word for "number" (`رقم`, `no.`): it
-  /// prefixes order numbers, invoice numbers and reference numbers far more
+  /// Deliberately excludes the bare word for "number" (`no.`, `Nr.`, `nr`):
+  /// it prefixes order numbers, invoice numbers and reference numbers far more
   /// often than it prefixes a phone.
+  ///
+  /// **Only words the recogniser can produce.** The Arabic, Hindi and Urdu
+  /// cues that used to be here could never match — the bundled model reads
+  /// Latin script only — and went with the languages that needed them. Same
+  /// rule as [ActionExtractor]'s code cues; see
+  /// `docs/decisions/shipped-languages.md`.
   static const List<String> _phoneCues = <String>[
     'phone',
     'tel',
@@ -92,28 +99,39 @@ abstract class ContentTraits {
     'whatsapp',
     'call',
     'contact',
-    'جوال',
-    'هاتف',
-    'موبايل',
-    'تلفون',
-    'اتصل',
-    'واتساب',
-    'محمول',
+    // Spanish
     'teléfono',
     'telefono',
     'móvil',
     'movil',
     'llamar',
+    // French
     'téléphone',
     'telephone',
     'portable',
     'appeler',
-    'फ़ोन',
-    'फोन',
-    'मोबाइल',
-    'فون',
-    'موبائل',
-    'رابطہ',
+    // German
+    'telefon',
+    'handy',
+    'mobilnummer',
+    'rufnummer',
+    'anrufen',
+    // Italian
+    'cellulare',
+    'chiamare',
+    'recapito',
+    // Portuguese
+    'telemóvel',
+    'telemovel',
+    'celular',
+    'ligar',
+    'contato',
+    'contacto',
+    // Dutch
+    'telefoonnummer',
+    'mobiel',
+    'bellen',
+    'gsm',
   ];
 
   /// How far either side of the number a cue word still counts.
@@ -131,7 +149,20 @@ abstract class ContentTraits {
   /// same answer as "read it, found nothing" on purpose: both mean this
   /// screenshot matches no trait filter. "Never read" is a different question
   /// and is answered by whether a cache entry exists at all, not by this.
-  static Set<ContentTrait> of(String? text) {
+  ///
+  /// [now] and [dayFirst] only exist so the event trait can be tested without
+  /// a clock or a device region; the app never passes them. They are handed
+  /// straight to [ActionExtractor.extract], which documents the same pair for
+  /// the same reason.
+  ///
+  /// **A test that omits them cannot be written to last.** [ContentTrait.event]
+  /// is the one trait whose answer depends on the day it is asked: the rules
+  /// accept a date only inside a window running from thirty days back to three
+  /// years ahead, so *no* literal date stays correct forever. A case pinned to
+  /// 2026 stops being an event some time in 2026, and — worse, because it fails
+  /// silently in the other direction — a "far future, not an event" case
+  /// written as 2032 quietly becomes one in 2029.
+  static Set<ContentTrait> of(String? text, {DateTime? now, bool? dayFirst}) {
     if (text == null) return const <ContentTrait>{};
     if (text.trim().length < _minimumUsefulLength) {
       return const <ContentTrait>{};
@@ -155,60 +186,53 @@ abstract class ContentTraits {
 
     // **Normalised, then lowercased — and the normalisation is not optional.**
     //
-    // A [DetectedAction]'s `display` is cut from the text *after*
-    // [ActionExtractor] rewrites Arabic-Indic and Persian digits as ASCII, so
-    // looking it up in the raw string finds nothing whenever the screenshot
-    // was taken on an Arabic or Urdu UI: `٠٥٩٩١٢٣٤٥٦` and `0599123456` share
-    // no characters. Every such number was silently failing the cue test and
-    // being dropped — a whole-language blind spot that looked like the rule
-    // simply being strict.
+    // [PhoneCandidates] runs over the text *after* Arabic-Indic and Persian
+    // digits are rewritten as ASCII, so looking a candidate up in the raw
+    // string finds nothing whenever the screenshot was taken on an Arabic or
+    // Urdu UI: `٠٥٩٩١٢٣٤٥٦` and `0599123456` share no characters. Every such
+    // number was silently failing the cue test and being dropped — a
+    // whole-language blind spot that looked like the rule simply being strict.
     //
     // Safe because that rewrite is character-for-character, so an offset into
     // the normalised string is an offset into the original.
-    String? lowered;
+    final String normalised = ActionExtractor.normalizeDigits(text);
+    final String lowered = normalised.toLowerCase();
 
-    /// Whether a cue word sits within [_cueWindow] characters of this match.
-    ///
-    /// Located by searching for the text as it was originally displayed, which
-    /// is the only handle a [DetectedAction] gives onto its own position. A
-    /// number the search cannot find is treated as uncorroborated rather than
-    /// as corroborated — the trait's whole bias is that a miss beats a wrong
-    /// claim.
-    bool cuedNear(String display) {
-      lowered ??= ActionExtractor.normalizeDigits(text).toLowerCase();
-      final int at = lowered!.indexOf(display.toLowerCase());
-      if (at < 0) return false;
-      return TextCues.anyNear(
-        lowered!,
+    // **A phone number has to earn this chip, and it can never earn a
+    // button.** The candidates come from [PhoneCandidates] rather than from
+    // the actions sheet, which no longer detects phone numbers at all — a bare
+    // digit run is indistinguishable from an account number, and the sheet was
+    // offering to dial IBANs. What makes the chip safe is the evidence
+    // demanded here: a country code, or a word nearby saying what the number
+    // is. Without either, this stays silent, because a filter is believed
+    // rather than re-checked against the picture.
+    for (final String candidate in PhoneCandidates.findIn(normalised)) {
+      if (PhoneCandidates.isInternational(candidate)) {
+        traits.add(ContentTrait.contact);
+        break;
+      }
+      final int at = lowered.indexOf(candidate.toLowerCase());
+      if (at < 0) continue;
+      if (TextCues.anyNear(
+        lowered,
         at,
-        at + display.length,
+        at + candidate.length,
         _cueWindow,
         _phoneCues,
-      );
+      )) {
+        traits.add(ContentTrait.contact);
+        break;
+      }
     }
 
-    for (final DetectedAction action in ActionExtractor.extract(text)) {
+    for (final DetectedAction action in ActionExtractor.extract(
+      text,
+      now: now,
+      dayFirst: dayFirst,
+    )) {
       switch (action.kind) {
         case DetectedActionKind.link:
           traits.add(ContentTrait.link);
-
-        // **A phone needs a reason to be a phone here, unlike in the actions
-        // sheet.** The two use the same detection at deliberately different
-        // bars, because being wrong costs different things. The sheet offers a
-        // pre-filled dialler you can see before you tap — a wrong number is a
-        // visible dead end. This chip makes a *claim about content*: it tells
-        // you a screenshot holds somebody's number, and nobody re-reads the
-        // screenshot to check. So the claim has to be evidenced.
-        //
-        // Evidence is a country code, or a word nearby saying what the number
-        // is. Without either, seven to eleven bare digits is indistinguishable
-        // from an order reference, and `SensitiveData` reached this same
-        // conclusion already — see its `number` kind, added precisely because
-        // every unlabelled digit run had been getting called a phone.
-        case DetectedActionKind.phone:
-          if (action.value.startsWith('+') || cuedNear(action.display)) {
-            traits.add(ContentTrait.contact);
-          }
 
         // An email needs no such test. `@` plus a real TLD is not a shape
         // anything else shares.
