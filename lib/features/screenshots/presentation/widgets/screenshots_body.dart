@@ -157,7 +157,11 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                       intent: loaded.intent,
                       intentUnsatisfied: loaded.intentUnsatisfied,
                     )
-                  : showFavoritesFilter
+                  // Shown once a filter could change what is on screen —
+                  // see [ScreenshotsLoadedState.filtersWouldNarrow]. Three
+                  // chips reading zero over an empty library are the widest
+                  // row on the first screen saying "nothing" three times.
+                  : showFavoritesFilter && loaded.filtersWouldNarrow
                   ? ScreenshotsFilterRow(
                       key: const ValueKey<String>('filters'),
                       totalCount: loaded.screenshots.length,
@@ -173,7 +177,9 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
             // Outside the switcher above: selection mode replaces the filter
             // strip, and a note explaining a lens has no business sitting
             // under a delete button.
-            if (!loaded.isSelectionMode && showFavoritesFilter)
+            if (!loaded.isSelectionMode &&
+                showFavoritesFilter &&
+                loaded.filtersWouldNarrow)
               LensProvenanceNote(
                 lens: loaded.lens,
                 unreadCount: loaded.unreadCount,
@@ -344,6 +350,21 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
           dateOf: (item) => item.asset.createDateTime,
           now: DateTime.now(),
         );
+
+    // **One group is not a grouping.** A library captured this week is a
+    // single "Today", and a heading over the only section on screen divides
+    // nothing from nothing — it just moves the first row down by its own
+    // height. Dates earn their place the moment there are two of them.
+    if (groups.length < 2) {
+      return AnimatedIdGrid<ScreenshotEntity>(
+        items: items,
+        idOf: (item) => item.id,
+        padding: padding,
+        cacheExtent: 600,
+        gridDelegate: gridDelegate,
+        itemBuilder: tile,
+      );
+    }
 
     return SectionedIdGrid<ScreenshotEntity>(
       idOf: (item) => item.id,

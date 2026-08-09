@@ -178,6 +178,23 @@ class ScreenshotsLoadedState extends ScreenshotsState {
 
   int get favoritesCount => screenshots.where((s) => s.isFavorite).length;
 
+  /// Whether any status filter would show a different set than *All*.
+  ///
+  /// **A control that cannot change what you see is not a control.** A new
+  /// library has nothing filed and nothing favourited, so all three pills
+  /// describe the same pictures — and on a fresh install they describe no
+  /// pictures at all, three chips reading zero above an empty state that has
+  /// already said so. That is the first screen of the app spending its widest
+  /// row on the answer "nothing", three times.
+  ///
+  /// Derived rather than thresholded on purpose. A count like "show them past
+  /// four screenshots" is a number somebody has to defend later; this asks the
+  /// question the row exists to answer, so the row appears exactly when the
+  /// user has made the first distinction it could act on — filed something, or
+  /// favourited something — and never before.
+  bool get filtersWouldNarrow =>
+      favoritesCount > 0 || unsortedCount != screenshots.length;
+
   /// How many screenshots carry [trait], **within the status slice already
   /// chosen**.
   ///
