@@ -76,31 +76,60 @@ abstract class PerceptualHash {
     return hex.toString();
   }
 
+  /// The 64 bits of [hash] as a single integer, or null if it is malformed.
+  ///
+  /// **Parse once, compare many.** Clustering a library compares every hash
+  /// with every other one, so anything done *inside* that loop is paid
+  /// n²/2 times: at a thousand screenshots that is half a million pairs, and
+  /// [hammingDistance] was spending sixteen `substring` allocations and
+  /// sixteen `int.tryParse` calls on each of them. Measured, that loop cost
+  /// 434ms at a thousand screenshots and 1.7 seconds at two thousand —
+  /// synchronous, on the thread drawing the progress bar that was supposed to
+  /// be reassuring the user.
+  ///
+  /// Accumulated byte by byte rather than through `int.parse`, which throws on
+  /// a 16-digit hex value above 2^63-1. Dart integers are 64-bit two's
+  /// complement, so the top bit simply makes the result negative — which
+  /// [distanceBetween] handles, and which is invisible to `^`.
+  static int? packed(String hash) {
+    if (hash.length != 16) return null;
+
+    int value = 0;
+    for (int i = 0; i < 16; i += 2) {
+      final int? byte = int.tryParse(hash.substring(i, i + 2), radix: 16);
+      if (byte == null) return null;
+      value = (value << 8) | byte;
+    }
+    return value;
+  }
+
+  /// How many of the 64 bits differ between two [packed] hashes.
+  static int distanceBetween(int a, int b) => _popCount64(a ^ b);
+
   /// How many of the 64 bits differ between two hashes produced by
   /// [fromRgba]. Returns 64 (maximum distance, i.e. "not similar") if
   /// either input is malformed, so a bad hash can never be mistaken for a
   /// match.
+  ///
+  /// Convenience for a one-off comparison. Anything comparing in bulk should
+  /// [packed] its hashes first and use [distanceBetween].
   static int hammingDistance(String a, String b) {
-    if (a.length != 16 || b.length != 16) return 64;
-
-    int distance = 0;
-    for (int i = 0; i < 16; i += 2) {
-      final int? byteA = int.tryParse(a.substring(i, i + 2), radix: 16);
-      final int? byteB = int.tryParse(b.substring(i, i + 2), radix: 16);
-      if (byteA == null || byteB == null) return 64;
-      distance += _popCount(byteA ^ byteB);
-    }
-    return distance;
+    final int? left = packed(a);
+    final int? right = packed(b);
+    if (left == null || right == null) return 64;
+    return distanceBetween(left, right);
   }
 
-  /// Number of set bits in a byte.
-  static int _popCount(int byte) {
-    int count = 0;
-    int value = byte;
-    while (value != 0) {
-      value &= value - 1; // clears the lowest set bit
-      count++;
-    }
-    return count;
+  /// Set bits in a 64-bit value, by the usual SWAR folding.
+  ///
+  /// Unsigned shifts throughout: a hash with its top bit set is a negative
+  /// Dart integer, and an arithmetic `>>` would smear the sign across every
+  /// step and report far more set bits than there are.
+  static int _popCount64(int value) {
+    int v = value;
+    v -= (v >>> 1) & 0x5555555555555555;
+    v = (v & 0x3333333333333333) + ((v >>> 2) & 0x3333333333333333);
+    v = (v + (v >>> 4)) & 0x0f0f0f0f0f0f0f0f;
+    return ((v * 0x0101010101010101) >>> 56) & 0x7f;
   }
 }

@@ -23,7 +23,7 @@ SubscriptionPackageInfo _plan({
     'p',
     PackageType.custom,
     StoreProduct('id', '', 'title', amount, '', ''),
-    PresentedOfferingContext('o', null, null),
+    const PresentedOfferingContext('o', null, null),
   ),
   priceString: '',
   amount: amount,
