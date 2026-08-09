@@ -570,12 +570,39 @@ abstract class SensitiveData {
     'kennwort|passwort|'
     // Dutch
     'wachtwoord|toegangscode|verificatie)'
-    r'\D{0,20}([0-9]{4,8})',
+    // **One line break, and only in this direction.** A label often sits on
+    // its own line with the number beneath it — "Your verification code is:"
+    // and then the digits — which is how a great many of these screenshots
+    // are laid out, so refusing newlines outright would lose the ordinary
+    // case. One is the limit: two means the label is describing something
+    // else entirely.
+    r'[^0-9\r\n]{0,20}(?:\r?\n[^0-9\r\n]{0,20})?([0-9]{4,8})',
     caseSensitive: false,
   );
 
+  /// The trailing form — "481920 is your verification code".
+  ///
+  /// **This one may not cross a line at all, and the asymmetry is the point.**
+  /// A label that follows the number it describes is written beside it; a
+  /// label on the *next* line belongs to whatever comes after it, not to the
+  /// number above it.
+  ///
+  /// `\D{0,20}` did cross, and on a real screenshot:
+  ///
+  /// ```
+  /// Account number 4820193
+  /// Your verification code is 481920
+  /// ```
+  ///
+  /// the nineteen characters of the newline plus "Your verification " were
+  /// enough to hand the account number a label belonging to the line below
+  /// it. Both numbers came back as verification codes and the review list
+  /// said so in plain words. Covering the account number is right; *naming*
+  /// it a code is the thing [SensitiveKind.number] exists to avoid — and
+  /// since `ActionExtractor` now reads these kinds, the wrong name also
+  /// decides whether the actions sheet offers to copy it.
   static final RegExp _codeBeforeLabel = RegExp(
-    r'([0-9]{4,8})\D{0,20}'
+    r'([0-9]{4,8})[^0-9\r\n]{0,20}'
     '(?:code|otp|verification|c(?:ó|o)digo|verificaci(?:ó|o)n|'
     'verifica(?:ç|c)(?:ã|a)o|v(?:é|e)rification|codice|verifica|verificatie)',
     caseSensitive: false,

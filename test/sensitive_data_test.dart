@@ -73,6 +73,62 @@ void main() {
       expect(of('Room 4821, floor 3'), isNot(contains(SensitiveKind.code)));
     });
 
+    /// **A label describes the line it is on, and at most the one below.**
+    ///
+    /// The window either side of a number was `\D{0,20}` — any twenty
+    /// non-digits, newlines included — so on a real screenshot the words
+    /// "verification code" reached backwards past a line break and named the
+    /// account number above them. Both numbers came back as codes, and the
+    /// Safe Share review list said so in plain words.
+    ///
+    /// Covering an account number is right. *Naming* it a code is what
+    /// [SensitiveKind.number] exists to avoid — and since the actions sheet
+    /// now takes its private spans from this file, the wrong name also decides
+    /// whether the app offers to copy it.
+    group('a label reaches forward further than it reaches back', () {
+      const String twoLines =
+          'Account number 4820193\nYour verification code is 481920';
+
+      List<SensitiveMatch> codesIn(String text) => SensitiveData.findIn(text)
+          .where((SensitiveMatch m) => m.kind == SensitiveKind.code)
+          .toList();
+
+      test('the label does not claim the number on the line above it', () {
+        final List<SensitiveMatch> codes = codesIn(twoLines);
+        expect(codes, hasLength(1));
+        expect(codes.single.value, '481920');
+      });
+
+      test('the account number above is still covered, just not named', () {
+        // The point is the label, not the redaction: whatever it is called,
+        // it must not be left visible.
+        expect(of(twoLines), contains(SensitiveKind.number));
+      });
+
+      test('a label on its own line still reaches the number beneath it', () {
+        // The layout this rule exists for, and the reason newlines are not
+        // simply banned.
+        expect(
+          codesIn('Your verification code is:\n481920').single.value,
+          '481920',
+        );
+        expect(
+          codesIn('Ihr Bestätigungscode\n4821').single.value,
+          '4821',
+        );
+      });
+
+      test('but not two lines beneath it', () {
+        // Two breaks means the label belongs to something else that has since
+        // been passed over.
+        expect(codesIn('Your verification code\n\n481920'), isEmpty);
+      });
+
+      test('a trailing label still works on its own line', () {
+        expect(codesIn('481920 is your code').single.value, '481920');
+      });
+    });
+
     test('a national ID needs its label', () {
       expect(of('National ID 1234567890'), contains(SensitiveKind.nationalId));
       // Nine to eleven digits is the range this rule covers, so the labels
