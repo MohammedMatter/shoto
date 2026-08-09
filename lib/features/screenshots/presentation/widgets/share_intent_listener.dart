@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
@@ -9,6 +10,9 @@ import 'package:shoto/features/folders/presentation/widgets/move_to_folder_sheet
 import 'package:shoto/features/screenshots/domain/use_cases/assign_folder_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/import_shared_screenshot_use_case.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_limit_gate.dart';
+import 'package:shoto/core/routes/fade_slide_page_route.dart';
+import 'package:shoto/features/safe_share/presentation/pages/safe_share_page.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/shared_image_choice_sheet.dart';
 
 /// Wraps the app shell and listens for images shared into Shoto from other
 /// apps (via the OS share sheet). Each image is saved into the device
@@ -48,6 +52,53 @@ class _ShareIntentListenerState extends State<ShareIntentListener> {
         .toList();
     if (images.isEmpty) return;
 
+    // Wait for the current frame so the shell (and a Navigator/Overlay to
+    // host the bottom sheet) is guaranteed to be mounted, including on a
+    // cold start triggered by the share itself.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _offer(images);
+    });
+  }
+
+  /// **The choice comes before the import, not after it.**
+  ///
+  /// Every shared picture used to be written into the gallery and the library
+  /// on arrival, and only then was the user asked anything — so somebody who
+  /// shared a screenshot in order to cover an account number had already
+  /// gained a library item they never asked for by the time they were offered
+  /// a folder for it. Asking first is what makes "nothing joins your library
+  /// until you say so" true on this path as well as the others.
+  Future<void> _offer(List<SharedMediaFile> images) async {
+    // **Covering is offered for one picture only.** Safe Share reviews a
+    // single capture — [LibraryIntent.protect] says so — and an offer that
+    // silently applied to the first of four would be worse than no offer:
+    // the user would send the other three believing they had been checked.
+    if (images.length == 1) {
+      final SharedImageChoice? choice = await showSharedImageChoiceSheet(
+        context,
+      );
+      if (choice == null || !mounted) return;
+      if (choice == SharedImageChoice.protect) {
+        await _protect(images.first);
+        return;
+      }
+    }
+
+    await _save(images);
+  }
+
+  /// Straight into Safe Share on the file the other app handed over, which is
+  /// never imported. Covering it and sending it on leaves nothing behind.
+  Future<void> _protect(SharedMediaFile image) async {
+    await Navigator.of(context).push(
+      FadeSlidePageRoute(
+        builder: (_) => SafeSharePage.incoming(incoming: File(image.path)),
+      ),
+    );
+  }
+
+  Future<void> _save(List<SharedMediaFile> images) async {
     final List<String> importedIds = [];
     for (final SharedMediaFile file in images) {
       try {
@@ -56,15 +107,8 @@ class _ShareIntentListenerState extends State<ShareIntentListener> {
         // Best-effort import — skip files that fail (e.g. unreadable path).
       }
     }
-    if (importedIds.isEmpty) return;
-
-    // Wait for the current frame so the shell (and a Navigator/Overlay to
-    // host the bottom sheet) is guaranteed to be mounted, including on a
-    // cold start triggered by the share itself.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _promptForFolder(importedIds, count: images.length);
-    });
+    if (importedIds.isEmpty || !mounted) return;
+    await _promptForFolder(importedIds, count: images.length);
   }
 
   Future<void> _promptForFolder(

@@ -45,9 +45,31 @@ import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dar
 /// believing it was fine. And the preview is always the exported bytes, never
 /// an approximation drawn with widgets, so what is checked is what is sent.
 class SafeSharePage extends StatefulWidget {
-  final ScreenshotEntity screenshot;
+  /// The library item being protected, when this was opened from inside the
+  /// app.
+  final ScreenshotEntity? screenshot;
 
-  const SafeSharePage({super.key, required this.screenshot});
+  /// A picture handed in from the system share sheet, which is **not** in the
+  /// library and is not being put there.
+  ///
+  /// Somebody who shares a screenshot into Shoto to cover an account number
+  /// has asked for it to be fixed, not filed. Importing it anyway would grow
+  /// their library with something they never chose — and would break the
+  /// sentence this app says on two of its own screens: *nothing joins your
+  /// library until you say so*.
+  ///
+  /// It costs nothing to honour, which is the other half of the argument.
+  /// [RedactionService.scan] has always taken a [File]; the entity was only
+  /// ever used to fetch one, on a single line. The library was a coincidence
+  /// of where the screen happened to be opened from, never a requirement.
+  final File? incoming;
+
+  const SafeSharePage({super.key, required ScreenshotEntity this.screenshot})
+    : incoming = null;
+
+  /// Opens on a file that lives outside the library and stays outside it.
+  const SafeSharePage.incoming({super.key, required File this.incoming})
+    : screenshot = null;
 
   @override
   State<SafeSharePage> createState() => _SafeSharePageState();
@@ -89,7 +111,8 @@ class _SafeSharePageState extends State<SafeSharePage> {
 
   Future<void> _scan() async {
     try {
-      final File? file = await widget.screenshot.asset.file;
+      final File? file =
+          widget.incoming ?? await widget.screenshot!.asset.file;
       if (file == null) {
         throw const RedactionException(AppMessage.stitchUnreadable);
       }

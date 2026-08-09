@@ -641,6 +641,11 @@
       }
     }
   },
+  "shareChoiceTitle": "What should Shoto do with it?",
+  "shareChoiceProtect": "Cover private details",
+  "shareChoiceProtectHint": "Hide what is private and send it on. It is not saved here.",
+  "shareChoiceSave": "Save to Shoto",
+  "shareChoiceSaveHint": "Add it to your library and file it.",
   "shareSavedPrompt": "{count, plural, =1{Screenshot saved. Add it to a folder?} other{Screenshots saved. Add them to a folder?}}",
   "@shareSavedPrompt": {
     "placeholders": {

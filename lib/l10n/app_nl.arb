@@ -641,6 +641,11 @@
       }
     }
   },
+  "shareChoiceTitle": "Wat moet Shoto ermee doen?",
+  "shareChoiceProtect": "Privégegevens afdekken",
+  "shareChoiceProtectHint": "Verberg wat privé is en stuur het door. Het wordt hier niet bewaard.",
+  "shareChoiceSave": "Opslaan in Shoto",
+  "shareChoiceSaveHint": "Toevoegen aan je bibliotheek en opbergen.",
   "shareSavedPrompt": "{count, plural, =1{Screenshot bewaard. In een map zetten?} other{Screenshots bewaard. In een map zetten?}}",
   "@shareSavedPrompt": {
     "placeholders": {

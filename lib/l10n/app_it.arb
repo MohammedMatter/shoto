@@ -641,6 +641,11 @@
       }
     }
   },
+  "shareChoiceTitle": "Cosa deve farne Shoto?",
+  "shareChoiceProtect": "Coprire i dati privati",
+  "shareChoiceProtectHint": "Nascondi ciò che è privato e invialo. Non viene salvato qui.",
+  "shareChoiceSave": "Salva in Shoto",
+  "shareChoiceSaveHint": "Aggiungilo alla libreria e archivialo.",
   "shareSavedPrompt": "{count, plural, =1{Screenshot salvato. Vuoi metterlo in una cartella?} other{Screenshot salvati. Vuoi metterli in una cartella?}}",
   "@shareSavedPrompt": {
     "placeholders": {

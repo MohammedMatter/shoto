@@ -617,6 +617,11 @@
       }
     }
   },
+  "shareChoiceTitle": "Que doit en faire Shoto ?",
+  "shareChoiceProtect": "Masquer les données privées",
+  "shareChoiceProtectHint": "Cachez ce qui est privé et envoyez. Rien n’est enregistré ici.",
+  "shareChoiceSave": "Enregistrer dans Shoto",
+  "shareChoiceSaveHint": "L’ajouter à votre bibliothèque et la classer.",
   "shareSavedPrompt": "{count, plural, =1{Capture enregistrée. L’ajouter à un dossier ?} other{Captures enregistrées. Les ajouter à un dossier ?}}",
   "@shareSavedPrompt": {
     "placeholders": {

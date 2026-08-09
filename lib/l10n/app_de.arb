@@ -641,6 +641,11 @@
       }
     }
   },
+  "shareChoiceTitle": "Was soll Shoto damit machen?",
+  "shareChoiceProtect": "Private Angaben abdecken",
+  "shareChoiceProtectHint": "Privates verbergen und weiterschicken. Es wird hier nicht gespeichert.",
+  "shareChoiceSave": "In Shoto speichern",
+  "shareChoiceSaveHint": "Zur Bibliothek hinzufügen und ablegen.",
   "shareSavedPrompt": "{count, plural, =1{Screenshot gesichert. In einen Ordner legen?} other{Screenshots gesichert. In einen Ordner legen?}}",
   "@shareSavedPrompt": {
     "placeholders": {

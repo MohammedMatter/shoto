@@ -2244,6 +2244,36 @@ abstract class AppLocalizations {
   /// **'Merge up to {count} screenshots at a time.'**
   String stitchLimit(int count);
 
+  /// No description provided for @shareChoiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What should Shoto do with it?'**
+  String get shareChoiceTitle;
+
+  /// No description provided for @shareChoiceProtect.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover private details'**
+  String get shareChoiceProtect;
+
+  /// No description provided for @shareChoiceProtectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide what is private and send it on. It is not saved here.'**
+  String get shareChoiceProtectHint;
+
+  /// No description provided for @shareChoiceSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to Shoto'**
+  String get shareChoiceSave;
+
+  /// No description provided for @shareChoiceSaveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add it to your library and file it.'**
+  String get shareChoiceSaveHint;
+
   /// No description provided for @shareSavedPrompt.
   ///
   /// In en, this message translates to:

@@ -641,6 +641,11 @@
       }
     }
   },
+  "shareChoiceTitle": "O que o Shoto deve fazer com ela?",
+  "shareChoiceProtect": "Cobrir dados privados",
+  "shareChoiceProtectHint": "Esconde o que é privado e envia. Não fica salva aqui.",
+  "shareChoiceSave": "Salvar no Shoto",
+  "shareChoiceSaveHint": "Adicionar à sua biblioteca e arquivar.",
   "shareSavedPrompt": "{count, plural, =1{Captura salva. Colocar numa pasta?} other{Capturas salvas. Colocar numa pasta?}}",
   "@shareSavedPrompt": {
     "placeholders": {

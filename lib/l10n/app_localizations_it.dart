@@ -1296,6 +1296,22 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get shareChoiceTitle => 'Cosa deve farne Shoto?';
+
+  @override
+  String get shareChoiceProtect => 'Coprire i dati privati';
+
+  @override
+  String get shareChoiceProtectHint =>
+      'Nascondi ciò che è privato e invialo. Non viene salvato qui.';
+
+  @override
+  String get shareChoiceSave => 'Salva in Shoto';
+
+  @override
+  String get shareChoiceSaveHint => 'Aggiungilo alla libreria e archivialo.';
+
+  @override
   String shareSavedPrompt(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,

@@ -617,6 +617,11 @@
       }
     }
   },
+  "shareChoiceTitle": "¿Qué quieres que haga Shoto?",
+  "shareChoiceProtect": "Tapar datos privados",
+  "shareChoiceProtectHint": "Oculta lo privado y envíala. No se guarda aquí.",
+  "shareChoiceSave": "Guardar en Shoto",
+  "shareChoiceSaveHint": "Añadirla a tu biblioteca y archivarla.",
   "shareSavedPrompt": "{count, plural, =1{Captura guardada. ¿La añades a una carpeta?} other{Capturas guardadas. ¿Las añades a una carpeta?}}",
   "@shareSavedPrompt": {
     "placeholders": {
