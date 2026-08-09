@@ -5,10 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
+import 'package:shoto/core/widgets/sheet_surface.dart';
 import 'package:shoto/features/safe_share/presentation/pages/safe_share_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/shared_image_choice_sheet.dart';
 import 'package:shoto/l10n/app_localizations.dart';
 
+import 'support/test_fonts.dart';
 import 'support/test_theme.dart';
 
 /// **What the share sheet is allowed to assume the user meant.**
@@ -37,7 +39,11 @@ void main() {
   /// awaiting the route's pop future deadlocks the test — the same trap the
   /// golden tests document for the scanning state. What is worth asserting
   /// here is the offer itself, not that `Navigator.pop` returns its argument.
-  Future<void> render(WidgetTester tester) async {
+  Future<void> render(
+    WidgetTester tester, {
+    String locale = 'en',
+    Brightness brightness = Brightness.light,
+  }) async {
     tester.view.physicalSize = const Size(1080, 2200);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -48,10 +54,24 @@ void main() {
         minTextAdapt: true,
         builder: (context, _) => MaterialApp(
           debugShowCheckedModeBanner: false,
+          locale: Locale(locale),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          theme: testTheme(Brightness.light),
-          home: Scaffold(body: sharedImageChoiceContent()),
+          theme: testTheme(brightness),
+          home: Scaffold(
+            // Pinned to the top and keyed so the golden below frames the
+            // sheet rather than the page it is standing on. A shot that is
+            // four fifths empty background fails for changes to the
+            // background, and hides changes to the two centimetres that
+            // matter.
+            body: Align(
+              alignment: Alignment.topCenter,
+              child: RepaintBoundary(
+                key: const ValueKey<String>('sheet'),
+                child: SheetSurface(child: sharedImageChoiceContent()),
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -89,6 +109,27 @@ void main() {
 
     expect(find.text(l10n.shareChoiceProtectHint), findsOneWidget);
     expect(l10n.shareChoiceProtectHint.toLowerCase(), contains('not saved'));
+  });
+
+  testWidgets('share choice sheet — german', (tester) async {
+    // **German because it is the longest.** Both option titles wrap there and
+    // the sheet stands 335dp against Spanish's 298 — so a layout that holds
+    // here holds in the other six.
+    //
+    // Measuring overflow programmatically, which is what this file did first,
+    // catches text escaping its box and nothing else. It cannot see a subtitle
+    // colliding with an icon, or spacing that reads as two unrelated blocks.
+    // The paywall is the argument for having this at all: five strings there
+    // described a deleted feature for months, in seven languages, behind a
+    // green suite — because that screen has no golden and the onboarding
+    // slide, which does, failed the moment its copy changed.
+    await loadTestFonts();
+    await render(tester, locale: 'de', brightness: Brightness.dark);
+
+    await expectLater(
+      find.byKey(const ValueKey<String>('sheet')),
+      matchesGoldenFile('goldens/share_choice_german.png'),
+    );
   });
 
   test('the covering path is not backed by a library item', () {
