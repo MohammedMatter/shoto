@@ -1572,6 +1572,30 @@ abstract class AppLocalizations {
   /// **'Save {percent}%'**
   String paywallSave(int percent);
 
+  /// No description provided for @paywallPerYear.
+  ///
+  /// In en, this message translates to:
+  /// **'/year'**
+  String get paywallPerYear;
+
+  /// No description provided for @paywallPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'/month'**
+  String get paywallPerMonth;
+
+  /// No description provided for @paywallPreviewPricing.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions aren\'t live yet — pricing shown for preview.'**
+  String get paywallPreviewPricing;
+
+  /// No description provided for @paywallNotSetUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions aren\'t set up yet — check back soon.'**
+  String get paywallNotSetUp;
+
   /// No description provided for @paywallContinue.
   ///
   /// In en, this message translates to:

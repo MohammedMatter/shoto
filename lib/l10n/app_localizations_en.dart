@@ -869,6 +869,20 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get paywallPerYear => '/year';
+
+  @override
+  String get paywallPerMonth => '/month';
+
+  @override
+  String get paywallPreviewPricing =>
+      'Subscriptions aren\'t live yet — pricing shown for preview.';
+
+  @override
+  String get paywallNotSetUp =>
+      'Subscriptions aren\'t set up yet — check back soon.';
+
+  @override
   String get paywallContinue => 'Continue';
 
   @override

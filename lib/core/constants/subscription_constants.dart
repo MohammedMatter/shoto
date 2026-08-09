@@ -22,6 +22,18 @@ abstract class SubscriptionConstants {
   static const String monthlyFallbackPrice = '\$7.00';
   static const String yearlyFallbackPrice = '\$23.00';
 
+  /// The same two prices as numbers, so the saving on the yearly card can be
+  /// *calculated* rather than asserted.
+  ///
+  /// The badge used to read a hardcoded "Save 73%". That was true of these two
+  /// preview figures and of nothing else: the moment a real store product
+  /// exists, the prices come from App Store Connect and Play Console in the
+  /// user's own currency, and a number typed into the source has no way of
+  /// knowing what they say. A percentage that is wrong on a paywall is not a
+  /// cosmetic error — it is a claim about money.
+  static const double monthlyFallbackAmount = 7;
+  static const double yearlyFallbackAmount = 23;
+
   // The free tier is one number, and this is it: distinct screenshots a free
   // user may bring under organization (favorite and/or file into a folder).
   //

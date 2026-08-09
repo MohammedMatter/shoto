@@ -432,6 +432,10 @@
   "paywallMonthly": "Maandelijks",
   "paywallYearly": "Jaarlijks",
   "paywallSave": "Bespaar {percent}%",
+  "paywallPerYear": "/jaar",
+  "paywallPerMonth": "/maand",
+  "paywallPreviewPricing": "Abonnementen zijn nog niet actief — prijzen ter voorbeeld.",
+  "paywallNotSetUp": "Abonnementen zijn nog niet ingesteld — kom binnenkort terug.",
   "@paywallSave": {
     "placeholders": {
       "percent": {

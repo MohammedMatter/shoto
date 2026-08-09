@@ -432,6 +432,10 @@
   "paywallMonthly": "Monthly",
   "paywallYearly": "Yearly",
   "paywallSave": "Save {percent}%",
+  "paywallPerYear": "/year",
+  "paywallPerMonth": "/month",
+  "paywallPreviewPricing": "Subscriptions aren't live yet — pricing shown for preview.",
+  "paywallNotSetUp": "Subscriptions aren't set up yet — check back soon.",
   "@paywallSave": {
     "placeholders": {
       "percent": {

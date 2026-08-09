@@ -408,6 +408,10 @@
   "paywallMonthly": "Mensual",
   "paywallYearly": "Anual",
   "paywallSave": "Ahorra {percent}%",
+  "paywallPerYear": "/año",
+  "paywallPerMonth": "/mes",
+  "paywallPreviewPricing": "Las suscripciones aún no están activas — precios solo de muestra.",
+  "paywallNotSetUp": "Las suscripciones aún no están configuradas — vuelve pronto.",
   "@paywallSave": {
     "placeholders": {
       "percent": {

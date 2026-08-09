@@ -147,6 +147,33 @@ class _ErrorBody extends StatelessWidget {
   }
 }
 
+/// The yearly card's discount, in whole percent, or null when there is none
+/// worth stating.
+///
+/// Falls back to the preview amounts only while no store product exists —
+/// which is the same pair of numbers the preview prices are drawn from, so
+/// the badge and the prices beside it can never disagree. Once real products
+/// arrive the calculation uses those instead, in whatever currency the store
+/// returned, and the badge is right by construction rather than by somebody
+/// remembering to edit it.
+String? _savingBadge(
+  BuildContext context, {
+  required SubscriptionPackageInfo? yearly,
+  required SubscriptionPackageInfo? monthly,
+}) {
+  final int? percent = yearly == null
+      ? _previewSaving()
+      : yearly.savingAgainst(monthly);
+  return percent == null ? null : context.l10n.paywallSave(percent);
+}
+
+int? _previewSaving() {
+  const double year = SubscriptionConstants.yearlyFallbackAmount;
+  const double twelveMonths = SubscriptionConstants.monthlyFallbackAmount * 12;
+  if (year <= 0 || year >= twelveMonths) return null;
+  return ((1 - year / twelveMonths) * 100).round();
+}
+
 class _PaywallBody extends StatelessWidget {
   final SubscriptionState state;
   final bool selectedYearly;
@@ -239,8 +266,18 @@ class _PaywallBody extends StatelessWidget {
                   priceString:
                       yearly?.priceString ??
                       SubscriptionConstants.yearlyFallbackPrice,
-                  periodLabel: '/year',
-                  badgeLabel: 'Save 73%',
+                  periodLabel: context.l10n.paywallPerYear,
+                  // **Worked out, not written down.** This read a literal
+                  // "Save 73%", which is true of the two preview figures and
+                  // of nothing else — real prices arrive from the stores in
+                  // the user's own currency, and a percentage typed into the
+                  // source cannot know what they say. A wrong number here is
+                  // not a typo, it is a claim about money.
+                  //
+                  // Null when there is nothing honest to claim — no monthly
+                  // plan to compare against, or a yearly plan that is not
+                  // actually cheaper — and the badge simply does not appear.
+                  badgeLabel: _savingBadge(context, yearly: yearly, monthly: monthly),
                   isSelected: selectedYearly,
                   onTap: () => onSelect(true),
                 ),
@@ -250,14 +287,14 @@ class _PaywallBody extends StatelessWidget {
                   priceString:
                       monthly?.priceString ??
                       SubscriptionConstants.monthlyFallbackPrice,
-                  periodLabel: '/month',
+                  periodLabel: context.l10n.paywallPerMonth,
                   isSelected: !selectedYearly,
                   onTap: () => onSelect(false),
                 ),
                 if (!offeringsLive) ...[
                   SizedBox(height: 12.h),
                   Text(
-                    "Subscriptions aren't live yet — pricing shown for preview.",
+                    context.l10n.paywallPreviewPricing,
                     textAlign: TextAlign.center,
                     style: context.text.caption,
                   ),
@@ -309,10 +346,8 @@ class _PaywallBody extends StatelessWidget {
                       ? () => ScaffoldMessenger.of(context)
                           ..hideCurrentSnackBar()
                           ..showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                "Subscriptions aren't set up yet — check back soon.",
-                              ),
+                            SnackBar(
+                              content: Text(context.l10n.paywallNotSetUp),
                             ),
                           )
                       : () {

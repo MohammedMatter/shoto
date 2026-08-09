@@ -432,6 +432,10 @@
   "paywallMonthly": "Monatlich",
   "paywallYearly": "Jährlich",
   "paywallSave": "{percent} % sparen",
+  "paywallPerYear": "/Jahr",
+  "paywallPerMonth": "/Monat",
+  "paywallPreviewPricing": "Abos sind noch nicht aktiv — Preise dienen der Vorschau.",
+  "paywallNotSetUp": "Abos sind noch nicht eingerichtet — schau bald wieder vorbei.",
   "@paywallSave": {
     "placeholders": {
       "percent": {

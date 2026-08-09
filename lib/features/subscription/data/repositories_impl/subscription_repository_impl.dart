@@ -111,6 +111,7 @@ class SubscriptionRepositoryImpl implements SubscriptionRepository {
     return SubscriptionPackageInfo(
       package: package,
       priceString: package.storeProduct.priceString,
+      amount: package.storeProduct.price,
       isYearly: isYearly,
       freeTrialDays: _freeTrialDays(package.storeProduct.introductoryPrice),
     );

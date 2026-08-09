@@ -22,6 +22,15 @@ class SubscriptionPackageInfo {
   /// translated by us.
   final String priceString;
 
+  /// The same price as a number, in the same currency [priceString] is
+  /// formatted in.
+  ///
+  /// Carried alongside the string rather than parsed back out of it: a store
+  /// price is formatted for a locale, so "1.234,56 €" and "$1,234.56" are the
+  /// same amount and neither is `double.parse`-able. This is what lets the
+  /// yearly card state a saving it has actually worked out.
+  final double amount;
+
   final bool isYearly;
 
   /// How many days this product is free for before the first charge, or zero.
@@ -38,9 +47,27 @@ class SubscriptionPackageInfo {
   const SubscriptionPackageInfo({
     required this.package,
     required this.priceString,
+    required this.amount,
     required this.isYearly,
     this.freeTrialDays = 0,
   });
 
   bool get hasFreeTrial => freeTrialDays > 0;
+
+  /// What a year on this plan costs, whichever plan it is — the common unit
+  /// the two cards can be compared in.
+  double get yearlyEquivalent => isYearly ? amount : amount * 12;
+
+  /// How much cheaper [this] is than [monthly] over a year, as whole percent,
+  /// or null when there is nothing honest to claim.
+  ///
+  /// Null rather than zero for the cases with no answer: a missing monthly
+  /// plan, a free or unpriced product, or a yearly plan that is not actually
+  /// cheaper. A badge is a claim, and "Save 0%" is a worse one than silence.
+  int? savingAgainst(SubscriptionPackageInfo? monthly) {
+    if (!isYearly || monthly == null) return null;
+    final double reference = monthly.yearlyEquivalent;
+    if (reference <= 0 || amount <= 0 || amount >= reference) return null;
+    return ((1 - amount / reference) * 100).round();
+  }
 }

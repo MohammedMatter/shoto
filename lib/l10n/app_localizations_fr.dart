@@ -872,6 +872,20 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get paywallPerYear => '/an';
+
+  @override
+  String get paywallPerMonth => '/mois';
+
+  @override
+  String get paywallPreviewPricing =>
+      'Les abonnements ne sont pas encore actifs — tarifs donnés à titre indicatif.';
+
+  @override
+  String get paywallNotSetUp =>
+      'Les abonnements ne sont pas encore configurés — revenez bientôt.';
+
+  @override
   String get paywallContinue => 'Continuer';
 
   @override
