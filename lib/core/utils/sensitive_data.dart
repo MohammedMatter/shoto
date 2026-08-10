@@ -114,9 +114,14 @@ abstract class SensitiveData {
 
   /// Every private detail in [text], in reading order, never overlapping.
   ///
-  /// [ownerNames] is the signed-in user's own name and its parts, from
-  /// [namesFrom]. It is the one piece of context that turns name detection
-  /// from a guess into a lookup.
+  /// [ownerNames] is the reader's own name and its parts, from [namesFrom].
+  /// It is the one piece of context that turns name detection from a guess
+  /// into a lookup.
+  ///
+  /// **Nothing in the app passes it any more.** The setting that asked for a
+  /// name was removed, so `RedactionService` calls this with the default empty
+  /// set and an unlabelled name goes uncovered. The matching is kept, and kept
+  /// tested, because it is correct — it is waiting on somewhere to be asked.
   static List<SensitiveMatch> findIn(
     String text, {
     Set<String> ownerNames = const {},

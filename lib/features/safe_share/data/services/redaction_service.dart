@@ -6,7 +6,6 @@ import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/utils/line_stitching.dart';
 import 'package:shoto/core/utils/sensitive_data.dart';
 import 'package:shoto/core/utils/text_line_geometry.dart';
-import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/features/safe_share/domain/entities/sensitive_region.dart';
 import 'package:shoto/features/screenshots/data/data_sources/text_recognition_data_source.dart';
 
@@ -32,9 +31,8 @@ import 'package:shoto/features/screenshots/data/data_sources/text_recognition_da
 ///   copy is the only version of that image which exists.
 class RedactionService {
   final TextRecognitionDataSource _textRecognition;
-  final AppPreferences _preferences;
 
-  RedactionService(this._textRecognition, this._preferences);
+  RedactionService(this._textRecognition);
 
   /// Scans [imageFile] and reports what it found and where.
   Future<RedactionPlan> scan(File imageFile) async {
@@ -55,18 +53,12 @@ class RedactionService {
     );
     image.dispose();
 
-    // The user's own name is the one piece of context that lets an unlabelled
-    // name be recognised without guessing. See [SensitiveData]. Empty until
-    // they type it in Settings, and empty is a fine answer — everything else
-    // this scan finds is found by checksum or by label.
-    final Set<String> ownerNames = SensitiveData.namesFrom(
-      _preferences.ownerName,
-    );
-
-    final List<SensitiveRegion> regions = regionsIn(
-      lines,
-      ownerNames: ownerNames,
-    );
+    // No owner name is passed any more: the setting that asked for one was
+    // removed, so there is nothing on the device to pass. [regionsIn] still
+    // takes the argument — the matching itself works and is tested — but a
+    // scan on a real screenshot now finds only what it can prove: a checksum,
+    // a label, an `@`. An unlabelled name goes uncovered.
+    final List<SensitiveRegion> regions = regionsIn(lines);
 
     // Most damaging first: the review list is read top down, and the card
     // number is what the user actually needs to see is handled.

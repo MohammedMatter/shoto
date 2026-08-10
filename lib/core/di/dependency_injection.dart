@@ -249,7 +249,7 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => GetScreenshotActionsUseCase(sl()));
 
 
-  sl.registerLazySingleton(() => RedactionService(sl(), sl()));
+  sl.registerLazySingleton(() => RedactionService(sl()));
 
   // Backup reads through the screenshot repository rather than the gallery
   // directly, so an archive holds exactly the library the app shows — not

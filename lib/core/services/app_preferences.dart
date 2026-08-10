@@ -12,7 +12,6 @@ class AppPreferences extends ChangeNotifier {
   static const String _hapticsKey = 'pref_haptics';
   static const String _confirmDeleteKey = 'pref_confirm_delete';
   static const String _seenOnboardingKey = 'pref_seen_onboarding';
-  static const String _ownerNameKey = 'pref_owner_name';
   static const String _triageEnabledKey = 'pref_triage_enabled';
   static const String _triageAskedKey = 'pref_triage_asked';
   static const String _triageSinceKey = 'pref_triage_since';
@@ -22,7 +21,6 @@ class AppPreferences extends ChangeNotifier {
   bool _haptics = true;
   bool _confirmBeforeDelete = true;
   bool _hasSeenOnboarding = false;
-  String _ownerName = '';
   bool _triageEnabled = false;
   bool _triageAsked = false;
   int _triageSince = 0;
@@ -45,18 +43,6 @@ class AppPreferences extends ChangeNotifier {
   /// has been using Shoto for a month and simply signed out is telling them
   /// something they already know, in the way of what they were trying to do.
   bool get hasSeenOnboarding => _hasSeenOnboarding;
-
-  /// The user's own name, as it appears *inside their screenshots*, or empty.
-  ///
-  /// Safe Share needs this: a name with no label in front of it is the one
-  /// private detail no checksum or keyword can find. "Ahmed Khalil" on a line
-  /// by itself is a name only if you already know whose screenshot this is.
-  ///
-  /// This used to come from the signed-in Google account, which was both a
-  /// reason to demand an account and the wrong string — the name on somebody's
-  /// email is often not the name their bank prints. It is typed, once,
-  /// optional, and never leaves the device.
-  String get ownerName => _ownerName;
 
   /// Whether Shoto may look at the device's Screenshots album to *offer* what
   /// is new.
@@ -129,7 +115,6 @@ class AppPreferences extends ChangeNotifier {
     _haptics = prefs.getBool(_hapticsKey) ?? true;
     _confirmBeforeDelete = prefs.getBool(_confirmDeleteKey) ?? true;
     _hasSeenOnboarding = prefs.getBool(_seenOnboardingKey) ?? false;
-    _ownerName = prefs.getString(_ownerNameKey) ?? '';
     _triageEnabled = prefs.getBool(_triageEnabledKey) ?? false;
     _triageAsked = prefs.getBool(_triageAskedKey) ?? false;
     _triageSnoozedAt = prefs.getInt(_triageSnoozedKey) ?? 0;
@@ -163,13 +148,6 @@ class AppPreferences extends ChangeNotifier {
     notifyListeners();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_triageSinceKey, millis);
-  }
-
-  Future<void> setOwnerName(String value) async {
-    _ownerName = value.trim();
-    notifyListeners();
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_ownerNameKey, _ownerName);
   }
 
   Future<void> setHaptics(bool value) => _set(_hapticsKey, value, (v) {

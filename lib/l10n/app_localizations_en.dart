@@ -148,26 +148,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get triageNothingNew => 'Nothing new to review';
 
   @override
-  String get settingsYourName => 'Your name';
-
-  @override
-  String get settingsYourNameHint =>
-      'So Safe Share can cover it when it appears';
-
-  @override
-  String get settingsYourNameNotSet => 'Not set';
-
-  @override
-  String get ownerNameTitle => 'Your name';
-
-  @override
-  String get ownerNameBody =>
-      'Safe Share finds card numbers and codes by their own arithmetic. A name it can only find if it already knows yours. Typed once, kept on this phone, never sent anywhere.';
-
-  @override
-  String get ownerNameFieldHint => 'The name your bank prints';
-
-  @override
   String get commonCancel => 'Cancel';
 
   @override

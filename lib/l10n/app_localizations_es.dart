@@ -150,26 +150,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get triageNothingNew => 'No hay nada nuevo que revisar';
 
   @override
-  String get settingsYourName => 'Tu nombre';
-
-  @override
-  String get settingsYourNameHint =>
-      'Para que Safe Share lo tape cuando aparezca';
-
-  @override
-  String get settingsYourNameNotSet => 'Sin definir';
-
-  @override
-  String get ownerNameTitle => 'Tu nombre';
-
-  @override
-  String get ownerNameBody =>
-      'Safe Share encuentra los números de tarjeta y los códigos por su propia aritmética. Un nombre solo lo encuentra si ya conoce el tuyo. Se escribe una vez, se queda en este teléfono y no se envía a ningún sitio.';
-
-  @override
-  String get ownerNameFieldHint => 'El nombre que imprime tu banco';
-
-  @override
   String get commonCancel => 'Cancelar';
 
   @override

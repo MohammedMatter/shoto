@@ -232,6 +232,25 @@ class _SearchPageState extends State<SearchPage> {
                                 hintText: context.l10n.searchHint,
                                 hintStyle: context.text.bodyMedium,
                                 border: InputBorder.none,
+                                // **The app-wide focus ring is refused here,
+                                // and only here.**
+                                //
+                                // `inputDecorationTheme` gives every field a
+                                // blue ring when focused, which is right for a
+                                // field sitting on a page among others: it says
+                                // which one the keyboard is typing into. This
+                                // field is the only thing on its screen and it
+                                // is `autofocus`, so the ring answers a question
+                                // nobody asked — and it is drawn *inside* the
+                                // rounded box above, which already draws the
+                                // field's shape. Two rounded outlines, one
+                                // inside the other, from the first frame the
+                                // screen exists.
+                                //
+                                // Stated explicitly because `applyDefaults`
+                                // only fills a *null* `focusedBorder` from the
+                                // theme. `border` alone does not cover it.
+                                focusedBorder: InputBorder.none,
                                 isDense: true,
                                 contentPadding: EdgeInsets.symmetric(
                                   vertical: 14.h,

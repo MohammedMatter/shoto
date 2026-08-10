@@ -4,7 +4,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/utils/sensitive_data.dart';
-import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/features/safe_share/data/services/redaction_service.dart';
 import 'package:shoto/features/safe_share/domain/entities/sensitive_region.dart';
 import 'package:shoto/features/screenshots/data/data_sources/text_recognition_data_source.dart';
@@ -32,7 +31,7 @@ void main() {
     workspace = Directory.systemTemp.createTempSync('shoto_redaction');
     // Constructing the recogniser allocates an id and nothing else — no
     // channel call happens until processImage, which redact never makes.
-    service = RedactionService(TextRecognitionDataSource(), AppPreferences());
+    service = RedactionService(TextRecognitionDataSource());
   });
 
   tearDownAll(() => workspace.deleteSync(recursive: true));

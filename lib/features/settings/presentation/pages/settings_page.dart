@@ -31,7 +31,6 @@ import 'package:shoto/features/screenshots/domain/use_cases/request_photo_permis
 import 'package:shoto/features/settings/presentation/widgets/app_version_block.dart';
 import 'package:shoto/features/settings/presentation/widgets/contact_support_tile.dart';
 import 'package:shoto/features/settings/presentation/widgets/language_sheet.dart';
-import 'package:shoto/features/settings/presentation/widgets/owner_name_sheet.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_group.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_tiles.dart';
 import 'package:shoto/features/settings/presentation/widgets/subscription_card_widget.dart';
@@ -188,19 +187,6 @@ class SettingsPage extends StatelessWidget {
                                 await sl<RequestPhotoPermissionUseCase>()();
                             await prefs.setTriageEnabled(permission.hasAccess);
                           },
-                        ),
-                        // The app's only personal field, and it sits
-                        // with the other two preferences rather than in
-                        // a group of its own, because it is the same
-                        // kind of thing: something you set once so the
-                        // app behaves the way you want later.
-                        SettingsNavTile(
-                          icon: Icons.badge_outlined,
-                          label: context.l10n.settingsYourName,
-                          description: prefs.ownerName.isEmpty
-                              ? context.l10n.settingsYourNameHint
-                              : prefs.ownerName,
-                          onTap: () => showOwnerNameSheet(context),
                         ),
                       ],
                     );

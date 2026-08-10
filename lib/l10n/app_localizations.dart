@@ -300,42 +300,6 @@ abstract class AppLocalizations {
   /// **'Nothing new to review'**
   String get triageNothingNew;
 
-  /// No description provided for @settingsYourName.
-  ///
-  /// In en, this message translates to:
-  /// **'Your name'**
-  String get settingsYourName;
-
-  /// No description provided for @settingsYourNameHint.
-  ///
-  /// In en, this message translates to:
-  /// **'So Safe Share can cover it when it appears'**
-  String get settingsYourNameHint;
-
-  /// No description provided for @settingsYourNameNotSet.
-  ///
-  /// In en, this message translates to:
-  /// **'Not set'**
-  String get settingsYourNameNotSet;
-
-  /// No description provided for @ownerNameTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Your name'**
-  String get ownerNameTitle;
-
-  /// No description provided for @ownerNameBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Safe Share finds card numbers and codes by their own arithmetic. A name it can only find if it already knows yours. Typed once, kept on this phone, never sent anywhere.'**
-  String get ownerNameBody;
-
-  /// No description provided for @ownerNameFieldHint.
-  ///
-  /// In en, this message translates to:
-  /// **'The name your bank prints'**
-  String get ownerNameFieldHint;
-
   /// No description provided for @commonCancel.
   ///
   /// In en, this message translates to:
