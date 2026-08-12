@@ -213,11 +213,37 @@ class _RegionsOutline extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // **Two rings, and the second one is not decoration.**
+    //
+    // This drew a single stroke in the accent, which is the one place in the
+    // app where a palette colour cannot be trusted to be visible: it is
+    // painted *on a screenshot*, and the screenshot's colours are the whole
+    // set of colours Shoto does not choose. Caught on the real thing — a blue
+    // spreadsheet full of IBANs, where a blue ring around each finding was
+    // indistinguishable from the cell borders already in the picture. The
+    // feature's entire claim is "here is what I found"; a marker that blends
+    // into the content is the one failure it cannot afford.
+    //
+    // There is no hue that contrasts with an unknown image, so the answer is
+    // not a better hue — it is a pair with opposite luminance. A near-black
+    // halo under a near-white ring means one of the two always separates from
+    // whatever is behind it, which is why every crop and selection tool ever
+    // built draws its marquee this way. Both are fixed rather than mode-aware,
+    // for the same reason the viewer's chrome is: the surface underneath is a
+    // photograph, not the app's own material.
+    //
+    // The accent survives as the 8% wash, which is what still makes the marker
+    // *Shoto's*. The wash is deliberately too faint to hide anything — any
+    // heavier and it starts doing the job the subscription is for.
     final Paint wash = Paint()..color = colour.withValues(alpha: 0.08);
+    final Paint halo = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..color = AppPalette.overlay.withValues(alpha: 0.45);
     final Paint stroke = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.4
-      ..color = colour.withValues(alpha: 0.85);
+      ..color = AppPalette.paper.withValues(alpha: 0.95);
 
     for (final Rect rect in rects) {
       final RRect rounded = RRect.fromRectAndRadius(
@@ -225,6 +251,7 @@ class _RegionsOutline extends CustomPainter {
         const Radius.circular(3),
       );
       canvas.drawRRect(rounded, wash);
+      canvas.drawRRect(rounded, halo);
       canvas.drawRRect(rounded, stroke);
     }
   }

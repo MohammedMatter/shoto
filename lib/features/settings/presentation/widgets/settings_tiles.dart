@@ -9,12 +9,24 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/widgets/app_switch.dart';
 import 'package:shoto/core/widgets/pro_badge.dart';
 
-/// A row whose control is too wide to sit beside its label — a segmented
-/// picker rather than a switch or a chevron.
+/// A row whose control is a segmented picker rather than a switch or a chevron.
 ///
 /// Naming these ("Theme", "Grid density") rather than letting a bare row of
 /// pills float under a heading matters more than it looks: a control with no
 /// label is only obvious to whoever built it.
+///
+/// **The picker sits beside the label, not under it**, and that is worth the
+/// note because it used to be the other way round. A full-width segmented
+/// control with a caption under every glyph is a good way to introduce three
+/// options nobody has met before — and there are exactly two of these rows,
+/// both at the top of the page, so between them they were taking about a third
+/// of the screen to hold two preferences most people set once and never open
+/// again. Everything else in Settings was below the fold because of it.
+///
+/// Compact mode drops the captions and lets the pill size to its own glyphs, so
+/// the row becomes what it always was: a label, and the answer on the other
+/// end — the same shape as every switch row above and below it. See
+/// [ThemeModeSelector.compact].
 class SettingsControlRow extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -29,20 +41,17 @@ class SettingsControlRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsetsDirectional.fromSTEB(15.w, 14.h, 15.w, 15.h),
-      color: context.colors.surface,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.h),
+      child: Row(
         children: [
-          Row(
-            children: [
-              Icon(icon, color: context.colors.textPrimary, size: 19.sp),
-              SizedBox(width: 14.w),
-              Text(label, style: context.text.bodyLarge),
-            ],
-          ),
-          SizedBox(height: 12.h),
+          Icon(icon, color: context.colors.textPrimary, size: 19.sp),
+          SizedBox(width: 14.w),
+          // Takes the slack so the pill is pinned to the trailing edge and the
+          // two rows line their controls up with each other — and with the
+          // switches in the group below.
+          Expanded(child: Text(label, style: context.text.bodyLarge)),
+          SizedBox(width: 12.w),
           control,
         ],
       ),
@@ -104,7 +113,7 @@ class _SettingsClearCacheTileState extends State<SettingsClearCacheTile> {
       builder: (context, snapshot) {
         final int bytes = snapshot.data ?? 0;
         return SettingsNavTile(
-          icon: Icons.cleaning_services_rounded,
+          icon: Icons.cleaning_services_outlined,
           label: context.l10n.settingsClearCache,
           description: snapshot.hasData
               ? context.l10n.settingsCacheSize(_format(bytes))
@@ -162,10 +171,11 @@ class SettingsNavTile extends StatelessWidget {
       feedback: PressFeedback.highlight,
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 14.h),
-        // No background or border of its own: the row lives inside a
-        // [SettingsGroup] card, which draws both once for the whole group.
-        color: context.colors.surface,
+        // **No padding on the sides and no surface of its own.** The group's
+        // card is gone, so the row aligns to the page gutter like the heading
+        // above it rather than being inset from a container that no longer
+        // exists — and it paints nothing, so the canvas shows through.
+        padding: EdgeInsets.symmetric(vertical: 14.h),
         child: Row(
           children: [
             Icon(icon, color: tint, size: 19.sp),
@@ -216,8 +226,7 @@ class SettingsSwitchTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsetsDirectional.fromSTEB(15.w, 8.h, 10.w, 8.h),
-      color: context.colors.surface,
+      padding: EdgeInsets.symmetric(vertical: 8.h),
       child: Row(
         children: [
           Icon(icon, color: context.colors.textPrimary, size: 19.sp),

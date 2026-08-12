@@ -10,6 +10,7 @@ import 'package:shoto/features/screenshots/data/data_sources/library_ownership_l
 import 'package:shoto/features/screenshots/data/data_sources/screenshot_gallery_data_source.dart';
 import 'package:shoto/features/screenshots/data/data_sources/screenshot_metadata_local_data_source.dart';
 import 'package:shoto/features/screenshots/data/data_sources/text_recognition_data_source.dart';
+import 'package:shoto/features/screenshots/domain/entities/library_summary.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/domain/repositories/screenshot_repository.dart';
 
@@ -55,6 +56,69 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
         .toList();
 
     return _withMetadata(mine);
+  }
+
+  /// Home's numbers, without the gallery.
+  ///
+  /// Note what is *not* here: no `getScreenshotAssets`, no legacy adoption, no
+  /// intersection against the album. This is one indexed read of two local
+  /// tables, and it is the whole reason the first frame can carry real content
+  /// — see [LibrarySummary].
+  ///
+  /// The custom-intent table is read only when some row actually points at one.
+  /// It is a small table, but this runs on the path that exists to be short,
+  /// and the great majority of libraries have no custom verbs in them at all.
+  @override
+  Future<LibrarySummary> getLibrarySummary() async {
+    final List<Map<String, Object?>> rows = await _ownership
+        .getOrganizationFacts();
+    if (rows.isEmpty) return LibrarySummary.empty;
+
+    final bool hasCustom = rows.any((Map<String, Object?> row) {
+      final String? intentId = row['intent'] as String?;
+      return intentId != null && IntentRef.isCustomId(intentId);
+    });
+    final Map<String, CustomIntent> customIntents = hasCustom
+        ? <String, CustomIntent>{
+            for (final CustomIntent intent
+                in await _customIntents.getCustomIntents())
+              intent.id: intent,
+          }
+        : const <String, CustomIntent>{};
+
+    int unsorted = 0;
+    final Map<IntentRef, int> waiting = <IntentRef, int>{};
+
+    for (final Map<String, Object?> row in rows) {
+      // The two conditions below are `ScreenshotEntity.isUnsorted` and
+      // `IntentState.isWaiting` read straight off the columns they are built
+      // from. They cannot literally call those getters — an entity needs an
+      // `AssetEntity`, which is the gallery read this method exists to skip —
+      // so if either definition ever changes, it changes here too.
+      final bool isFavorite = (row['is_favorite'] as int?) == 1;
+      final int? folderId = row['folder_id'] as int?;
+      if (folderId == null && !isFavorite) unsorted++;
+
+      if (row['intent_done_at'] != null) continue;
+      final IntentRef? ref = _resolveIntent(
+        row['intent'] as String?,
+        customIntents,
+      );
+      if (ref == null) continue;
+      waiting.update(ref, (int n) => n + 1, ifAbsent: () => 1);
+    }
+
+    final List<MapEntry<IntentRef, int>> ordered = waiting.entries.toList()
+      ..sort(
+        (MapEntry<IntentRef, int> a, MapEntry<IntentRef, int> b) =>
+            IntentRef.pickerOrder(a.key).compareTo(IntentRef.pickerOrder(b.key)),
+      );
+
+    return LibrarySummary(
+      total: rows.length,
+      unsorted: unsorted,
+      waiting: Map<IntentRef, int>.fromEntries(ordered),
+    );
   }
 
   /// Imports the images the user hand-picked in the system picker.
@@ -373,26 +437,40 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
     await _ownership.markLegacyAdoptionDone();
   }
 
+  /// The verb a stored `screenshot_meta.intent` names, or null.
+  ///
+  /// An unresolvable id yields no intent rather than a guess. That covers a
+  /// value written by a newer build, and also a custom intent this account has
+  /// since deleted — deletion clears the references itself, so reaching this
+  /// with a `c:` id means the two are momentarily out of step, and "none set"
+  /// is the honest reading of that, not whichever constant happens to sit first
+  /// in the enum.
+  ///
+  /// Its own method because [getLibrarySummary] resolves the same column
+  /// without ever building an entity, and Home draws one straight after the
+  /// other — two readings of one string is exactly how the count shown for a
+  /// custom verb would come out different in the two frames.
+  IntentRef? _resolveIntent(
+    String? intentId,
+    Map<String, CustomIntent> customIntents,
+  ) {
+    if (intentId == null) return null;
+    if (IntentRef.isCustomId(intentId)) return customIntents[intentId];
+    return switch (ScreenshotIntent.fromId(intentId)) {
+      final ScreenshotIntent intent => BuiltInIntent(intent),
+      null => null,
+    };
+  }
+
   ScreenshotEntity _toEntity(
     AssetEntity asset,
     Map<String, Object?>? meta,
     Map<String, CustomIntent> customIntents,
   ) {
-    // An unresolvable id yields no intent rather than a guess. That covers a
-    // value written by a newer build, and now also a custom intent this
-    // account has since deleted — deletion clears the references itself, so
-    // reaching this with a `c:` id means the two are momentarily out of step,
-    // and "none set" is the honest reading of that, not whichever constant
-    // happens to sit first in the enum.
-    final String? intentId = meta?['intent'] as String?;
-    final IntentRef? ref = intentId == null
-        ? null
-        : IntentRef.isCustomId(intentId)
-        ? customIntents[intentId]
-        : switch (ScreenshotIntent.fromId(intentId)) {
-            final ScreenshotIntent intent => BuiltInIntent(intent),
-            null => null,
-          };
+    final IntentRef? ref = _resolveIntent(
+      meta?['intent'] as String?,
+      customIntents,
+    );
     final int? doneAt = meta?['intent_done_at'] as int?;
 
     return ScreenshotEntity(

@@ -28,6 +28,8 @@ import 'package:shoto/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:shoto/core/services/dev_access.dart';
 import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/services/local_identity.dart';
+import 'package:shoto/core/services/feature_trials.dart';
+import 'package:shoto/core/services/library_quota.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/features/safe_share/data/services/redaction_service.dart';
 import 'package:shoto/core/services/backup_file_service.dart';
@@ -46,7 +48,8 @@ import 'package:shoto/features/folders/domain/repositories/folders_repository.da
 import 'package:shoto/features/folders/domain/use_cases/create_folder_use_case.dart';
 import 'package:shoto/features/folders/domain/use_cases/delete_folder_use_case.dart';
 import 'package:shoto/features/folders/domain/use_cases/get_folders_use_case.dart';
-import 'package:shoto/features/folders/domain/use_cases/rename_folder_use_case.dart';
+import 'package:shoto/features/folders/domain/use_cases/seed_default_folders_use_case.dart';
+import 'package:shoto/features/folders/domain/use_cases/update_folder_use_case.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/screenshots/data/data_sources/image_labeling_data_source.dart';
 import 'package:shoto/features/screenshots/data/data_sources/library_ownership_local_data_source.dart';
@@ -64,6 +67,7 @@ import 'package:shoto/features/screenshots/domain/use_cases/extract_and_cache_te
 import 'package:shoto/features/screenshots/domain/use_cases/get_cached_ocr_text_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_cached_visual_labels_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_managed_screenshot_count_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_library_summary_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_by_folder_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_new_captures_use_case.dart';
@@ -91,6 +95,8 @@ import 'package:shoto/features/subscription/domain/repositories/subscription_rep
 import 'package:shoto/features/subscription/domain/use_cases/get_offerings_use_case.dart';
 import 'package:shoto/features/subscription/domain/use_cases/get_subscription_status_use_case.dart';
 import 'package:shoto/features/subscription/domain/use_cases/purchase_package_use_case.dart';
+import 'package:shoto/features/subscription/domain/use_cases/attach_subscription_account_use_case.dart';
+import 'package:shoto/features/subscription/domain/use_cases/detach_subscription_account_use_case.dart';
 import 'package:shoto/features/subscription/domain/use_cases/restore_purchases_use_case.dart';
 import 'package:shoto/features/subscription/presentation/bloc/subscription_bloc.dart';
 
@@ -111,6 +117,9 @@ void setupServiceLocator() {
       signInWithGoogleUseCase: sl(),
       signInWithAppleUseCase: sl(),
       signOutUseCase: sl(),
+      attachSubscriptionAccountUseCase: sl(),
+      detachSubscriptionAccountUseCase: sl(),
+      proStatus: sl(),
     ),
   );
 
@@ -121,6 +130,9 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => CacheService());
   sl.registerLazySingleton(() => AppPreferences());
   sl.registerLazySingleton(() => DevAccess());
+  // Free per-feature tries. Plain local counters — no repository behind it,
+  // because the allowance belongs to the install rather than to an account.
+  sl.registerLazySingleton(() => FeatureTrials());
   sl.registerLazySingleton(() => FunnelLog());
   sl.registerLazySingleton(() => BiometricAuthService());
 
@@ -138,6 +150,7 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => CheckPhotoPermissionUseCase(sl()));
   sl.registerLazySingleton(() => GetScreenshotsUseCase(sl()));
   sl.registerLazySingleton(() => GetScreenshotsByFolderUseCase(sl()));
+  sl.registerLazySingleton(() => GetLibrarySummaryUseCase(sl()));
   sl.registerLazySingleton(() => SetFavoriteUseCase(sl()));
   sl.registerLazySingleton(() => AssignFolderUseCase(sl()));
   sl.registerLazySingleton(() => SetIntentUseCase(sl()));
@@ -178,6 +191,7 @@ void setupServiceLocator() {
       checkPhotoPermissionUseCase: sl(),
       getScreenshotsUseCase: sl(),
       getScreenshotsByFolderUseCase: sl(),
+      getLibrarySummaryUseCase: sl(),
       setFavoriteUseCase: sl(),
       setIntentUseCase: sl(),
       setIntentsUseCase: sl(),
@@ -198,14 +212,16 @@ void setupServiceLocator() {
   );
   sl.registerLazySingleton(() => GetFoldersUseCase(sl()));
   sl.registerLazySingleton(() => CreateFolderUseCase(sl()));
-  sl.registerLazySingleton(() => RenameFolderUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateFolderUseCase(sl()));
   sl.registerLazySingleton(() => DeleteFolderUseCase(sl()));
+  sl.registerLazySingleton(() => SeedDefaultFoldersUseCase(sl()));
   sl.registerFactory(
     () => FoldersBloc(
       getFoldersUseCase: sl(),
       createFolderUseCase: sl(),
-      renameFolderUseCase: sl(),
+      updateFolderUseCase: sl(),
       deleteFolderUseCase: sl(),
+      seedDefaultFoldersUseCase: sl(),
     ),
   );
 
@@ -217,10 +233,18 @@ void setupServiceLocator() {
   // prime it before the first frame — a Pro badge that appears a second late
   // reads as the app changing its mind about who you are.
   sl.registerLazySingleton(() => ProStatus(sl(), sl()));
+  // After ProStatus, which it watches: paying is what removes the ceiling, so
+  // the quota's answer changes when the subscription does even though the
+  // count itself has not moved.
+  sl.registerLazySingleton(() => LibraryQuota(sl(), sl()));
   sl.registerLazySingleton(() => GetOfferingsUseCase(sl()));
   sl.registerLazySingleton(() => GetSubscriptionStatusUseCase(sl()));
   sl.registerLazySingleton(() => PurchasePackageUseCase(sl()));
   sl.registerLazySingleton(() => RestorePurchasesUseCase(sl()));
+  // Resolved by AuthBloc, which is registered further up — order is not a
+  // problem because a factory's body runs when it is asked for, not here.
+  sl.registerLazySingleton(() => AttachSubscriptionAccountUseCase(sl()));
+  sl.registerLazySingleton(() => DetachSubscriptionAccountUseCase(sl()));
   sl.registerFactory(
     () => SubscriptionBloc(
       getOfferingsUseCase: sl(),
@@ -247,7 +271,6 @@ void setupServiceLocator() {
     () => SmartActionsRepositoryImpl(sl()),
   );
   sl.registerLazySingleton(() => GetScreenshotActionsUseCase(sl()));
-
 
   sl.registerLazySingleton(() => RedactionService(sl()));
 

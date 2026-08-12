@@ -106,6 +106,20 @@ sealed class IntentRef {
 
   static bool isCustomId(String id) => id.startsWith(customPrefix);
 
+  /// Where a verb sits in the one canonical order: built-ins as declared, then
+  /// the user's own after all of them.
+  ///
+  /// **Here rather than on whoever needs it**, because two places now sort the
+  /// same list — the loaded state's `waitingByIntent` and the summary the app
+  /// boots from before the gallery has been read. Those two both feed Home's
+  /// inbox, one right after the other, so a second copy of this ordering would
+  /// show up as the tags visibly reshuffling the moment the real read lands.
+  static int pickerOrder(IntentRef ref) => switch (ref) {
+    BuiltInIntent(:final ScreenshotIntent intent) => intent.index,
+    CustomIntent(:final int sortOrder) =>
+      ScreenshotIntent.values.length + sortOrder,
+  };
+
   @override
   bool operator ==(Object other) => other is IntentRef && other.id == id;
 

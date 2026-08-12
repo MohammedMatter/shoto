@@ -58,13 +58,58 @@ class ShareActivity : FlutterFragmentActivity() {
      */
     private var incoming: Future<Map<String, Any?>>? = null
 
+    /**
+     * Kept for the lifetime of the activity rather than made per-share.
+     *
+     * It used to be created inline and abandoned, on the reasoning that this
+     * activity handles one share and then finishes. [onNewIntent] is the case
+     * that reasoning missed — a living instance can be handed a second share
+     * — and one executor reused is also what serialises the two copies, so a
+     * replacement can never be overtaken by the copy it replaced.
+     */
+    private val worker = Executors.newSingleThreadExecutor()
+
+    private var channel: MethodChannel? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // A single-use executor: this activity handles one share and then
-        // finishes, so there is nothing to pool.
-        incoming = Executors.newSingleThreadExecutor().submit<Map<String, Any?>> {
-            describeIncomingImages()
-        }
+        incoming = worker.submit<Map<String, Any?>> { describeIncomingImages() }
+    }
+
+    /**
+     * A second share, handed to the instance already on screen.
+     *
+     * **This activity is `singleTop`, so Android delivers here rather than
+     * building a new one** — and for as long as nothing overrode this, that
+     * delivery went nowhere. The sheet kept showing the previous picture and
+     * the share the user had just performed did nothing at all, which reads as
+     * the app ignoring them.
+     *
+     * It was survivable while the sheet always finished itself: save or
+     * dismiss both call `finishAndRemoveTask`, so an instance was rarely alive
+     * to deliver to. Covering changed that. Backing out of Safe Share returns
+     * to the offer on purpose — a mis-tap should not cost the whole share —
+     * which means an instance is now routinely sitting there, and the second
+     * share is the *normal* case rather than the rare one.
+     *
+     * `setIntent` before re-reading, because [readImageUris] reads `intent`
+     * and the base class does not swap it for us.
+     */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        incoming = worker.submit<Map<String, Any?>> { describeIncomingImages() }
+        // Dart owns what is on screen, so it is told rather than reset from
+        // here. It has a page stack to unwind and a stage to return to, and
+        // neither is anything this side can see.
+        channel?.invokeMethod("reshare", null)
+    }
+
+    override fun onDestroy() {
+        worker.shutdownNow()
+        channel?.setMethodCallHandler(null)
+        channel = null
+        super.onDestroy()
     }
 
     override fun getInitialRoute(): String = "/share"
@@ -83,10 +128,12 @@ class ShareActivity : FlutterFragmentActivity() {
         super.configureFlutterEngine(flutterEngine)
         HapticsChannel.register(this, flutterEngine)
 
-        MethodChannel(
+        channel = MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             CHANNEL,
-        ).setMethodCallHandler { call, result ->
+        )
+
+        channel?.setMethodCallHandler { call, result ->
             when (call.method) {
                 // Every incoming image, each with its MediaStore id when it
                 // has one. The id is what lets Dart tell "a screenshot Shoto
@@ -148,11 +195,41 @@ class ShareActivity : FlutterFragmentActivity() {
                 target.outputStream().use { output -> input.copyTo(output) }
             } ?: return null
 
-            mapOf("path" to target.absolutePath, "mediaId" to mediaStoreId(uri))
+            mapOf(
+                "path" to target.absolutePath,
+                "mediaId" to mediaStoreId(uri),
+                "fromShoto" to handedOutByShoto(uri),
+            )
         } catch (error: Exception) {
             null
         }
     }
+
+    /**
+     * Whether this picture is one Shoto itself just handed out.
+     *
+     * **The covering flow ends by sharing, and Shoto is in the list of things
+     * it can be shared to.** Somebody who covers an account number and then
+     * picks Shoto — a perfectly sensible way to keep the clean copy — was met
+     * with "cover private details, or save it?", offering to protect the very
+     * file the previous screen had just produced. The question answers itself,
+     * and asking it makes the app look like it has forgotten what it was
+     * doing ten seconds ago.
+     *
+     * Decided on the URI's authority, which is exact rather than a guess. Every
+     * share this app performs goes out through `share_plus`, whose provider is
+     * declared as `${applicationId}.flutter.share_provider` — so this is the
+     * literal question "did this come out of us", answered by identity. Nothing
+     * here reads a filename, which would have been the fragile version of the
+     * same idea: names are chosen by the code that wrote the file, survive
+     * being copied by other apps, and are the first thing to change.
+     *
+     * Note it is deliberately *not* narrowed to the redacted copy. A picture
+     * shared out of Shoto unchanged and immediately shared back is also one
+     * whose owner has just been offered covering and declined it.
+     */
+    private fun handedOutByShoto(uri: Uri): Boolean =
+        uri.authority == "$packageName.flutter.share_provider"
 
     /**
      * The MediaStore row id, when the shared image came from the gallery.

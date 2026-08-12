@@ -118,37 +118,22 @@ class ScreenshotThumbnail extends StatelessWidget {
             // animate their way in and out. Two extra fully transparent
             // widgets per tile is a cheap price — they paint nothing and lay
             // out once.
-            if (onMoreTap != null) ...[
-              // Soft scrim so the quick-actions icon stays legible over
-              // bright screenshots too. Fades with the icon it exists for.
+            // **No scrim.**
+            //
+            // There was a 55%-black gradient across the bottom 36px of every
+            // tile, drawn so that one bare white glyph would stay legible. It
+            // paid for that glyph by permanently darkening the bottom third of
+            // every picture in the grid — including the thousands of tiles
+            // that have no mark on them at all — on the one screen whose whole
+            // job is showing the pictures.
+            //
+            // Every mark carries its own contrast now (see [_TileMark]), so
+            // the band has nothing left to do. The photograph is unobstructed
+            // except exactly where a mark sits.
+            if (onMoreTap != null)
               Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                height: 36.h,
-                child: IgnorePointer(
-                  child: AnimatedOpacity(
-                    opacity: selectionMode ? 0 : 1,
-                    duration: AppMotion.duration(context, AppMotion.instant),
-                    curve: AppMotion.standard,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withValues(alpha: 0),
-                            Colors.black.withValues(alpha: 0.55),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                right: 2.w,
-                bottom: 0,
+                right: 5.w,
+                bottom: 5.h,
                 child: IgnorePointer(
                   ignoring: selectionMode,
                   child: AnimatedOpacity(
@@ -158,27 +143,32 @@ class ScreenshotThumbnail extends StatelessWidget {
                     child: PressableScale(
                       scale: 0.85,
                       onTap: onMoreTap,
-                      child: Padding(
-                        padding: EdgeInsets.all(6.w),
-                        child: Icon(
-                          Icons.more_horiz_rounded,
-                          color: Colors.white,
-                          size: 18.sp,
-                        ),
-                      ),
+                      // A disc, like everything else on the tile. It was a
+                      // bare white glyph on the picture — the only control in
+                      // the app with no shape of its own, invisible over
+                      // anything pale, and the reason the scrim existed.
+                      child: const _TileMark(icon: Icons.more_horiz_rounded),
                     ),
                   ),
                 ),
               ),
-            ],
-            // Bottom-left, the one corner nothing else claims: the tick is
-            // top-left, the heart top-right, the quick-actions button
-            // bottom-right. It also sits inside the scrim already drawn for
-            // that button, so it costs no extra darkening of the picture.
+            // **Bottom-left**, which is where it has always been and where it
+            // belongs — this was moved to the top-left for one build, on the
+            // theory that sharing the selection tick's corner would declutter
+            // the bottom edge. Two things were wrong with that. The bottom
+            // edge stopped being crowded the moment the scrim came off and the
+            // marks shrank, so there was nothing left to declutter; and the
+            // top-left of a screenshot is almost never empty — it is where the
+            // clock, the back arrow and the title of whatever was captured all
+            // live, so a mark there lands on content every time.
+            //
+            // Spread across three corners, each mark also has a corner to
+            // itself, which is what lets a glance down a column tell them
+            // apart without reading them.
             if (intent case final IntentState state)
               Positioned(
-                left: 6.w,
-                bottom: 6.h,
+                left: 5.w,
+                bottom: 5.h,
                 child: IgnorePointer(
                   child: AnimatedOpacity(
                     opacity: selectionMode ? 0 : 1,
@@ -190,13 +180,15 @@ class ScreenshotThumbnail extends StatelessWidget {
               ),
             if (isFavorite)
               Positioned(
-                top: 6.h,
-                right: 6.w,
-                child: Icon(
-                  Icons.favorite_rounded,
-                  color: context.colors.error,
-                  size: 16.sp,
-                  shadows: const [Shadow(blurRadius: 4, color: Colors.black54)],
+                top: 5.h,
+                right: 5.w,
+                // The same disc as every other mark. It was a bare red heart
+                // with a blur shadow under it — a second way of solving the
+                // legibility problem, which is how a grid ends up with three
+                // visual languages on one tile.
+                child: _TileMark(
+                  icon: Icons.favorite_rounded,
+                  iconColor: context.colors.error,
                 ),
               ),
             Positioned(
@@ -285,6 +277,66 @@ class ScreenshotThumbnail extends StatelessWidget {
   }
 }
 
+/// **The one mark this grid draws**, in the one size and the one shape it
+/// draws them.
+///
+/// A tile had three different overlay treatments on it at once: a translucent
+/// black disc for a waiting intent, a fully saturated green disc for a
+/// finished one, a bare white glyph for the quick-actions button and a bare
+/// red heart with a drop shadow for a favourite. Four marks, four answers to
+/// the same question — *how does a small symbol stay legible on an arbitrary
+/// photograph* — and the grid read as cluttered because it genuinely was.
+///
+/// One answer, used everywhere: a small dark disc that supplies its own
+/// contrast. That is what let the bottom scrim go, because the scrim existed
+/// solely to prop up the one mark that had no shape.
+///
+/// **Size is the whole discipline here.** These sit on top of the only thing
+/// this screen exists to show, so the disc is 20px on a tile that is 110px
+/// across at the densest grid — findable, and never the subject. The finished
+/// mark was close to a third of a tile at one point; the file's own history
+/// records shrinking it twice, and it was still the loudest object on the
+/// screen because it was solving legibility with area instead of with
+/// contrast.
+class _TileMark extends StatelessWidget {
+  final IconData icon;
+
+  final Color iconColor;
+
+  const _TileMark({required this.icon, this.iconColor = Colors.white});
+
+  /// The disc's fill: a dark scrim, deliberately **not** a themed surface.
+  /// This sits on somebody's photograph rather than on the app's own
+  /// material, and a themed chip floating on a screenshot of a chat reads as
+  /// part of that screenshot.
+  ///
+  /// [_IntentBadge] is the one mark that departs from it, and only to swap in
+  /// the completion hue — it animates that change, so it builds its own
+  /// container rather than taking a colour through here.
+  static Color get _fill => Colors.black.withValues(alpha: 0.5);
+
+  /// One value, so every mark on the tile is the same object at a glance.
+  ///
+  /// 17 rather than 20, measured on the device rather than guessed: at 20 the
+  /// disc came out around 18% of a tile's width, which is close to what the
+  /// old green puck occupied and still read as a sticker applied to the
+  /// photograph. 17 lands near 15% — small enough to be chrome, large enough
+  /// that an 10sp glyph inside it is still unambiguous at arm's length.
+  static const double _diameter = 17;
+  static const double _glyph = 10;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: _diameter.w,
+      height: _diameter.w,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(color: _fill, shape: BoxShape.circle),
+      child: Icon(icon, size: _glyph.sp, color: iconColor),
+    );
+  }
+}
+
 /// The intent mark on a tile: the verb's glyph while it is owed, and a tick
 /// once it is not.
 ///
@@ -320,19 +372,26 @@ class _IntentBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDone = state.isDone;
 
+    // The same [_TileMark] every other overlay on this tile is, so the four
+    // of them read as one family — the fill is the only thing that moves.
+    //
+    // **Done keeps its hue and loses its shout.** The doc above is right that
+    // finishing has to be visible on the picture, and it still is: green is
+    // the only colour anywhere in this grid, so a completed tile is findable
+    // from across the screen. What changed is that it is now the same 20px
+    // disc as everything else instead of a saturated puck twice that size —
+    // the mark was carrying its emphasis in *area*, which is the one currency
+    // a photo grid cannot afford to spend.
     return AnimatedContainer(
       duration: AppMotion.duration(context, AppMotion.normal),
       curve: AppMotion.standard,
-      padding: EdgeInsets.all(5.w),
+      width: 17.w,
+      height: 17.w,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-        // Waiting is black rather than a surface colour: it sits on a
-        // photograph, not on the app's own material, and a themed chip
-        // floating on somebody's screenshot of a chat reads as part of the
-        // screenshot. Done is allowed to be the app's colour, because by then
-        // saying so *is* the point.
         color: isDone
             ? context.colors.success
-            : Colors.black.withValues(alpha: 0.55),
+            : Colors.black.withValues(alpha: 0.5),
         shape: BoxShape.circle,
       ),
       child: AnimatedSwitcher(
@@ -356,7 +415,7 @@ class _IntentBadge extends StatelessWidget {
           // screenshot should not animate — nothing was completed — but
           // crossing into done must.
           key: ValueKey<bool>(isDone),
-          size: 13.sp,
+          size: 10.sp,
           color: Colors.white,
         ),
       ),

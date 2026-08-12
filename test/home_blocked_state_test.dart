@@ -6,6 +6,7 @@ import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
+import 'package:shoto/core/services/feature_trials.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
@@ -64,6 +65,9 @@ void main() {
     if (!sl.isRegistered<DevAccess>()) {
       sl.registerLazySingleton<DevAccess>(() => DevAccess());
     }
+    if (!sl.isRegistered<FeatureTrials>()) {
+      sl.registerLazySingleton<FeatureTrials>(() => FeatureTrials());
+    }
     if (!sl.isRegistered<ProStatus>()) {
       sl.registerLazySingleton<ProStatus>(
         () => ProStatus(_FakeSubscriptionRepository(), sl<DevAccess>()),
@@ -95,7 +99,6 @@ void main() {
             child: HomePage(
               onOpenLibrary: (_) {},
               onOpenLibraryForIntent: (_) {},
-              onOpenFolders: () {},
             ),
           ),
         ),

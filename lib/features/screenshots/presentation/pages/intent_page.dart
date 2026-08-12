@@ -7,6 +7,7 @@ import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/services/haptics.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
+import 'package:shoto/core/theme/app_shapes.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/core/widgets/animated_id_grid.dart';
@@ -57,25 +58,9 @@ class IntentPage extends StatelessWidget {
             backgroundColor: context.colors.background,
             elevation: 0,
             iconTheme: IconThemeData(color: context.colors.textPrimary),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  intent.waitingTitle(context),
-                  style: context.text.titleLarge,
-                ),
-                // The finished count sits under the title rather than in the
-                // list. It is the reward for having used the screen, and it
-                // would be noise anywhere it competed with what is still to do.
-                if (done > 0)
-                  Text(
-                    context.l10n.intentDoneCount(done),
-                    style: context.text.caption.copyWith(
-                      color: context.colors.success,
-                    ),
-                  ),
-              ],
+            title: Text(
+              intent.waitingTitle(context),
+              style: context.text.titleLarge,
             ),
           ),
           body: SafeArea(
@@ -89,45 +74,70 @@ class IntentPage extends StatelessWidget {
                     ),
                     message: context.l10n.intentEmptyBody,
                   )
-                : AnimatedIdGrid<ScreenshotEntity>(
-                    items: waiting,
-                    idOf: (ScreenshotEntity item) => item.id,
-                    padding: EdgeInsetsDirectional.fromSTEB(
-                      20.w,
-                      4.h,
-                      20.w,
-                      120.h,
-                    ),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      // **One column, deliberately.** A grid turns this
-                      // into another gallery to browse; a list turns each
-                      // row into one thing to decide about, which is what
-                      // the screen is for.
-                      crossAxisCount: 1,
-                      mainAxisSpacing: 12.h,
-                      mainAxisExtent: 108.h,
-                    ),
-                    itemBuilder: (context, item, index, animation) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: SizeTransition(
-                          sizeFactor: animation,
-                          child: _WaitingRow(
-                            screenshot: item,
-                            onChange: () => _changeIntent(context, item),
-                            onDone: () {
-                              // Fires before the row leaves, so the feedback
-                              // and the movement are one event rather than a
-                              // buzz followed by a disappearance.
-                              Haptics.confirm();
-                              context.read<ScreenshotsBloc>().add(
-                                SetIntentDoneEvent(item.id, true),
-                              );
-                            },
+                : Column(
+                    children: <Widget>[
+                      // **The falling number, drawn.**
+                      //
+                      // The finished count used to be a caption under the app
+                      // bar title — three words in the smallest type on the
+                      // screen, stating the one thing this page exists to
+                      // produce. Every other number in Shoto only goes up;
+                      // this is the only place a number comes *down*, and a
+                      // page built around that moment should show the progress
+                      // rather than mention it.
+                      //
+                      // Only once something has been finished. Before that the
+                      // bar would be an empty track reading zero, which frames
+                      // the screen as a backlog you are behind on instead of a
+                      // list you are about to clear.
+                      if (done > 0)
+                        _Progress(waiting: waiting.length, done: done),
+                      Expanded(
+                        child: AnimatedIdGrid<ScreenshotEntity>(
+                          items: waiting,
+                          idOf: (ScreenshotEntity item) => item.id,
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                            20.w,
+                            4.h,
+                            20.w,
+                            120.h,
                           ),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                // **One column, deliberately.** A grid turns
+                                // this into another gallery to browse; a list
+                                // turns each row into one thing to decide
+                                // about, which is what the screen is for.
+                                crossAxisCount: 1,
+                                mainAxisSpacing: 12.h,
+                                mainAxisExtent: 96.h,
+                              ),
+                          itemBuilder: (context, item, index, animation) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: SizeTransition(
+                                sizeFactor: animation,
+                                child: _WaitingRow(
+                                  screenshot: item,
+                                  intentLabel: intent.label(context),
+                                  onChange: () => _changeIntent(context, item),
+                                  onDone: () {
+                                    // Fires before the row leaves, so the
+                                    // feedback and the movement are one event
+                                    // rather than a buzz followed by a
+                                    // disappearance.
+                                    Haptics.confirm();
+                                    context.read<ScreenshotsBloc>().add(
+                                      SetIntentDoneEvent(item.id, true),
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   )),
           ),
         );
@@ -136,9 +146,72 @@ class IntentPage extends StatelessWidget {
   }
 }
 
+/// How far down the list has come, as a line and a bar.
+///
+/// **The bar measures the whole job, not what is left.** `done / (done +
+/// waiting)` climbs toward full as items are ticked off, so the movement is in
+/// the direction of the accomplishment. A bar of what remains would drain
+/// instead, and turn finishing something into watching a meter empty.
+///
+/// Sage rather than the accent, because this is the completion hue everywhere
+/// else in the app and this is the one screen entirely about completing.
+class _Progress extends StatelessWidget {
+  final int waiting;
+  final int done;
+
+  const _Progress({required this.waiting, required this.done});
+
+  @override
+  Widget build(BuildContext context) {
+    final AppPalette colors = context.colors;
+    final int total = waiting + done;
+    final double fraction = total == 0 ? 0 : (done / total).clamp(0.0, 1.0);
+
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(20.w, 2.h, 20.w, 14.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            context.l10n.intentDoneCount(done),
+            style: context.text.bodySmall.copyWith(color: colors.success),
+          ),
+          SizedBox(height: 7.h),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.pill),
+            child: Stack(
+              children: <Widget>[
+                Container(height: 4.h, color: colors.surfaceVariant),
+                // Animated, because this bar only ever moves as a direct
+                // result of the user tapping Done — the one place in the app
+                // where a progress change is something they just caused, and
+                // so the one place watching it move is the reward rather than
+                // a distraction.
+                AnimatedFractionallySizedBox(
+                  duration: AppMotion.reduced(context)
+                      ? Duration.zero
+                      : AppMotion.sheet,
+                  curve: AppMotion.standard,
+                  widthFactor: fraction,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Container(height: 4.h, color: colors.success),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _WaitingRow extends StatelessWidget {
   final ScreenshotEntity screenshot;
   final VoidCallback onDone;
+
+  /// The verb this row is filed under, for the line under the age.
+  final String intentLabel;
 
   /// Re-answers the question for this one.
   ///
@@ -153,6 +226,7 @@ class _WaitingRow extends StatelessWidget {
     required this.screenshot,
     required this.onDone,
     required this.onChange,
+    required this.intentLabel,
   });
 
   @override
@@ -174,8 +248,8 @@ class _WaitingRow extends StatelessWidget {
           // are read as a list, and a picture that changes height with its
           // subject makes the list impossible to scan.
           SizedBox(
-            width: 108.h,
-            height: 108.h,
+            width: 96.h,
+            height: 96.h,
             child: Image(
               image: AssetEntityImageProvider(
                 screenshot.asset,
@@ -187,33 +261,80 @@ class _WaitingRow extends StatelessWidget {
             ),
           ),
           SizedBox(width: 14.w),
+          // **The row had one line of grey text in it.**
+          //
+          // A 108px-tall row whose entire content was "3 weeks ago" at caption
+          // weight, floating in the middle of a large gap — most of the row was
+          // empty, and the one thing written in it was the quietest type on the
+          // screen. The age is not a footnote here: "have I been sitting on
+          // this" is the question the row exists to answer, so it is the line
+          // that gets read first.
           Expanded(
-            child: Text(
-              _When.of(context, screenshot.asset.createDateTime),
-              style: context.text.bodySmall.copyWith(
-                color: context.colors.textSecondary,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  _When.of(context, screenshot.asset.createDateTime),
+                  style: context.text.titleSmall,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 2.h),
+                // What tapping the row does, said rather than discovered. The
+                // row's tap opens the intent picker — a destination nobody
+                // guesses from a photograph and a date, which left the whole
+                // row reading as inert.
+                Text(
+                  intentLabel,
+                  style: context.text.caption.copyWith(
+                    color: context.colors.textSecondary,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
           ),
+          SizedBox(width: 10.w),
           Padding(
             padding: EdgeInsetsDirectional.only(end: 12.w),
             child: PressableScale(
-              scale: 0.88,
+              scale: 0.9,
               onTap: onDone,
+              // **A word, not a bare tick.**
+              //
+              // This is the one control on the screen that finishes something,
+              // and it sat beside a row whose own tap did something completely
+              // different — so the only thing distinguishing "done" from
+              // "change what this is" was that one of them was a circle. A
+              // labelled button removes the guess, and it fills the space the
+              // empty row had going spare.
               child: Container(
-                width: 46.w,
-                height: 46.w,
-                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
                 decoration: BoxDecoration(
                   // Sage, the palette's completion colour — the one hue in the
                   // app that already means *finished*.
                   color: context.colors.success.withValues(alpha: 0.16),
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
-                child: Icon(
-                  Icons.check_rounded,
-                  color: context.colors.success,
-                  size: 24.sp,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(
+                      Icons.check_rounded,
+                      color: context.colors.success,
+                      size: 17.sp,
+                    ),
+                    SizedBox(width: 6.w),
+                    Text(
+                      context.l10n.commonDone,
+                      style: context.text.button.copyWith(
+                        color: context.colors.success,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

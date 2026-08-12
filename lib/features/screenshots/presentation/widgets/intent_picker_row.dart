@@ -82,9 +82,10 @@ class _IntentPickerRowState extends State<IntentPickerRow> {
     return ListenableBuilder(
       listenable: _catalog,
       builder: (BuildContext context, Widget? child) {
-        final List<IntentRef> frontRow = _catalog.frontRow(
-          selected: widget.selected,
-        );
+        // Not passed the selection, and it no longer takes one: the row is
+        // ordered by this person's history and holds still while they use it.
+        // See [IntentCatalog.frontRow].
+        final List<IntentRef> frontRow = _catalog.frontRow();
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,

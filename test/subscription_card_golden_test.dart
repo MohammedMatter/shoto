@@ -77,4 +77,5 @@ void main() {
       matchesGoldenFile('goldens/subscription_cards_light.png'),
     );
   });
+
 }

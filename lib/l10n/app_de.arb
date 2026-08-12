@@ -15,11 +15,22 @@
   "settingsSignInHint": "Optional. Nur nötig, um einen Kauf auf ein anderes Handy zu übertragen.",
   "paywallTrialCta": "{days, plural, =1{1 Tag gratis starten} other{{days} Tage gratis starten}}",
   "@paywallTrialCta": {
-    "placeholders": { "days": { "type": "int" } }
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
   },
   "paywallTrialNote": "{days, plural, =1{Einen Tag gratis, danach {price}. Jederzeit vorher kündbar.} other{{days} Tage gratis, danach {price}. Jederzeit vorher kündbar.}}",
   "@paywallTrialNote": {
-    "placeholders": { "days": { "type": "int" }, "price": { "type": "String" } }
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
   },
   "triageTitle": "Seit deinem letzten Blick",
   "triageBody": "Behalte, was zu Shoto gehört. Alles andere bleibt genau dort, wo es ist.",
@@ -28,15 +39,30 @@
   "triageFinish": "Fertig",
   "triageProgress": "{index} von {total}",
   "@triageProgress": {
-    "placeholders": { "index": { "type": "int" }, "total": { "type": "int" } }
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
   },
   "triageNewCount": "{count, plural, =1{1 neuer Screenshot} other{{count} neue Screenshots}}",
   "@triageNewCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "triageKept": "{count, plural, =0{Nichts behalten} =1{1 behalten} other{{count} behalten}}",
   "@triageKept": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "triageReview": "Ansehen",
   "triageInviteDecline": "Jetzt nicht",
@@ -63,6 +89,7 @@
   "homeInboxEmpty": "Noch nichts gespeichert",
   "homeInboxEmptySubtitle": "Wähle jetzt ein paar von deinem Handy oder teile aus jeder App einen Screenshot in Shoto.",
   "homeEmptyImportCta": "Von meinem Handy wählen",
+  "homeNeedsYou": "Wartet auf dich",
   "homeInboxClear": "Alles abgelegt",
   "homeInboxClearSubtitle": "Nichts wartet aufs Sortieren",
   "homeInboxCountSubtitle": "Screenshots, die du noch nicht abgelegt hast",
@@ -211,7 +238,28 @@
     }
   },
   "foldersDeleteMessage": "Der Ordner verschwindet, aber die Screenshots darin bleiben in deiner Mediathek.",
-  "foldersRenameTitle": "Ordner umbenennen",
+  "foldersEditTitle": "Ordner bearbeiten",
+  "foldersSearchHint": "Ordner suchen",
+  "foldersSortLabel": "Ordner sortieren",
+  "foldersSortRecent": "Neueste zuerst",
+  "foldersSortName": "Name (A–Z)",
+  "foldersSortFullest": "Meiste Screenshots",
+  "foldersNoMatchTitle": "Kein Ordner passt",
+  "foldersNoMatchMessage": "Hier heißt nichts „{query}“. Versuch einen Teil des Namens.",
+  "@foldersNoMatchMessage": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "folderDefaultTrips": "Reisepläne",
+  "folderDefaultRecipes": "Rezepte",
+  "folderDefaultMedications": "Medikamente",
+  "folderDefaultAiNotes": "KI-Notizen",
+  "folderDefaultMoney": "Geld",
+  "folderDefaultWorkouts": "Workouts",
+  "folderDefaultMusic": "Musik",
   "foldersMoveTitle": "In Ordner verschieben",
   "foldersMoveRemove": "Aus dem Ordner nehmen",
   "foldersMoveNone": "Noch keine Ordner. Erstelle einen im Tab „Ordner“.",
@@ -371,6 +419,7 @@
   "safeShareShareUnchanged": "Unverändert teilen",
   "safeShareShareAnyway": "Trotzdem teilen",
   "safeShareShareProtected": "Geschützte Kopie teilen",
+  "safeShareKeepCopy": "Kopie in Shoto behalten",
   "safeShareFailed": "Die geschützte Kopie ließ sich nicht erstellen.",
   "safeShareFoundTitle": "{count, plural, =1{1 private Angabe gefunden} other{{count} private Angaben gefunden}}",
   "@safeShareFoundTitle": {
@@ -440,13 +489,23 @@
   "paywallContinue": "Weiter",
   "paywallUnavailable": "Noch nicht verfügbar",
   "paywallRestore": "Käufe wiederherstellen",
+  "settingsRestoreHint": "Schon bezahlt? Hol dein Abo zurück.",
   "paywallLegal": "Verlängert sich automatisch bis zur Kündigung. Jederzeit in den Kontoeinstellungen im App Store oder bei Google Play kündbar. Mit dem Fortfahren stimmst du unseren Nutzungsbedingungen und der Datenschutzerklärung zu.",
   "subPremiumBadge": "PRO",
   "subPremiumTitle": "Shoto Pro",
   "subPremiumBody": "Jede Funktion für dich freigeschaltet.",
+  "subPremiumRenews": "Verlängert sich am {date}",
+  "quotaTitle": "Bibliothek",
+  "quotaUsed": "{used} von {limit}",
+  "quotaLeft": "{count, plural, =0{Kein Platz mehr — Pro hebt das Limit auf} =1{Noch 1 Screenshot in der Gratis-Version} other{Noch {count} Screenshots in der Gratis-Version}}",
+  "quotaUnlimited": "Unbegrenzt",
+  "quotaUnlimitedNote": "Keine Obergrenze für das, was du behältst.",
   "subDevUnlock": "Testerzugang",
   "subDevUnlockBody": "Auf diesem Gerät freigeschaltet – kein echtes Abo",
   "subUnlockEverything": "Alles freischalten",
+  "trialUsed": "Der ging auf uns — dein Gratis-Versuch",
+  "trialFree": "Gratis testen",
+  "proOnly": "Pro",
   "proWelcomeTitle": "Du bist auf Pro",
   "proWelcomeBody": "Jede Funktion ist freigeschaltet. Es gibt nichts weiter einzurichten.",
   "proWelcomeAction": "Loslegen",
@@ -458,8 +517,9 @@
   "featDuplicatesBody": "Erkennt fast identische Aufnahmen, die du doppelt behalten hast, und räumt sie weg – immer erst mit einer Durchsicht.",
   "featStitch": "Lange Screenshots verbinden",
   "featStitchBody": "Fügt eine Scroll-Aufnahme wieder zu einem hohen Bild zusammen, mit automatisch gefundener und entfernter Überlappung.",
-  "featUnlimited": "Keine Grenze für deine Mediathek",
+  "featUnlimited": "Unbegrenzte Screenshots",
   "featUnlimitedBody": "Die Gratisstufe ordnet {count} Screenshots. Pro nimmt die Zahl weg.",
+  "featUnlimitedBodyPro": "Deine Bibliothek hat keine Obergrenze — behalte, so viel du willst.",
   "featSafeShareHow": "Zu finden, was in einem Screenshot privat ist, ist gratis und unbegrenzt. Bezahlt wird dafür, aus diesen Funden eine saubere Kopie zu machen: jede ausgewählte Angabe wird im Export abgedeckt, und der Export ist flach – keine Ebene, die sich rückgängig machen lässt.",
   "featSafeSharePoint1": "Kartennummern werden per Luhn und IBANs per Modulo 97 geprüft – diese beiden werden also bewiesen statt geraten, genau bei der Angabe, die am schwersten wiegt.",
   "featSafeSharePoint2": "Erkennt außerdem Namen, Adressen, Bestellnummern, Bestätigungscodes, Telefonnummern und E-Mail-Adressen.",
@@ -638,6 +698,8 @@
   "shareChoiceTitle": "Was soll Shoto damit machen?",
   "shareChoiceProtect": "Private Angaben abdecken",
   "shareChoiceProtectHint": "Privates verbergen und weiterschicken. Es wird hier nicht gespeichert.",
+  "quickSaveCoverAction": "Abdecken",
+  "quickSaveCoverWhy": "Private Daten drin?",
   "shareChoiceSave": "In Shoto speichern",
   "shareChoiceSaveHint": "Zur Bibliothek hinzufügen und ablegen.",
   "shareSavedPrompt": "{count, plural, =1{Screenshot gesichert. In einen Ordner legen?} other{Screenshots gesichert. In einen Ordner legen?}}",

@@ -31,18 +31,27 @@ class _LanguageSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final LocaleController controller = sl<LocaleController>();
 
+    // **Which row wears the tick when nothing has been chosen yet.**
+    //
+    // A fresh install has no preference stored, and the app runs in whatever
+    // the phone asked for. With "Match my phone" gone from the list there is no
+    // row standing for that state, so the tick goes on the language actually
+    // being read — which is both true and the only answer that is any use to
+    // somebody looking at the sheet.
+    final AppLanguage current = controller.language ?? controller.effectiveLanguage;
+
     return SheetSurface(
       child: SafeArea(
         top: false,
         child: ListView(
           shrinkWrap: true,
-          padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
+          padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 12.h),
           children: [
             Center(
               child: Container(
                 width: 38.w,
                 height: 4.h,
-                margin: EdgeInsets.only(bottom: 18.h),
+                margin: EdgeInsets.only(bottom: 16.h),
                 decoration: BoxDecoration(
                   color: context.colors.border,
                   borderRadius: BorderRadius.circular(2.r),
@@ -50,31 +59,30 @@ class _LanguageSheet extends StatelessWidget {
               ),
             ),
             Text(context.l10n.settingsLanguage, style: context.text.titleLarge),
-            SizedBox(height: 14.h),
+            SizedBox(height: 6.h),
 
-            // "Follow the phone" is a real choice, not the absence of one, so
-            // it sits in the list and can be selected back into.
-            _Row(
-              title: context.l10n.settingsLanguageSystem,
-              subtitle: context.l10n.settingsLanguageSystemHint(
-                controller.effectiveLanguage.endonym,
-              ),
-              selected: controller.language == null,
-              onTap: () {
-                controller.setLanguage(null);
-                Navigator.of(context).pop();
-              },
-            ),
-            Divider(color: context.colors.border, height: 20.h),
-
+            // **"Match my phone" is gone**, and with it the divider that used
+            // to fence it off from the real languages.
+            //
+            // It was a defensible option and it was the wrong first row. It is
+            // the only entry in the list that does not name a language, so the
+            // one thing somebody opening a language picker is looking for —
+            // their language — was never the first thing on the screen. It also
+            // could not be read: to know what "Match my phone" would give you,
+            // you had to read a second line explaining which language that
+            // currently meant, which is a row that exists to explain itself.
+            //
+            // Following the phone is still the state a fresh install is in.
+            // Nothing forces a choice; the picker simply no longer offers
+            // "whatever the system says" as if it were a language alongside
+            // seven that are.
             for (final AppLanguage language in AppLanguage.values)
               _Row(
                 // Its own name, in its own script. Somebody who needs Urdu is
                 // looking for اردو, and cannot be expected to find it under a
                 // row that says "Urdu" in a language they don't read.
-                title: language.endonym,
-                subtitle: language.englishName,
-                selected: controller.language == language,
+                language: language,
+                selected: language == current,
                 onTap: () {
                   controller.setLanguage(language);
                   Navigator.of(context).pop();
@@ -87,15 +95,28 @@ class _LanguageSheet extends StatelessWidget {
   }
 }
 
+/// One language, on one line.
+///
+/// **This was a bordered card two lines tall, and eight of them made a sheet
+/// most of a phone high.** Every row drew its own outline and its own fill, so
+/// a list of seven peers arrived as seven objects with gaps between them — and
+/// the endonym and the English name were stacked, which doubled the height of
+/// the sheet to say two words that fit comfortably on one line beside each
+/// other.
+///
+/// Now it is a row: the language's own name where the eye starts, its English
+/// name at the far end in the quietest colour on the palette, and a tick when
+/// it is the one in use. Hairlines between, no fills, nothing selected drawn as
+/// a *box* — the tick is what says which, because that is what a tick is for.
+/// The sheet is roughly half the height it was and every option is on screen at
+/// once, which is the only thing a picker is really being asked to do.
 class _Row extends StatelessWidget {
-  final String title;
-  final String subtitle;
+  final AppLanguage language;
   final bool selected;
   final VoidCallback onTap;
 
   const _Row({
-    required this.title,
-    required this.subtitle,
+    required this.language,
     required this.selected,
     required this.onTap,
   });
@@ -103,38 +124,53 @@ class _Row extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PressableScale(
-      scale: 0.98,
+      // A tint rather than a shrink: these are full-width rows in a scrollable,
+      // and the sheet scrolls on a short phone. See [PressFeedback].
+      feedback: PressFeedback.highlight,
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(bottom: 8.h),
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 13.h),
+        padding: EdgeInsets.symmetric(vertical: 14.h),
         decoration: BoxDecoration(
-          color: selected
-              ? context.colors.primary.withValues(alpha: 0.12)
-              : context.colors.surface,
-          borderRadius: BorderRadius.circular(15.r),
-          border: Border.all(
-            color: selected ? context.colors.primary : context.colors.border,
-            width: selected ? 1.5 : 1,
+          border: Border(
+            top: BorderSide(color: context.colors.border, width: 1),
           ),
         ),
         child: Row(
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: context.text.bodyLarge),
-                  Text(subtitle, style: context.text.caption),
-                ],
+              child: Text(
+                language.endonym,
+                style: context.text.bodyLarge,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            if (selected)
-              Icon(
-                Icons.check_circle_rounded,
-                color: context.colors.primary,
-                size: 20.sp,
+            // Dropped entirely when it would only repeat the endonym —
+            // "English · English" is a row apologising for itself.
+            if (language.englishName != language.endonym) ...<Widget>[
+              SizedBox(width: 12.w),
+              Text(
+                language.englishName,
+                style: context.text.caption.copyWith(
+                  color: context.colors.textDisabled,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
+            ],
+            SizedBox(width: 12.w),
+            // A fixed box either way, so the names do not shift sideways by the
+            // width of a tick as the selection moves down the list.
+            SizedBox(
+              width: 20.sp,
+              child: selected
+                  ? Icon(
+                      Icons.check_rounded,
+                      color: context.colors.primary,
+                      size: 20.sp,
+                    )
+                  : null,
+            ),
           ],
         ),
       ),

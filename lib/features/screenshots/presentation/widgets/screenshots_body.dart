@@ -11,6 +11,7 @@ import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/photo_viewer_route.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
+import 'package:shoto/core/theme/app_shapes.dart';
 import 'package:shoto/core/utils/date_sections.dart';
 import 'package:shoto/core/widgets/animated_id_grid.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
@@ -54,11 +55,19 @@ class ScreenshotsBody extends StatefulWidget {
   /// but Home is *not*, and it passes its own.
   final String heroPrefix;
 
+  /// Slivers the hosting page wants above the grid, inside its scroll view.
+  ///
+  /// A page header passed here collapses with the list instead of standing
+  /// on top of it forever. Empty for folder detail and the intent pages,
+  /// which have no header of their own.
+  final List<Widget> leadingSlivers;
+
   const ScreenshotsBody({
     super.key,
     required this.emptyTitle,
     required this.emptyMessage,
     this.showFavoritesFilter = true,
+    this.leadingSlivers = const <Widget>[],
     this.groupByDate = false,
     this.heroPrefix = 'grid',
   });
@@ -121,17 +130,28 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
         final ScreenshotsLoadedState loaded = state as ScreenshotsLoadedState;
         final items = loaded.visibleScreenshots;
 
-        return Column(
-          children: [
+        // **Everything on this screen lives in one scroll view.**
+        //
+        // The filter chips, the lens note and whatever header the page handed
+        // down used to be boxes in a `Column` above the grid — permanently on
+        // screen however far you scrolled. On the library that is the top
+        // sixth of the phone spent on chrome for the whole length of a
+        // hundred-screenshot list.
+        //
+        // They are slivers now, which is the only arrangement that lets a
+        // header collapse and a filter row pin. It is also the only one that
+        // *can* work: a `NestedScrollView` was tried first, and a fixed box at
+        // the top of its body is either painted over by a pinned bar or pushed
+        // under the status bar by an unpinned one. See
+        // `AnimatedIdGrid.leadingSlivers`.
+        final List<Widget> head = <Widget>[
+          ...widget.leadingSlivers,
+          SliverToBoxAdapter(
             // Filter row and selection toolbar occupy the same strip, so the
             // swap between them is a change of mode rather than two unrelated
-            // bars taking turns. Cutting straight from one to the other made
-            // a long-press look like the screen had jumped.
-            //
-            // Short — this is a strip of controls the user is about to reach
-            // for, and the layout under it must settle before their finger
-            // arrives.
-            AnimatedSwitcher(
+            // bars taking turns. Cutting straight from one to the other made a
+            // long-press look like the screen had jumped.
+            child: AnimatedSwitcher(
               duration: AppMotion.duration(context, AppMotion.instant),
               switchInCurve: AppMotion.standard,
               switchOutCurve: AppMotion.standard,
@@ -145,7 +165,7 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
               ),
               // Height differs between the two, so the outgoing bar must not
               // be laid out on top of the incoming one — they stack and the
-              // Column jumps to whichever is taller.
+              // strip jumps to whichever is taller.
               layoutBuilder: (current, previous) => Stack(
                 alignment: Alignment.topCenter,
                 children: [...previous, ?current],
@@ -157,10 +177,10 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                       intent: loaded.intent,
                       intentUnsatisfied: loaded.intentUnsatisfied,
                     )
-                  // Shown once a filter could change what is on screen —
-                  // see [ScreenshotsLoadedState.filtersWouldNarrow]. Three
-                  // chips reading zero over an empty library are the widest
-                  // row on the first screen saying "nothing" three times.
+                  // Shown once a filter could change what is on screen — see
+                  // [ScreenshotsLoadedState.filtersWouldNarrow]. Three chips
+                  // reading zero over an empty library are the widest row on
+                  // the first screen saying "nothing" three times.
                   : showFavoritesFilter && loaded.filtersWouldNarrow
                   ? ScreenshotsFilterRow(
                       key: const ValueKey<String>('filters'),
@@ -174,132 +194,131 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                     )
                   : const SizedBox.shrink(key: ValueKey<String>('none')),
             ),
-            // Outside the switcher above: selection mode replaces the filter
-            // strip, and a note explaining a lens has no business sitting
-            // under a delete button.
-            if (!loaded.isSelectionMode &&
-                showFavoritesFilter &&
-                loaded.filtersWouldNarrow)
-              LensProvenanceNote(
+          ),
+          // Outside the switcher above: selection mode replaces the filter
+          // strip, and a note explaining a lens has no business sitting under
+          // a delete button.
+          if (!loaded.isSelectionMode &&
+              showFavoritesFilter &&
+              loaded.filtersWouldNarrow)
+            SliverToBoxAdapter(
+              child: LensProvenanceNote(
                 lens: loaded.lens,
                 unreadCount: loaded.unreadCount,
               ),
-            Expanded(
-              child: AnimatedSwitcher(
-                duration: AppMotion.normal,
-                switchInCurve: AppMotion.standard,
-                switchOutCurve: AppMotion.standard,
-                // Fade *and* a hair of scale. A pure cross-fade between two
-                // grids of photographs looks like a dissolve; the small scale
-                // step says one set replaced the other.
-                transitionBuilder: (child, animation) => FadeTransition(
-                  opacity: animation,
-                  child: ScaleTransition(
-                    scale: Tween<double>(
-                      begin: 0.97,
-                      end: 1,
-                    ).animate(animation),
-                    child: child,
-                  ),
-                ),
-                child: KeyedSubtree(
-                  // Keyed on both axes, or narrowing by content would swap the
-                  // grid's contents with no transition at all while changing
-                  // status cross-fades — two ways of doing the same thing.
-                  key: ValueKey<String>('${loaded.filter}-${loaded.lens}'),
-                  child: items.isEmpty
-                      ? loaded.lens != null
-                            // A lens that matched nothing is its own case, and
-                            // the honest wording depends on whether anything
-                            // is still unread: "you have none of these" and
-                            // "nothing that has been read has these" are
-                            // different claims, and only one of them is
-                            // usually true.
-                            ? EmptyState(
-                                icon: loaded.lens!.icon,
-                                title: context.l10n.libraryNoTraitTitle(
-                                  loaded.lens!.label(context),
-                                ),
-                                message: loaded.unreadCount > 0
-                                    ? context.l10n.libraryNoTraitUnreadMessage(
-                                        loaded.unreadCount,
-                                      )
-                                    : context.l10n.libraryNoTraitMessage,
-                                action: PrimaryButton(
-                                  label: context.l10n.libraryShowAll,
-                                  onPressed: () => context
-                                      .read<ScreenshotsBloc>()
-                                      .add(SetLibraryLensEvent(null)),
-                                ),
+            ),
+        ];
+
+        if (items.isEmpty) {
+          return CustomScrollView(
+            slivers: [
+              ...head,
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: loaded.lens != null
+                    // A lens that matched nothing is its own case, and the
+                    // honest wording depends on whether anything is still
+                    // unread: "you have none of these" and "nothing that has
+                    // been read has these" are different claims, and only one
+                    // of them is usually true.
+                    ? EmptyState(
+                        icon: loaded.lens!.icon,
+                        title: context.l10n.libraryNoTraitTitle(
+                          loaded.lens!.label(context),
+                        ),
+                        message: loaded.unreadCount > 0
+                            ? context.l10n.libraryNoTraitUnreadMessage(
+                                loaded.unreadCount,
                               )
-                            : EmptyState(
-                                // An empty filter is not an empty library, and the
-                                // three cases have nothing useful in common: an
-                                // empty inbox is the app's best possible outcome,
-                                // no favorites is a feature nobody has used yet,
-                                // and nothing at all is a first run. One shared
-                                // sentence for all three would be wrong twice.
-                                icon: switch (loaded.filter) {
-                                  LibraryFilter.unsorted =>
-                                    Icons.check_circle_outline_rounded,
-                                  _ => Icons.image_search_rounded,
-                                },
-                                title: switch (loaded.filter) {
-                                  LibraryFilter.unsorted =>
-                                    context.l10n.libraryNoUnsortedTitle,
-                                  LibraryFilter.favorites =>
-                                    context.l10n.libraryNoFavoritesTitle,
-                                  LibraryFilter.all => emptyTitle,
-                                },
-                                message: switch (loaded.filter) {
-                                  LibraryFilter.unsorted =>
-                                    context.l10n.libraryNoUnsortedMessage,
-                                  LibraryFilter.favorites =>
-                                    context.l10n.libraryNoFavoritesMessage,
-                                  LibraryFilter.all => emptyMessage,
-                                },
-                              )
-                      : RefreshIndicator(
-                          color: context.colors.primary,
-                          backgroundColor: context.colors.surface,
-                          onRefresh: () async => context
-                              .read<ScreenshotsBloc>()
-                              .add(RefreshScreenshotsEvent()),
-                          child: ListenableBuilder(
-                            listenable: sl<GridDensityController>(),
-                            // Deleting used to be the one action in this app
-                            // with no motion at all: the tile was simply not
-                            // there on the next frame and everything after it
-                            // jumped a slot. AnimatedIdGrid keeps the removed
-                            // tile alive long enough to shrink out of the way,
-                            // and the rest slide into place rather than
-                            // teleporting.
-                            //
-                            // Its index bookkeeping is covered by
-                            // test/animated_id_grid_test.dart, because the way
-                            // that class of bug shows up — a RangeError while
-                            // scrolling a grid that is mid-delete — is not
-                            // something tapping through the app reliably
-                            // reaches.
-                            builder: (context, _) => _buildGrid(
-                              context,
-                              items: items,
-                              loaded: loaded,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount:
-                                        sl<GridDensityController>().columns,
-                                    mainAxisSpacing: 10.h,
-                                    crossAxisSpacing: 10.w,
-                                    childAspectRatio: 1,
-                                  ),
-                            ),
+                            : context.l10n.libraryNoTraitMessage,
+                        action: PrimaryButton(
+                          label: context.l10n.libraryShowAll,
+                          onPressed: () => context.read<ScreenshotsBloc>().add(
+                            SetLibraryLensEvent(null),
                           ),
                         ),
-                ),
+                      )
+                    : EmptyState(
+                        // An empty filter is not an empty library, and the
+                        // three cases have nothing useful in common: an empty
+                        // inbox is the best possible outcome, no favorites is
+                        // a feature nobody has used yet, and nothing at all is
+                        // a first run. One shared sentence for all three would
+                        // be wrong twice.
+                        icon: switch (loaded.filter) {
+                          LibraryFilter.unsorted =>
+                            Icons.check_circle_outline_rounded,
+                          _ => Icons.image_search_rounded,
+                        },
+                        title: switch (loaded.filter) {
+                          LibraryFilter.unsorted =>
+                            context.l10n.libraryNoUnsortedTitle,
+                          LibraryFilter.favorites =>
+                            context.l10n.libraryNoFavoritesTitle,
+                          LibraryFilter.all => emptyTitle,
+                        },
+                        message: switch (loaded.filter) {
+                          LibraryFilter.unsorted =>
+                            context.l10n.libraryNoUnsortedMessage,
+                          LibraryFilter.favorites =>
+                            context.l10n.libraryNoFavoritesMessage,
+                          LibraryFilter.all => emptyMessage,
+                        },
+                      ),
+              ),
+            ],
+          );
+        }
+
+        return RefreshIndicator(
+          color: context.colors.primary,
+          backgroundColor: context.colors.surface,
+          onRefresh: () async =>
+              context.read<ScreenshotsBloc>().add(RefreshScreenshotsEvent()),
+          child: ListenableBuilder(
+            listenable: sl<GridDensityController>(),
+            // Deleting used to be the one action in this app with no motion at
+            // all: the tile was simply not there on the next frame and
+            // everything after it jumped a slot. AnimatedIdGrid keeps the
+            // removed tile alive long enough to shrink out of the way, and the
+            // rest slide into place rather than teleporting.
+            //
+            // **The cross-fade between filters is gone**, and it is the one
+            // thing this restructure cost. The grid used to sit in an
+            // `AnimatedSwitcher` keyed on filter and lens, so narrowing the
+            // library dissolved one grid into the next. A switcher needs a box
+            // and these are slivers; wrapping them in a `SliverToBoxAdapter`
+            // to win it back would build every tile eagerly, which is the
+            // opposite of what a long library needs. The tiles diff themselves
+            // in and out instead — which says the same thing about what
+            // changed, and leaves the ones that survived where they were.
+            builder: (context, _) => _buildGrid(
+              context,
+              items: items,
+              loaded: loaded,
+              leadingSlivers: head,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: sl<GridDensityController>().columns,
+                mainAxisSpacing: 10.h,
+                crossAxisSpacing: 10.w,
+                // **Tall tiles, because these are screenshots.**
+                //
+                // The grid was square, and a square is the one shape a phone
+                // screenshot is not: a capture is about 9:19.5, so a 1:1 tile
+                // threw away roughly two thirds of every picture in a library
+                // whose entire job is helping you recognise them again. The
+                // thumbnails already crop from the *top* for that reason — see
+                // `AssetThumbnailImage.alignment` — and this is the other half
+                // of the same argument.
+                //
+                // 0.72 rather than the true 0.46: at the real aspect a
+                // three-column grid fits barely two rows on a phone. This
+                // shows about half again as much of each capture as a square
+                // did while keeping three and a half rows in view.
+                childAspectRatio: 0.72,
               ),
             ),
-          ],
+          ),
         );
       },
     );
@@ -315,6 +334,7 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
     required List<ScreenshotEntity> items,
     required ScreenshotsLoadedState loaded,
     required SliverGridDelegate gridDelegate,
+    required List<Widget> leadingSlivers,
   }) {
     final EdgeInsetsGeometry padding = EdgeInsetsDirectional.fromSTEB(
       20.w,
@@ -338,6 +358,7 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
         cacheExtent: 600,
         gridDelegate: gridDelegate,
         itemBuilder: tile,
+        leadingSlivers: leadingSlivers,
       );
     }
 
@@ -363,6 +384,7 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
         cacheExtent: 600,
         gridDelegate: gridDelegate,
         itemBuilder: tile,
+        leadingSlivers: leadingSlivers,
       );
     }
 
@@ -370,6 +392,7 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
       idOf: (item) => item.id,
       padding: padding,
       cacheExtent: 600,
+      leadingSlivers: leadingSlivers,
       headerExtent: DateSectionHeader.extent,
       gridDelegate: gridDelegate,
       itemBuilder: tile,
@@ -491,177 +514,225 @@ class _SelectionToolbar extends StatelessWidget {
             LibraryIntent.protect => context.l10n.libraryPickForProtect,
           };
 
+    // Built as a list first so the row below can size itself from how many
+    // there actually are, rather than being written as one long `Row` whose
+    // width nobody can work out by reading it.
+    final List<Widget> actions = <Widget>[
+      // Safe share works on one screenshot, so unlike merging this action
+      // appears at exactly one and disappears again at two. It is the same rule
+      // stated from the other side: an action that cannot run should not be on
+      // screen looking like it can.
+      if (count == 1 && intent != LibraryIntent.merge)
+        _ToolbarAction(
+          icon: Icons.shield_outlined,
+          iconColor: context.colors.secondary,
+          label: context.l10n.libraryActionProtect,
+          onTap: () async {
+            final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
+            final ScreenshotsState state = bloc.state;
+            if (state is! ScreenshotsLoadedState) return;
+
+            final String id = state.selectedIds.first;
+            final ScreenshotEntity? shot = state.screenshots
+                .where((ScreenshotEntity s) => s.id == id)
+                .firstOrNull;
+            if (shot == null) return;
+
+            bloc.add(ClearSelectionEvent());
+            await Navigator.of(context).push(
+              FadeSlidePageRoute(
+                builder: (_) => SafeSharePage(screenshot: shot),
+              ),
+            );
+          },
+        ),
+      // Merging needs at least two captures to have anything to join, so the
+      // action only appears once that's true rather than sitting there greyed
+      // out.
+      if (count >= 2 && intent != LibraryIntent.protect)
+        _ToolbarAction(
+          icon: Icons.view_agenda_outlined,
+          iconColor: context.colors.primary,
+          label: context.l10n.libraryActionMerge,
+          onTap: () async {
+            final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
+            final ScreenshotsState state = bloc.state;
+            if (state is! ScreenshotsLoadedState) return;
+
+            final List<String> ids = state.selectedIds.toList();
+            final bool merged = await openStitchPage(context, ids);
+            if (merged) bloc.add(ClearSelectionEvent());
+          },
+        ),
+      // Move and Delete belong to selection the user started themselves, where
+      // "I have some screenshots picked, now what" is the whole point. Somebody
+      // who tapped Safe share on Home has already said what they want; offering
+      // to file or delete their screenshots instead is a different job wearing
+      // the same toolbar — and one of the two is destructive, which is not a
+      // thing to put under the thumb of a person who came here to do something
+      // else.
+      if (!intent.isGuided) ...[
+        // **The only way an existing library ever gets answered.**
+        //
+        // Intents were reachable one screenshot at a time, from a sheet behind
+        // a small icon — which is fine for the ones taken from now on and
+        // useless for the two thousand already there. Nobody opens two thousand
+        // sheets. Here, forty at a time, "what are all of these for" is a
+        // question with an answer.
+        //
+        // Not gated by the free-tier cap, unlike Move: an intent brings nothing
+        // under management. It files no screenshot into anything and stars
+        // nothing — it records a sentence about pictures the user already has.
+        _ToolbarAction(
+          icon: Icons.checklist_rtl_rounded,
+          iconColor: context.colors.secondary,
+          label: context.l10n.intentSelectionAction,
+          onTap: () async {
+            final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
+            final IntentPickerResult? result = await showIntentFullPickerSheet(
+              context,
+              selected: null,
+            );
+            if (result == null) return;
+            bloc.add(SetIntentForSelectionEvent(result.intent));
+            if (!context.mounted) return;
+            showAppSnackBar(
+              context,
+              context.l10n.intentSelectionApplied(count),
+            );
+          },
+        ),
+        _ToolbarAction(
+          icon: Icons.drive_file_move_rounded,
+          iconColor: context.colors.secondary,
+          label: context.l10n.libraryActionMove,
+          onTap: () async {
+            final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
+            final ScreenshotsState state = bloc.state;
+            int newItems = count;
+            if (state is ScreenshotsLoadedState) {
+              newItems = state.screenshots
+                  .where(
+                    (s) =>
+                        state.selectedIds.contains(s.id) &&
+                        !s.isFavorite &&
+                        s.folderId == null,
+                  )
+                  .length;
+            }
+            final bool allowed = await ensureUnderScreenshotLimit(
+              context,
+              additionalNewItems: newItems,
+            );
+            if (!allowed || !context.mounted) return;
+            showMoveToFolderSheet(
+              context,
+              onSelected: (folderId) =>
+                  bloc.add(MoveSelectedToFolderEvent(folderId)),
+            );
+          },
+        ),
+        _ToolbarAction(
+          icon: Icons.delete_outline_rounded,
+          iconColor: context.colors.error,
+          label: context.l10n.libraryActionDelete,
+          onTap: () async {
+            final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
+            final bool confirmed = await confirmDeletion(
+              context,
+              title: context.l10n.libraryDeleteTitle,
+              message: context.l10n.libraryDeleteMessage(count),
+            );
+            if (confirmed) bloc.add(DeleteSelectedEvent());
+          },
+        ),
+      ],
+    ];
+
+    // **Two rows, because five controls and a sentence never fitted in one.**
+    //
+    // This was a single `Row`: a close button, the count, "Select all", and up
+    // to four icon-and-label actions. On a 360dp phone the actions alone claim
+    // most of the width, and the count sat in the `Expanded` that was left over
+    // — so the one piece of information the bar exists to report got whatever
+    // nobody else wanted. In practice that was about forty pixels: "10
+    // selected" wrapped onto two lines and then ellipsized, and the bar read
+    // "10 sel…" with a blue link jammed against a teal icon.
+    //
+    // Splitting it puts each half on a width it can actually have. The top row
+    // is *what is happening* — how many, and how to stop or take everything.
+    // The bar underneath is *what you can do about it*, and it is one strip of
+    // equal columns, so four actions and two actions are both centred and
+    // evenly spaced rather than crowding to one end.
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(20.w, 4.h, 8.w, 12.h),
-      child: Row(
-        children: [
-          PressableScale(
-            scale: 0.9,
-            onTap: () =>
-                context.read<ScreenshotsBloc>().add(ClearSelectionEvent()),
-            child: Icon(Icons.close_rounded, color: context.colors.textPrimary),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Text(
-              prompt ?? context.l10n.librarySelectedCount(count),
-              style: prompt == null
-                  ? context.text.titleLarge
-                  : context.text.bodyMedium.asMedium.copyWith(
-                      color: context.colors.textPrimary,
-                    ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          SizedBox(width: 8.w),
-          // **Select all belongs to selection the user started themselves.**
-          //
-          // Neither guided job wants it: protecting takes one screenshot, and
-          // merging takes the two or three shots of a single scroll — "select
-          // all" is a wrong answer to both, offered in the most prominent slot
-          // on the bar.
-          if (!intent.isGuided)
-            PressableScale(
-              scale: 0.94,
-              onTap: () =>
-                  context.read<ScreenshotsBloc>().add(SelectAllEvent()),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.w),
-                child: Text(
-                  context.l10n.librarySelectAll,
-                  style: context.text.bodySmall.asMedium.copyWith(
-                    color: context.colors.primary,
-                  ),
+      padding: EdgeInsetsDirectional.fromSTEB(20.w, 2.h, 20.w, 12.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Row(
+            children: [
+              PressableScale(
+                scale: 0.9,
+                onTap: () =>
+                    context.read<ScreenshotsBloc>().add(ClearSelectionEvent()),
+                child: Icon(
+                  Icons.close_rounded,
+                  color: context.colors.textPrimary,
                 ),
               ),
-            ),
-          // Safe share works on one screenshot, so unlike merging this
-          // action appears at exactly one and disappears again at two. It is
-          // the same rule stated from the other side: an action that cannot
-          // run should not be on screen looking like it can.
-          if (count == 1 && intent != LibraryIntent.merge)
-            _ToolbarAction(
-              icon: Icons.shield_moon_rounded,
-              iconColor: context.colors.secondary,
-              label: context.l10n.libraryActionProtect,
-              onTap: () async {
-                final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
-                final ScreenshotsState state = bloc.state;
-                if (state is! ScreenshotsLoadedState) return;
-
-                final String id = state.selectedIds.first;
-                final ScreenshotEntity? shot = state.screenshots
-                    .where((ScreenshotEntity s) => s.id == id)
-                    .firstOrNull;
-                if (shot == null) return;
-
-                bloc.add(ClearSelectionEvent());
-                await Navigator.of(context).push(
-                  FadeSlidePageRoute(
-                    builder: (_) => SafeSharePage(screenshot: shot),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Text(
+                  prompt ?? context.l10n.librarySelectedCount(count),
+                  style: prompt == null
+                      ? context.text.titleLarge
+                      : context.text.bodyMedium.asMedium.copyWith(
+                          color: context.colors.textPrimary,
+                        ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              // **Select all belongs to selection the user started
+              // themselves.**
+              //
+              // Neither guided job wants it: protecting takes one screenshot,
+              // and merging takes the two or three shots of a single scroll —
+              // "select all" is a wrong answer to both, offered in the most
+              // prominent slot on the bar.
+              if (!intent.isGuided) ...[
+                SizedBox(width: 10.w),
+                PressableScale(
+                  scale: 0.94,
+                  onTap: () =>
+                      context.read<ScreenshotsBloc>().add(SelectAllEvent()),
+                  child: Text(
+                    context.l10n.librarySelectAll,
+                    style: context.text.bodySmall.asMedium.copyWith(
+                      color: context.colors.primary,
+                    ),
                   ),
-                );
-              },
-            ),
-          // Merging needs at least two captures to have anything to join, so
-          // the action only appears once that's true rather than sitting
-          // there greyed out.
-          if (count >= 2 && intent != LibraryIntent.protect)
-            _ToolbarAction(
-              icon: Icons.photo_size_select_large_rounded,
-              iconColor: context.colors.primary,
-              label: context.l10n.libraryActionMerge,
-              onTap: () async {
-                final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
-                final ScreenshotsState state = bloc.state;
-                if (state is! ScreenshotsLoadedState) return;
-
-                final List<String> ids = state.selectedIds.toList();
-                final bool merged = await openStitchPage(context, ids);
-                if (merged) bloc.add(ClearSelectionEvent());
-              },
-            ),
-          // Move and Delete belong to selection the user started themselves,
-          // where "I have some screenshots picked, now what" is the whole
-          // point. Somebody who tapped Safe share on Home has already said
-          // what they want; offering to file or delete their screenshots
-          // instead is a different job wearing the same toolbar — and one of
-          // the two is destructive, which is not a thing to put under the
-          // thumb of a person who came here to do something else.
-          if (!intent.isGuided) ...[
-            // **The only way an existing library ever gets answered.**
-            //
-            // Intents were reachable one screenshot at a time, from a sheet
-            // behind a small icon — which is fine for the ones taken from now
-            // on and useless for the two thousand already there. Nobody opens
-            // two thousand sheets. Here, forty at a time, "what are all of
-            // these for" is a question with an answer.
-            //
-            // Not gated by the free-tier cap, unlike Move: an intent brings
-            // nothing under management. It files no screenshot into anything
-            // and stars nothing — it records a sentence about pictures the
-            // user already has.
-            _ToolbarAction(
-              icon: Icons.checklist_rtl_rounded,
-              iconColor: context.colors.secondary,
-              label: context.l10n.intentSelectionAction,
-              onTap: () async {
-                final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
-                final IntentPickerResult? result =
-                    await showIntentFullPickerSheet(context, selected: null);
-                if (result == null) return;
-                bloc.add(SetIntentForSelectionEvent(result.intent));
-                if (!context.mounted) return;
-                showAppSnackBar(
-                  context,
-                  context.l10n.intentSelectionApplied(count),
-                );
-              },
-            ),
-            _ToolbarAction(
-              icon: Icons.drive_file_move_rounded,
-              iconColor: context.colors.secondary,
-              label: context.l10n.libraryActionMove,
-              onTap: () async {
-                final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
-                final ScreenshotsState state = bloc.state;
-                int newItems = count;
-                if (state is ScreenshotsLoadedState) {
-                  newItems = state.screenshots
-                      .where(
-                        (s) =>
-                            state.selectedIds.contains(s.id) &&
-                            !s.isFavorite &&
-                            s.folderId == null,
-                      )
-                      .length;
-                }
-                final bool allowed = await ensureUnderScreenshotLimit(
-                  context,
-                  additionalNewItems: newItems,
-                );
-                if (!allowed || !context.mounted) return;
-                showMoveToFolderSheet(
-                  context,
-                  onSelected: (folderId) =>
-                      bloc.add(MoveSelectedToFolderEvent(folderId)),
-                );
-              },
-            ),
-            _ToolbarAction(
-              icon: Icons.delete_outline_rounded,
-              iconColor: context.colors.error,
-              label: context.l10n.libraryActionDelete,
-              onTap: () async {
-                final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
-                final bool confirmed = await confirmDeletion(
-                  context,
-                  title: context.l10n.libraryDeleteTitle,
-                  message: context.l10n.libraryDeleteMessage(count),
-                );
-                if (confirmed) bloc.add(DeleteSelectedEvent());
-              },
+                ),
+              ],
+            ],
+          ),
+          if (actions.isNotEmpty) ...[
+            SizedBox(height: 10.h),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8.h),
+              decoration: BoxDecoration(
+                // A surface, so the actions read as one bar rather than as
+                // loose glyphs floating over the grid they act on.
+                color: context.colors.surface,
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                border: Border.all(color: context.colors.border),
+              ),
+              child: Row(
+                children: <Widget>[
+                  for (final Widget action in actions) Expanded(child: action),
+                ],
+              ),
             ),
           ],
         ],
@@ -693,14 +764,22 @@ class _ToolbarAction extends StatelessWidget {
       scale: 0.9,
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+        // **No horizontal padding of its own.** Each of these sits in an
+        // `Expanded` inside the action bar, so the column it is given *is* its
+        // share of the width — padding here would narrow the label inside an
+        // already-equal slot and make "Delete" ellipsize while "Move" had room
+        // to spare.
+        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 2.h),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, color: iconColor, size: 20.sp),
-            SizedBox(height: 2.h),
+            SizedBox(height: 3.h),
             Text(
               label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
               style: context.text.caption.asMedium.copyWith(color: iconColor),
             ),
           ],

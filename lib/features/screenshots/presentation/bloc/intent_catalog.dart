@@ -83,10 +83,18 @@ class IntentCatalog extends ChangeNotifier {
   /// fresh account has no history and gets the first five built-ins, which is
   /// exactly the row that shipped before custom intents existed.
   ///
-  /// [selected] is always present, even if it has not been used in months:
-  /// a picker that hides the answer currently showing would read as having
-  /// lost it.
-  List<IntentRef> frontRow({IntentRef? selected}) {
+  /// **The current selection changes nothing about this order.** It used to:
+  /// the chosen intent was moved to the front, which meant tapping the third
+  /// chip slid the other four sideways under the finger that had just pressed
+  /// it — the row rearranging itself as a reaction to being used. Picking a
+  /// folder does not reorder the folders, and this is the same kind of choice.
+  ///
+  /// The cost is stated rather than hidden: an intent picked from the full
+  /// picker that this person has not used lately is not on this row, so the
+  /// row shows no selection until the next read puts it there. The chip strip
+  /// is not the record of the answer — the screenshot is — and a row that
+  /// holds still is worth more than a row that always displays its own state.
+  List<IntentRef> frontRow() {
     final Map<String, IntentRef> available = <String, IntentRef>{
       for (final IntentRef ref in all) ref.id: ref,
     };
@@ -98,12 +106,6 @@ class IntentCatalog extends ChangeNotifier {
         if (available.remove(id) case final IntentRef ref) ref,
       ...available.values,
     ];
-
-    if (selected != null) {
-      ordered
-        ..removeWhere((IntentRef ref) => ref == selected)
-        ..insert(0, selected);
-    }
 
     return ordered.take(frontRowSize).toList();
   }

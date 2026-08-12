@@ -81,6 +81,9 @@ class SettingsPage extends StatelessWidget {
                 // again.
                 _ProfileCard(user: sl<AuthRepository>().currentUser),
                 SizedBox(height: 16.h),
+                // Carries the library's quota as its own last band — see
+                // [QuotaFooter] for why that is inside the card rather than
+                // loose beneath it.
                 const SubscriptionCard(),
 
                 // Appearance first: it is the setting people come here to
@@ -90,23 +93,44 @@ class SettingsPage extends StatelessWidget {
                   title: context.l10n.settingsAppearance,
                   children: [
                     SettingsControlRow(
-                      icon: Icons.contrast_rounded,
+                      icon: Icons.contrast_outlined,
                       label: context.l10n.settingsTheme,
                       control: ListenableBuilder(
                         listenable: sl<ThemeController>(),
                         builder: (context, _) => ThemeModeSelector(
-                          value: sl<ThemeController>().themeMode,
-                          onChanged: (mode) =>
-                              sl<ThemeController>().setThemeMode(mode),
+                          compact: true,
+                          // The mode in force, not the one on record. Somebody
+                          // who chose dark before it was paid for still has
+                          // that stored — and highlighting it while the app
+                          // renders light would be the control claiming
+                          // credit for something it is not doing.
+                          value:
+                              sl<ThemeController>().themeMode == ThemeMode.dark &&
+                                  showProBadge
+                              ? ThemeMode.system
+                              : sl<ThemeController>().themeMode,
+                          // Only the explicit dark choice is paid for.
+                          // "Match my phone" stays free, so a free user whose
+                          // device is dark still gets a dark app — see
+                          // [ThemeModeSelector.lockDark].
+                          lockDark: showProBadge,
+                          onChanged: (ThemeMode mode) async {
+                            if (mode == ThemeMode.dark &&
+                                !await ensurePremium(context)) {
+                              return;
+                            }
+                            await sl<ThemeController>().setThemeMode(mode);
+                          },
                         ),
                       ),
                     ),
                     SettingsControlRow(
-                      icon: Icons.grid_view_rounded,
+                      icon: Icons.grid_view_outlined,
                       label: context.l10n.settingsGridDensity,
                       control: ListenableBuilder(
                         listenable: sl<GridDensityController>(),
                         builder: (context, _) => GridDensitySelector(
+                          compact: true,
                           value: sl<GridDensityController>().columns,
                           onChanged: (columns) =>
                               sl<GridDensityController>().setColumns(columns),
@@ -122,11 +146,17 @@ class SettingsPage extends StatelessWidget {
                       builder: (context, _) {
                         final LocaleController locales = sl<LocaleController>();
                         return SettingsNavTile(
-                          icon: Icons.translate_rounded,
+                          icon: Icons.language_outlined,
                           label: context.l10n.settingsLanguage,
-                          description:
-                              locales.language?.endonym ??
-                              context.l10n.settingsLanguageSystem,
+                          // **Always the language actually being read**, never
+                          // "Match my phone". This line answers "what language
+                          // is this app in", and the honest answer to that is
+                          // the name of a language — the mechanism that chose
+                          // it is not what was asked. It also matches the
+                          // picker, which no longer has a row standing for the
+                          // system default.
+                          description: (locales.language ?? locales.effectiveLanguage)
+                              .endonym,
                           onTap: () => showLanguageSheet(context),
                         );
                       },
@@ -142,7 +172,7 @@ class SettingsPage extends StatelessWidget {
                       title: context.l10n.settingsBehaviour,
                       children: [
                         SettingsSwitchTile(
-                          icon: Icons.vibration_rounded,
+                          icon: Icons.vibration_outlined,
                           label: context.l10n.settingsHaptics,
                           description: context.l10n.settingsHapticsHint,
                           value: prefs.haptics,
@@ -202,10 +232,17 @@ class SettingsPage extends StatelessWidget {
                 SettingsGroup(
                   title: context.l10n.settingsStorage,
                   children: [
-                    // First in the group, and ungated. This is the row that
-                    // matters most on the worst day somebody has with this
-                    // app, and a paywall in front of "don't lose
-                    // everything" is not a price, it is a hostage.
+                    // **The row is free; making a backup is not.**
+                    //
+                    // Gating the whole row was tried and taken back out,
+                    // because it locked *restoring* too — and a user who backed
+                    // up while subscribed, then lapsed, would have been unable
+                    // to reach their own data. That is not a price, it is a
+                    // hostage, and it is the one shape of paywall that can cost
+                    // somebody something they already had.
+                    //
+                    // So the door stays open and the gate moved inside, onto
+                    // the button that writes a new file. See [BackupPage].
                     SettingsNavTile(
                       icon: Icons.backup_outlined,
                       label: context.l10n.settingsBackup,
@@ -215,7 +252,7 @@ class SettingsPage extends StatelessWidget {
                       ),
                     ),
                     SettingsNavTile(
-                      icon: Icons.content_copy_rounded,
+                      icon: Icons.content_copy_outlined,
                       label: context.l10n.settingsFindDuplicates,
                       description: context.l10n.settingsDuplicatesHint,
                       showProBadge: showProBadge,
@@ -248,8 +285,11 @@ class SettingsPage extends StatelessWidget {
                       // answer.
                       onTap: () => openWhatsIncludedPage(context),
                     ),
+                    // Everyone, not just subscribers — see
+                    // [RestorePurchasesTile] for the correction this is.
+                    const RestorePurchasesTile(),
                     SettingsNavTile(
-                      icon: Icons.ios_share_rounded,
+                      icon: Icons.share_outlined,
                       label: context.l10n.settingsShare,
                       description: context.l10n.settingsShareHint,
                       onTap: () => SharePlus.instance.share(
@@ -301,7 +341,7 @@ class SettingsPage extends StatelessWidget {
                   children: [
                     Builder(
                       builder: (context) => SettingsNavTile(
-                        icon: Icons.logout_rounded,
+                        icon: Icons.logout_outlined,
                         label: context.l10n.settingsSignOut,
                         description: context.l10n.settingsSignOutHint,
                         isDestructive: true,
@@ -349,13 +389,15 @@ class _ProfileCard extends StatelessWidget {
       builder: (context, _) {
         final bool isPro = sl<ProStatus>().isPro;
 
-        return Container(
-          padding: EdgeInsets.all(16.w),
-          decoration: BoxDecoration(
-            color: context.colors.surface,
-            borderRadius: BorderRadius.circular(22.r),
-            border: Border.all(color: context.colors.border),
-          ),
+        // **No card any more.**
+        //
+        // Every group on this page gave up its container, and this was the one
+        // panel left standing — which made it read as a widget somebody forgot
+        // to finish rather than as the header it is. The avatar is already a
+        // strong enough shape to anchor the top of a page; it does not need a
+        // rectangle drawn around it to be found.
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 4.h),
           child: Row(
             children: [
               // A ring *around* the avatar rather than a border on it, so a
@@ -387,7 +429,7 @@ class _ProfileCard extends StatelessWidget {
                   ),
                   child: user?.photoUrl == null
                       ? Icon(
-                          Icons.person_rounded,
+                          Icons.person_outline_rounded,
                           color: context.colors.textSecondary,
                           size: 23.sp,
                         )

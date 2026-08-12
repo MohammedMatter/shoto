@@ -127,6 +127,11 @@ class _WhatsIncludedPageState extends State<WhatsIncludedPage> {
                             child: _FeatureCard(
                               feature: PremiumFeature.all[i],
                               isOpen: _openIndex == i,
+                              // `isPremium` is nullable while the status is
+                              // still resolving; an unresolved answer is not a
+                              // subscription, so it falls to the free wording
+                              // rather than promising something unconfirmed.
+                              isPro: isPremium == true,
                               onTap: () => setState(
                                 () => _openIndex = _openIndex == i ? null : i,
                               ),
@@ -223,6 +228,14 @@ class _Header extends StatelessWidget {
 /// else it says so plainly and then gets out of the way — the actual offer is
 /// the bar at the bottom, and putting a second one up here would turn an
 /// explanation into a sales page.
+///
+/// **Unlocked is unlocked**, however it was unlocked. This strip used to fork
+/// on [SubscriptionStatus.isTesterAccess] and announce *Tester access* — the
+/// same fork the settings card carried, made for the same reason and dropped
+/// for the same one: the developer switch is already declared, loudly and with
+/// a way out, by the `DEVELOPER MODE` badge at the foot of Settings. Saying it
+/// a third time bought nothing and meant these screens could never be looked
+/// at the way a paying reader will actually meet them.
 class _StatusStrip extends StatelessWidget {
   final SubscriptionStatus status;
 
@@ -231,7 +244,6 @@ class _StatusStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool premium = status.isPremium;
-    final bool dev = status.isTesterAccess;
 
     return Container(
       padding: EdgeInsetsDirectional.fromSTEB(14.w, 13.h, 14.w, 13.h),
@@ -251,7 +263,7 @@ class _StatusStrip extends StatelessWidget {
         children: [
           Icon(
             premium
-                ? (dev ? Icons.terminal_rounded : Icons.check_circle_rounded)
+                ? Icons.check_circle_rounded
                 : Icons.lock_outline_rounded,
             color: premium
                 ? context.colors.success
@@ -265,18 +277,14 @@ class _StatusStrip extends StatelessWidget {
               children: [
                 Text(
                   premium
-                      ? (dev
-                            ? context.l10n.subDevUnlock
-                            : context.l10n.includedActiveTitle)
+                      ? context.l10n.includedActiveTitle
                       : context.l10n.includedLockedTitle,
                   style: context.text.titleSmall,
                 ),
                 SizedBox(height: 2.h),
                 Text(
                   premium
-                      ? (dev
-                            ? context.l10n.subDevUnlockBody
-                            : context.l10n.includedActiveBody)
+                      ? context.l10n.includedActiveBody
                       : context.l10n.includedLockedBody,
                   style: context.text.bodySmall,
                 ),
@@ -296,10 +304,17 @@ class _FeatureCard extends StatefulWidget {
   final bool isOpen;
   final VoidCallback onTap;
 
+  /// Passed down rather than read from the service locator here, the same rule
+  /// `pro_badge.dart` records for the settings rows: a plain presentational
+  /// card that reaches for global state is a card that cannot be built in a
+  /// widget test. The page already knows the answer.
+  final bool isPro;
+
   const _FeatureCard({
     required this.feature,
     required this.isOpen,
     required this.onTap,
+    required this.isPro,
   });
 
   @override
@@ -408,7 +423,10 @@ class _FeatureCardState extends State<_FeatureCard> {
                           ),
                           SizedBox(height: 3.h),
                           Text(
-                            widget.feature.description(context),
+                            widget.feature.describe(
+                              context,
+                              isPro: widget.isPro,
+                            ),
                             style: context.text.bodySmall,
                             // Clamped while closed so seven cards stay a list
                             // you can scan rather than seven paragraphs.

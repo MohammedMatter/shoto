@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:shoto/core/theme/app_colors.dart';
-import 'package:shoto/core/widgets/asset_thumbnail_image.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_card.dart';
 import 'package:shoto/l10n/app_localizations.dart';
@@ -11,21 +9,22 @@ import 'package:shoto/l10n/app_localizations.dart';
 import 'support/test_fonts.dart';
 import 'support/test_theme.dart';
 
-/// [FolderCard] draws a picture with a caption under it, inside a tile whose
-/// height the grid fixes in advance. Two things about that can go wrong
-/// silently, and both are checked here rather than left to be noticed on a
-/// phone.
+/// [FolderCard] draws two stacked shapes inside a tile whose height the grid
+/// fixes in advance, with the folder's name written across the front one.
+/// Several things about that can go wrong silently, and they are checked here
+/// rather than left to be noticed on a phone.
 void main() {
   /// The geometry the real grid hands one tile, worked out the same way
   /// FoldersPage's delegate does: a 360dp-wide screen, a 20dp gutter each
-  /// side, 14dp between two columns, at `childAspectRatio: 0.72`.
-  const double tileWidth = (360 - 40 - 14) / 2;
-  const double tileHeight = tileWidth / 0.72;
+  /// side, 12dp between three columns, at `childAspectRatio: 0.76`.
+  const double tileWidth = (360 - 40 - 24) / 3;
+  const double tileHeight = tileWidth / 0.76;
 
   FolderEntity folder({
     String name = 'Receipts',
     int screenshotCount = 12,
     bool isPrivate = false,
+    String? iconKey = 'receipt',
   }) => FolderEntity(
     id: 1,
     name: name,
@@ -33,12 +32,12 @@ void main() {
     createdAt: DateTime(2026, 1, 1),
     screenshotCount: screenshotCount,
     isPrivate: isPrivate,
+    iconKey: iconKey,
   );
 
   Future<void> pumpCard(
     WidgetTester tester, {
     required FolderEntity entity,
-    AssetEntity? cover,
     double textScale = 1,
     Brightness brightness = Brightness.dark,
   }) async {
@@ -63,7 +62,6 @@ void main() {
                   height: tileHeight,
                   child: FolderCard(
                     folder: entity,
-                    cover: cover,
                     onTap: () {},
                     onMoreTap: () {},
                   ),
@@ -77,14 +75,15 @@ void main() {
     await tester.pump();
   }
 
-  /// The caption is the part that grows, and the tile cannot.
+  /// The pocket is the part that grows, and the tile cannot.
   ///
-  /// This is why the cover is wrapped in `Expanded` rather than given a fixed
-  /// [AspectRatio]: at a large system text scale a fixed-ratio cover plus two
-  /// lines of caption is taller than the tile, and Flutter answers that with
-  /// yellow stripes across the bottom of every folder on the screen. Here the
-  /// picture simply gets shorter.
-  testWidgets('caption never overflows the tile, at any text scale', (
+  /// This is why the pocket is anchored to the bottom of a `Stack` with an
+  /// intrinsic height rather than given a fixed fraction of the tile: at a
+  /// large system text scale a fixed-height pocket plus two lines of text
+  /// overflows, and Flutter answers that with yellow stripes across the bottom
+  /// of every folder on the screen. Here the pocket simply grows upward over
+  /// the plate behind it.
+  testWidgets('the name plate never overflows the tile, at any text scale', (
     WidgetTester tester,
   ) async {
     // 2.0 is past what the Android accessibility slider reaches by default;
@@ -103,54 +102,75 @@ void main() {
     }
   });
 
-  /// **A locked folder must not show what is inside it.**
+  /// **A locked folder must not advertise what is in it.**
   ///
-  /// Opening a private folder costs a fingerprint, so a cover thumbnail on the
-  /// grid would hand over the exact thing the lock exists to withhold — to
-  /// anybody holding the phone, without them touching it. The guard lives
-  /// inside the cover widget so no call site can forget it, and this is what
-  /// stops a later refactor from quietly removing it.
-  testWidgets('a private folder draws no cover, even when one is available', (
+  /// The rule outlived the screenshot cover it was written for. A folder whose
+  /// contents cost a fingerprint should not wear a glyph that describes them —
+  /// a padlock says the one thing about it that is true from outside.
+  testWidgets('a private folder wears the padlock, not its own glyph', (
     WidgetTester tester,
   ) async {
-    final AssetEntity asset = AssetEntity(
-      id: 'asset-1',
-      typeInt: AssetType.image.index,
-      width: 1080,
-      height: 2400,
-    );
+    await pumpCard(tester, entity: folder(isPrivate: true, iconKey: 'pill'));
 
-    await pumpCard(tester, entity: folder(isPrivate: true), cover: asset);
-
-    expect(
-      find.byType(AssetThumbnailImage),
-      findsNothing,
-      reason: 'a locked folder rendered its contents on the grid',
-    );
     expect(find.byIcon(Icons.lock_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.medication_rounded), findsNothing);
   });
 
-  /// The other half of the same rule: an unlocked folder with nothing in it
-  /// falls back to its own colour rather than to a grey box, so the folder
-  /// just created — the one being looked for — is still recognisable.
-  testWidgets('an empty folder falls back to its colour and folder glyph', (
+  /// A folder that predates the icon column has no key at all, which is a
+  /// state the grid still has to draw — those folders were plain folders and
+  /// they stay plain folders.
+  testWidgets('a folder with no icon key falls back to the folder glyph', (
     WidgetTester tester,
   ) async {
-    await pumpCard(tester, entity: folder(screenshotCount: 0));
+    await pumpCard(tester, entity: folder(iconKey: null));
 
-    expect(find.byType(AssetThumbnailImage), findsNothing);
     expect(find.byIcon(Icons.folder_rounded), findsOneWidget);
   });
 
-  /// Generation-only, like the other goldens in this directory: no committed
-  /// baseline, never fails a normal run. It exists so the grid can be looked
-  /// at rather than only asserted about — spacing, the colour edge, and how
-  /// the caption sits under the picture are not things an assertion can judge.
-  ///
-  /// Every tile here is a placeholder cover, because a widget test has no
-  /// gallery to read a real thumbnail out of. That still answers the question
-  /// this golden is for: the geometry is identical either way, and a
-  /// photograph would only make it easier to look at.
+  /// The count comes from the entity, and it is the one number on the card.
+  testWidgets('an empty folder still says so', (WidgetTester tester) async {
+    await pumpCard(tester, entity: folder(screenshotCount: 0));
+
+    expect(find.text('No screenshots'), findsOneWidget);
+  });
+
+  /// The "⋯" is what makes rename and delete discoverable — a long-press has
+  /// no visual affordance, so nobody finds it. It is dropped only where the
+  /// card is a preview of a folder that does not exist yet.
+  testWidgets('the more button appears only when there is a handler', (
+    WidgetTester tester,
+  ) async {
+    await pumpCard(tester, entity: folder());
+    expect(find.byIcon(Icons.more_horiz_rounded), findsOneWidget);
+
+    await tester.pumpWidget(
+      ScreenUtilInit(
+        designSize: const Size(360, 690),
+        minTextAdapt: true,
+        builder: (context, _) => MaterialApp(
+          theme: testTheme(Brightness.dark),
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: tileWidth,
+                height: tileHeight,
+                child: FolderCard(folder: folder(), onTap: () {}),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(find.byIcon(Icons.more_horiz_rounded), findsNothing);
+  });
+
+  /// The grid, for looking at rather than asserting about: the folder shape,
+  /// the offset between plate and pocket, how a long name ellipsizes and how
+  /// eight hues sit beside each other are not things an assertion can judge.
   Future<void> renderGrid(WidgetTester tester, Brightness brightness) async {
     await loadTestFonts();
     final AppPalette palette = testPalette(brightness);
@@ -162,32 +182,69 @@ void main() {
     final List<FolderEntity> folders = [
       FolderEntity(
         id: 1,
-        name: 'Receipts',
+        name: 'Trip plans',
         color: 0xFF5B8DEF,
         createdAt: DateTime(2026),
         screenshotCount: 24,
+        iconKey: 'map',
       ),
       FolderEntity(
         id: 2,
         name: 'Recipes',
-        color: 0xFF7E9B5E,
+        color: 0xFFF5883C,
         createdAt: DateTime(2026),
         screenshotCount: 8,
+        iconKey: 'food',
       ),
       FolderEntity(
         id: 3,
-        name: 'Bank statements 2026',
-        color: 0xFFFFC857,
+        name: 'Medications',
+        color: 0xFFFF8A65,
         createdAt: DateTime(2026),
         screenshotCount: 3,
-        isPrivate: true,
+        iconKey: 'pill',
       ),
       FolderEntity(
         id: 4,
-        name: 'Design',
-        color: 0xFFEF5DA8,
+        name: 'AI notes',
+        color: 0xFF8B7BF0,
         createdAt: DateTime(2026),
         screenshotCount: 0,
+        iconKey: 'sparkle',
+      ),
+      FolderEntity(
+        id: 5,
+        name: 'Bank statements 2026',
+        color: 0xFFFFC857,
+        createdAt: DateTime(2026),
+        screenshotCount: 12,
+        isPrivate: true,
+        iconKey: 'money',
+      ),
+      FolderEntity(
+        id: 6,
+        name: 'Workouts',
+        color: 0xFF33E0C2,
+        createdAt: DateTime(2026),
+        screenshotCount: 5,
+        iconKey: 'fitness',
+      ),
+      FolderEntity(
+        id: 7,
+        name: 'Music',
+        color: 0xFFEF5DA8,
+        createdAt: DateTime(2026),
+        screenshotCount: 2,
+        iconKey: 'music',
+      ),
+      // No key at all — the shape a folder made before the column existed
+      // still comes out as.
+      FolderEntity(
+        id: 8,
+        name: 'Design',
+        color: 0xFF7E9B5E,
+        createdAt: DateTime(2026),
+        screenshotCount: 1,
       ),
     ];
 
@@ -197,6 +254,7 @@ void main() {
         minTextAdapt: true,
         builder: (context, _) => MaterialApp(
           debugShowCheckedModeBanner: false,
+          theme: testTheme(brightness),
           locale: const Locale('en'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
@@ -206,10 +264,10 @@ void main() {
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
               child: GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 22,
-                  crossAxisSpacing: 14,
-                  childAspectRatio: 0.72,
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 18,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: 0.76,
                 ),
                 itemCount: folders.length,
                 itemBuilder: (context, index) => FolderCard(

@@ -5,35 +5,36 @@ import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/biometric_auth_service.dart';
 import 'package:shoto/core/theme/app_colors.dart';
-import 'package:shoto/features/folders/presentation/widgets/create_folder_sheet.dart';
+import 'package:shoto/features/folders/presentation/widgets/folder_editor_sheet.dart';
 import 'package:shoto/l10n/app_localizations.dart';
 
 import 'support/test_fonts.dart';
 import 'support/test_theme.dart';
 
-/// The "private folder" switch, in both of its states.
+/// The sheet that names a folder, colours it and gives it a glyph.
 ///
-/// It shipped with `activeThumbColor: AppPalette.primary` and nothing else,
-/// which meant the thumb was set to the *same colour Material was already
-/// painting the track* — `colorScheme.primary` is that accent. Switched on, the
-/// control was a single uniform slab with no thumb visible in it, so the one
-/// decision on this sheet that cannot be checked later by looking at the folder
-/// was also the one you could not read.
+/// Three things on it are worth looking at rather than asserting about, and
+/// two of them are why this file exists at all:
 ///
-/// Whether the replacement actually reads is not something an assertion can
-/// answer, so these are for looking at: off and on, in both modes, with the
-/// real typefaces loaded. Generation-only, like the other goldens here — no
-/// committed baseline, never fails a normal run.
+/// * **The private switch, in both states.** It shipped with
+///   `activeThumbColor: AppPalette.primary`, which is the *same colour Material
+///   was already painting the track* — switched on, the control was a single
+///   uniform slab with no thumb visible in it, so the one decision on this
+///   sheet that cannot be checked later by looking at the folder was also the
+///   one you could not read.
+/// * **The live preview**, which is the real [FolderCard] at preview size. Its
+///   whole job is that what you see here is what lands on the grid, and the way
+///   to check that is to look at both.
+/// * **German**, because every string comes from the `.arb` files and this
+///   sheet is where that gets tight: "Privat (Gesichts- oder
+///   Fingerabdrucksperre)" is more than twice the length of its English label,
+///   on a row that also has to hold a switch.
 void main() {
-  /// [PressableScale] buzzes on tap, and `Haptics` reads the user's preference
+  /// `PressableScale` buzzes on tap, and `Haptics` reads the user's preference
   /// out of the service locator to decide whether to.
   ///
   /// [BiometricAuthService] is here because the sheet asks it, in `initState`,
   /// which biometric this phone actually offers so the switch can name it.
-  /// That dependency was added to the sheet without this registration, and
-  /// because every test in this file was skipped unless the suite was asked to
-  /// update goldens, the resulting GetIt error was invisible on a normal
-  /// `flutter test` run. These assert now, so it could not hide again.
   ///
   /// The real service is safe to use under test: it has no platform channel
   /// to talk to, `availableBiometrics` catches that and returns an empty
@@ -57,7 +58,7 @@ void main() {
     await loadTestFonts();
     final AppPalette palette = testPalette(brightness);
 
-    tester.view.physicalSize = const Size(1080, 1560);
+    tester.view.physicalSize = const Size(1080, 1920);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
 
@@ -80,7 +81,7 @@ void main() {
               body: Center(
                 child: ElevatedButton(
                   onPressed: () =>
-                      showCreateFolderSheet(context, onCreate: (_, _, _) {}),
+                      showFolderEditorSheet(context, onSave: (_, _, _, _) {}),
                   child: const Text('open'),
                 ),
               ),
@@ -107,44 +108,33 @@ void main() {
     'dark': Brightness.dark,
     'light': Brightness.light,
   }.entries) {
-    testWidgets(
-      'create folder sheet — private off — ${mode.key}',
-      (WidgetTester tester) async {
-        await openSheet(tester, mode.value);
-        await expectLater(
-          find.byType(BottomSheet),
-          matchesGoldenFile(
-            'goldens/create_folder_private_off_${mode.key}.png',
-          ),
-        );
-      },
-    );
+    testWidgets('folder editor sheet — private off — ${mode.key}', (
+      WidgetTester tester,
+    ) async {
+      await openSheet(tester, mode.value);
+      await expectLater(
+        find.byType(BottomSheet),
+        matchesGoldenFile('goldens/create_folder_private_off_${mode.key}.png'),
+      );
+    });
 
-    testWidgets(
-      'create folder sheet — private on — ${mode.key}',
-      (WidgetTester tester) async {
-        await openSheet(tester, mode.value);
-        await togglePrivate(tester);
-        await expectLater(
-          find.byType(BottomSheet),
-          matchesGoldenFile('goldens/create_folder_private_on_${mode.key}.png'),
-        );
-      },
-    );
+    testWidgets('folder editor sheet — private on — ${mode.key}', (
+      WidgetTester tester,
+    ) async {
+      await openSheet(tester, mode.value);
+      await togglePrivate(tester);
+      await expectLater(
+        find.byType(BottomSheet),
+        matchesGoldenFile('goldens/create_folder_private_on_${mode.key}.png'),
+      );
+    });
   }
 
-  /// **German, which is the real test of "the whole app follows the
-  /// language".**
-  ///
-  /// Every string comes from the .arb files, and this sheet is where that gets
-  /// tight: "Privat (Gesichts- oder Fingerabdrucksperre)" is more than twice
-  /// the length of its English label, on a row that also has to hold a switch.
-  ///
   /// This slot was Arabic until Arabic stopped shipping, and it was doing a
   /// second job then — proving the layout mirrors. That half lives on in the
   /// forced-RTL golden in `home_golden_test.dart`; nothing about mirroring was
   /// deleted from the widgets, only from the shipped language set.
-  testWidgets('create folder sheet — German, private on', (
+  testWidgets('folder editor sheet — German, private on', (
     WidgetTester tester,
   ) async {
     await openSheet(tester, Brightness.dark, locale: 'de');

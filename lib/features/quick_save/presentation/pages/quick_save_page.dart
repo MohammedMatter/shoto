@@ -8,10 +8,14 @@ import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/services/haptics.dart';
+import 'package:shoto/core/services/premium_bootstrap.dart';
+import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
+import 'package:shoto/features/safe_share/presentation/pages/safe_share_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/intent_picker_row.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/shared_image_choice_sheet.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 import 'package:shoto/features/folders/domain/use_cases/create_folder_use_case.dart';
@@ -39,7 +43,19 @@ class QuickSavePage extends StatefulWidget {
 // sharing the image again — in front of the one flow whose entire value is
 // that it takes two seconds and never leaves the app you were in. There is
 // always a library to save into now.
-enum _Stage { loading, ready, naming, saving, saved, failed }
+enum _Stage {
+  loading,
+
+  /// Bringing up the subscription stack the covering path needs, which this
+  /// process deliberately skipped at launch. See [ensurePremiumServicesReady].
+  preparing,
+
+  ready,
+  naming,
+  saving,
+  saved,
+  failed,
+}
 
 class _QuickSavePageState extends State<QuickSavePage>
     with SingleTickerProviderStateMixin {
@@ -144,6 +160,44 @@ class _QuickSavePageState extends State<QuickSavePage>
     // Both start now. Only the rebuild waits — see [_entered].
     _controller.forward().whenComplete(_markEntered);
     _load();
+
+    // Android hands a second share to the instance already on screen rather
+    // than building a new one, so this sheet has to be able to become a
+    // different share without being rebuilt. See `ShareActivity.onNewIntent`.
+    _channel.setMethodCallHandler((MethodCall call) async {
+      if (call.method == 'reshare') await _reshare();
+    });
+  }
+
+  /// A different picture, into the sheet already standing.
+  ///
+  /// **Everything on screen belongs to the picture that has just been
+  /// replaced**, and that includes whatever is stacked over the sheet — a Safe
+  /// Share review of the old image, or the paywall opened from it. Leaving
+  /// those up would show the user findings for a screenshot they are no longer
+  /// sharing, with a button that sends it.
+  ///
+  /// The panel itself is deliberately *not* replayed. It is already up, the
+  /// user is already looking at it, and animating it out and back in to say
+  /// "the thing you just shared arrived" would be the app performing its own
+  /// plumbing.
+  Future<void> _reshare() async {
+    if (!mounted || _closing) return;
+
+    Navigator.of(context).popUntil((Route<dynamic> route) => route.isFirst);
+
+    setState(() {
+      _stage = _Stage.loading;
+      _images = const [];
+      _skipped = 0;
+      // Cleared with the rest: a folder chosen for the previous picture is not
+      // an answer about this one, and leaving it selected would arm the save
+      // button before the user has looked at anything.
+      _selected = null;
+      _intent = null;
+    });
+
+    await _load();
   }
 
   @override
@@ -151,6 +205,7 @@ class _QuickSavePageState extends State<QuickSavePage>
     // A cancelled ticker never completes its future, so `whenComplete` above
     // would not fire and anything awaiting [_entered] would hang forever.
     _markEntered();
+    _channel.setMethodCallHandler(null);
     _controller.dispose();
     _nameController.dispose();
     super.dispose();
@@ -158,6 +213,20 @@ class _QuickSavePageState extends State<QuickSavePage>
 
   Future<void> _load() async {
     try {
+      // **Started before the images are asked for, not after them.**
+      //
+      // The folder list has nothing to do with the picture — it is this
+      // account's folders, the same answer whatever arrived — and it used to
+      // be read at the end, after the channel round trip and after every
+      // shared image had been resolved against the library. That put a
+      // database open, which is the slowest thing on this path, at the back of
+      // a queue it had no reason to be in.
+      //
+      // Kicked off here instead, so it overlaps the platform call and the
+      // lookups below. Not awaited until the moment the form actually needs
+      // it, which is the whole point.
+      final Future<List<FolderEntity>> folders = sl<GetFoldersUseCase>()();
+
       final Map<Object?, Object?>? shared = await _channel
           .invokeMethod<Map<Object?, Object?>>('getSharedImages');
       final List<Object?> raw =
@@ -183,6 +252,7 @@ class _QuickSavePageState extends State<QuickSavePage>
           _SharedImage(
             path: path,
             mediaId: mediaId,
+            fromShotoItself: map['fromShoto'] == true,
             existingAssetId: mediaId == null
                 ? null
                 : await repository.findLibraryAsset(mediaId),
@@ -195,7 +265,7 @@ class _QuickSavePageState extends State<QuickSavePage>
         return;
       }
 
-      final List<FolderEntity> folders = await sl<GetFoldersUseCase>()();
+      final List<FolderEntity> loadedFolders = await folders;
 
       await _entered.future;
       // `_closing` as well as `mounted`: the entrance can be released by a
@@ -206,12 +276,110 @@ class _QuickSavePageState extends State<QuickSavePage>
       setState(() {
         _images = images;
         _skipped = (shared?['skipped'] as int?) ?? 0;
-        _folders = folders;
+        _folders = loadedFolders;
+        // **Filing, always, without being asked anything first.**
+        //
+        // Covering briefly got its own stage here — a full-width two-option
+        // gate that every share had to answer before it could reach a folder.
+        // It put the app's best feature in front of people, and it charged the
+        // common case for it: the overwhelming majority of shares are somebody
+        // keeping a picture, and all of them were stopped, made to read two
+        // paragraphs and pick. A sheet whose whole promise is that it takes two
+        // seconds cannot open with a decision.
+        //
+        // So the default is the default again, and covering is one tap from
+        // inside it — see the entry at the foot of the form.
         _stage = _Stage.ready;
       });
     } catch (_) {
       if (mounted) setState(() => _stage = _Stage.failed);
     }
+  }
+
+  /// Whether this share may be covered rather than filed.
+  ///
+  /// Drives the secondary entry at the foot of the form, and nothing else —
+  /// there is no stage to reach and nothing to answer. See [coveringOffered]
+  /// for why a four-image share and Shoto's own output are both excluded.
+  bool get _canCover =>
+      _images.isNotEmpty &&
+      coveringOffered(
+        _images.length,
+        fromShotoItself: _images.first.fromShotoItself,
+      );
+
+  /// Straight into Safe Share on the file the other app handed over.
+  ///
+  /// **Nothing is imported first, and that is the whole promise of this
+  /// path.** Somebody covering an account number asked for the picture to be
+  /// fixed, not filed; growing their library with it on the way past would
+  /// break the sentence the app says on two of its own screens. The file here
+  /// is the copy `ShareActivity` already materialised into the cache, which is
+  /// exactly what [SafeSharePage.incoming] is built to take.
+  ///
+  /// A full page over the sheet rather than more sheet: covering is a review,
+  /// with findings to read and treatments to choose, and none of that fits in
+  /// a panel sized for one question. The activity's window is translucent, so
+  /// the opaque page simply becomes what is on screen.
+  Future<void> _protect() async {
+    setState(() => _stage = _Stage.preparing);
+
+    // Awaited here rather than at launch, so the shares that never touch a
+    // paid feature — most of them — do not pay for the store.
+    await ensurePremiumServicesReady();
+    if (!mounted || _closing) return;
+
+    // **Back to the form before the page goes up, not after it comes down.**
+    //
+    // The spinner covers the bootstrap and nothing else. Left in place it
+    // would sit underneath Safe Share for the whole review — an indeterminate
+    // progress indicator animating every frame behind an opaque page, which is
+    // both a lie about something still loading and a widget the framework can
+    // never consider settled. The form is also exactly what should be revealed
+    // if the page is dismissed, so putting it back now means the retreat path
+    // has nothing left to do.
+    setState(() => _stage = _Stage.ready);
+
+    final SafeShareOutcome? outcome = await Navigator.of(context)
+        .push<SafeShareOutcome>(
+          FadeSlidePageRoute(
+            builder: (_) =>
+                SafeSharePage.incoming(incoming: File(_images.first.path)),
+          ),
+        );
+    if (!mounted || _closing) return;
+
+    // **Three ways out of Safe Share, and only one of them is "nothing
+    // happened".**
+    //
+    // Null is the back gesture, which means "not this" rather than "I am
+    // finished with Shoto" — the form is already showing underneath, so a
+    // mis-tap costs nothing. The other two both mean the user finished, and
+    // for a while they were all treated as the first: somebody who covered an
+    // account number and sent it landed back on the sheet they started from,
+    // the app asking them to begin a task they had just completed.
+    if (outcome == null) return;
+
+    if (outcome.handedOn) {
+      await _close();
+      return;
+    }
+
+    // Kept. The covered copy replaces the picture that arrived, and the sheet
+    // carries on into the filing it already knows how to do — folders, the
+    // intent, the ceiling. Marked as ours because it is: it came out of Safe
+    // Share, so a later `reshare` must not offer to cover it again.
+    setState(() {
+      _images = <_SharedImage>[
+        _SharedImage(
+          path: outcome.kept!.path,
+          mediaId: null,
+          existingAssetId: null,
+          fromShotoItself: true,
+        ),
+      ];
+      _stage = _Stage.ready;
+    });
   }
 
   Future<void> _save() async {
@@ -381,12 +549,26 @@ class _QuickSavePageState extends State<QuickSavePage>
   }
 
   void _onDragUpdate(DragUpdateDetails details) {
-    if (_stage == _Stage.saving || _stage == _Stage.saved) return;
+    if (_stage == _Stage.saving ||
+        _stage == _Stage.saved ||
+        // Committed work in flight, with a page about to arrive over the top.
+        // Dragging the panel away underneath it leaves Safe Share standing on
+        // a sheet that has already asked Android to finish the activity.
+        _stage == _Stage.preparing) {
+      return;
+    }
     setState(() => _dragOffset = _resist(_dragOffset + details.delta.dy));
   }
 
   void _onDragEnd(DragEndDetails details) {
-    if (_stage == _Stage.saving || _stage == _Stage.saved) return;
+    if (_stage == _Stage.saving ||
+        _stage == _Stage.saved ||
+        // Committed work in flight, with a page about to arrive over the top.
+        // Dragging the panel away underneath it leaves Safe Share standing on
+        // a sheet that has already asked Android to finish the activity.
+        _stage == _Stage.preparing) {
+      return;
+    }
     // Either a decisive flick or dragged far enough to mean it. Anything else
     // springs back, which is what makes an accidental brush feel forgiving.
     final bool dismissed =
@@ -479,21 +661,14 @@ class _QuickSavePageState extends State<QuickSavePage>
   Widget _content() {
     switch (_stage) {
       case _Stage.loading:
-        return Padding(
-          key: const ValueKey('loading'),
-          padding: EdgeInsets.symmetric(vertical: 46.h),
-          child: Center(
-            // A spinner repaints on every single frame, for as long as it is
-            // on screen. Unboxed, that marked the entire sheet dirty sixty
-            // times a second — the whole panel, for a 40-pixel spinner — so
-            // widget whose job is to say "please wait" was itself the reason
-            // the wait looked rough. Its own boundary keeps those repaints to
-            // the 40 or so pixels that actually change.
-            child: RepaintBoundary(
-              child: CircularProgressIndicator(color: context.colors.primary),
-            ),
-          ),
-        );
+        return _spinner(const ValueKey('loading'));
+
+      // Same spinner, its own key. The two waits are indistinguishable to look
+      // at and must stay distinguishable to the AnimatedSwitcher: sharing a key
+      // would let it treat the second as a continuation of the first and skip
+      // the crossfade back from the offer.
+      case _Stage.preparing:
+        return _spinner(const ValueKey('preparing'));
 
       case _Stage.failed:
         return _Status(
@@ -521,6 +696,21 @@ class _QuickSavePageState extends State<QuickSavePage>
         return _form();
     }
   }
+
+  /// A spinner repaints on every single frame, for as long as it is on screen.
+  /// Unboxed, that marked the entire sheet dirty sixty times a second — the
+  /// whole panel, for a 40-pixel spinner — so a widget whose job is to say
+  /// "please wait" was itself the reason the wait looked rough. Its own
+  /// boundary keeps those repaints to the 40 or so pixels that actually change.
+  Widget _spinner(Key key) => Padding(
+    key: key,
+    padding: EdgeInsets.symmetric(vertical: 46.h),
+    child: Center(
+      child: RepaintBoundary(
+        child: CircularProgressIndicator(color: context.colors.primary),
+      ),
+    ),
+  );
 
   /// Naming a folder without leaving the sheet.
   ///
@@ -642,6 +832,11 @@ class _QuickSavePageState extends State<QuickSavePage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          // Keyed so a test can measure it. The covering entry inside this row
+          // claims to land in space the row was already paying for, and that
+          // claim is only worth making if something checks it — see
+          // `share_covering_test.dart`.
+          key: const ValueKey<String>('shareHeader'),
           children: [
             // The preview is the confirmation that the *right* images
             // arrived, which matters more than it sounds when several apps
@@ -652,12 +847,30 @@ class _QuickSavePageState extends State<QuickSavePage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(_title(context), style: context.text.titleLarge),
+                  // **One line each, and that is load-bearing now.**
+                  //
+                  // Both of these used to have the whole width and could wrap
+                  // as far as they liked. The cover button on the trailing
+                  // edge takes about ninety points of it, and unbounded these
+                  // two answered by running to three lines — which pushed the
+                  // header past the thumbnail that sets its height and made a
+                  // "free" control cost forty points. Ellipsis is the right
+                  // answer regardless: a header that reflows to three lines
+                  // because the picture came from a different app is a header
+                  // whose size the user cannot predict.
+                  Text(
+                    _title(context),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.text.titleLarge,
+                  ),
                   SizedBox(height: 2.h),
                   Text(
                     _folders.isEmpty
                         ? context.l10n.quickSaveNeedFolder
                         : context.l10n.quickSavePickFolder,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: context.text.bodySmall,
                   ),
                   if (_skipped > 0) ...[
@@ -669,9 +882,116 @@ class _QuickSavePageState extends State<QuickSavePage>
                       ),
                     ),
                   ],
+
+                  // **The way into covering, said in words.**
+                  //
+                  // It was a bare shield on the trailing edge for one build,
+                  // and a glyph on its own does not read as a control — it
+                  // reads as decoration, or as a status badge about the
+                  // picture. Somebody who shared a screenshot *because* it has
+                  // an account number in it had no way to know the thing they
+                  // came for was one tap away.
+                  //
+                  // Placed inside the header's own column rather than under
+                  // the save button, because that column is the one part of
+                  // this sheet with room already going spare: the row's height
+                  // is set by the 62pt thumbnail beside it, and two lines of
+                  // text do not fill 62pt. A third line lands in space the
+                  // sheet was already paying for — asserted as an equal-height
+                  // comparison in `share_covering_test.dart`, not left to this
+                  // paragraph.
+                  //
+                  // Tinted and led by the shield so it reads as an action
+                  // rather than as more description, and it borrows the words
+                  // the paywall and Home already use for this feature.
+                  if (_canCover) ...[
+                    // 2, not the 5 this started at. The header's whole budget
+                    // is the thumbnail's 62pt beside it, and at 5 the three
+                    // lines came to 64.4 — the row grew by two and a half
+                    // pixels and the claim below stopped being true. Measured,
+                    // then set to the number that fits.
+                    SizedBox(height: 2.h),
+                    Text(
+                      context.l10n.quickSaveCoverWhy,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.text.caption.copyWith(
+                        color: context.colors.secondary,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
+
+            // **A button, on the trailing edge, in space the header already
+            // had.**
+            //
+            // Four arrangements got here and the discarded three are worth
+            // recording, because they failed in two different ways. A
+            // two-option gate the sheet opened on, and then a full-width row
+            // under the save button, both charged the common case — nearly
+            // every share is somebody keeping a picture — for a decision only
+            // a few people need. Then a bare shield on this edge, which cost
+            // nothing and *communicated* nothing: a glyph alone reads as
+            // decoration, or as a badge about the picture. Then a tinted line
+            // of text, which said what it did and still looked like writing.
+            //
+            // So: a real surface, a border, a label. It is a button because it
+            // has to look like one before anybody presses it.
+            //
+            // The four-word question to its left carries the *why*, which is
+            // the half a one-word label cannot hold. Together they read "has
+            // private details?" / "cover" — the whole feature, in five words,
+            // at a glance.
+            //
+            // Still on this row rather than below the save button, for the
+            // reason the whole arrangement exists: the row's height is set by
+            // the 62pt thumbnail, so everything placed here is free. Asserted
+            // as an equal-height comparison in `share_covering_test.dart`,
+            // not left to this paragraph.
+            if (_canCover) ...[
+              SizedBox(width: 10.w),
+              PressableScale(
+                scale: 0.94,
+                onTap: busy ? null : _protect,
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 11.w,
+                    vertical: 8.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: context.colors.secondary.withValues(alpha: 0.14),
+                    borderRadius: BorderRadius.circular(13.r),
+                    border: Border.all(
+                      color: context.colors.secondary.withValues(alpha: 0.45),
+                    ),
+                  ),
+                  // Side by side rather than stacked. Stacked was the first
+                  // try and it stood 101pt — the row's budget is the
+                  // thumbnail's 62 — so the chip alone would have made the
+                  // sheet taller than the gate this whole design replaced.
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.shield_outlined,
+                        size: 16.sp,
+                        color: context.colors.secondary,
+                      ),
+                      SizedBox(width: 6.w),
+                      Text(
+                        context.l10n.quickSaveCoverAction,
+                        maxLines: 1,
+                        style: context.text.caption.asSemiBold.copyWith(
+                          color: context.colors.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
         if (_folders.isEmpty) ...[
@@ -849,6 +1169,7 @@ class _QuickSavePageState extends State<QuickSavePage>
                   ),
           ),
         ),
+
       ],
     );
   }
@@ -888,10 +1209,16 @@ class _SharedImage {
   /// image, in which case there is nothing to import — only to file.
   final String? existingAssetId;
 
+  /// Handed out by Shoto's own share sheet a moment ago — most often the
+  /// covered copy, coming back to be kept. Such a picture has already been
+  /// through the cover-or-keep offer, so it is not asked again.
+  final bool fromShotoItself;
+
   const _SharedImage({
     required this.path,
     required this.mediaId,
     required this.existingAssetId,
+    this.fromShotoItself = false,
   });
 
   bool get isAlreadyInLibrary => existingAssetId != null;

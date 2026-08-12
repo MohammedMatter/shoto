@@ -364,7 +364,7 @@ class _SafeShareProp extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  Icons.shield_moon_rounded,
+                  Icons.shield_outlined,
                   size: 15.sp,
                   color: context.colors.secondary,
                 ),

@@ -116,6 +116,16 @@ extension IntentRefVisuals on IntentRef {
     BuiltInIntent(:final ScreenshotIntent intent) => intent.icon,
     CustomIntent(:final String iconKey) => IntentIcons.resolve(iconKey),
   };
+
+  /// The same one hue for every intent, built-in or invented — see
+  /// [IntentVisuals.tint] for why there is no palette per verb.
+  ///
+  /// It lives here as well as on the enum because of the rule at the top of
+  /// this extension: widgets read intents through [IntentRef] and never through
+  /// [ScreenshotIntent], and a widget that had to unwrap the ref to find out
+  /// what colour to use would be the first exception to that — for a colour
+  /// that is the same either way.
+  Color tint(BuildContext context) => context.colors.secondary;
 }
 
 /// The glyphs a user-authored intent can be given.

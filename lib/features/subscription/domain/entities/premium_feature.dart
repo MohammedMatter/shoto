@@ -26,6 +26,23 @@ class PremiumFeature {
   /// "advanced search" — the second says nothing.
   final String Function(BuildContext) description;
 
+  /// What to say instead once the reader **already pays**, when the ordinary
+  /// line would be describing a restriction that no longer applies to them.
+  ///
+  /// Null for almost everything, and that is the point: most of these describe
+  /// a capability, and a capability reads the same whether you have it yet or
+  /// not. Only the library ceiling is phrased as a *limit* — "the free tier
+  /// organizes 100 screenshots" — which is a sentence about somebody else's
+  /// account once you have paid to leave it behind. A subscriber opening this
+  /// page to check what they get should not have to work out that the
+  /// hundred-screenshot line is the thing they are no longer subject to.
+  ///
+  /// Kept here rather than resolved in the page, because this class is
+  /// documented as the single source of truth for what paying gets you, and a
+  /// page picking different words for the same feature is exactly the drift
+  /// that doc exists to prevent.
+  final String Function(BuildContext)? descriptionWhenPro;
+
   /// The paragraph behind the one-liner: what the feature actually does when
   /// you use it, in plain words.
   ///
@@ -49,7 +66,15 @@ class PremiumFeature {
     required this.description,
     required this.how,
     required this.points,
+    this.descriptionWhenPro,
   });
+
+  /// The description to show, given whether the reader is a subscriber.
+  ///
+  /// One place makes this choice so no caller has to remember the fallback.
+  String describe(BuildContext context, {required bool isPro}) =>
+      (isPro ? descriptionWhenPro : null)?.call(context) ??
+      description(context);
 
   /// **Never list something the app cannot do.**
   ///
@@ -75,7 +100,7 @@ class PremiumFeature {
   /// top, because the first row is the one people read.
   static final List<PremiumFeature> all = [
     PremiumFeature(
-      icon: Icons.shield_moon_rounded,
+      icon: Icons.shield_outlined,
       title: (context) => context.l10n.featSafeShare,
       description: (context) => context.l10n.featSafeShareBody,
       how: (context) => context.l10n.featSafeShareHow,
@@ -97,7 +122,7 @@ class PremiumFeature {
       ],
     ),
     PremiumFeature(
-      icon: Icons.photo_size_select_large_rounded,
+      icon: Icons.view_agenda_outlined,
       title: (context) => context.l10n.featStitch,
       description: (context) => context.l10n.featStitchBody,
       how: (context) => context.l10n.featStitchHow,
@@ -108,7 +133,7 @@ class PremiumFeature {
       ],
     ),
     PremiumFeature(
-      icon: Icons.content_copy_rounded,
+      icon: Icons.content_copy_outlined,
       title: (context) => context.l10n.featDuplicates,
       description: (context) => context.l10n.featDuplicatesBody,
       how: (context) => context.l10n.featDuplicatesHow,
@@ -127,6 +152,9 @@ class PremiumFeature {
       description: (context) => context.l10n.featUnlimitedBody(
         SubscriptionConstants.freeScreenshotLimit,
       ),
+      // The one entry in this list whose ordinary line states a cap. Once the
+      // cap is gone, so is the sentence.
+      descriptionWhenPro: (context) => context.l10n.featUnlimitedBodyPro,
       how: (context) => context.l10n.featUnlimitedHow,
       points: [
         (context) => context.l10n.featUnlimitedPoint1,

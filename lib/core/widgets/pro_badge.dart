@@ -27,15 +27,28 @@ class ProBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
       decoration: BoxDecoration(
+        // **A wash of the accent, not a slab of it.**
+        //
+        // It was solid `primary`, which on Home puts a saturated navy block
+        // directly beside the user's own name at headline size — the single
+        // heaviest object on the page, spent on two letters that state
+        // something the user already knows about themselves. Beside a name it
+        // read as a button, and the reflex is to try tapping it.
+        //
+        // A tint keeps it legible as a mark and demotes it to what it is: a
+        // label. The letters stay full-strength accent, so the badge is still
+        // unmistakably the paid colour — the area is what changed, which is the
+        // same correction `folder_card.dart` made when a whole tinted cover
+        // came down to a glyph and an edge.
         color: onAccent
             ? context.colors.onMarker.withValues(alpha: 0.22)
-            : context.colors.primary,
+            : context.colors.primary.withValues(alpha: 0.14),
         borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
       child: Text(
         context.l10n.commonPro,
         style: context.text.overline.asSemiBold.copyWith(
-          color: onAccent ? context.colors.onMarker : context.colors.onPrimary,
+          color: onAccent ? context.colors.onMarker : context.colors.primary,
         ),
       ),
     );

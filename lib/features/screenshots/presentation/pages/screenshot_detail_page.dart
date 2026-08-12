@@ -798,7 +798,7 @@ class _ActionBar extends StatelessWidget {
               ),
               Expanded(
                 child: _BarAction(
-                  icon: Icons.shield_moon_rounded,
+                  icon: Icons.shield_outlined,
                   label: context.l10n.detailSafeShare,
                   onTap: onSafeShare,
                 ),

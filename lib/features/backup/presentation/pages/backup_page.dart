@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/services/backup_file_service.dart';
+import 'package:shoto/core/services/pro_status.dart';
+import 'package:shoto/core/widgets/premium_gate.dart';
+import 'package:shoto/core/widgets/pro_badge.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
@@ -51,7 +54,23 @@ class _BackupPageState extends State<BackupPage> {
     setState(() => _progress = done / total);
   }
 
+  /// **Writing a backup is the paid half of this page; reading one is not.**
+  ///
+  /// The gate sits here rather than on the Settings row that opens the page,
+  /// and the difference matters more than it looks. Locking the row locks
+  /// [_restore] with it — so somebody who made a backup while subscribed and
+  /// later lapsed could not reach their own library, from inside the app that
+  /// wrote the file. Charging for a feature is a price; charging for the way
+  /// back to data you already own is a hostage, and it is the kind of thing
+  /// that ends up in refund requests and store policy complaints rather than
+  /// in conversions.
+  ///
+  /// Checked before the spinner starts, so a free user meets the paywall
+  /// instead of watching a progress bar begin and then stop.
   Future<void> _createBackup() async {
+    if (!await ensurePremium(context)) return;
+    if (!mounted) return;
+
     setState(() {
       _job = _Job.backup;
       _progress = 0;
@@ -239,6 +258,8 @@ class _BackupPageState extends State<BackupPage> {
               tint: context.colors.primary,
               title: context.l10n.backupCreateTitle,
               body: context.l10n.backupCreateBody,
+              // Restoring is deliberately not badged — see [_createBackup].
+              showProBadge: !sl<ProStatus>().isPro,
               action: PrimaryButton(
                 label: context.l10n.backupCreateAction,
                 icon: Icons.save_alt_rounded,
@@ -334,12 +355,20 @@ class _Card extends StatelessWidget {
   final String body;
   final Widget action;
 
+  /// Marks this half of the page as paid, before the button is pressed.
+  ///
+  /// Passed down rather than read from the service locator here, the rule
+  /// `pro_badge.dart` records: a presentational card that reaches for global
+  /// state is one nobody can render in a widget test. The page already knows.
+  final bool showProBadge;
+
   const _Card({
     required this.icon,
     required this.tint,
     required this.title,
     required this.body,
     required this.action,
+    this.showProBadge = false,
   });
 
   @override
@@ -370,6 +399,10 @@ class _Card extends StatelessWidget {
               Expanded(
                 child: Text(title, style: context.text.bodyLarge.asMedium),
               ),
+              if (showProBadge) ...<Widget>[
+                SizedBox(width: 8.w),
+                const ProBadge(),
+              ],
             ],
           ),
           SizedBox(height: 10.h),

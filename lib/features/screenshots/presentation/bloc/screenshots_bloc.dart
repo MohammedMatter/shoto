@@ -7,12 +7,15 @@ import 'package:shoto/features/screenshots/domain/use_cases/extract_and_cache_te
 import 'package:shoto/features/screenshots/domain/use_cases/get_cached_ocr_text_use_case.dart';
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:shoto/features/screenshots/domain/entities/library_summary.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/assign_folder_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/check_photo_permission_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/delete_screenshots_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_library_summary_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_by_folder_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/request_photo_permission_use_case.dart';
@@ -35,6 +38,10 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   final AppPreferences preferences;
   final GetScreenshotsUseCase getScreenshotsUseCase;
   final GetScreenshotsByFolderUseCase getScreenshotsByFolderUseCase;
+
+  /// The local-only counts, read alongside the gallery so the first screen has
+  /// something true on it before the slow half finishes. See [_summaryOrNull].
+  final GetLibrarySummaryUseCase getLibrarySummaryUseCase;
   final SetFavoriteUseCase setFavoriteUseCase;
   final SetIntentUseCase setIntentUseCase;
   final SetIntentsUseCase setIntentsUseCase;
@@ -106,6 +113,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     required this.checkPhotoPermissionUseCase,
     required this.getScreenshotsUseCase,
     required this.getScreenshotsByFolderUseCase,
+    required this.getLibrarySummaryUseCase,
     required this.setFavoriteUseCase,
     required this.setIntentUseCase,
     required this.setIntentsUseCase,
@@ -150,6 +158,14 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     _folderId = event.folderId;
     emit(ScreenshotsLoadingState());
 
+    // **Started here, awaited below.** Both reads are now in flight at once:
+    // the permission check is a platform channel call that on a cold start also
+    // pays for the plugin waking up, and the summary is sqlite. Awaiting them
+    // in sequence would spend the whole point of the summary — being ready
+    // *early* — waiting on the slower of the two for no reason. Neither depends
+    // on the other's answer.
+    final Future<LibrarySummary?> summaryRead = _summaryOrNull();
+
     // **Checks, never asks.** This runs on launch, on every Folders tab
     // select and behind the retry button, and when it asked, the system photo
     // dialog appeared over a user who had just finished the introduction and
@@ -163,6 +179,19 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
       emit(_blocked(permission));
       return;
     }
+
+    // **Only when there is something to say.** A summary of an empty library
+    // tells Home nothing it did not already assume, and emitting it would put a
+    // second loading state on the screen for no visible difference.
+    //
+    // Emitted *after* the permission check on purpose: numbers drawn from rows
+    // the app is no longer allowed to see the pictures for would be a library
+    // announced on a screen that is about to say access is blocked.
+    final LibrarySummary? summary = await summaryRead;
+    if (summary != null && !summary.isEmpty) {
+      emit(ScreenshotsLoadingState(summary: summary));
+    }
+
     await _loadAndEmit(emit);
     // Re-read here rather than inside the pickers. The front row is ordered by
     // what this person used most recently, and recomputing that at the moment
@@ -171,6 +200,28 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     // picker can be reached, and never while one is open.
     unawaited(intentCatalog.refresh());
     _watchLibrary();
+  }
+
+  /// The local counts, or null when they would be wrong or unobtainable.
+  ///
+  /// Two ways of returning null, and they are different things:
+  ///
+  /// * **A folder is being loaded.** This summary describes the whole library
+  ///   and nothing else; handing it to a screen showing one folder's contents
+  ///   would be a number about a different set of pictures.
+  /// * **The read threw.** Which is the entire reason this is wrapped: the
+  ///   summary is an optimisation on top of a load that is still going to
+  ///   happen and still going to succeed or fail on its own terms. A database
+  ///   that cannot answer it must cost the user a blank first frame — the
+  ///   behaviour that shipped before — and never the library itself.
+  Future<LibrarySummary?> _summaryOrNull() async {
+    if (_folderId != null) return null;
+    try {
+      return await getLibrarySummaryUseCase();
+    } catch (error) {
+      debugPrint('Shoto: library summary unavailable — $error');
+      return null;
+    }
   }
 
   /// Which blocked screen a refusal deserves.

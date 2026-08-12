@@ -7,10 +7,23 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/widgets/primary_button.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 
+/// **There is no loading branch here any more, and there must never be one
+/// again.**
+///
+/// This widget used to take an `isLoading` flag whose entire behaviour was
+/// `return const SizedBox.shrink()`, and Home routed both of its transient
+/// states into it. The result was that closing the app and reopening it drew a
+/// hole where the main block goes, in a page laid out as though the library
+/// were empty, until the gallery read finished and everything jumped into
+/// place.
+///
+/// Pending is now somebody else's job — `HomeInbox.preview` draws the real
+/// counts from the local tables, and `HomeInboxSkeleton` holds the space in the
+/// frames before even those are known. What is left here is one thing: the
+/// invitation shown to a library that genuinely has nothing in it.
 class UnsortedHeadline extends StatelessWidget {
   final int unsortedCount;
   final bool hasLibrary;
-  final bool isLoading;
   final ValueChanged<LibraryFilter> onTap;
   final VoidCallback onImport;
 
@@ -18,7 +31,6 @@ class UnsortedHeadline extends StatelessWidget {
     super.key,
     required this.unsortedCount,
     required this.hasLibrary,
-    required this.isLoading,
     required this.onTap,
     required this.onImport,
   });
@@ -26,8 +38,6 @@ class UnsortedHeadline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool needsAttention = hasLibrary && unsortedCount > 0;
-
-    if (isLoading) return const SizedBox.shrink();
 
     if (!needsAttention) {
       final String headline = !hasLibrary

@@ -15,11 +15,22 @@
   "settingsSignInHint": "Opcional. Só é preciso para levar uma compra para outro telefone.",
   "paywallTrialCta": "{days, plural, =1{Começar 1 dia grátis} other{Começar {days} dias grátis}}",
   "@paywallTrialCta": {
-    "placeholders": { "days": { "type": "int" } }
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
   },
   "paywallTrialNote": "{days, plural, =1{Grátis por um dia, depois {price}. Cancele quando quiser antes do fim.} other{Grátis por {days} dias, depois {price}. Cancele quando quiser antes do fim.}}",
   "@paywallTrialNote": {
-    "placeholders": { "days": { "type": "int" }, "price": { "type": "String" } }
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
   },
   "triageTitle": "Desde a última vez",
   "triageBody": "Guarde o que faz sentido no Shoto. Todo o resto fica exatamente onde está.",
@@ -28,15 +39,30 @@
   "triageFinish": "Pronto",
   "triageProgress": "{index} de {total}",
   "@triageProgress": {
-    "placeholders": { "index": { "type": "int" }, "total": { "type": "int" } }
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
   },
   "triageNewCount": "{count, plural, =1{1 captura nova} other{{count} capturas novas}}",
   "@triageNewCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "triageKept": "{count, plural, =0{Nada guardado} =1{1 guardada} other{{count} guardadas}}",
   "@triageKept": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "triageReview": "Rever",
   "triageInviteDecline": "Agora não",
@@ -63,6 +89,7 @@
   "homeInboxEmpty": "Nada guardado ainda",
   "homeInboxEmptySubtitle": "Escolha algumas do seu telefone agora, ou compartilhe uma captura no Shoto a partir de qualquer app.",
   "homeEmptyImportCta": "Escolher do meu telefone",
+  "homeNeedsYou": "À tua espera",
   "homeInboxClear": "Tudo arquivado",
   "homeInboxClearSubtitle": "Nada esperando para ser organizado",
   "homeInboxCountSubtitle": "Capturas que você ainda não arquivou",
@@ -211,7 +238,28 @@
     }
   },
   "foldersDeleteMessage": "A pasta some, mas as capturas de dentro continuam na sua biblioteca.",
-  "foldersRenameTitle": "Renomear pasta",
+  "foldersEditTitle": "Editar pasta",
+  "foldersSearchHint": "Procurar pastas",
+  "foldersSortLabel": "Ordenar pastas",
+  "foldersSortRecent": "Mais recentes primeiro",
+  "foldersSortName": "Nome (A–Z)",
+  "foldersSortFullest": "Mais capturas",
+  "foldersNoMatchTitle": "Nenhuma pasta corresponde",
+  "foldersNoMatchMessage": "Aqui não há nada chamado «{query}». Tenta parte do nome.",
+  "@foldersNoMatchMessage": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "folderDefaultTrips": "Planos de viagem",
+  "folderDefaultRecipes": "Receitas",
+  "folderDefaultMedications": "Medicamentos",
+  "folderDefaultAiNotes": "Notas de IA",
+  "folderDefaultMoney": "Dinheiro",
+  "folderDefaultWorkouts": "Treinos",
+  "folderDefaultMusic": "Música",
   "foldersMoveTitle": "Mover para a pasta",
   "foldersMoveRemove": "Tirar da pasta",
   "foldersMoveNone": "Nenhuma pasta ainda. Crie uma na aba Pastas.",
@@ -371,6 +419,7 @@
   "safeShareShareUnchanged": "Compartilhar sem mudar",
   "safeShareShareAnyway": "Compartilhar mesmo assim",
   "safeShareShareProtected": "Compartilhar a cópia protegida",
+  "safeShareKeepCopy": "Guardar a cópia no Shoto",
   "safeShareFailed": "Não deu para montar a cópia protegida.",
   "safeShareFoundTitle": "{count, plural, =1{1 dado privado encontrado} other{{count} dados privados encontrados}}",
   "@safeShareFoundTitle": {
@@ -440,13 +489,23 @@
   "paywallContinue": "Continuar",
   "paywallUnavailable": "Ainda não disponível",
   "paywallRestore": "Restaurar compras",
+  "settingsRestoreHint": "Já pagou? Recupere a sua subscrição.",
   "paywallLegal": "Renova automaticamente até você cancelar. Cancele quando quiser nos ajustes da sua conta na App Store ou no Google Play. Ao continuar você concorda com os nossos Termos de Serviço e a Política de Privacidade.",
   "subPremiumBadge": "PRO",
   "subPremiumTitle": "Shoto Pro",
   "subPremiumBody": "Todos os recursos desbloqueados para você.",
+  "subPremiumRenews": "Renova em {date}",
+  "quotaTitle": "Biblioteca",
+  "quotaUsed": "{used} de {limit}",
+  "quotaLeft": "{count, plural, =0{Sem espaço — o Pro remove o limite} =1{Resta 1 captura no plano gratuito} other{Restam {count} capturas no plano gratuito}}",
+  "quotaUnlimited": "Ilimitado",
+  "quotaUnlimitedNote": "Sem teto para o que você guarda.",
   "subDevUnlock": "Acesso de testador",
   "subDevUnlockBody": "Desbloqueado neste aparelho — não é uma assinatura de verdade",
   "subUnlockEverything": "Desbloquear tudo",
+  "trialUsed": "Esta é por nossa conta — sua tentativa gratuita",
+  "trialFree": "Teste grátis",
+  "proOnly": "Pro",
   "proWelcomeTitle": "Você está no Pro",
   "proWelcomeBody": "Todos os recursos estão desbloqueados. Não há mais nada para configurar.",
   "proWelcomeAction": "Começar a usar",
@@ -458,8 +517,9 @@
   "featDuplicatesBody": "Acha capturas quase iguais que você guardou duas vezes e tira do caminho — sempre com uma revisão antes.",
   "featStitch": "Juntar capturas longas",
   "featStitchBody": "Recompõe uma captura com rolagem numa imagem alta só, achando e removendo a sobreposição sozinho.",
-  "featUnlimited": "Sem teto para a sua biblioteca",
+  "featUnlimited": "Capturas ilimitadas",
   "featUnlimitedBody": "A versão grátis organiza {count} capturas. O Pro tira o número.",
+  "featUnlimitedBodyPro": "Sua biblioteca não tem teto — guarde quanto quiser.",
   "featSafeShareHow": "Achar o que é privado numa captura é grátis e ilimitado. O que se paga é transformar esses achados numa cópia limpa: cada dado que você deixar marcado é coberto na imagem exportada, e essa imagem é plana, sem nenhuma camada para desfazer.",
   "featSafeSharePoint1": "Números de cartão passam por Luhn e IBANs por módulo 97: esses dois são provados em vez de adivinhados, justo no dado que mais importa.",
   "featSafeSharePoint2": "Também pega nomes, endereços, números de pedido, códigos de verificação, telefones e e-mails.",
@@ -638,6 +698,8 @@
   "shareChoiceTitle": "O que o Shoto deve fazer com ela?",
   "shareChoiceProtect": "Cobrir dados privados",
   "shareChoiceProtectHint": "Esconde o que é privado e envia. Não fica salva aqui.",
+  "quickSaveCoverAction": "Tapar",
+  "quickSaveCoverWhy": "Tem dados privados?",
   "shareChoiceSave": "Salvar no Shoto",
   "shareChoiceSaveHint": "Adicionar à sua biblioteca e arquivar.",
   "shareSavedPrompt": "{count, plural, =1{Captura salva. Colocar numa pasta?} other{Capturas salvas. Colocar numa pasta?}}",

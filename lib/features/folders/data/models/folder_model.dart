@@ -8,6 +8,7 @@ class FolderModel extends FolderEntity {
     required super.createdAt,
     super.screenshotCount,
     super.isPrivate,
+    super.iconKey,
   });
 
   factory FolderModel.fromMap(
@@ -21,6 +22,7 @@ class FolderModel extends FolderEntity {
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['created_at'] as int),
       screenshotCount: screenshotCount,
       isPrivate: (map['is_private'] as int?) == 1,
+      iconKey: map['icon_key'] as String?,
     );
   }
 }

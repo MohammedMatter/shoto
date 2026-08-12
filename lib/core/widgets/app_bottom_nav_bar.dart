@@ -116,10 +116,18 @@ class AppBottomNavBar extends StatelessWidget {
                 // is glass. Over the bare page the bar is then almost nothing —
                 // which is correct, and why [GlassRim] is what gives it its
                 // shape.
+                // Both dark stops moved down with the canvas, keeping the
+                // offsets the paragraph above describes exactly: +10 and +2
+                // from `AppPalette.canvasDark`. They were `#242424`/`#1C1C1C`
+                // against a `#1A1A1A` page; against `#121212` those same
+                // literals would sit 18 and 10 points *above* it, which is the
+                // fog failure this comment already warns about — the values
+                // are only correct relative to a canvas, so they have to move
+                // when it does.
                 colors: context.colors.isDark
                     ? [
-                        const Color(0xFF242424).withValues(alpha: 0.44),
-                        const Color(0xFF1C1C1C).withValues(alpha: 0.56),
+                        const Color(0xFF1B1C1D).withValues(alpha: 0.44),
+                        const Color(0xFF131415).withValues(alpha: 0.56),
                       ]
                     : [
                         const Color(0xFFFFFFFF).withValues(alpha: 0.58),
@@ -185,9 +193,24 @@ class _NavItemView extends StatelessWidget {
         curve: _curve,
         margin: EdgeInsets.symmetric(horizontal: 3.w),
         padding: EdgeInsets.symmetric(vertical: 5.h),
+        // **The active tab was a solid slab of the accent and is now a wash.**
+        //
+        // A filled chip is unambiguous and it was also the single largest area
+        // of accent anywhere in the app — on screen in every tab, permanently,
+        // on a bar whose entire design above is an argument about staying
+        // quiet. A frosted pill with an opaque block sitting inside it is not
+        // glass any more, it is a slab with a glass surround.
+        //
+        // The wash keeps the shape and drops the weight, and the signal moves
+        // to where it costs nothing: the icon and the label take the accent
+        // and the label goes semibold, so "you are here" is carried by three
+        // cues at once rather than by one large rectangle. Non-active items
+        // are unchanged, which is what preserves the contrast between them.
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),
-          gradient: isActive ? context.colors.primaryGradient : null,
+          color: isActive
+              ? context.colors.primary.withValues(alpha: 0.16)
+              : null,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -199,7 +222,7 @@ class _NavItemView extends StatelessWidget {
                 isActive ? item.activeIcon : item.icon,
                 size: 19.sp,
                 color: isActive
-                    ? context.colors.onPrimary
+                    ? context.colors.primary
                     : context.colors.textSecondary,
               ),
             ),
@@ -218,7 +241,7 @@ class _NavItemView extends StatelessWidget {
                     fontSize: 9.5.sp,
                     height: 1,
                     color: isActive
-                        ? context.colors.onPrimary
+                        ? context.colors.primary
                         : context.colors.textSecondary,
                   ),
             ),

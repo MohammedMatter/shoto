@@ -199,6 +199,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get homeEmptyImportCta => 'Scegli dal mio telefono';
 
   @override
+  String get homeNeedsYou => 'Ti aspetta';
+
+  @override
   String get homeInboxClear => 'Tutto archiviato';
 
   @override
@@ -522,7 +525,51 @@ class AppLocalizationsIt extends AppLocalizations {
       'La cartella viene rimossa ma gli screenshot dentro restano nella tua libreria.';
 
   @override
-  String get foldersRenameTitle => 'Rinomina cartella';
+  String get foldersEditTitle => 'Modifica cartella';
+
+  @override
+  String get foldersSearchHint => 'Cerca cartelle';
+
+  @override
+  String get foldersSortLabel => 'Ordina cartelle';
+
+  @override
+  String get foldersSortRecent => 'Più recenti prima';
+
+  @override
+  String get foldersSortName => 'Nome (A–Z)';
+
+  @override
+  String get foldersSortFullest => 'Più screenshot';
+
+  @override
+  String get foldersNoMatchTitle => 'Nessuna cartella corrisponde';
+
+  @override
+  String foldersNoMatchMessage(String query) {
+    return 'Qui non c\'è niente che si chiami «$query». Prova con una parte del nome.';
+  }
+
+  @override
+  String get folderDefaultTrips => 'Piani di viaggio';
+
+  @override
+  String get folderDefaultRecipes => 'Ricette';
+
+  @override
+  String get folderDefaultMedications => 'Farmaci';
+
+  @override
+  String get folderDefaultAiNotes => 'Note IA';
+
+  @override
+  String get folderDefaultMoney => 'Soldi';
+
+  @override
+  String get folderDefaultWorkouts => 'Allenamenti';
+
+  @override
+  String get folderDefaultMusic => 'Musica';
 
   @override
   String get foldersMoveTitle => 'Sposta nella cartella';
@@ -737,6 +784,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get safeShareShareProtected => 'Condividi la copia protetta';
 
   @override
+  String get safeShareKeepCopy => 'Conserva la copia in Shoto';
+
+  @override
   String get safeShareFailed => 'Non sono riuscito a creare la copia protetta.';
 
   @override
@@ -880,6 +930,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get paywallRestore => 'Ripristina acquisti';
 
   @override
+  String get settingsRestoreHint =>
+      'Hai già pagato? Recupera il tuo abbonamento.';
+
+  @override
   String get paywallLegal =>
       'Si rinnova automaticamente fino all\'annullamento. Puoi annullare quando vuoi dalle impostazioni account di App Store o Google Play. Continuando accetti i nostri Termini di servizio e l\'Informativa sulla privacy.';
 
@@ -893,6 +947,37 @@ class AppLocalizationsIt extends AppLocalizations {
   String get subPremiumBody => 'Ogni funzione sbloccata per te.';
 
   @override
+  String subPremiumRenews(String date) {
+    return 'Si rinnova il $date';
+  }
+
+  @override
+  String get quotaTitle => 'Libreria';
+
+  @override
+  String quotaUsed(int used, int limit) {
+    return '$used di $limit';
+  }
+
+  @override
+  String quotaLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count screenshot rimasti nel piano gratuito',
+      one: '1 screenshot rimasto nel piano gratuito',
+      zero: 'Spazio esaurito — Pro toglie il limite',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get quotaUnlimited => 'Illimitato';
+
+  @override
+  String get quotaUnlimitedNote => 'Nessun limite a ciò che conservi.';
+
+  @override
   String get subDevUnlock => 'Accesso tester';
 
   @override
@@ -901,6 +986,15 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get subUnlockEverything => 'Sblocca tutto';
+
+  @override
+  String get trialUsed => 'Questa offriamo noi — la tua prova gratuita';
+
+  @override
+  String get trialFree => 'Prova gratis';
+
+  @override
+  String get proOnly => 'Pro';
 
   @override
   String get proWelcomeTitle => 'Sei su Pro';
@@ -941,12 +1035,16 @@ class AppLocalizationsIt extends AppLocalizations {
       'Ricompone una cattura a scorrimento in un\'unica immagine alta, trovando e togliendo la sovrapposizione da sola.';
 
   @override
-  String get featUnlimited => 'Nessun tetto per la tua libreria';
+  String get featUnlimited => 'Screenshot illimitati';
 
   @override
   String featUnlimitedBody(Object count) {
     return 'La versione gratuita organizza $count screenshot. Pro toglie il numero.';
   }
+
+  @override
+  String get featUnlimitedBodyPro =>
+      'La tua libreria non ha limiti: conserva quanto vuoi.';
 
   @override
   String get featSafeShareHow =>
@@ -1284,6 +1382,12 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get shareChoiceProtectHint =>
       'Nascondi ciò che è privato e invialo. Non viene salvato qui.';
+
+  @override
+  String get quickSaveCoverAction => 'Copri';
+
+  @override
+  String get quickSaveCoverWhy => 'Contiene dati privati?';
 
   @override
   String get shareChoiceSave => 'Salva in Shoto';

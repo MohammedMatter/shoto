@@ -15,11 +15,22 @@
   "settingsSignInHint": "Optioneel. Alleen nodig om een aankoop naar een andere telefoon te verhuizen.",
   "paywallTrialCta": "{days, plural, =1{Start 1 dag gratis} other{Start {days} dagen gratis}}",
   "@paywallTrialCta": {
-    "placeholders": { "days": { "type": "int" } }
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
   },
   "paywallTrialNote": "{days, plural, =1{Een dag gratis, daarna {price}. Je kunt altijd opzeggen voordat het afloopt.} other{{days} dagen gratis, daarna {price}. Je kunt altijd opzeggen voordat het afloopt.}}",
   "@paywallTrialNote": {
-    "placeholders": { "days": { "type": "int" }, "price": { "type": "String" } }
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
   },
   "triageTitle": "Sinds je laatste blik",
   "triageBody": "Houd wat in Shoto thuishoort. De rest blijft precies waar het staat.",
@@ -28,15 +39,30 @@
   "triageFinish": "Klaar",
   "triageProgress": "{index} van {total}",
   "@triageProgress": {
-    "placeholders": { "index": { "type": "int" }, "total": { "type": "int" } }
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
   },
   "triageNewCount": "{count, plural, =1{1 nieuw screenshot} other{{count} nieuwe screenshots}}",
   "@triageNewCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "triageKept": "{count, plural, =0{Niets gehouden} =1{1 gehouden} other{{count} gehouden}}",
   "@triageKept": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "triageReview": "Bekijken",
   "triageInviteDecline": "Nu niet",
@@ -63,6 +89,7 @@
   "homeInboxEmpty": "Nog niets bewaard",
   "homeInboxEmptySubtitle": "Kies er nu een paar van je telefoon, of deel vanuit elke app een screenshot naar Shoto.",
   "homeEmptyImportCta": "Kies van mijn telefoon",
+  "homeNeedsYou": "Wacht op jou",
   "homeInboxClear": "Alles opgeborgen",
   "homeInboxClearSubtitle": "Niets wacht om gesorteerd te worden",
   "homeInboxCountSubtitle": "Screenshots die je nog niet hebt opgeborgen",
@@ -211,7 +238,28 @@
     }
   },
   "foldersDeleteMessage": "De map verdwijnt, maar de screenshots erin blijven in je bibliotheek.",
-  "foldersRenameTitle": "Map hernoemen",
+  "foldersEditTitle": "Map bewerken",
+  "foldersSearchHint": "Mappen zoeken",
+  "foldersSortLabel": "Mappen sorteren",
+  "foldersSortRecent": "Nieuwste eerst",
+  "foldersSortName": "Naam (A–Z)",
+  "foldersSortFullest": "Meeste screenshots",
+  "foldersNoMatchTitle": "Geen map komt overeen",
+  "foldersNoMatchMessage": "Hier heet niets '{query}'. Probeer een deel van de naam.",
+  "@foldersNoMatchMessage": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "folderDefaultTrips": "Reisplannen",
+  "folderDefaultRecipes": "Recepten",
+  "folderDefaultMedications": "Medicijnen",
+  "folderDefaultAiNotes": "AI-notities",
+  "folderDefaultMoney": "Geld",
+  "folderDefaultWorkouts": "Workouts",
+  "folderDefaultMusic": "Muziek",
   "foldersMoveTitle": "Naar map verplaatsen",
   "foldersMoveRemove": "Uit de map halen",
   "foldersMoveNone": "Nog geen mappen. Maak er een via het tabblad Mappen.",
@@ -371,6 +419,7 @@
   "safeShareShareUnchanged": "Ongewijzigd delen",
   "safeShareShareAnyway": "Toch delen",
   "safeShareShareProtected": "Beschermde kopie delen",
+  "safeShareKeepCopy": "Kopie in Shoto bewaren",
   "safeShareFailed": "Kon de beschermde kopie niet maken.",
   "safeShareFoundTitle": "{count, plural, =1{1 privégegeven gevonden} other{{count} privégegevens gevonden}}",
   "@safeShareFoundTitle": {
@@ -440,13 +489,23 @@
   "paywallContinue": "Doorgaan",
   "paywallUnavailable": "Nog niet beschikbaar",
   "paywallRestore": "Aankopen herstellen",
+  "settingsRestoreHint": "Al betaald? Haal je abonnement terug.",
   "paywallLegal": "Verlengt automatisch tot je opzegt. Opzeggen kan altijd via je account-instellingen in de App Store of Google Play. Door verder te gaan ga je akkoord met onze Servicevoorwaarden en het Privacybeleid.",
   "subPremiumBadge": "PRO",
   "subPremiumTitle": "Shoto Pro",
   "subPremiumBody": "Elke functie voor je ontgrendeld.",
+  "subPremiumRenews": "Wordt verlengd op {date}",
+  "quotaTitle": "Bibliotheek",
+  "quotaUsed": "{used} van {limit}",
+  "quotaLeft": "{count, plural, =0{Geen ruimte meer — Pro haalt de limiet weg} =1{Nog 1 screenshot in de gratis versie} other{Nog {count} screenshots in de gratis versie}}",
+  "quotaUnlimited": "Onbeperkt",
+  "quotaUnlimitedNote": "Geen plafond op wat je bewaart.",
   "subDevUnlock": "Testertoegang",
   "subDevUnlockBody": "Ontgrendeld op dit toestel — geen echt abonnement",
   "subUnlockEverything": "Alles ontgrendelen",
+  "trialUsed": "Deze is van ons — je gratis probeerbeurt",
+  "trialFree": "Gratis proberen",
+  "proOnly": "Pro",
   "proWelcomeTitle": "Je zit op Pro",
   "proWelcomeBody": "Elke functie is ontgrendeld. Er valt verder niets in te stellen.",
   "proWelcomeAction": "Aan de slag",
@@ -458,8 +517,9 @@
   "featDuplicatesBody": "Spot bijna identieke opnamen die je dubbel bewaarde en ruimt ze op — altijd eerst met een controle.",
   "featStitch": "Lange screenshots samenvoegen",
   "featStitchBody": "Zet een scrollopname weer in elkaar tot één hoge afbeelding, met de overlap automatisch gevonden en weggehaald.",
-  "featUnlimited": "Geen plafond voor je bibliotheek",
+  "featUnlimited": "Onbeperkt screenshots",
   "featUnlimitedBody": "De gratis versie ordent {count} screenshots. Pro haalt het getal weg.",
+  "featUnlimitedBodyPro": "Je bibliotheek heeft geen plafond — bewaar zo veel je wilt.",
   "featSafeShareHow": "Vinden wat privé is in een screenshot is gratis en onbeperkt. Je betaalt om die vondsten om te zetten in een schone kopie: elk gegeven dat je aangevinkt laat, wordt afgedekt in de geëxporteerde afbeelding, en die is plat — geen laag om ongedaan te maken.",
   "featSafeSharePoint1": "Kaartnummers worden met Luhn gecontroleerd en IBANs met modulo 97: die twee zijn bewezen in plaats van geraden, precies bij het gegeven dat het zwaarst weegt.",
   "featSafeSharePoint2": "Pikt ook namen, adressen, bestelnummers, verificatiecodes, telefoonnummers en e-mailadressen op.",
@@ -638,6 +698,8 @@
   "shareChoiceTitle": "Wat moet Shoto ermee doen?",
   "shareChoiceProtect": "Privégegevens afdekken",
   "shareChoiceProtectHint": "Verberg wat privé is en stuur het door. Het wordt hier niet bewaard.",
+  "quickSaveCoverAction": "Afdekken",
+  "quickSaveCoverWhy": "Privégegevens erin?",
   "shareChoiceSave": "Opslaan in Shoto",
   "shareChoiceSaveHint": "Toevoegen aan je bibliotheek en opbergen.",
   "shareSavedPrompt": "{count, plural, =1{Screenshot bewaard. In een map zetten?} other{Screenshots bewaard. In een map zetten?}}",

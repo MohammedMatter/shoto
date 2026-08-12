@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/localization/l10n.dart';
-import 'package:shoto/core/routes/app_dialog.dart';
 import 'package:shoto/core/routes/app_sheet.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
@@ -10,9 +9,10 @@ import 'package:shoto/core/widgets/sheet_surface.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_event.dart';
-import 'package:shoto/features/folders/presentation/widgets/folder_name_limit.dart';
+import 'package:shoto/features/folders/presentation/widgets/folder_editor_sheet.dart';
+import 'package:shoto/features/folders/presentation/widgets/folder_mark.dart';
 
-/// Rename / delete actions for a folder.
+/// Edit / delete actions for a folder.
 ///
 /// Shared between the folders grid and a folder's own detail page so both
 /// entry points behave identically. [bloc] is passed explicitly rather than
@@ -49,11 +49,11 @@ Future<void> showFolderActionsSheet(
               padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 4.h),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.folder_rounded,
-                    color: Color(folder.color),
-                    size: 20.sp,
-                  ),
+                  // The folder as it looks everywhere else, not a generic
+                  // glyph. This header exists to confirm *which* folder is
+                  // about to be edited or deleted, and the grid it was opened
+                  // from is telling them apart by colour and picture.
+                  FolderMark(folder: folder, size: 30.w),
                   SizedBox(width: 10.w),
                   Expanded(
                     child: Text(
@@ -71,16 +71,33 @@ Future<void> showFolderActionsSheet(
                 color: context.colors.textPrimary,
               ),
               title: Text(
-                context.l10n.commonRename,
+                context.l10n.foldersEditTitle,
                 style: context.text.bodyLarge,
               ),
               onTap: () {
                 Navigator.of(sheetContext).pop();
-                _promptRename(
+                // The sheet that made the folder, opened on the folder. It was
+                // a dialog holding one text field, which is why the glyph and
+                // the colour could be chosen once and never corrected.
+                showFolderEditorSheet(
                   context,
-                  folder: folder,
-                  bloc: bloc,
-                  onRenamed: onRenamed,
+                  existing: folder,
+                  onSave: (name, color, iconKey, _) {
+                    bloc.add(
+                      UpdateFolderEvent(
+                        folder.id,
+                        name: name,
+                        color: color,
+                        iconKey: iconKey,
+                      ),
+                    );
+                    // Fired on every save rather than only when the text
+                    // changed. The detail page uses it to retitle itself, and
+                    // handing it the name unconditionally is both simpler and
+                    // correct — re-titling to the same string costs a rebuild
+                    // of one `Text`.
+                    onRenamed?.call(name);
+                  },
                 );
               },
             ),
@@ -119,72 +136,6 @@ Future<void> showFolderActionsSheet(
           ],
         ),
       ),
-    ),
-  );
-}
-
-void _promptRename(
-  BuildContext context, {
-  required FolderEntity folder,
-  required FoldersBloc bloc,
-  ValueChanged<String>? onRenamed,
-}) {
-  final TextEditingController controller = TextEditingController(
-    text: folder.name,
-  );
-
-  showAppDialog<void>(
-    context: context,
-    builder: (dialogContext) => AlertDialog(
-      backgroundColor: context.colors.surface,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: Text(
-        context.l10n.foldersRenameTitle,
-        style: context.text.titleLarge,
-      ),
-      content: TextField(
-        controller: controller,
-        autofocus: true,
-        maxLength: kMaxFolderNameLength,
-        style: context.text.bodyLarge,
-        decoration: InputDecoration(
-          counterText: '',
-          filled: true,
-          fillColor: context.colors.surfaceVariant,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14.r),
-            borderSide: BorderSide.none,
-          ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 16.w,
-            vertical: 14.h,
-          ),
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(dialogContext).pop(),
-          child: Text(
-            context.l10n.commonCancel,
-            style: context.text.button.copyWith(
-              color: context.colors.textSecondary,
-            ),
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            final String name = controller.text.trim();
-            Navigator.of(dialogContext).pop();
-            if (name.isEmpty || name == folder.name) return;
-            bloc.add(RenameFolderEvent(folder.id, name));
-            onRenamed?.call(name);
-          },
-          child: Text(
-            context.l10n.commonSave,
-            style: context.text.button.copyWith(color: context.colors.primary),
-          ),
-        ),
-      ],
     ),
   );
 }

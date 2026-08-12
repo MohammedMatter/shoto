@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,8 +15,11 @@ import 'package:shoto/core/services/crash_reporting.dart';
 import 'package:shoto/core/services/dev_access.dart';
 import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/services/local_identity.dart';
+import 'package:shoto/core/services/feature_trials.dart';
+import 'package:shoto/core/services/library_quota.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/core/theme/app_colors.dart';
+import 'package:shoto/core/theme/app_scroll_behavior.dart';
 import 'package:shoto/core/theme/app_theme.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
@@ -44,8 +49,15 @@ void main() async {
     // The share sheet was taking over two seconds to appear from a cold
     // start, and a noticeable part of that was this function loading things
     // the sheet never looks at: grid density (it has no grid), developer
-    // access and the subscription repository (quick save is free, so nothing
-    // in the sheet is gated).
+    // access and the subscription repository.
+    //
+    // **The sheet is no longer entirely free**, since it now offers covering
+    // and Safe Share is paid — but the subscription stack still does not
+    // belong here. Most shares are filing, filing is free, and charging every
+    // one of them a store round trip to serve the minority that go the other
+    // way is the wrong trade in front of the one screen where latency is least
+    // affordable. `ensurePremiumServicesReady` brings it up on the tap
+    // instead; see premium_bootstrap.dart for the whole argument.
     //
     // Waiting for any of this was pure delay in front of the one screen
     // where delay is least acceptable — the user is mid-gesture in another
@@ -129,8 +141,44 @@ void main() async {
   // would mean a subscriber's first frame has no badge on it.
   await sl<ProStatus>().load();
 
+  // Awaited for the same reason, one step smaller: the tool rows on Home paint
+  // a "1 free try" tag straight from this, and a tag that fades in after the
+  // first frame reads as the app changing its offer while you look at it. Two
+  // integers out of the SharedPreferences instance every load above has
+  // already warmed.
+  await sl<FeatureTrials>().load();
+
+  // After ProStatus, because the ceiling it reports depends on the answer that
+  // call just resolved. Not awaited: this is a local `COUNT(*)` feeding one
+  // meter three screens deep in Settings, and nothing on the first frame is
+  // waiting on it — unlike a Pro badge, a quota bar that arrives a moment late
+  // is a bar nobody was looking at yet.
+  unawaited(sl<LibraryQuota>().load());
+
   runApp(const MyApp());
 }
+
+/// The theme actually applied, which is not always the one that was chosen.
+///
+/// **Dark is a paid preference; darkness is not.** [ThemeMode.system] stays
+/// free forever, so a free user whose phone is in dark mode still gets a dark
+/// Shoto — anything else would have the app fighting the device every evening
+/// and reading as broken rather than as locked. What Pro buys is pinning the
+/// app dark *regardless* of the phone.
+///
+/// Resolved here rather than written back to storage, and that distinction
+/// matters in both directions: somebody who chose dark before it was paid for
+/// keeps their choice on record and gets it back the instant they subscribe,
+/// and nobody's saved setting is silently rewritten by an app update.
+///
+/// The share sheet deliberately does not do this. It never loads
+/// [ProStatus] — see the fast path in `main` — so it would read every user as
+/// free and drop a subscriber's dark app back to their phone's setting for the
+/// two seconds the sheet is up.
+ThemeMode _effectiveThemeMode(ThemeMode chosen) =>
+    chosen == ThemeMode.dark && !sl<ProStatus>().isPro
+    ? ThemeMode.system
+    : chosen;
 
 /// The whole app when launched from another app's share sheet.
 class QuickSaveApp extends StatelessWidget {
@@ -152,6 +200,7 @@ class QuickSaveApp extends StatelessWidget {
 
         return MaterialApp(
           debugShowCheckedModeBanner: false,
+          scrollBehavior: const AppScrollBehavior(),
           locale: sl<LocaleController>().locale,
           supportedLocales: AppLanguage.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -183,9 +232,14 @@ class MyApp extends StatelessWidget {
           listenable: Listenable.merge([
             sl<ThemeController>(),
             sl<LocaleController>(),
+            // Subscribing or lapsing changes which theme applies without the
+            // stored preference moving — see [_effectiveThemeMode].
+            sl<ProStatus>(),
           ]),
           builder: (context, _) {
-            final ThemeMode themeMode = sl<ThemeController>().themeMode;
+            final ThemeMode themeMode = _effectiveThemeMode(
+              sl<ThemeController>().themeMode,
+            );
             final LocaleController locales = sl<LocaleController>();
 
             final AppLanguage language = locales.effectiveLanguage;
@@ -230,6 +284,9 @@ class MyApp extends StatelessWidget {
               child: MaterialApp.router(
                 routerConfig: AppRouter.router,
                 debugShowCheckedModeBanner: false,
+                // One answer to "what happens at the end of a list", for every
+                // list in the app. See [AppScrollBehavior].
+                scrollBehavior: const AppScrollBehavior(),
                 // Null means "follow the phone", which Flutter resolves against
                 // supportedLocales on its own.
                 locale: locales.locale,

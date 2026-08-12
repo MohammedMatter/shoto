@@ -1,14 +1,18 @@
+import 'dart:async';
+
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
+import 'package:shoto/core/services/library_quota.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/widgets/app_bottom_nav_bar.dart';
 import 'package:shoto/core/widgets/lazy_indexed_stack.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_event.dart';
 import 'package:shoto/features/folders/presentation/pages/folders_page.dart';
+import 'package:shoto/features/folders/presentation/widgets/default_folders.dart';
 import 'package:shoto/features/home/presentation/pages/home_page.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
@@ -72,14 +76,56 @@ class _MainShellPageState extends State<MainShellPage>
     ),
   ];
 
+  /// Whether the starter folders have already been offered this launch.
+  ///
+  /// `didChangeDependencies` runs again whenever an inherited widget above
+  /// this one changes — the theme, the locale, the media query — and without
+  /// this the seed event would be posted on every one of them.
+  bool _defaultFoldersOffered = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }
 
+  /// Offers the starter folders here rather than on the Folders page itself.
+  ///
+  /// The page is built lazily, on the first tap of its tab (see
+  /// [LazyIndexedStack]) — so seeding there would mean a brand-new install has
+  /// no folders at all until somebody visits the third tab. Everything that
+  /// files a screenshot asks for the folder list first: the share sheet's
+  /// picker, quick save, "move to folder". Each of those would open on
+  /// "no folders yet, make one in the Folders tab" for a user who has seven
+  /// waiting behind a tab they have not tapped.
+  ///
+  /// Not in `initState`, because the names are translated and `context.l10n`
+  /// needs the localizations delegate resolved above it — which is exactly what
+  /// this callback is for. Writing nothing is the normal case: after the first
+  /// launch the repository answers from a flag without touching the folders
+  /// table. See `SeedDefaultFoldersUseCase`.
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_defaultFoldersOffered) return;
+    _defaultFoldersOffered = true;
+    _foldersBloc.add(SeedDefaultFoldersEvent(defaultFolderSeeds(context)));
+  }
+
   void _onTabSelected(int index) {
     if (index == 2) _foldersBloc.add(LoadFoldersEvent());
+    // **Library as well as Settings**, for the same reason Folders re-counts
+    // above: the tabs are kept alive by the IndexedStack, so whatever one
+    // painted the first time is what it goes on painting. A quota meter that
+    // still reads 41 after an afternoon of filing is worse than no meter — it
+    // is a number the user has no reason to distrust.
+    //
+    // Settings was the only one here for a while, and that was simply out of
+    // date: the meter moved to the top of the Library and nobody extended this
+    // line to the tab it had moved to. The visible symptom was a band reading
+    // 0 of 100 on a library with things filed in it, which reads as the app
+    // not having noticed any of the work you just did.
+    if (index == 1 || index == 3) unawaited(sl<LibraryQuota>().refresh());
     setState(() => _currentIndex = index);
   }
 
@@ -104,9 +150,6 @@ class _MainShellPageState extends State<MainShellPage>
     _onTabSelected(1);
   }
 
-  /// Home's folder count, which is now a way in rather than a fact.
-  void _openFolders() => _onTabSelected(2);
-
   /// Re-reads the library whenever the app comes back to the foreground.
   ///
   /// Filing a screenshot from the share sheet happens in a **separate
@@ -126,6 +169,10 @@ class _MainShellPageState extends State<MainShellPage>
     if (state != AppLifecycleState.resumed) return;
     _screenshotsBloc.add(RefreshScreenshotsEvent());
     _foldersBloc.add(LoadFoldersEvent());
+    // The share sheet files screenshots from a separate engine in another
+    // process, so coming back to the foreground is precisely when the managed
+    // count has moved without this process seeing it happen.
+    unawaited(sl<LibraryQuota>().refresh());
   }
 
   @override
@@ -156,7 +203,6 @@ class _MainShellPageState extends State<MainShellPage>
               HomePage(
                 onOpenLibrary: _openLibrary,
                 onOpenLibraryForIntent: _openLibraryForIntent,
-                onOpenFolders: _openFolders,
               ),
               const LibraryPage(),
               const FoldersPage(),

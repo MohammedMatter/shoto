@@ -250,7 +250,7 @@ class _Summary extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Icon(
-              Icons.photo_size_select_large_rounded,
+              Icons.view_agenda_outlined,
               color: context.colors.secondary,
               size: 18.sp,
             ),

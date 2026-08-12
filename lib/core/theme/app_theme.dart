@@ -50,19 +50,58 @@ abstract class AppTheme {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       splashFactory: NoSplash.splashFactory,
+      // Every slot Material can reach for, filled from the palette.
+      //
+      // An unfilled `ColorScheme` slot is not unused — it falls back to a
+      // value derived from `primary`, and a Flutter-supplied widget reaching
+      // for `secondaryContainer` or `outlineVariant` then paints itself in a
+      // colour nobody chose. That is how this app's chrome drifted before, and
+      // it is the same failure mode as the unfilled `textTheme` slots below.
       colorScheme: ColorScheme(
         brightness: brightness,
         primary: palette.primary,
         onPrimary: palette.onPrimary,
+        primaryContainer: palette.surfaceSelected,
+        onPrimaryContainer: palette.primary,
         secondary: palette.secondary,
-        onSecondary: palette.onPrimary,
+        onSecondary: palette.onSecondary,
+        secondaryContainer: palette.surfaceVariant,
+        onSecondaryContainer: palette.textPrimary,
+        tertiary: palette.secondary,
+        onTertiary: palette.onSecondary,
         surface: palette.surface,
         onSurface: palette.textPrimary,
+        onSurfaceVariant: palette.textSecondary,
         surfaceContainerHighest: palette.surfaceVariant,
+        surfaceContainerHigh: palette.surfaceVariant,
+        surfaceContainer: palette.surfaceVariant,
+        surfaceContainerLow: palette.surface,
+        surfaceContainerLowest: palette.background,
+        surfaceDim: palette.background,
+        surfaceBright: palette.surface,
         outline: palette.border,
+        outlineVariant: palette.border,
+        // `onError` was a hard-coded `Colors.white`, which was checked in
+        // light mode and never in dark: white on the dark-mode red measured
+        // **2.75:1**. Every semantic hue now shares the accent's luminance, so
+        // the palette's one foreground is correct on all of them — which is
+        // the whole reason `onError` exists as a token rather than a literal.
         error: palette.error,
-        onError: Colors.white,
+        onError: palette.onError,
+        errorContainer: palette.error.withValues(alpha: 0.12),
+        onErrorContainer: palette.error,
+        scrim: AppPalette.overlay,
+        shadow: AppPalette.overlay,
+        inverseSurface: palette.textPrimary,
+        onInverseSurface: palette.background,
+        inversePrimary: palette.primaryVariant,
       ),
+      // Material's own interaction colours, so a stock widget that this app
+      // has not themed by hand still presses and focuses like the rest of it.
+      focusColor: palette.focus.withValues(alpha: 0.12),
+      hoverColor: palette.pressedOverlay,
+      disabledColor: palette.textDisabled,
+      unselectedWidgetColor: palette.textSecondary,
       // Every slot is filled, including the ones the app never asks for by
       // name. An unfilled entry does not go unused — it falls back to
       // Material's own typography, which means Roboto at Material's sizes,
@@ -90,6 +129,44 @@ abstract class AppTheme {
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: palette.primary,
         linearTrackColor: Colors.transparent,
+      ),
+      // Inputs had **no focus state at all**. Every field in the app is a
+      // filled, borderless box (`borderSide: BorderSide.none`), repeated by
+      // hand in six files, and none of them said anything when focused —
+      // tapping a field moved the caret into it and changed nothing else.
+      //
+      // Fixed here rather than in the six files, because `applyDefaults` fills
+      // a decoration's null `focusedBorder`/`errorBorder` from the theme
+      // *without* touching the borders a call site set explicitly. So the
+      // resting appearance of every existing field is unchanged, and all of
+      // them gain a focus ring and an error ring. The one field that sets its
+      // own `focusedBorder` (the dev unlock dialog) keeps it.
+      //
+      // 1.5px rather than 2: the ring has to be unmissable against a fill that
+      // is only a few values off the surface, and thicker than that on a 14px
+      // radius starts reading as a validation error on a field that is merely
+      // being typed in.
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: palette.surfaceVariant,
+        hintStyle: text.bodyLarge.copyWith(color: palette.textDisabled),
+        errorStyle: text.caption.copyWith(color: palette.error),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(14)),
+          borderSide: BorderSide(color: palette.focus, width: 1.5),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(14)),
+          borderSide: BorderSide(color: palette.error, width: 1.5),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: const BorderRadius.all(Radius.circular(14)),
+          borderSide: BorderSide(color: palette.error, width: 1.5),
+        ),
+        disabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(14)),
+          borderSide: BorderSide.none,
+        ),
       ),
       dividerTheme: DividerThemeData(
         color: palette.border,

@@ -70,11 +70,11 @@ class _ShareIntentListenerState extends State<ShareIntentListener> {
   /// a folder for it. Asking first is what makes "nothing joins your library
   /// until you say so" true on this path as well as the others.
   Future<void> _offer(List<SharedMediaFile> images) async {
-    // **Covering is offered for one picture only.** Safe Share reviews a
-    // single capture — [LibraryIntent.protect] says so — and an offer that
-    // silently applied to the first of four would be worse than no offer:
-    // the user would send the other three believing they had been checked.
-    if (images.length == 1) {
+    // Covering is offered for one picture only, and the rule lives in
+    // [coveringOffered] rather than here — the quick-save sheet asks the same
+    // question on the path Android actually takes, and the two answering
+    // differently is how the wrong three pictures get sent.
+    if (coveringOffered(images.length)) {
       final SharedImageChoice? choice = await showSharedImageChoiceSheet(
         context,
       );

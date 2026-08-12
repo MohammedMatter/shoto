@@ -45,10 +45,22 @@ abstract class SubscriptionConstants {
   // moment the app was supposed to be helping.
   //
   // One number can be stated on the paywall in one line, understood without
-  // reading it twice, and felt: a hundred screenshots is enough that hitting
-  // the ceiling means Shoto has genuinely become the place you keep things.
-  // Folders and intents are now unlimited, because they are the *organizing*
-  // — charging for the containers while giving away the contents had it
-  // backwards.
-  static const int freeScreenshotLimit = 100;
+  // reading it twice, and felt. Folders and intents are unlimited, because
+  // they are the *organizing* — charging for the containers while giving away
+  // the contents had it backwards.
+  //
+  // **Fifteen, down from a hundred.** A hundred was set so that hitting the
+  // ceiling would mean Shoto had genuinely become the place you keep things —
+  // which is a fine sentiment and a poor business: on a normal week of filing
+  // it is a limit most people never reach, so the free tier was the whole
+  // product and the paywall was a rumour. Fifteen is reached in the first
+  // week or two by anybody the app is actually working for, and reached by
+  // *organizing* — which is the moment the value is most obvious and the
+  // upgrade makes the most sense.
+  //
+  // Changing this number changes what existing free users see immediately,
+  // and deliberately in the safe direction: the gate refuses only *new*
+  // items, so somebody already holding forty keeps all forty and is simply
+  // over the line. See `LibraryQuota.fraction`, which clamps for exactly this.
+  static const int freeScreenshotLimit = 15;
 }

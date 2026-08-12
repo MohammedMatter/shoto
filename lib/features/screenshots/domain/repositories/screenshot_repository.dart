@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:photo_manager/photo_manager.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
+import 'package:shoto/features/screenshots/domain/entities/library_summary.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 
 /// Everything here is scoped to the signed-in account.
@@ -19,6 +20,13 @@ abstract class ScreenshotRepository {
   /// to call from an app-lifecycle listener.
   Future<PermissionState> checkPermission();
   Future<List<ScreenshotEntity>> getAllScreenshots();
+
+  /// The counts behind Home's inbox, read from the local tables alone.
+  ///
+  /// The cheap half of [getAllScreenshots], split out so the first screen has
+  /// something true to draw while the gallery enumeration it cannot avoid is
+  /// still running. See [LibrarySummary] for why that split is sound.
+  Future<LibrarySummary> getLibrarySummary();
   Future<List<ScreenshotEntity>> getScreenshotsByFolder(int folderId);
   Stream<void> get onLibraryChanged;
   Future<void> setFavorite(String assetId, bool isFavorite);

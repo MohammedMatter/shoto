@@ -132,9 +132,23 @@ class CoverExplainer extends StatelessWidget {
                 color: context.colors.textPrimary,
               ),
               SizedBox(width: 7.w),
-              Text(
-                context.l10n.safeShareHowTitle,
-                style: context.text.titleSmall,
+              // **Flexible, because this heading is translated and the row it
+              // sits in is full width with nothing to give.**
+              //
+              // A bare `Text` beside an icon in a `MainAxisSize.max` row is
+              // measured at its intrinsic width and simply runs off the end:
+              // "Blocked out, for good" overflowed by 16px on a 360pt phone,
+              // painting crash stripes across the one card that is trying to
+              // explain what the paid feature does. Spanish sets the same
+              // heading to "Tapado de forma definitiva", which is five
+              // characters longer again.
+              Flexible(
+                child: Text(
+                  context.l10n.safeShareHowTitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.text.titleSmall,
+                ),
               ),
             ],
           ),

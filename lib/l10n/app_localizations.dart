@@ -396,6 +396,12 @@ abstract class AppLocalizations {
   /// **'Choose from my phone'**
   String get homeEmptyImportCta;
 
+  /// No description provided for @homeNeedsYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs you'**
+  String get homeNeedsYou;
+
   /// No description provided for @homeInboxClear.
   ///
   /// In en, this message translates to:
@@ -972,11 +978,95 @@ abstract class AppLocalizations {
   /// **'The folder is removed but the screenshots inside stay in your library.'**
   String get foldersDeleteMessage;
 
-  /// No description provided for @foldersRenameTitle.
+  /// No description provided for @foldersEditTitle.
   ///
   /// In en, this message translates to:
-  /// **'Rename folder'**
-  String get foldersRenameTitle;
+  /// **'Edit folder'**
+  String get foldersEditTitle;
+
+  /// No description provided for @foldersSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search folders'**
+  String get foldersSearchHint;
+
+  /// No description provided for @foldersSortLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort folders'**
+  String get foldersSortLabel;
+
+  /// No description provided for @foldersSortRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first'**
+  String get foldersSortRecent;
+
+  /// No description provided for @foldersSortName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (A–Z)'**
+  String get foldersSortName;
+
+  /// No description provided for @foldersSortFullest.
+  ///
+  /// In en, this message translates to:
+  /// **'Most screenshots'**
+  String get foldersSortFullest;
+
+  /// No description provided for @foldersNoMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No folder matches'**
+  String get foldersNoMatchTitle;
+
+  /// No description provided for @foldersNoMatchMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here is called \"{query}\". Try part of the name.'**
+  String foldersNoMatchMessage(String query);
+
+  /// No description provided for @folderDefaultTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip plans'**
+  String get folderDefaultTrips;
+
+  /// No description provided for @folderDefaultRecipes.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipes'**
+  String get folderDefaultRecipes;
+
+  /// No description provided for @folderDefaultMedications.
+  ///
+  /// In en, this message translates to:
+  /// **'Medications'**
+  String get folderDefaultMedications;
+
+  /// No description provided for @folderDefaultAiNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'AI notes'**
+  String get folderDefaultAiNotes;
+
+  /// No description provided for @folderDefaultMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get folderDefaultMoney;
+
+  /// No description provided for @folderDefaultWorkouts.
+  ///
+  /// In en, this message translates to:
+  /// **'Workouts'**
+  String get folderDefaultWorkouts;
+
+  /// No description provided for @folderDefaultMusic.
+  ///
+  /// In en, this message translates to:
+  /// **'Music'**
+  String get folderDefaultMusic;
 
   /// No description provided for @foldersMoveTitle.
   ///
@@ -1332,6 +1422,12 @@ abstract class AppLocalizations {
   /// **'Share protected copy'**
   String get safeShareShareProtected;
 
+  /// No description provided for @safeShareKeepCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the copy in Shoto'**
+  String get safeShareKeepCopy;
+
   /// No description provided for @safeShareFailed.
   ///
   /// In en, this message translates to:
@@ -1578,6 +1674,12 @@ abstract class AppLocalizations {
   /// **'Restore purchases'**
   String get paywallRestore;
 
+  /// No description provided for @settingsRestoreHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Already paid? Bring your subscription back.'**
+  String get settingsRestoreHint;
+
   /// No description provided for @paywallLegal.
   ///
   /// In en, this message translates to:
@@ -1602,6 +1704,42 @@ abstract class AppLocalizations {
   /// **'Every feature unlocked for you.'**
   String get subPremiumBody;
 
+  /// No description provided for @subPremiumRenews.
+  ///
+  /// In en, this message translates to:
+  /// **'Renews {date}'**
+  String subPremiumRenews(String date);
+
+  /// No description provided for @quotaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Library'**
+  String get quotaTitle;
+
+  /// No description provided for @quotaUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'{used} of {limit}'**
+  String quotaUsed(int used, int limit);
+
+  /// No description provided for @quotaLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No room left — Pro removes the limit} =1{1 screenshot left on the free tier} other{{count} screenshots left on the free tier}}'**
+  String quotaLeft(int count);
+
+  /// No description provided for @quotaUnlimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited'**
+  String get quotaUnlimited;
+
+  /// No description provided for @quotaUnlimitedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'No ceiling on what you keep.'**
+  String get quotaUnlimitedNote;
+
   /// No description provided for @subDevUnlock.
   ///
   /// In en, this message translates to:
@@ -1619,6 +1757,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unlock everything'**
   String get subUnlockEverything;
+
+  /// No description provided for @trialUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'That one was on us — your free try'**
+  String get trialUsed;
+
+  /// No description provided for @trialFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free try'**
+  String get trialFree;
+
+  /// No description provided for @proOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro'**
+  String get proOnly;
 
   /// No description provided for @proWelcomeTitle.
   ///
@@ -1689,7 +1845,7 @@ abstract class AppLocalizations {
   /// No description provided for @featUnlimited.
   ///
   /// In en, this message translates to:
-  /// **'No ceiling on your library'**
+  /// **'Unlimited screenshots'**
   String get featUnlimited;
 
   /// No description provided for @featUnlimitedBody.
@@ -1697,6 +1853,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The free tier organizes {count} screenshots. Pro takes the number away.'**
   String featUnlimitedBody(Object count);
+
+  /// No description provided for @featUnlimitedBodyPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Your library has no ceiling — keep as much as you like.'**
+  String get featUnlimitedBodyPro;
 
   /// No description provided for @featSafeShareHow.
   ///
@@ -2225,6 +2387,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide what is private and send it on. It is not saved here.'**
   String get shareChoiceProtectHint;
+
+  /// No description provided for @quickSaveCoverAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cover'**
+  String get quickSaveCoverAction;
+
+  /// No description provided for @quickSaveCoverWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'Has private details?'**
+  String get quickSaveCoverWhy;
 
   /// No description provided for @shareChoiceSave.
   ///

@@ -71,14 +71,25 @@ class SheetSurface extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
+              // Derived from the palette rather than written out, which is how
+              // this pair had already drifted once: they were literals of a
+              // *previous* neutral ramp, so a sheet stayed the old grey while
+              // every card around it moved to the new one. A glass fill is
+              // still a surface — it belongs to the surface system even though
+              // it is translucent.
+              //
+              // The top stop is a step *toward the light* in each mode and the
+              // bottom stop a step toward the canvas, which is the same
+              // relationship in both: `surfaceVariant → surface` on dark,
+              // `surface → background` on light.
               colors: context.colors.isDark
                   ? [
-                      const Color(0xFF303030).withValues(alpha: 0.78),
-                      const Color(0xFF212121).withValues(alpha: 0.86),
+                      context.colors.surfaceVariant.withValues(alpha: 0.78),
+                      context.colors.surface.withValues(alpha: 0.86),
                     ]
                   : [
-                      const Color(0xFFFFFFFF).withValues(alpha: 0.82),
-                      const Color(0xFFF4F4F4).withValues(alpha: 0.9),
+                      context.colors.surface.withValues(alpha: 0.82),
+                      context.colors.background.withValues(alpha: 0.9),
                     ],
               // Past a third of the way down the panel is one flat colour.
               // Running the ramp to the bottom would make a tall sheet — the

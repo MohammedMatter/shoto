@@ -56,17 +56,22 @@ void main() {
                     title: 'Appearance',
                     children: [
                       SettingsControlRow(
-                        icon: Icons.contrast_rounded,
+                        icon: Icons.contrast_outlined,
                         label: 'Theme',
                         control: ThemeModeSelector(
-                          value: ThemeMode.dark,
+                          compact: true,
+                          value: ThemeMode.system,
+                          // Dark is a paid option, so the picture worth
+                          // keeping is the one with the lock badge on it.
+                          lockDark: true,
                           onChanged: (_) {},
                         ),
                       ),
                       SettingsControlRow(
-                        icon: Icons.grid_view_rounded,
+                        icon: Icons.grid_view_outlined,
                         label: 'Grid density',
                         control: GridDensitySelector(
+                          compact: true,
                           value: 3,
                           onChanged: (_) {},
                         ),
@@ -77,7 +82,7 @@ void main() {
                     title: 'Behaviour',
                     children: [
                       SettingsSwitchTile(
-                        icon: Icons.vibration_rounded,
+                        icon: Icons.vibration_outlined,
                         label: 'Haptic feedback',
                         description: 'A small tap when you press things',
                         value: true,
@@ -96,14 +101,14 @@ void main() {
                     title: 'Storage',
                     children: [
                       SettingsNavTile(
-                        icon: Icons.content_copy_rounded,
+                        icon: Icons.content_copy_outlined,
                         label: 'Find duplicates',
                         description: 'Spot screenshots you took twice',
                         showProBadge: true,
                         onTap: () {},
                       ),
                       SettingsNavTile(
-                        icon: Icons.cleaning_services_rounded,
+                        icon: Icons.cleaning_services_outlined,
                         label: 'Clear image cache',
                         description: '12.4 MB of thumbnails',
                         onTap: () {},

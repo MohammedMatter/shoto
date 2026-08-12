@@ -37,20 +37,61 @@ enum SharedImageChoice {
 Future<SharedImageChoice?> showSharedImageChoiceSheet(BuildContext context) {
   return showAppSheet<SharedImageChoice>(
     context: context,
-    builder: (sheetContext) => SheetSurface(child: sharedImageChoiceContent()),
+    builder: (sheetContext) => SheetSurface(
+      child: sharedImageChoiceContent(
+        onChoice: (SharedImageChoice choice) =>
+            Navigator.of(sheetContext).pop(choice),
+      ),
+    ),
   );
 }
 
+/// Whether a share of [imageCount] pictures gets offered covering at all.
+///
+/// **One picture only, and that is not a limitation to be lifted later.** Safe
+/// Share reviews a single capture — it marks findings on *that* image and the
+/// user confirms *those* regions. An offer that appeared over four pictures
+/// and then quietly acted on the first would be worse than no offer at all:
+/// the other three get sent by somebody who believes all four were checked.
+///
+/// **[fromShotoItself] is the other half, and it closes a loop.** Covering
+/// ends by handing the picture to the system share sheet, where Shoto is one
+/// of the choices — so somebody who covers an account number and then picks
+/// Shoto, meaning "and keep this clean copy", was offered covering all over
+/// again on the file the previous screen had just produced. There is nothing
+/// left to protect and the app looks like it has forgotten what it was doing.
+/// That share is filing, and it goes straight to the folders.
+///
+/// A predicate rather than an `if` inside each caller, because there are two
+/// of them — the quick-save sheet Android actually reaches, and the in-app
+/// listener — and the rule going different ways on the two paths is exactly
+/// how the wrong three pictures get sent.
+bool coveringOffered(int imageCount, {bool fromShotoItself = false}) =>
+    imageCount == 1 && !fromShotoItself;
+
 /// The sheet's body without the sheet.
 ///
-/// Exposed so the offer can be tested at all: [SheetSurface] animates
-/// continuously, so `pumpAndSettle` never returns on it and awaiting the
-/// route's pop future deadlocks — the trap the golden tests already document
-/// for the scanning state. The thing worth asserting is which answers are
-/// offered and in what order, and none of that lives in the surface.
-Widget sharedImageChoiceContent() => _Content();
+/// Exposed for two reasons. The offer can be tested at all — [SheetSurface]
+/// animates continuously, so `pumpAndSettle` never returns on it and awaiting
+/// the route's pop future deadlocks, the trap the golden tests already
+/// document for the scanning state. And the quick-save sheet embeds it
+/// directly: on Android the share intent lands in its own activity with its
+/// own translucent window, so the offer there is a *stage of that sheet*
+/// rather than a second sheet stacked on the first.
+///
+/// [onChoice] rather than a hard-wired `Navigator.pop`, because those two
+/// callers dispose of the answer differently and the one that embeds this has
+/// no route to pop. Reporting the answer and deciding what it means are
+/// separate jobs, and this widget only ever had the first one.
+Widget sharedImageChoiceContent({
+  required ValueChanged<SharedImageChoice> onChoice,
+}) => _Content(onChoice: onChoice);
 
 class _Content extends StatelessWidget {
+  final ValueChanged<SharedImageChoice> onChoice;
+
+  const _Content({required this.onChoice});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -70,12 +111,11 @@ class _Content extends StatelessWidget {
           // everywhere else. Asserted as a position in
           // `shared_image_choice_test.dart`, not left to this comment.
           _Option(
-            icon: Icons.shield_moon_rounded,
+            icon: Icons.shield_outlined,
             tint: context.colors.secondary,
             title: context.l10n.shareChoiceProtect,
             subtitle: context.l10n.shareChoiceProtectHint,
-            onTap: () =>
-                Navigator.of(context).pop(SharedImageChoice.protect),
+            onTap: () => onChoice(SharedImageChoice.protect),
           ),
           SizedBox(height: 10.h),
           _Option(
@@ -83,7 +123,7 @@ class _Content extends StatelessWidget {
             tint: context.colors.marker,
             title: context.l10n.shareChoiceSave,
             subtitle: context.l10n.shareChoiceSaveHint,
-            onTap: () => Navigator.of(context).pop(SharedImageChoice.save),
+            onTap: () => onChoice(SharedImageChoice.save),
           ),
         ],
       ),

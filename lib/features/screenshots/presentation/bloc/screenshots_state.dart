@@ -2,6 +2,7 @@ import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart
 import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
+import 'package:shoto/features/screenshots/domain/entities/library_summary.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_sort.dart';
@@ -26,7 +27,24 @@ sealed class ScreenshotsState {}
 
 class ScreenshotsInitialState extends ScreenshotsState {}
 
-class ScreenshotsLoadingState extends ScreenshotsState {}
+/// The gallery is being read. **Not necessarily with nothing to show.**
+///
+/// [summary] is the half of the answer that came back from the local tables
+/// while the album enumeration was still running — the unsorted count and the
+/// waiting verbs, which are facts about the database and not about the gallery.
+/// Home draws its real inbox from it, so a cold start opens on the user's own
+/// numbers rather than on a blank frame that rearranges itself a second later.
+///
+/// Null for the reads where it would be wrong or useless: a folder's contents,
+/// which this summary does not describe, and any refresh of a library that is
+/// already on screen, where the state being replaced is better than a summary
+/// of it. Home falls back to neutral placeholders when it is null, and never to
+/// nothing.
+class ScreenshotsLoadingState extends ScreenshotsState {
+  final LibrarySummary? summary;
+
+  ScreenshotsLoadingState({this.summary});
+}
 
 /// Photo access has not been asked for yet — not refused, not granted.
 ///
@@ -252,18 +270,10 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     final List<MapEntry<IntentRef, int>> ordered = counts.entries.toList()
       ..sort(
         (MapEntry<IntentRef, int> a, MapEntry<IntentRef, int> b) =>
-            _pickerOrder(a.key).compareTo(_pickerOrder(b.key)),
+            IntentRef.pickerOrder(a.key).compareTo(IntentRef.pickerOrder(b.key)),
       );
     return Map<IntentRef, int>.fromEntries(ordered);
   }
-
-  /// Built-ins in the order they are declared, then the user's own after all
-  /// of them.
-  static int _pickerOrder(IntentRef ref) => switch (ref) {
-    BuiltInIntent(:final ScreenshotIntent intent) => intent.index,
-    CustomIntent(:final int sortOrder) =>
-      ScreenshotIntent.values.length + sortOrder,
-  };
 
   /// The app's one shrinking number.
   int get waitingCount =>

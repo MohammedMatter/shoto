@@ -18,7 +18,15 @@ class AppPreferences extends ChangeNotifier {
   static const String _triageSnoozedKey = 'pref_triage_snoozed';
   static const String _photoAccessAskedKey = 'pref_photo_access_asked';
 
-  bool _haptics = true;
+  /// **Off until asked for.** Haptics were on by default, which meant every
+  /// install began by adding a physical sensation to every press without the
+  /// user having chosen one. A buzz is the one setting in this app that
+  /// reaches past the screen and into the hand — it is the kind of thing to
+  /// opt into rather than to discover and go looking for the switch to stop.
+  ///
+  /// The switch itself demonstrates the effect on the way on (see the settings
+  /// row), so turning it on is also how you find out what it does.
+  bool _haptics = false;
   bool _confirmBeforeDelete = true;
   bool _hasSeenOnboarding = false;
   bool _triageEnabled = false;
@@ -112,7 +120,7 @@ class AppPreferences extends ChangeNotifier {
 
   Future<void> load() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    _haptics = prefs.getBool(_hapticsKey) ?? true;
+    _haptics = prefs.getBool(_hapticsKey) ?? false;
     _confirmBeforeDelete = prefs.getBool(_confirmDeleteKey) ?? true;
     _hasSeenOnboarding = prefs.getBool(_seenOnboardingKey) ?? false;
     _triageEnabled = prefs.getBool(_triageEnabledKey) ?? false;

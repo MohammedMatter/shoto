@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// Palette: **"Charcoal"** — warm neutrals, an achromatic accent, three
-/// semantic hues.
+/// Palette: **"Slate"** — achromatic neutrals, a desaturated steel-blue
+/// accent, four semantic hues, every one of them tuned to the same two
+/// luminance targets.
 ///
 /// The reasoning is specific to Shoto rather than to taste. Every screen in
 /// this app is mostly *other apps' screenshots*: a receipt, a chat, a poster,
@@ -18,15 +19,86 @@ import 'package:flutter/material.dart';
 ///
 /// What works is a small system where **every colour is doing a job**:
 ///
-/// * [marker] — charcoal. Filled buttons, the active tab, a selected chip.
+/// * [marker] — slate blue. Filled buttons, the active tab, a selected chip.
 /// * [secondary] — teal. Informational, non-destructive: moving a file.
-/// * [success] — sage. Something completed.
+/// * [success] — green. Something completed.
+/// * [warning] — amber. Something needs attention but nothing is lost.
 /// * [alert] — red. Destructive, and nothing else.
 ///
-/// The accent carries no hue at all, so the only colours left in the
-/// interface are the three that *mean* something. Anything with no job stays
-/// neutral: a tool icon is not tinted because nothing about "safe share" is
-/// teal, and colour that encodes nothing is noise.
+/// ---
+///
+/// **The accent was teal for one revision and the objection to it was
+/// measured, not felt: it glowed in dark mode.**
+///
+/// `#5FC4BA` has a relative luminance of **0.455** — brighter than a mid grey,
+/// sitting on a canvas at 0.010. That is 8.4:1 against its own background,
+/// which is more contrast than the *body text* needs, spent on a chip. And it
+/// spent it in the worst possible band: human luminance sensitivity peaks
+/// around cyan-green, so a colour there looks brighter than it measures. Every
+/// filled control in the app was a small lamp.
+///
+/// The failure was structural rather than a bad hex. The dark accent had been
+/// derived by *lightening* the light one, which is the one move a dark theme
+/// must not make — and it is why the app read as generic in dark mode and
+/// acceptable in light.
+///
+/// So the fix is two decisions, not one:
+///
+/// 1. **Every hue in this file is now solved against a luminance target**
+///    rather than picked — 0.085 in light mode, 0.330 in dark. The teal came
+///    down from 0.455 to 0.327, roughly a third less light, and the accent
+///    lands at the same value as the success green, the alert red and the
+///    amber. That single constraint is what makes five hues read as one
+///    family, and it is why [onPrimary] can also serve as the foreground on
+///    *all* of them: if every hue is the same luminance, one text colour is
+///    correct on every one of them.
+///
+/// 2. **The hue moved to where the eye is least sensitive.** Blue at 216° is
+///    the opposite end of the sensitivity curve from cyan, so the same
+///    measured contrast reads calm instead of lit.
+///
+/// ---
+///
+/// **This was indigo `#4B44A8` for one revision and it was rejected for
+/// reading purple, which it did.** The argument for it was that saturation,
+/// not hue, separates an archival indigo from the generic AI-UI violet — and
+/// that argument is sound and still lost, because *nobody is looking at your
+/// saturation*. A hue people have a word for gets called by that word. The
+/// paywall card is the largest area of accent in the app and it is what
+/// settled it: at chip size it read as ink, at card size it read as lavender.
+///
+/// **Slate is the middle of the two failure modes this file keeps oscillating
+/// between**, and that is the whole case for it. Every rejection here has been
+/// one of two complaints: *too much colour* (neon cyan, glowing teal, copper,
+/// purple) or *no colour at all* (the achromatic charcoal, rejected as flat).
+/// A steel blue at `hsl(216, 43%, 35%)` has a hue you can name and a chroma
+/// low enough that it never announces itself.
+///
+/// **The "every app's chrome is blue" objection is a saturation problem, not
+/// a hue problem, and that is why it does not apply here.** Screenshots arrive
+/// full of platform blue — but platform blue is *saturated*: Telegram is
+/// `hsl(200, 82%, 51%)`, Facebook `hsl(214, 89%, 52%)`. At 43% and 35% this
+/// sits visibly apart from all of them, in the same way a slate roof does not
+/// read as the sky.
+///
+/// **Green was the other serious candidate and lost on a structural point
+/// rather than on taste:** [success] is a green. An accent in the same hue
+/// family as a status colour makes "this is the primary action" and "this
+/// operation succeeded" read as relatives, which is exactly the confusion that
+/// demoting the teal was meant to end. An accent must not share a family with
+/// anything that *means* something.
+///
+/// [secondary] returns to teal, which is where it was before the accent
+/// briefly took the colour. It is the product's own — the Safe Share shield is
+/// teal — and demoting it from *every filled control* to *the move/organise
+/// hue* is precisely the fix the previous revision needed: keep the colour,
+/// narrow where it is used.
+///
+/// **The risk is real and stated rather than argued away.** This touches every
+/// filled control in the app. If the frame starts out-talking the pictures,
+/// the fix is to narrow where the accent is *used*, not to drain it again —
+/// five earlier attempts all ended by draining, and the result was an
+/// interface with no voice.
 ///
 /// ---
 ///
@@ -67,6 +139,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     required this.secondary,
     required this.secondaryVariant,
     required this.success,
+    required this.warning,
     required this.onPrimary,
   });
 
@@ -79,7 +152,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
 
   // ------------------------------------------------------------- the six
   //
-  // **Every neutral here is achromatic: R == G == B, exactly.**
+  // **Every neutral here is achromatic: R == G == B, exactly — with one
+  // documented exception, the dark ramp's +2 cool bias. See [canvasDark].**
   //
   // This file has now run a cool ramp (blue-black — the default look of every
   // generated dark UI) and a warm one (red the highest channel by two or
@@ -101,46 +175,140 @@ class AppPalette extends ThemeExtension<AppPalette> {
   /// but with no hue in it at all.
   static const Color paper = Color(0xFFFAFAFA);
 
-  /// Secondary text, both modes. One value that works on either because it
-  /// sits at the midpoint — fewer values, fewer chances to drift.
-  static const Color graphite = Color(0xFF737373);
+  /// Secondary text in light mode.
+  ///
+  /// Was `#737373`, which measured **4.20:1** against [surfaceVariant] and
+  /// 4.31:1 against the canvas — under AA on the two surfaces it sits on most
+  /// often, and only over the line on pure white. Every caption, count and
+  /// helper line in the app is this colour, so it was the single most-read
+  /// failing value in the palette. `#6B6B6B` clears 4.5:1 on all four light
+  /// surfaces including the deepest inset.
+  ///
+  /// Light-only despite the neutral name: dark mode's secondary text is a
+  /// separate value, because a midpoint grey that satisfies both modes ends up
+  /// satisfying neither.
+  static const Color graphite = Color(0xFF6B6B6B);
 
   /// Used for scrims over imagery, so it stays dark in both modes.
   static const Color overlay = Color(0xFF141414);
 
-  /// **The accent: charcoal.** `#262626` on light, `#EBEBEB` on dark.
+  // ------------------------------------------------------------- canvases
+  //
+  // **The canvas is its own value in each mode, not [ink] or [paper] reused.**
+  //
+  // It was both, and that is what flattened the app. `paper` and `ink` each
+  // do two jobs — canvas in one mode, *text* in the other — so neither could
+  // move without dragging the type with it. The surfaces were left to make up
+  // the difference on their own, and they could not: a white card on `paper`
+  // separated by five values out of 255, and a `#212121` card on `ink` by
+  // seven. Two per cent of luminance is not elevation, it is a rounding
+  // error, so every card, sheet and chip sat at the same depth as the page
+  // behind it and nothing on any screen led.
+  //
+  // Read as a complaint it arrives as "the app feels dead", and the instinct
+  // is to reach for colour. That would have been the wrong fix twice over:
+  // the neutral palette is right — the content is other people's screenshots
+  // and a tinted frame fights them — and the problem was never hue. A grey
+  // app can be perfectly alive if its greys are spaced. These were not.
+
+  /// The light canvas. A step below white rather than a hair below it, so a
+  /// white card is raised by eleven values instead of five and stops needing
+  /// its border to be visible at all.
+  static const Color canvasLight = Color(0xFFF4F4F4);
+
+  /// The dark canvas. **`#121212` — Material's value, and the most widely
+  /// recognised dark-mode background there is.**
   ///
-  /// The history above is five attempts at this one value — highlighter
-  /// yellow, petrol green, ultramarine, nothing at all, then brass. Brass was
-  /// a defensible colour and still the wrong one *here*: it put a copper cast
-  /// on every filled button, tab and chip in an app whose content is other
-  /// people's screenshots, so the frame had a temperature the pictures inside
-  /// it did not share.
+  /// It was `#1A1A1A` for several revisions, which is Notion's value and
+  /// sits perfectly respectably in the same band. It moved here on a direct
+  /// request for "the one apps actually use", and the request is easy to
+  /// honour because the whole ramp below is derived from this one number.
   ///
-  /// **Charcoal rather than a mid grey**, and that choice is not a matter of
-  /// taste. A mid grey fill is the universal language of *disabled* — the
-  /// primary button on every platform greys out when it stops working. Fill a
-  /// live button with `#4A4642` and it reads as switched off no matter how
-  /// correct the label is. Near-black reads as ink: deliberate, on, pressed
-  /// into the paper. The accent needs the second meaning, so it sits as close
-  /// to black as it can while staying distinguishable from the text.
+  /// For the record, since the same question will come back: `#1A1A1A` is 26,
+  /// this is 18, iOS's secondary background is 28, GitHub is 13 and Vercel is
+  /// 10. Everything in that range is conventional; this is the one people
+  /// mean when they say "the dark grey".
   ///
-  /// Which is the other half of the value: light-mode charcoal is
-  /// deliberately a few points *softer* than [ink]. Body text stays the
-  /// darkest thing on the page, so a filled control never out-weighs the
-  /// words it is there to support.
+  /// **The dark ramp carries a +2 cool bias: blue is two points above red.**
+  /// `#111213` is R17 G18 B19 rather than a flat 18/18/18.
   ///
-  /// The dark value is not the light one lightened, it is its opposite.
-  /// Charcoal on a near-black canvas is invisible, so in dark mode the accent
-  /// inverts to bone and [onPrimary] inverts with it — the same relationship
-  /// (a near-canvas-opposite slab carrying near-canvas text), mirrored. This
-  /// is the rule an earlier yellow accent broke and was replaced for: an
-  /// accent you cannot use in both modes is not an accent.
+  /// This is the one place the "every neutral is achromatic" rule at the top
+  /// of the file is deliberately broken, and it is broken for the reason the
+  /// rule was written: to stop the interface reading warm.
   ///
-  /// Saturation is now zero rather than "under the ceiling", and the warmth
-  /// that used to come from the accent comes from the neutrals themselves —
-  /// red is still the highest channel in both values, so the greys read as
-  /// paper and pencil rather than as a screen.
+  /// The complaint that produced it was that dark mode looked yellow or
+  /// coppery, and the honest answer was that it measured **zero** chroma —
+  /// there was no cast in the file to remove. What makes a perfectly neutral
+  /// grey *look* warm is the cool accent sitting on it: simultaneous contrast
+  /// pushes a neutral away from its neighbour's hue, so a slate-blue chip
+  /// makes the grey around it read amber. Two points of blue cancels that,
+  /// and cancelling an illusion is not the same act as introducing a tint.
+  ///
+  /// **Two, and not four.** The previously shipped tinted ramp — warm, red the
+  /// highest channel by two or three points — was rejected on sight across a
+  /// full screen, which is the evidence that this range is exactly where a
+  /// bias stops being invisible. So this takes iOS's dose (its secondary
+  /// background is R28 G28 B30) rather than Material 3's `#141218` at +4 or
+  /// GitHub's `#0D1117` at +10. Enough to kill the illusion, below the point
+  /// where anybody could name it a colour.
+  ///
+  /// **The text is left neutral on purpose.** A cool background with neutral
+  /// white on it does make the white read faintly warm, and at +4 or more that
+  /// has to be answered by biasing the type too. At +2 the matching correction
+  /// would be a single step out of 255 — under the threshold of the display,
+  /// let alone the eye. iOS does the same: biased backgrounds, plain white
+  /// labels.
+  ///
+  /// A happy side effect: [AppBrand.ink], the slab the app icon is drawn on,
+  /// is `#121212` and is documented as matching "the app's own dark
+  /// background … so the thing on the home screen and the thing that opens
+  /// are the same colour". The canvas had drifted away from it. They match
+  /// again.
+  static const Color canvasDark = Color(0xFF111213);
+
+  /// **The accent: slate blue.** `#345381` on light, `#869DC1` on dark.
+  ///
+  /// The two carry the same hue (216°) and *different* saturation — 43% light,
+  /// 32% dark — which looks like an inconsistency and is the opposite. Chroma
+  /// reads stronger as a colour gets lighter, so a light tint at the light
+  /// value's saturation reads as a much bluer colour; eleven points off holds
+  /// it at the same apparent one. The gap is wider than it strictly needs to
+  /// be, and deliberately so: every complaint this palette has ever collected
+  /// has been that a colour was doing too much, never too little.
+  ///
+  /// The history above is seven attempts at this one value — highlighter yellow,
+  /// petrol green, ultramarine, nothing at all, brass, then teal. Each was
+  /// rejected for a different reason and the reasons compose into the rule
+  /// this value obeys: an accent has to be **visible in both modes, carry text
+  /// in both modes, and be bright in neither**.
+  ///
+  /// **The accent must work as a foreground, not only as a fill**, and that is
+  /// the constraint that decides the dark value. Roughly forty call sites
+  /// paint [primary] onto a *surface* — a checkmark, a progress ring, an
+  /// active label, a link. So the dark accent cannot simply be a mid-lightness
+  /// indigo carrying white text, the way a web app would do it: `#5E6AD2` on
+  /// `surface` measures 3.18:1 and fails AA for text. The accent has to be
+  /// light enough to read *on* a dark surface, which is the same conclusion
+  /// the charcoal-and-bone revision reached, and it is why the structure below
+  /// is unchanged from it.
+  ///
+  /// So the relationship is mirrored rather than lightened: a
+  /// near-canvas-opposite slab carrying near-canvas text, in both modes, with
+  /// [onPrimary] inverting alongside. What changed is only *how far* the dark
+  /// value is allowed to travel. Bone went to luminance 0.89 and teal to
+  /// 0.455; this stops at **0.332**, which is the lowest value that still
+  /// clears 4.5:1 as text on [surfaceVariant], the tightest surface it ever
+  /// lands on. Picked from the bottom of the legal range rather than the
+  /// middle of a comfortable one — that is the difference between an accent
+  /// that sits on a dark screen and one that hovers above it.
+  ///
+  /// Light-mode slate is deliberately *softer* than [ink] — 7.5:1 against
+  /// paper where ink is 15.8:1. Body text stays the darkest thing on the page,
+  /// so a filled control never out-weighs the words it is there to support.
+  ///
+  /// Every value is solved rather than chosen: paper on the light one is
+  /// 7.48:1 and ink on the dark one is 6.34:1, so a filled control clears WCAG
+  /// AA comfortably in either mode.
   final Color marker;
 
   /// Destructive only, and mode-aware — a single red dark enough to read on
@@ -176,34 +344,62 @@ class AppPalette extends ThemeExtension<AppPalette> {
 
   // ------------------------------------------------------ semantic hues
   //
-  // Three hues besides the accent, and each one earns its place by meaning
+  // Four hues besides the accent, and each one earns its place by meaning
   // something a word would otherwise have to carry: this is done, this is
-  // information, this is destructive. Each stays under 80% saturation and is
-  // split across the two modes so it sits correctly against its own canvas.
+  // information, this needs attention, this is destructive.
   //
-  // These are the *only* three hues left in the app now that the accent and
-  // every neutral are colourless, which is what makes them legible as
-  // meaning rather than as decoration.
+  // **They are all solved to the same luminance as the accent** — 0.085 in
+  // light mode, 0.330 in dark (the amber sits fractionally higher, see
+  // [warning]). Saturation is the only thing that varies, and only by as much
+  // as each hue needs to stay itself.
+  //
+  // That constraint is doing more work than it looks like. It is what makes
+  // five unrelated hues read as one family rather than as five decisions taken
+  // on five different days; it is why no single hue can jump out of a row of
+  // status chips; and it is what lets [onPrimary] be the correct foreground on
+  // *every* one of them rather than needing five hand-checked pairings.
 
-  /// One step *toward* the canvas from [marker] — a pressed or secondary
-  /// version of the accent, not a darker one. With an achromatic accent
-  /// "darker" is meaningless in dark mode, where the accent is already the
-  /// light end.
+  /// One step *toward* the canvas from [marker] — the pressed state of a
+  /// filled control, and the second stop wherever the accent needs two.
+  ///
+  /// Not "darker": in dark mode the accent is already the light end, so
+  /// darkening it would move it toward the canvas and quietly delete it.
+  /// Solved a fixed luminance step from [marker] in each mode instead, which
+  /// is the same move in both.
   final Color primaryVariant;
 
   /// Informational, non-destructive actions — moving a file, a suggested
-  /// match. Teal because it is the one cool hue far enough from both the
-  /// accent and the alert to never be confused with either.
+  /// match. Teal, which is the product's own colour and is now doing the one
+  /// job it is unambiguously right for rather than painting every control.
   final Color secondary;
 
   final Color secondaryVariant;
 
-  /// Completion. Sage rather than a signal green: this app confirms filing,
+  /// Completion. Deliberately not a signal green: this app confirms filing,
   /// not payment, and a saturated green would outrank the accent every time
   /// it appeared.
   final Color success;
 
-  /// Text and icons that sit **on** [marker], which is [primary].
+  /// Attention without loss — a limit approaching, a scan that found
+  /// something, an action that is about to be irreversible but has not been
+  /// taken yet.
+  ///
+  /// **This used to be an alias for [marker]**, which meant a warning was
+  /// painted in the accent and therefore said nothing: the colour that marks
+  /// the primary button cannot also mean "careful". It is a real value now.
+  ///
+  /// It is the one hue allowed off the shared luminance target, at 0.15 light
+  /// / 0.36 dark rather than 0.085 / 0.330. Amber cannot be both dark and
+  /// saturated — pushed down to the family value it desaturates into brown,
+  /// which is the exact cast the neutrals in this file were rebuilt to remove.
+  /// A slightly lighter amber that stays amber is the better trade, and it
+  /// still clears AA against both canvases.
+  final Color warning;
+
+  /// Text and icons that sit **on** [marker], and — because every semantic hue
+  /// shares the accent's luminance — on [secondary], [success], [warning] and
+  /// [alert] too. See [onSuccess] and friends, which are aliases rather than
+  /// separate values on purpose.
   final Color onPrimary;
 
   /// Filled buttons, active tabs, selected chips. The accent.
@@ -211,9 +407,92 @@ class AppPalette extends ThemeExtension<AppPalette> {
 
   Color get error => alert;
 
-  Color get warning => marker;
-
   Color get onMarker => onPrimary;
+
+  /// Neutral information — the same value as [secondary], named for the other
+  /// job it does. A status row saying "3 items skipped" is not an *action*,
+  /// and reading `colors.info` at that call site says so.
+  Color get info => secondary;
+
+  // ------------------------------------------------- foregrounds on hues
+  //
+  // All four are [onPrimary], and that is the point rather than laziness: the
+  // hues are solved to one luminance, so one foreground is correct on all of
+  // them. They exist as named getters anyway, because a call site that says
+  // `onError` cannot later be "simplified" to `Colors.white` by someone who
+  // checked it in light mode only — which is exactly how this app has shipped
+  // a contrast bug three separate times.
+
+  Color get onSecondary => onPrimary;
+
+  Color get onSuccess => onPrimary;
+
+  Color get onWarning => onPrimary;
+
+  Color get onError => onPrimary;
+
+  // ------------------------------------------------------- icon hierarchy
+  //
+  // Icons follow type, not the accent. An icon is a word drawn small: a tool
+  // icon in a list is body text, a chevron is secondary text, and neither
+  // becomes more important by being tinted. The accent is reserved for icons
+  // that are *stating a state* — a checkmark on the selected row, the active
+  // tab — and those read `primary` directly.
+
+  Color get iconPrimary => textPrimary;
+
+  Color get iconSecondary => textSecondary;
+
+  Color get iconDisabled => textDisabled;
+
+  // ------------------------------------------------------ interaction states
+  //
+  // Derived rather than stored, so a selected row can never drift away from
+  // the accent it is supposed to be a wash of. All four are cheap — a
+  // composite of two colours, computed in `build`, no allocation that a
+  // `BoxDecoration` was not already making.
+
+  /// A row, chip or card that is currently chosen. A 10% wash of the accent
+  /// over [surface] — in dark mode this lands at almost exactly
+  /// [surfaceVariant]'s luminance with the accent's hue in it, so a selected
+  /// item reads as *the same elevation, tinted* rather than as raised.
+  Color get surfaceSelected =>
+      Color.alphaBlend(primary.withValues(alpha: 0.10), surface);
+
+  /// The same wash one step down, for a selected item sitting directly on the
+  /// canvas rather than on a card.
+  Color get backgroundSelected =>
+      Color.alphaBlend(primary.withValues(alpha: 0.10), background);
+
+  /// The border of a selected or focused control.
+  Color get borderSelected => primary.withValues(alpha: 0.45);
+
+  /// Keyboard focus. Full-strength accent, because a focus ring is the one
+  /// state that must be unmissable — it is the only thing telling somebody
+  /// not using a pointer where they are.
+  Color get focus => primary;
+
+  /// Pressed feedback for surfaces that must not move.
+  ///
+  /// A tint rather than a scale, and the reason is on record in
+  /// `PressFeedback`: press inside a scrollable is speculative, so a full-width
+  /// row that *shrinks* and springs back reads as the page shuddering. A tint
+  /// withdraws invisibly. Achromatic on purpose — this is feedback, not state,
+  /// and tinting it would make every tap look like a selection.
+  Color get pressedOverlay => textPrimary.withValues(alpha: 0.055);
+
+  /// Disabled fills — a switch track that is off, a button that cannot be
+  /// pressed. Paired with [textDisabled], never with [textSecondary].
+  Color get disabledFill => surfaceElevated;
+
+  /// Behind a dialog or a sheet. Fixed dark in both modes: the job is to push
+  /// the page back, and a light scrim in light mode pushes nothing.
+  Color get scrim => overlay.withValues(alpha: 0.32);
+
+  /// Over imagery — a caption bar on a thumbnail, the chrome in the photo
+  /// viewer. Heavier than [scrim] because it has to beat an arbitrary picture
+  /// rather than a known surface.
+  Color get scrimStrong => overlay.withValues(alpha: 0.55);
 
   // ------------------------------------------------------------ gradients
   //
@@ -266,41 +545,50 @@ class AppPalette extends ThemeExtension<AppPalette> {
   /// The two palettes are `const`, which is what lets a `ThemeData` built in
   /// one frame compare equal to the one built in the next: an unchanged theme
   /// then notifies nobody, and the `const` widgets below it are left alone.
+  /// Light mode. Bright and airy without being white — the canvas is a step
+  /// below the cards so a white card is raised by its own value rather than by
+  /// a border, and every hue is solved to luminance 0.085 (≈7.5:1 on paper).
   static const AppPalette light = AppPalette(
     isDark: false,
-    marker: Color(0xFF262626),
-    alert: Color(0xFFC4342C),
-    background: paper,
+    marker: Color(0xFF345381),
+    alert: Color(0xFF952F23),
+    background: canvasLight,
     surface: Color(0xFFFFFFFF),
-    surfaceVariant: Color(0xFFF0F0F0),
-    surfaceElevated: Color(0xFFE7E7E7),
-    border: Color(0xFFE2E2E2),
+    surfaceVariant: Color(0xFFF1F1F1),
+    surfaceElevated: Color(0xFFE4E4E4),
+    border: Color(0xFFDCDCDC),
     textPrimary: ink,
     textSecondary: graphite,
-    textDisabled: Color(0xFFABABAB),
-    primaryVariant: Color(0xFF3D3D3D),
-    secondary: Color(0xFF2A7A72),
-    secondaryVariant: Color(0xFF1F5F59),
-    success: Color(0xFF55742F),
+    textDisabled: Color(0xFF9C9C9C),
+    primaryVariant: Color(0xFF2D476F),
+    secondary: Color(0xFF1F5B59),
+    secondaryVariant: Color(0xFF1A4E4C),
+    success: Color(0xFF245D3C),
+    warning: Color(0xFF89670F),
     onPrimary: paper,
   );
 
+  /// Dark mode, designed against its own canvas rather than derived from the
+  /// light one. Every hue is solved to luminance 0.330 — the floor that still
+  /// carries text on [surfaceVariant] — which is what stops the accent
+  /// hovering above the page the way the previous teal did at 0.455.
   static const AppPalette dark = AppPalette(
     isDark: true,
-    marker: Color(0xFFEBEBEB),
-    alert: Color(0xFFF0645F),
-    background: ink,
-    surface: Color(0xFF212121),
-    surfaceVariant: Color(0xFF292929),
-    surfaceElevated: Color(0xFF333333),
-    border: Color(0xFF303030),
+    marker: Color(0xFF869DC1),
+    alert: Color(0xFFE67F73),
+    background: canvasDark,
+    surface: Color(0xFF1D1E1F),
+    surfaceVariant: Color(0xFF292A2B),
+    surfaceElevated: Color(0xFF353637),
+    border: Color(0xFF333435),
     textPrimary: paper,
     textSecondary: Color(0xFF9E9E9E),
-    textDisabled: Color(0xFF6B6B6B),
-    primaryVariant: Color(0xFFCACACA),
-    secondary: Color(0xFF63B8B0),
-    secondaryVariant: Color(0xFF4A9891),
-    success: Color(0xFF93B36B),
+    textDisabled: Color(0xFF727272),
+    primaryVariant: Color(0xFF708BB5),
+    secondary: Color(0xFF4CA9A6),
+    secondaryVariant: Color(0xFF449694),
+    success: Color(0xFF4EAE77),
+    warning: Color(0xFFCB9B21),
     onPrimary: ink,
   );
 
@@ -324,6 +612,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
     Color? secondary,
     Color? secondaryVariant,
     Color? success,
+    Color? warning,
     Color? onPrimary,
   }) {
     return AppPalette(
@@ -342,6 +631,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
       secondary: secondary ?? this.secondary,
       secondaryVariant: secondaryVariant ?? this.secondaryVariant,
       success: success ?? this.success,
+      warning: warning ?? this.warning,
       onPrimary: onPrimary ?? this.onPrimary,
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/widgets/sheet_surface.dart';
 import 'package:shoto/features/safe_share/presentation/pages/safe_share_page.dart';
@@ -27,6 +28,12 @@ void main() {
     if (!sl.isRegistered<ThemeController>()) {
       sl.registerLazySingleton<ThemeController>(() => ThemeController());
     }
+    // Tapping an option fires a haptic, and the haptic reads this at call
+    // time — unregistered, it throws out of the gesture handler and the tap
+    // does nothing at all, which reads as the option not being wired up.
+    if (!sl.isRegistered<AppPreferences>()) {
+      sl.registerLazySingleton<AppPreferences>(() => AppPreferences());
+    }
   });
 
   Future<AppLocalizations> english() =>
@@ -43,6 +50,7 @@ void main() {
     WidgetTester tester, {
     String locale = 'en',
     Brightness brightness = Brightness.light,
+    ValueChanged<SharedImageChoice>? onChoice,
   }) async {
     tester.view.physicalSize = const Size(1080, 2200);
     tester.view.devicePixelRatio = 3;
@@ -68,7 +76,11 @@ void main() {
               alignment: Alignment.topCenter,
               child: RepaintBoundary(
                 key: const ValueKey<String>('sheet'),
-                child: SheetSurface(child: sharedImageChoiceContent()),
+                child: SheetSurface(
+                  child: sharedImageChoiceContent(
+                    onChoice: onChoice ?? (_) {},
+                  ),
+                ),
               ),
             ),
           ),
@@ -109,6 +121,41 @@ void main() {
 
     expect(find.text(l10n.shareChoiceProtectHint), findsOneWidget);
     expect(l10n.shareChoiceProtectHint.toLowerCase(), contains('not saved'));
+  });
+
+  testWidgets('each answer reports itself', (tester) async {
+    // Testable at all only since the offer started reporting through a
+    // callback instead of popping a route. It was worth making testable: the
+    // two rows are built from the same widget with the same shape, and the
+    // failure this catches — both of them wired to `save`, or the pair
+    // swapped — is invisible on screen and sends a card number to whoever the
+    // user picked next.
+    final List<SharedImageChoice> answers = [];
+    await render(tester, onChoice: answers.add);
+    final AppLocalizations l10n = await english();
+
+    await tester.tap(find.text(l10n.shareChoiceProtect));
+    await tester.tap(find.text(l10n.shareChoiceSave));
+
+    expect(answers, [SharedImageChoice.protect, SharedImageChoice.save]);
+  });
+
+  test('covering is offered for one picture and no other count', () {
+    // The rule both share paths now read, asserted once. Safe Share reviews a
+    // single capture and marks its findings on that image; an offer spanning
+    // four would have to act on one of them and let the user send the rest
+    // believing all four were checked.
+    expect(coveringOffered(1), isTrue);
+    expect(coveringOffered(0), isFalse);
+    expect(coveringOffered(2), isFalse);
+    expect(coveringOffered(30), isFalse);
+  });
+
+  test('a picture Shoto handed out is not offered covering again', () {
+    // Covering ends at the system share sheet and Shoto is one of the choices
+    // there, so the covered copy can come straight back in. Asking whether to
+    // cover it is asking a question the previous screen already answered.
+    expect(coveringOffered(1, fromShotoItself: true), isFalse);
   });
 
   testWidgets('share choice sheet — german', (tester) async {

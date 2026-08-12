@@ -83,7 +83,7 @@ class AppDatabase {
   Future<Database> openAt(String path) {
     return openDatabase(
       path,
-      version: 17,
+      version: 18,
       onCreate: (db, version) => _createTables(db),
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
@@ -210,6 +210,20 @@ class AppDatabase {
         if (oldVersion < 17) {
           await _adoptEverythingOntoThisDevice(db);
         }
+        if (oldVersion < 18) {
+          // Which glyph a folder wears. Additive and nullable, because null is
+          // the honest answer for every folder made before the grid had
+          // pictures on it — and the plain folder glyph they already had is
+          // exactly what a null key resolves to.
+          //
+          // Guarded for the same reason `_createCustomIntents` says
+          // `IF NOT EXISTS`: a database old enough to run the v2 step has just
+          // had its whole schema recreated by `_createTables` — which already
+          // includes this column — and then runs every later step anyway. An
+          // unguarded `ADD COLUMN` there fails on a duplicate name and takes
+          // the app down on launch.
+          await _addFolderIconKey(db);
+        }
       },
       onConfigure: (db) async => db.execute('PRAGMA foreign_keys = ON'),
     );
@@ -223,6 +237,7 @@ class AppDatabase {
         name TEXT NOT NULL,
         color INTEGER NOT NULL,
         is_private INTEGER NOT NULL DEFAULT 0,
+        icon_key TEXT,
         created_at INTEGER NOT NULL
       )
     ''');
@@ -250,6 +265,20 @@ class AppDatabase {
     // Deliberately left empty on a fresh install: a brand-new database has no
     // pre-ownership images, so the adoption step must never run for it.
     await _createAppFlags(db);
+  }
+
+  /// `ALTER TABLE … ADD COLUMN icon_key`, unless it is already there.
+  ///
+  /// sqflite has no `ADD COLUMN IF NOT EXISTS`, so the presence check is a
+  /// `table_info` read — cheap, and it runs once per upgrade rather than once
+  /// per launch.
+  Future<void> _addFolderIconKey(Database db) async {
+    final List<Map<String, Object?>> columns = await db.rawQuery(
+      'PRAGMA table_info($folders)',
+    );
+    final bool exists = columns.any((column) => column['name'] == 'icon_key');
+    if (exists) return;
+    await db.execute('ALTER TABLE $folders ADD COLUMN icon_key TEXT');
   }
 
   Future<void> _createCustomIntents(Database db) async {

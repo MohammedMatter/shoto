@@ -15,11 +15,22 @@
   "settingsSignInHint": "Optional. Only needed to move a purchase to another phone.",
   "paywallTrialCta": "{days, plural, =1{Start 1 day free} other{Start {days} days free}}",
   "@paywallTrialCta": {
-    "placeholders": { "days": { "type": "int" } }
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
   },
   "paywallTrialNote": "{days, plural, =1{Free for a day, then {price}. Cancel any time before it ends.} other{Free for {days} days, then {price}. Cancel any time before it ends.}}",
   "@paywallTrialNote": {
-    "placeholders": { "days": { "type": "int" }, "price": { "type": "String" } }
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
   },
   "triageTitle": "Since you last looked",
   "triageBody": "Keep what belongs in Shoto. Everything else stays exactly where it is.",
@@ -28,15 +39,30 @@
   "triageFinish": "Done",
   "triageProgress": "{index} of {total}",
   "@triageProgress": {
-    "placeholders": { "index": { "type": "int" }, "total": { "type": "int" } }
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
   },
   "triageNewCount": "{count, plural, =1{1 new screenshot} other{{count} new screenshots}}",
   "@triageNewCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "triageKept": "{count, plural, =0{Nothing kept} =1{1 kept} other{{count} kept}}",
   "@triageKept": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "triageReview": "Review",
   "triageInviteDecline": "Not now",
@@ -63,6 +89,7 @@
   "homeInboxEmpty": "Nothing saved yet",
   "homeInboxEmptySubtitle": "Pick a few from your phone now, or share a screenshot into Shoto from any app.",
   "homeEmptyImportCta": "Choose from my phone",
+  "homeNeedsYou": "Needs you",
   "homeInboxClear": "All filed",
   "homeInboxClearSubtitle": "Nothing waiting to be sorted",
   "homeInboxCountSubtitle": "Screenshots you have not filed yet",
@@ -211,7 +238,28 @@
     }
   },
   "foldersDeleteMessage": "The folder is removed but the screenshots inside stay in your library.",
-  "foldersRenameTitle": "Rename folder",
+  "foldersEditTitle": "Edit folder",
+  "foldersSearchHint": "Search folders",
+  "foldersSortLabel": "Sort folders",
+  "foldersSortRecent": "Newest first",
+  "foldersSortName": "Name (A–Z)",
+  "foldersSortFullest": "Most screenshots",
+  "foldersNoMatchTitle": "No folder matches",
+  "foldersNoMatchMessage": "Nothing here is called \"{query}\". Try part of the name.",
+  "@foldersNoMatchMessage": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "folderDefaultTrips": "Trip plans",
+  "folderDefaultRecipes": "Recipes",
+  "folderDefaultMedications": "Medications",
+  "folderDefaultAiNotes": "AI notes",
+  "folderDefaultMoney": "Money",
+  "folderDefaultWorkouts": "Workouts",
+  "folderDefaultMusic": "Music",
   "foldersMoveTitle": "Move to folder",
   "foldersMoveRemove": "Remove from folder",
   "foldersMoveNone": "No folders yet. Create one from the Folders tab.",
@@ -371,6 +419,7 @@
   "safeShareShareUnchanged": "Share unchanged",
   "safeShareShareAnyway": "Share anyway",
   "safeShareShareProtected": "Share protected copy",
+  "safeShareKeepCopy": "Keep the copy in Shoto",
   "safeShareFailed": "Could not build the protected copy.",
   "safeShareFoundTitle": "{count, plural, =1{1 private detail found} other{{count} private details found}}",
   "@safeShareFoundTitle": {
@@ -440,13 +489,47 @@
   "paywallContinue": "Continue",
   "paywallUnavailable": "Not available yet",
   "paywallRestore": "Restore purchases",
+  "settingsRestoreHint": "Already paid? Bring your subscription back.",
   "paywallLegal": "Auto-renews until cancelled. Cancel anytime from your App Store or Google Play account settings. By continuing you agree to our Terms of Service and Privacy Policy.",
   "subPremiumBadge": "PRO",
   "subPremiumTitle": "Shoto Pro",
   "subPremiumBody": "Every feature unlocked for you.",
+  "subPremiumRenews": "Renews {date}",
+  "@subPremiumRenews": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "quotaTitle": "Library",
+  "quotaUsed": "{used} of {limit}",
+  "@quotaUsed": {
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "quotaLeft": "{count, plural, =0{No room left — Pro removes the limit} =1{1 screenshot left on the free tier} other{{count} screenshots left on the free tier}}",
+  "@quotaLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quotaUnlimited": "Unlimited",
+  "quotaUnlimitedNote": "No ceiling on what you keep.",
   "subDevUnlock": "Tester access",
   "subDevUnlockBody": "Unlocked on this device — not a real subscription",
   "subUnlockEverything": "Unlock everything",
+  "trialUsed": "That one was on us — your free try",
+  "trialFree": "Free try",
+  "proOnly": "Pro",
   "proWelcomeTitle": "You are on Pro",
   "proWelcomeBody": "Every feature is unlocked. There is nothing else to set up.",
   "proWelcomeAction": "Start using it",
@@ -458,8 +541,9 @@
   "featDuplicatesBody": "Spot near-identical shots you kept twice and clear them out — always with a review step first.",
   "featStitch": "Merge long screenshots",
   "featStitchBody": "Join a scrolling capture back into one tall image, with the overlap found and removed automatically.",
-  "featUnlimited": "No ceiling on your library",
+  "featUnlimited": "Unlimited screenshots",
   "featUnlimitedBody": "The free tier organizes {count} screenshots. Pro takes the number away.",
+  "featUnlimitedBodyPro": "Your library has no ceiling — keep as much as you like.",
   "featSafeShareHow": "Finding what is private in a screenshot is free and unlimited. Paying is what turns those findings into a clean copy: each detail you leave selected is covered in the exported image, which is flat — no layer to undo.",
   "featSafeSharePoint1": "Card numbers are Luhn-checked and IBANs mod-97 checked, so those two are found by proof rather than by pattern — no guessing on the detail that matters most.",
   "featSafeSharePoint2": "Also catches names, addresses, order numbers, verification codes, phone numbers and email addresses.",
@@ -638,6 +722,8 @@
   "shareChoiceTitle": "What should Shoto do with it?",
   "shareChoiceProtect": "Cover private details",
   "shareChoiceProtectHint": "Hide what is private and send it on. It is not saved here.",
+  "quickSaveCoverAction": "Cover",
+  "quickSaveCoverWhy": "Has private details?",
   "shareChoiceSave": "Save to Shoto",
   "shareChoiceSaveHint": "Add it to your library and file it.",
   "shareSavedPrompt": "{count, plural, =1{Screenshot saved. Add it to a folder?} other{Screenshots saved. Add them to a folder?}}",
