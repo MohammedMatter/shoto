@@ -40,112 +40,131 @@ Future<void> showScreenshotQuickActionsSheet(
     context: context,
     builder: (sheetContext) => SheetSurface(
       child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.h),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // **Above the actions, because it is not one.**
-              //
-              // Everything below this row does something to the screenshot now
-              // — share it, move it, delete it. This records what the user
-              // intends to do with it later, and mixing a statement of intent
-              // into a list of verbs would make it read as a sixth thing to
-              // trigger. It also stays open after a tap, since changing your
-              // mind twice is normal and closing the sheet to reopen it is not.
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(20.w, 8.h, 20.w, 14.h),
-                child: IntentSection(item: item, bloc: bloc),
-              ),
-              Divider(height: 1, color: context.colors.border),
-              SizedBox(height: 6.h),
-              // **First of the verbs, and directly under the intent row.**
-              //
-              // It belongs to the same thought: the row above records what the
-              // user is going to do about this, and this is the only control
-              // in the app that makes the app say so again later. Everything
-              // below acts on the picture now.
-              _QuickActionTile(
-                icon: item.hasPendingReminder
-                    ? Icons.notifications_active_rounded
-                    : Icons.notifications_none_rounded,
-                iconColor: item.hasPendingReminder
-                    ? context.colors.primary
-                    : context.colors.textPrimary,
-                label: context.l10n.reminderTitle,
-                onTap: () {
-                  Navigator.of(sheetContext).pop();
-                  showReminderSheet(
-                    context,
-                    item,
-                    // The bloc holds the library, and a reminder is stored on
-                    // the same row as the folder and the favourite — so the
-                    // grid has to be told, or the bell on this tile stays
-                    // hollow until the next full load.
-                    onChanged: () => bloc.add(LoadScreenshotsEvent()),
-                  );
-                },
-              ),
-              _QuickActionTile(
-                icon: item.isFavorite
-                    ? Icons.favorite_rounded
-                    : Icons.favorite_border_rounded,
-                iconColor: item.isFavorite
-                    ? context.colors.error
-                    : context.colors.textPrimary,
-                label: item.isFavorite
-                    ? context.l10n.detailUnfavorite
-                    : context.l10n.detailAddFavorite,
-                onTap: () {
-                  Navigator.of(sheetContext).pop();
-                  _toggleFavoriteWithLimitCheck(context, bloc, item);
-                },
-              ),
-              _QuickActionTile(
-                icon: Icons.ios_share_rounded,
-                label: context.l10n.commonShare,
-                onTap: () {
-                  Navigator.of(sheetContext).pop();
-                  shareScreenshot(item);
-                },
-              ),
-              _QuickActionTile(
-                icon: Icons.drive_file_move_rounded,
-                iconColor: context.colors.secondary,
-                label: context.l10n.foldersMoveTitle,
-                onTap: () async {
-                  Navigator.of(sheetContext).pop();
-                  final bool allowed = await ensureUnderScreenshotLimit(
-                    context,
-                    additionalNewItems: _isAlreadyManaged(item) ? 0 : 1,
-                  );
-                  if (!allowed || !context.mounted) return;
-                  showMoveToFolderSheet(
-                    context,
-                    currentFolderId: item.folderId,
-                    onSelected: (folderId) => bloc.add(
-                      MoveScreenshotToFolderEvent(item.id, folderId),
-                    ),
-                  );
-                },
-              ),
-              _QuickActionTile(
-                icon: Icons.delete_outline_rounded,
-                iconColor: context.colors.error,
-                label: context.l10n.commonDelete,
-                onTap: () async {
-                  Navigator.of(sheetContext).pop();
-                  final bool confirmed = await showConfirmDialog(
-                    context,
-                    title: context.l10n.detailDeleteTitle,
-                    message: context.l10n.detailDeleteMessage,
-                    confirmLabel: context.l10n.commonDelete,
-                    isDestructive: true,
-                  );
-                  if (confirmed) bloc.add(DeleteScreenshotEvent(item.id));
-                },
-              ),
-            ],
+        // **Scrollable, because this sheet grows and the screen does not.**
+        //
+        // It overflowed by 1.2 pixels on the device the moment a sixth row was
+        // added — a `Column` inside a bottom sheet takes the height it wants
+        // and paints the yellow-and-black stripe when the screen has less. The
+        // margin was that thin *before* the row went in, so the next addition
+        // would have done it anyway, and on a shorter phone or at a larger
+        // font scale it was already over.
+        //
+        // `shrinkWrap` semantics are what a sheet needs: with room to spare it
+        // is still sized by its content and does not scroll, so nothing about
+        // the common case changes.
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // **Above the actions, because it is not one.**
+                //
+                // Everything below this row does something to the screenshot now
+                // — share it, move it, delete it. This records what the user
+                // intends to do with it later, and mixing a statement of intent
+                // into a list of verbs would make it read as a sixth thing to
+                // trigger. It also stays open after a tap, since changing your
+                // mind twice is normal and closing the sheet to reopen it is not.
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(
+                    20.w,
+                    8.h,
+                    20.w,
+                    14.h,
+                  ),
+                  child: IntentSection(item: item, bloc: bloc),
+                ),
+                Divider(height: 1, color: context.colors.border),
+                SizedBox(height: 6.h),
+                // **First of the verbs, and directly under the intent row.**
+                //
+                // It belongs to the same thought: the row above records what the
+                // user is going to do about this, and this is the only control
+                // in the app that makes the app say so again later. Everything
+                // below acts on the picture now.
+                _QuickActionTile(
+                  icon: item.hasPendingReminder
+                      ? Icons.notifications_active_rounded
+                      : Icons.notifications_none_rounded,
+                  iconColor: item.hasPendingReminder
+                      ? context.colors.primary
+                      : context.colors.textPrimary,
+                  label: context.l10n.reminderTitle,
+                  onTap: () {
+                    Navigator.of(sheetContext).pop();
+                    showReminderSheet(
+                      context,
+                      item,
+                      // The bloc holds the library, and a reminder is stored on
+                      // the same row as the folder and the favourite — so the
+                      // grid has to be told, or the bell on this tile stays
+                      // hollow until the next full load.
+                      onChanged: () => bloc.add(LoadScreenshotsEvent()),
+                    );
+                  },
+                ),
+                _QuickActionTile(
+                  icon: item.isFavorite
+                      ? Icons.favorite_rounded
+                      : Icons.favorite_border_rounded,
+                  iconColor: item.isFavorite
+                      ? context.colors.error
+                      : context.colors.textPrimary,
+                  label: item.isFavorite
+                      ? context.l10n.detailUnfavorite
+                      : context.l10n.detailAddFavorite,
+                  onTap: () {
+                    Navigator.of(sheetContext).pop();
+                    _toggleFavoriteWithLimitCheck(context, bloc, item);
+                  },
+                ),
+                _QuickActionTile(
+                  icon: Icons.ios_share_rounded,
+                  label: context.l10n.commonShare,
+                  onTap: () {
+                    Navigator.of(sheetContext).pop();
+                    shareScreenshot(item);
+                  },
+                ),
+                _QuickActionTile(
+                  icon: Icons.drive_file_move_rounded,
+                  iconColor: context.colors.secondary,
+                  label: context.l10n.foldersMoveTitle,
+                  onTap: () async {
+                    Navigator.of(sheetContext).pop();
+                    final bool allowed = await ensureUnderScreenshotLimit(
+                      context,
+                      additionalNewItems: _isAlreadyManaged(item) ? 0 : 1,
+                    );
+                    if (!allowed || !context.mounted) return;
+                    showMoveToFolderSheet(
+                      context,
+                      currentFolderId: item.folderId,
+                      onSelected: (folderId) => bloc.add(
+                        MoveScreenshotToFolderEvent(item.id, folderId),
+                      ),
+                    );
+                  },
+                ),
+                _QuickActionTile(
+                  icon: Icons.delete_outline_rounded,
+                  iconColor: context.colors.error,
+                  label: context.l10n.commonDelete,
+                  onTap: () async {
+                    Navigator.of(sheetContext).pop();
+                    final bool confirmed = await showConfirmDialog(
+                      context,
+                      title: context.l10n.detailDeleteTitle,
+                      message: context.l10n.detailDeleteMessage,
+                      confirmLabel: context.l10n.commonDelete,
+                      isDestructive: true,
+                    );
+                    if (confirmed) bloc.add(DeleteScreenshotEvent(item.id));
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
