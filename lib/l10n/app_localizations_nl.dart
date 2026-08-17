@@ -289,6 +289,12 @@ class AppLocalizationsNl extends AppLocalizations {
   String get reminderPickTime => 'Kies een tijd';
 
   @override
+  String get reminderConfirm => 'Herinnering instellen';
+
+  @override
+  String get reminderOtherDay => 'Andere dag';
+
+  @override
   String get reminderClear => 'Herinnering verwijderen';
 
   @override
@@ -2229,6 +2235,9 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get dateToday => 'Vandaag';
+
+  @override
+  String get dateTomorrow => 'Morgen';
 
   @override
   String get dateYesterday => 'Gisteren';

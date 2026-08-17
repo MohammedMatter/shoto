@@ -142,6 +142,100 @@ List<ReminderPreset> offeredPresets(DateTime now) => <ReminderPreset>[
 /// How far past [now] the custom time picker opens when it has to guess.
 const Duration _pickerHeadStart = Duration(minutes: 5);
 
+/// How many days the picker offers before somebody has to open a calendar.
+///
+/// Two weeks, and the number is a claim about what reminders on screenshots
+/// are *for*: come back to this receipt, this address, this code. Anything
+/// further out is a diary entry, and the calendar behind the last chip is the
+/// honest place for it. Offering ninety days would not make those reminders
+/// easier to set, it would make the fourteen common ones a longer scroll.
+const int _offeredDays = 14;
+
+/// The days the picker offers, in order, each normalised to midnight.
+///
+/// **Today is dropped once there is nothing left of it.** At 23:59 the only
+/// minute today still owns is already gone by the time a thumb reaches the
+/// wheel, so the chip would be a day that cannot be chosen — see
+/// [earliestChoiceOn], which is the single rule both this and the wheels read.
+List<DateTime> reminderDays(DateTime now, {int span = _offeredDays}) {
+  final DateTime today = DateTime(now.year, now.month, now.day);
+  return <DateTime>[
+    for (int i = 0; i < span; i++)
+      if (dayHasChoices(_addDays(today, i), now)) _addDays(today, i),
+  ];
+}
+
+/// The earliest moment still choosable on [day].
+///
+/// **This one function is the whole constraint system.** The wheels dim what
+/// is before it, snap back to it when a finger lets go past it, and the day
+/// strip drops a day it cannot land inside. Writing it once means the three
+/// cannot disagree — and because it answers *midnight* for every day that is
+/// not today, all three call sites are branch-free: an hour is allowed when it
+/// is at or after this hour, and for a future day that test is `h >= 0`.
+///
+/// A minute is the granularity because a minute is what the wheels offer.
+/// Asked at 10:30:45 this answers 10:31 rather than 10:30 — the current minute
+/// is already partly spent, and a reminder set inside it is one the user
+/// watches fire before they have put the phone down.
+DateTime earliestChoiceOn(DateTime day, DateTime now) {
+  if (!isSameDay(day, now)) return DateTime(day.year, day.month, day.day);
+
+  final DateTime next = now.add(const Duration(minutes: 1));
+  return DateTime(next.year, next.month, next.day, next.hour, next.minute);
+}
+
+/// Whether [day] still has a minute somebody could pick.
+///
+/// True for every future day, and true for today until the last minute of it
+/// is spent — at which point [earliestChoiceOn] has rolled into tomorrow and
+/// no longer lands on [day].
+bool dayHasChoices(DateTime day, DateTime now) =>
+    !day.isBefore(DateTime(now.year, now.month, now.day)) &&
+    isSameDay(earliestChoiceOn(day, now), day);
+
+/// Where the wheels open on [day], as a moment on that day.
+///
+/// [pickerOpensAt] holds the reasoning — nine in the morning for a day nobody
+/// has an opinion about, five minutes ahead for today. This adds the two
+/// clamps that a wheel needs and a dialog did not:
+///
+/// * **Never before the floor**, so the picker cannot open on a time it would
+///   immediately snap away from.
+/// * **Never past the day it belongs to.** At 23:58 the head start lands at
+///   00:03 *tomorrow*, and a picker that opened on today with 00:03 on its
+///   wheels would be showing a moment sixteen hours gone.
+DateTime openingChoice(DateTime day, DateTime now) {
+  final DateTime floor = earliestChoiceOn(day, now);
+  final DateTime lastMinute = DateTime(day.year, day.month, day.day, 23, 59);
+  final DateTime opening = pickerOpensAt(day, now);
+
+  if (opening.isBefore(floor)) return floor;
+  if (opening.isAfter(lastMinute)) return lastMinute;
+  return opening;
+}
+
+/// A day and a time on it, as one moment.
+///
+/// Trivial, and named anyway: three call sites compose this and a
+/// `DateTime(...)` with five positional arguments is the kind of line that
+/// gets a field transposed without anybody noticing.
+DateTime composeReminder(DateTime day, int hour, int minute) =>
+    DateTime(day.year, day.month, day.day, hour, minute);
+
+/// Whether two moments fall on the same calendar day.
+bool isSameDay(DateTime a, DateTime b) =>
+    a.year == b.year && a.month == b.month && a.day == b.day;
+
+/// [days] on from [start], via the calendar rather than via arithmetic.
+///
+/// `add(Duration(days: n))` adds exact 24-hour blocks, which is a different
+/// question: across a daylight-saving change it answers 23 or 25 hours later
+/// and lands on the wrong date or on 23:00 the previous evening. The day strip
+/// is a list of *dates*, so it counts in dates.
+DateTime _addDays(DateTime start, int days) =>
+    DateTime(start.year, start.month, start.day + days);
+
 /// The moment the clock face should open on, once [day] has been chosen.
 ///
 /// **This was a flat nine in the morning, and that is what made "today, in

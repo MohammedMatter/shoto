@@ -241,4 +241,142 @@ void main() {
       reason: 'the evening has gone; three hours on is still today',
     );
   });
+
+  // The rules the drum picker is built on. All three of its parts — the dimmed
+  // rows, the snap-back when a finger lets go past them, and the day strip
+  // dropping a day it cannot land inside — read `earliestChoiceOn` and nothing
+  // else, so these are the tests that decide whether an impossible reminder
+  // can be composed at all.
+  group('the floor under the wheels', () {
+    test('today cannot be set inside the minute it already is', () {
+      // 10:30:45 is most of the way through 10:30. Answering 10:30 would hand
+      // back a reminder the user watches fire before the sheet has closed.
+      expect(
+        earliestChoiceOn(DateTime(2026, 5, 4), DateTime(2026, 5, 4, 10, 30, 45)),
+        DateTime(2026, 5, 4, 10, 31),
+      );
+    });
+
+    test('and the seconds are dropped, not carried', () {
+      final DateTime floor = earliestChoiceOn(
+        DateTime(2026, 5, 4),
+        DateTime(2026, 5, 4, 10, 30, 45),
+      );
+      expect(floor.second, 0);
+      expect(floor.millisecond, 0);
+    });
+
+    // This is what makes every call site branch-free: an hour is allowed when
+    // it is at or after the floor's hour, and on a future day that reads
+    // `hour >= 0`. No `if (isToday)` anywhere in the widget.
+    test('any other day starts at midnight, so nothing is disabled', () {
+      expect(
+        earliestChoiceOn(DateTime(2026, 5, 9), DateTime(2026, 5, 4, 16, 51)),
+        DateTime(2026, 5, 9),
+      );
+    });
+
+    test('the last minute of the day is still choosable', () {
+      expect(
+        dayHasChoices(DateTime(2026, 5, 4), DateTime(2026, 5, 4, 23, 58)),
+        isTrue,
+      );
+    });
+
+    test('but once it is spent, today has nothing left to offer', () {
+      // 23:59 + a minute is tomorrow, so the floor no longer lands on today —
+      // and a chip for a day with no choosable minute is a chip that answers
+      // nothing.
+      expect(
+        dayHasChoices(DateTime(2026, 5, 4), DateTime(2026, 5, 4, 23, 59, 10)),
+        isFalse,
+      );
+    });
+
+    test('yesterday is never offered, whatever the clock says', () {
+      expect(
+        dayHasChoices(DateTime(2026, 5, 3), DateTime(2026, 5, 4, 9)),
+        isFalse,
+      );
+    });
+  });
+
+  group('the days on the strip', () {
+    test('start with today and run a fortnight', () {
+      final List<DateTime> days = reminderDays(DateTime(2026, 5, 4, 9));
+      expect(days.length, 14);
+      expect(days.first, DateTime(2026, 5, 4));
+      expect(days.last, DateTime(2026, 5, 17));
+    });
+
+    test('are dates, so they cross a month end without arithmetic', () {
+      final List<DateTime> days = reminderDays(DateTime(2026, 5, 28, 9));
+      expect(days[3], DateTime(2026, 5, 31));
+      expect(days[4], DateTime(2026, 6));
+    });
+
+    test('are all midnight, so a chip cannot carry a time with it', () {
+      for (final DateTime day in reminderDays(DateTime(2026, 5, 4, 16, 22))) {
+        expect(day.hour, 0);
+        expect(day.minute, 0);
+      }
+    });
+
+    // The strip is a list of days somebody can choose, so a day nobody can
+    // choose is not on it — and the first chip is therefore not always today,
+    // which is why the label is decided by the date and never by the index.
+    test('drop today once the last minute of it is gone', () {
+      final List<DateTime> days = reminderDays(DateTime(2026, 5, 4, 23, 59, 30));
+      expect(days.first, DateTime(2026, 5, 5));
+      expect(days.length, 13, reason: 'the span is a fortnight of dates');
+    });
+  });
+
+  group('where the wheels open', () {
+    test('on today, five minutes ahead — the request this exists to serve', () {
+      expect(
+        openingChoice(DateTime(2026, 5, 4), DateTime(2026, 5, 4, 16, 51)),
+        DateTime(2026, 5, 4, 16, 56),
+      );
+    });
+
+    test('on any other day, nine in the morning', () {
+      expect(
+        openingChoice(DateTime(2026, 5, 9), DateTime(2026, 5, 4, 16, 51)),
+        DateTime(2026, 5, 9, 9),
+      );
+    });
+
+    // `pickerOpensAt` answers 00:03 *tomorrow* here, which was correct for a
+    // dialog that took only the time off it and then refused the result. A
+    // wheel cannot open on a moment it would immediately slide away from.
+    test('never past the day the wheels belong to', () {
+      expect(
+        openingChoice(DateTime(2026, 5, 4), DateTime(2026, 5, 4, 23, 58)),
+        DateTime(2026, 5, 4, 23, 59),
+      );
+    });
+
+    test('and never before the earliest allowed minute, at any hour', () {
+      for (int hour = 0; hour < 24; hour++) {
+        for (final int minute in <int>[0, 29, 55, 59]) {
+          final DateTime now = DateTime(2026, 5, 4, hour, minute);
+          final DateTime day = DateTime(2026, 5, 4);
+          if (!dayHasChoices(day, now)) continue;
+
+          final DateTime opening = openingChoice(day, now);
+          expect(
+            opening.isBefore(earliestChoiceOn(day, now)),
+            isFalse,
+            reason: 'opened on $opening at $hour:$minute',
+          );
+          expect(
+            isSameDay(opening, day),
+            isTrue,
+            reason: 'opened on another day at $hour:$minute',
+          );
+        }
+      }
+    });
+  });
 }

@@ -540,6 +540,18 @@ abstract class AppLocalizations {
   /// **'Pick a time'**
   String get reminderPickTime;
 
+  /// No description provided for @reminderConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Set reminder'**
+  String get reminderConfirm;
+
+  /// No description provided for @reminderOtherDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Another day'**
+  String get reminderOtherDay;
+
   /// No description provided for @reminderClear.
   ///
   /// In en, this message translates to:
@@ -3725,6 +3737,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Today'**
   String get dateToday;
+
+  /// No description provided for @dateTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow'**
+  String get dateTomorrow;
 
   /// No description provided for @dateYesterday.
   ///

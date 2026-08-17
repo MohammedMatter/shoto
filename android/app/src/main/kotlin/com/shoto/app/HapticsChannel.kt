@@ -59,14 +59,24 @@ object HapticsChannel {
     }
 
     /**
-     * The four strengths the app speaks in, mirroring `Haptics` on the Dart
-     * side. Kept deliberately small — an interface that vibrates in six
+     * The strengths the app speaks in, mirroring `Haptics` on the Dart side.
+     * Kept deliberately small — an interface that vibrates in six
      * distinguishable ways is one nobody can read.
+     *
+     * `tick` is the one entry that is not trying to be told apart from the
+     * others; it is the texture of a wheel turning, and it is the only effect
+     * that fires dozens of times inside one gesture.
      */
     private fun effectFor(method: String, vibrator: Vibrator): VibrationEffect? =
         when (method) {
-            // A tap landed. The lightest one, and by far the most frequent —
-            // anything heavier here becomes noise within a minute of use.
+            // One detent of a picker wheel. Below `tap` on purpose: a fling
+            // down the minute wheel plays this thirty times in a second, and
+            // at tap strength that is a buzz rather than a texture.
+            "tick" -> preferred(vibrator, VibrationEffect.EFFECT_TICK, 0.28f)
+
+            // A tap landed. The lightest one of the four that mean something,
+            // and by far the most frequent — anything heavier here becomes
+            // noise within a minute of use.
             "tap" -> preferred(vibrator, VibrationEffect.EFFECT_TICK, 0.55f)
 
             // Something committed — saved, filed, deleted.

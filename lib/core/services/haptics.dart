@@ -43,6 +43,20 @@ abstract class Haptics {
   /// The everyday one: a tap landed, a tab changed, a chip toggled.
   static void tap() => _fire('tap', HapticFeedback.lightImpact);
 
+  /// One detent of a wheel passing under the finger.
+  ///
+  /// **Not a fifth thing the interface says — a texture.** The four below are
+  /// meant to be told apart; this one is meant to be felt as the *surface* of
+  /// a control, the way a physical dial has notches. It is the only effect
+  /// that fires dozens of times in a single gesture, which is exactly why it
+  /// is lighter than [tap]: at [tap]'s strength a fling down the minute wheel
+  /// is a buzz, and a buzz is what people switch haptics off to escape.
+  ///
+  /// `selectionClick` is the fallback rather than `lightImpact` because it is
+  /// the constant the platform reserves for this — Android maps it to
+  /// `CLOCK_TICK`, which is documented as scrolling past an item in a picker.
+  static void tick() => _fire('tick', HapticFeedback.selectionClick);
+
   /// Something committed: saved, filed, deleted, unlocked.
   static void confirm() => _fire('confirm', HapticFeedback.mediumImpact);
 

@@ -290,6 +290,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reminderPickTime => 'Elegir una hora';
 
   @override
+  String get reminderConfirm => 'Crear recordatorio';
+
+  @override
+  String get reminderOtherDay => 'Otro día';
+
+  @override
   String get reminderClear => 'Quitar recordatorio';
 
   @override
@@ -2217,6 +2223,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dateToday => 'Hoy';
+
+  @override
+  String get dateTomorrow => 'Mañana';
 
   @override
   String get dateYesterday => 'Ayer';

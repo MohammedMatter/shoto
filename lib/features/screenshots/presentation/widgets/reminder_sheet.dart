@@ -12,6 +12,7 @@ import 'package:shoto/core/widgets/app_snack_bar.dart';
 import 'package:shoto/core/widgets/sheet_surface.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_reminder_use_case.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/reminder_time_sheet.dart';
 
 /// Asks when to bring a screenshot back.
 ///
@@ -90,7 +91,7 @@ class _ReminderSheet extends StatelessWidget {
             _Row(
               icon: Icons.event_rounded,
               label: context.l10n.reminderPickTime,
-              onTap: () => _pick(context, now),
+              onTap: () => _pick(context),
             ),
             if (item.remindAt != null) ...[
               Divider(height: 1, color: context.colors.border),
@@ -116,53 +117,30 @@ class _ReminderSheet extends StatelessWidget {
     return '${l.formatMediumDate(at)}, ${l.formatTimeOfDay(TimeOfDay.fromDateTime(at))}';
   }
 
-  Future<void> _pick(BuildContext context, DateTime now) async {
-    final DateTime? day = await showDatePicker(
-      context: context,
-      initialDate: now.add(const Duration(days: 1)),
-      firstDate: now,
-      // Far enough to be no limit in practice, near enough that a mis-scroll
-      // cannot set a reminder for the next century.
-      lastDate: now.add(const Duration(days: 365 * 2)),
-    );
-    if (day == null || !context.mounted) return;
+  /// The custom day-and-time sheet — see [showReminderTimeSheet], which
+  /// replaced a date dialog followed by a clock face.
+  Future<void> _pick(BuildContext context) async {
+    final DateTime? at = await showReminderTimeSheet(context);
+    if (at == null || !context.mounted) return;
 
-    final TimeOfDay? time = await showTimePicker(
-      context: context,
-      initialTime: _openTimeAt(day),
-    );
-    if (time == null || !context.mounted) return;
-
-    final DateTime at = DateTime(
-      day.year,
-      day.month,
-      day.day,
-      time.hour,
-      time.minute,
-    );
-
-    // **A moment already gone gets said out loud.**
+    // **A backstop, and honestly labelled as one.**
     //
-    // This used to `return` in silence, on the reasoning that the user can see
-    // the date they chose. They cannot see *why nothing happened*, and the
-    // report that came back was exactly that: "it won't make a reminder for
-    // today". Nothing in the app is more corrosive than a control that answers
-    // a deliberate tap by doing nothing at all — it reads as broken, and there
-    // is no way for the user to find out otherwise.
+    // The picker now refuses a past moment twice over — its wheels will not
+    // settle behind the earliest allowed minute, and its button re-reads the
+    // clock before returning — so in practice this cannot fire. It stays
+    // because arming a reminder for a moment already gone is the failure that
+    // either rings instantly or never rings at all, and one comparison is a
+    // cheap price for never doing it.
     //
-    // The sheet deliberately stays open, so the correction costs one tap
-    // rather than a second trip through both pickers.
+    // The message belongs on the picker rather than here: a snack bar posted
+    // while a sheet is up renders into the page's `Scaffold`, underneath the
+    // panel covering the bottom of the screen, where nobody sees it.
     if (!at.isAfter(DateTime.now())) {
       showAppSnackBar(context, context.l10n.reminderPastTime);
       return;
     }
     await _set(context, at);
   }
-
-  /// What the clock face opens on — see [pickerOpensAt] for why it is not a
-  /// constant.
-  TimeOfDay _openTimeAt(DateTime day) =>
-      TimeOfDay.fromDateTime(pickerOpensAt(day, DateTime.now()));
 
   Future<void> _set(BuildContext context, DateTime? at) async {
     final NavigatorState navigator = Navigator.of(context);
