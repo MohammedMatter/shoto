@@ -88,6 +88,7 @@ import 'package:shoto/features/screenshots/domain/use_cases/get_intent_ids_by_re
 import 'package:shoto/features/screenshots/domain/use_cases/set_intent_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_intents_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_intent_done_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/set_reminder_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/update_custom_intent_use_case.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/intent_catalog.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/watch_library_changes_use_case.dart';
@@ -162,6 +163,7 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => SetIntentUseCase(sl()));
   sl.registerLazySingleton(() => SetIntentsUseCase(sl()));
   sl.registerLazySingleton(() => SetIntentDoneUseCase(sl()));
+  sl.registerLazySingleton(() => SetReminderUseCase(sl()));
   sl.registerLazySingleton(() => GetCustomIntentsUseCase(sl()));
   sl.registerLazySingleton(() => GetCustomIntentCountUseCase(sl()));
   sl.registerLazySingleton(() => CreateCustomIntentUseCase(sl()));

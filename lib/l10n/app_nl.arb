@@ -127,6 +127,33 @@
   "quickTileOfferTitle": "Bewaren zonder deelmenu",
   "quickTileOfferBody": "Voeg een snelkoppeling toe voor je laatste schermafbeelding",
   "triageNothingNew": "Niets nieuws om te bekijken",
+  "reminderTitle": "Herinner me hieraan",
+  "reminderLaterToday": "Later vandaag",
+  "reminderThisEvening": "Vanavond",
+  "reminderTomorrow": "Morgenochtend",
+  "reminderNextWeek": "Volgende week",
+  "reminderPickTime": "Kies een tijd",
+  "reminderClear": "Herinnering verwijderen",
+  "reminderNotificationTitle": "Shoto",
+  "reminderMuted": "Meldingen staan uit, dus dit bereikt je niet — zet ze aan in de instellingen van je telefoon.",
+  "reminderUnsupported": "Herinneringen zijn voorlopig alleen op Android beschikbaar.",
+  "reminderSet": "Herinnering ingesteld voor {when}",
+  "@reminderSet": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderPending": "Herinnering voor {when}",
+  "@reminderPending": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderNotificationBody": "Je wilde terugkomen op deze screenshot",
   "commonCancel": "Annuleren",
   "commonDelete": "Verwijderen",
   "commonRetry": "Opnieuw proberen",

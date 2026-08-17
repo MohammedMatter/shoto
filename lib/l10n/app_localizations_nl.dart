@@ -271,6 +271,52 @@ class AppLocalizationsNl extends AppLocalizations {
   String get triageNothingNew => 'Niets nieuws om te bekijken';
 
   @override
+  String get reminderTitle => 'Herinner me hieraan';
+
+  @override
+  String get reminderLaterToday => 'Later vandaag';
+
+  @override
+  String get reminderThisEvening => 'Vanavond';
+
+  @override
+  String get reminderTomorrow => 'Morgenochtend';
+
+  @override
+  String get reminderNextWeek => 'Volgende week';
+
+  @override
+  String get reminderPickTime => 'Kies een tijd';
+
+  @override
+  String get reminderClear => 'Herinnering verwijderen';
+
+  @override
+  String get reminderNotificationTitle => 'Shoto';
+
+  @override
+  String get reminderMuted =>
+      'Meldingen staan uit, dus dit bereikt je niet — zet ze aan in de instellingen van je telefoon.';
+
+  @override
+  String get reminderUnsupported =>
+      'Herinneringen zijn voorlopig alleen op Android beschikbaar.';
+
+  @override
+  String reminderSet(String when) {
+    return 'Herinnering ingesteld voor $when';
+  }
+
+  @override
+  String reminderPending(String when) {
+    return 'Herinnering voor $when';
+  }
+
+  @override
+  String get reminderNotificationBody =>
+      'Je wilde terugkomen op deze screenshot';
+
+  @override
   String get commonCancel => 'Annuleren';
 
   @override

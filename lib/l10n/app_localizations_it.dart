@@ -273,6 +273,51 @@ class AppLocalizationsIt extends AppLocalizations {
   String get triageNothingNew => 'Niente di nuovo da rivedere';
 
   @override
+  String get reminderTitle => 'Ricordamelo';
+
+  @override
+  String get reminderLaterToday => 'Più tardi oggi';
+
+  @override
+  String get reminderThisEvening => 'Stasera';
+
+  @override
+  String get reminderTomorrow => 'Domani mattina';
+
+  @override
+  String get reminderNextWeek => 'La prossima settimana';
+
+  @override
+  String get reminderPickTime => 'Scegli un orario';
+
+  @override
+  String get reminderClear => 'Rimuovi il promemoria';
+
+  @override
+  String get reminderNotificationTitle => 'Shoto';
+
+  @override
+  String get reminderMuted =>
+      'Le notifiche sono disattivate, quindi non ti arriverà — attivale nelle impostazioni del telefono.';
+
+  @override
+  String get reminderUnsupported =>
+      'Per ora i promemoria sono disponibili solo su Android.';
+
+  @override
+  String reminderSet(String when) {
+    return 'Promemoria impostato per $when';
+  }
+
+  @override
+  String reminderPending(String when) {
+    return 'Promemoria per $when';
+  }
+
+  @override
+  String get reminderNotificationBody => 'Volevi tornare su questo screenshot';
+
+  @override
   String get commonCancel => 'Annulla';
 
   @override

@@ -272,6 +272,51 @@ class AppLocalizationsEs extends AppLocalizations {
   String get triageNothingNew => 'No hay nada nuevo que revisar';
 
   @override
+  String get reminderTitle => 'Recordármelo';
+
+  @override
+  String get reminderLaterToday => 'Más tarde hoy';
+
+  @override
+  String get reminderThisEvening => 'Esta tarde';
+
+  @override
+  String get reminderTomorrow => 'Mañana por la mañana';
+
+  @override
+  String get reminderNextWeek => 'La próxima semana';
+
+  @override
+  String get reminderPickTime => 'Elegir una hora';
+
+  @override
+  String get reminderClear => 'Quitar recordatorio';
+
+  @override
+  String get reminderNotificationTitle => 'Shoto';
+
+  @override
+  String get reminderMuted =>
+      'Las notificaciones están desactivadas, así que esto no te llegará: actívalas en los ajustes del teléfono.';
+
+  @override
+  String get reminderUnsupported =>
+      'Por ahora los recordatorios solo están disponibles en Android.';
+
+  @override
+  String reminderSet(String when) {
+    return 'Recordatorio para $when';
+  }
+
+  @override
+  String reminderPending(String when) {
+    return 'Recordatorio para $when';
+  }
+
+  @override
+  String get reminderNotificationBody => 'Querías volver a esta captura';
+
+  @override
   String get commonCancel => 'Cancelar';
 
   @override

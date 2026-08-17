@@ -504,6 +504,84 @@ abstract class AppLocalizations {
   /// **'Nothing new to review'**
   String get triageNothingNew;
 
+  /// No description provided for @reminderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me about this'**
+  String get reminderTitle;
+
+  /// No description provided for @reminderLaterToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Later today'**
+  String get reminderLaterToday;
+
+  /// No description provided for @reminderThisEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'This evening'**
+  String get reminderThisEvening;
+
+  /// No description provided for @reminderTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tomorrow morning'**
+  String get reminderTomorrow;
+
+  /// No description provided for @reminderNextWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Next week'**
+  String get reminderNextWeek;
+
+  /// No description provided for @reminderPickTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a time'**
+  String get reminderPickTime;
+
+  /// No description provided for @reminderClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove reminder'**
+  String get reminderClear;
+
+  /// No description provided for @reminderNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shoto'**
+  String get reminderNotificationTitle;
+
+  /// No description provided for @reminderMuted.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are off, so this will not reach you — turn them on in your phone settings.'**
+  String get reminderMuted;
+
+  /// No description provided for @reminderUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders are only available on Android for now.'**
+  String get reminderUnsupported;
+
+  /// No description provided for @reminderSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder set for {when}'**
+  String reminderSet(String when);
+
+  /// No description provided for @reminderPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder set for {when}'**
+  String reminderPending(String when);
+
+  /// No description provided for @reminderNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You wanted to come back to this screenshot'**
+  String get reminderNotificationBody;
+
   /// No description provided for @commonCancel.
   ///
   /// In en, this message translates to:

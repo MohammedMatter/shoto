@@ -83,6 +83,20 @@ class MainActivity : FlutterFragmentActivity() {
         // this does — disable the component the sheet may itself have been
         // launched from — is not something to expose to it.
         AppIconChannel.register(this, flutterEngine)
+        RemindersChannel.register(this, flutterEngine)
+    }
+
+    /**
+     * The activity is `singleTop`, so tapping a reminder while Shoto is
+     * already running delivers the intent here rather than through `onCreate`.
+     * Without this, the notification would simply bring the app forward on
+     * whatever screen it was left on and never open the screenshot it was
+     * about.
+     */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        RemindersChannel.captureLaunchIntent(intent)
     }
 
     // Only the picker's own request code is consumed; everything else still

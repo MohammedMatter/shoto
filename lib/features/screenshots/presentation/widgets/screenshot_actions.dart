@@ -16,6 +16,7 @@ import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dar
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/intent_section.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/reminder_sheet.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_limit_gate.dart';
 
 /// Shared "share to another app" action, used by both the detail viewer and
@@ -58,6 +59,33 @@ Future<void> showScreenshotQuickActionsSheet(
               ),
               Divider(height: 1, color: context.colors.border),
               SizedBox(height: 6.h),
+              // **First of the verbs, and directly under the intent row.**
+              //
+              // It belongs to the same thought: the row above records what the
+              // user is going to do about this, and this is the only control
+              // in the app that makes the app say so again later. Everything
+              // below acts on the picture now.
+              _QuickActionTile(
+                icon: item.hasPendingReminder
+                    ? Icons.notifications_active_rounded
+                    : Icons.notifications_none_rounded,
+                iconColor: item.hasPendingReminder
+                    ? context.colors.primary
+                    : context.colors.textPrimary,
+                label: context.l10n.reminderTitle,
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  showReminderSheet(
+                    context,
+                    item,
+                    // The bloc holds the library, and a reminder is stored on
+                    // the same row as the folder and the favourite — so the
+                    // grid has to be told, or the bell on this tile stays
+                    // hollow until the next full load.
+                    onChanged: () => bloc.add(LoadScreenshotsEvent()),
+                  );
+                },
+              ),
               _QuickActionTile(
                 icon: item.isFavorite
                     ? Icons.favorite_rounded

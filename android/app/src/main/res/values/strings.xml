@@ -18,4 +18,14 @@
     <string name="capture_notice_body">Tap to file it in Shoto</string>
     <string name="capture_channel_name">New screenshots</string>
     <string name="capture_channel_description">Offers to file a screenshot the moment you take it</string>
+    <!--
+        The reminder channel's own name and description, but *not* the text of
+        a reminder: that names the user's own verb ("Time to pay this") and is
+        composed in Dart from the ARB files, then handed to the scheduler. So
+        the notification itself follows the in-app language, and only the
+        channel — which Android draws in its own settings screen, with no app
+        running — follows the device.
+    -->
+    <string name="reminder_channel_name">Reminders</string>
+    <string name="reminder_channel_description">Brings back a screenshot at the time you asked for</string>
 </resources>

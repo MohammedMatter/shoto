@@ -127,6 +127,33 @@
   "quickTileOfferTitle": "Sichern ohne Teilen-Menü",
   "quickTileOfferBody": "Eine Schnelleinstellungen-Kachel für deinen letzten Screenshot",
   "triageNothingNew": "Nichts Neues zum Ansehen",
+  "reminderTitle": "Daran erinnern",
+  "reminderLaterToday": "Später heute",
+  "reminderThisEvening": "Heute Abend",
+  "reminderTomorrow": "Morgen früh",
+  "reminderNextWeek": "Nächste Woche",
+  "reminderPickTime": "Zeit wählen",
+  "reminderClear": "Erinnerung entfernen",
+  "reminderNotificationTitle": "Shoto",
+  "reminderMuted": "Benachrichtigungen sind aus, also erreicht dich das nicht — schalte sie in den Telefoneinstellungen ein.",
+  "reminderUnsupported": "Erinnerungen gibt es vorerst nur unter Android.",
+  "reminderSet": "Erinnerung für {when} gesetzt",
+  "@reminderSet": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderPending": "Erinnerung für {when}",
+  "@reminderPending": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderNotificationBody": "Du wolltest zu diesem Screenshot zurückkommen",
   "commonCancel": "Abbrechen",
   "commonDelete": "Löschen",
   "commonRetry": "Erneut versuchen",

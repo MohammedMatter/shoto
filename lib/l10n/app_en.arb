@@ -127,6 +127,33 @@
   "quickTileOfferTitle": "Save without the share sheet",
   "quickTileOfferBody": "Add a Quick Settings shortcut for your last screenshot",
   "triageNothingNew": "Nothing new to review",
+  "reminderTitle": "Remind me about this",
+  "reminderLaterToday": "Later today",
+  "reminderThisEvening": "This evening",
+  "reminderTomorrow": "Tomorrow morning",
+  "reminderNextWeek": "Next week",
+  "reminderPickTime": "Pick a time",
+  "reminderClear": "Remove reminder",
+  "reminderNotificationTitle": "Shoto",
+  "reminderMuted": "Notifications are off, so this will not reach you — turn them on in your phone settings.",
+  "reminderUnsupported": "Reminders are only available on Android for now.",
+  "reminderSet": "Reminder set for {when}",
+  "@reminderSet": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderPending": "Reminder set for {when}",
+  "@reminderPending": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderNotificationBody": "You wanted to come back to this screenshot",
   "commonCancel": "Cancel",
   "commonDelete": "Delete",
   "commonRetry": "Try again",

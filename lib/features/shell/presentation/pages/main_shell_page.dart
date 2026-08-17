@@ -8,6 +8,8 @@ import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/capture_alerts.dart';
 import 'package:shoto/core/services/library_quota.dart';
+import 'package:shoto/core/services/reminders.dart';
+import 'package:shoto/core/routes/photo_viewer_route.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/widgets/app_bottom_nav_bar.dart';
 import 'package:shoto/core/widgets/lazy_indexed_stack.dart';
@@ -16,10 +18,13 @@ import 'package:shoto/features/folders/presentation/bloc/folders_event.dart';
 import 'package:shoto/features/folders/presentation/pages/folders_page.dart';
 import 'package:shoto/features/folders/presentation/widgets/default_folders.dart';
 import 'package:shoto/features/home/presentation/pages/home_page.dart';
+import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/pages/library_page.dart';
+import 'package:shoto/features/screenshots/presentation/pages/screenshot_detail_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/share_intent_listener.dart';
 import 'package:shoto/features/settings/presentation/pages/settings_page.dart';
 
@@ -98,6 +103,61 @@ class _MainShellPageState extends State<MainShellPage>
     // already-scheduled job replaces it, and it does nothing at all unless
     // the user asked for the feature.
     unawaited(CaptureAlerts.rearm(wanted: sl<AppPreferences>().captureAlerts));
+    unawaited(_openTappedReminder());
+  }
+
+  /// Opens the screenshot a tapped reminder was about.
+  ///
+  /// **Asked on launch and on every resume**, because the activity is
+  /// `singleTop`: a notification tapped while Shoto is already running never
+  /// passes through `initState` at all, and without the resume call it would
+  /// merely bring the app forward on whatever screen it was left on — the one
+  /// outcome that makes a reminder feel broken, since it did fire and did
+  /// nothing.
+  ///
+  /// The id is *consumed* on the platform side, so an ordinary resume gets
+  /// null and nothing happens. Waiting on the library is deliberate: the
+  /// screenshot has to be found before it can be shown, and on a cold start
+  /// this runs while the first load is still going.
+  Future<void> _openTappedReminder() async {
+    final String? assetId = await Reminders.consumeLaunchAssetId();
+    if (assetId == null || !mounted) return;
+
+    final ScreenshotsState state = _screenshotsBloc.state;
+    if (state is! ScreenshotsLoadedState) {
+      // The library is still loading. Rather than race it, ask again once it
+      // has settled — the bloc emits exactly once more for this load.
+      await _screenshotsBloc.stream.firstWhere(
+        (ScreenshotsState next) => next is ScreenshotsLoadedState,
+      );
+      if (!mounted) return;
+      return _showReminded(assetId);
+    }
+    _showReminded(assetId);
+  }
+
+  void _showReminded(String assetId) {
+    final ScreenshotsState state = _screenshotsBloc.state;
+    if (state is! ScreenshotsLoadedState) return;
+
+    final int index = state.screenshots.indexWhere(
+      (ScreenshotEntity item) => item.id == assetId,
+    );
+    // Deleted since the reminder was set. Nothing to open and nothing worth
+    // saying — the notification is already gone from the shade.
+    if (index < 0) return;
+
+    Navigator.of(context).push(
+      PhotoViewerRoute(
+        builder: (_) => BlocProvider<ScreenshotsBloc>.value(
+          value: _screenshotsBloc,
+          child: ScreenshotDetailPage(
+            screenshots: state.screenshots,
+            initialIndex: index,
+          ),
+        ),
+      ),
+    );
   }
 
   /// Offers the starter folders here rather than on the Folders page itself.
@@ -180,6 +240,7 @@ class _MainShellPageState extends State<MainShellPage>
     if (state != AppLifecycleState.resumed) return;
     _screenshotsBloc.add(RefreshScreenshotsEvent());
     _foldersBloc.add(LoadFoldersEvent());
+    unawaited(_openTappedReminder());
     // The share sheet files screenshots from a separate engine in another
     // process, so coming back to the foreground is precisely when the managed
     // count has moved without this process seeing it happen.

@@ -127,6 +127,33 @@
   "quickTileOfferTitle": "Salve sem o menu de compartilhamento",
   "quickTileOfferBody": "Adicione um atalho para sua última captura",
   "triageNothingNew": "Nada de novo para rever",
+  "reminderTitle": "Lembrar-me disto",
+  "reminderLaterToday": "Mais tarde hoje",
+  "reminderThisEvening": "Esta noite",
+  "reminderTomorrow": "Amanhã de manhã",
+  "reminderNextWeek": "Na próxima semana",
+  "reminderPickTime": "Escolher uma hora",
+  "reminderClear": "Remover lembrete",
+  "reminderNotificationTitle": "Shoto",
+  "reminderMuted": "As notificações estão desativadas, por isso isto não chegará até si — ative-as nas definições do telemóvel.",
+  "reminderUnsupported": "Por agora, os lembretes só estão disponíveis no Android.",
+  "reminderSet": "Lembrete definido para {when}",
+  "@reminderSet": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderPending": "Lembrete para {when}",
+  "@reminderPending": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderNotificationBody": "Você queria voltar a esta captura",
   "commonCancel": "Cancelar",
   "commonDelete": "Excluir",
   "commonRetry": "Tentar de novo",

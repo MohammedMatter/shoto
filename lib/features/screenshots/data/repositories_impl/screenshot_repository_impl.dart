@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:shoto/core/services/reminders.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/core/utils/visual_vocabulary.dart';
 import 'package:shoto/features/screenshots/data/data_sources/custom_intents_local_data_source.dart';
@@ -258,6 +259,38 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
   Future<void> setIntentDone(String assetId, bool isDone) =>
       _metadata.setIntentDone(assetId, isDone);
 
+  /// The row first, then the alarm.
+  ///
+  /// That order is deliberate for the failure case: if arming throws, the
+  /// database still says a reminder exists, which the app can see and re-arm.
+  /// The other order would leave an alarm ringing about a screenshot with no
+  /// reminder on it, which nothing in the app could explain or cancel.
+  @override
+  Future<bool> setReminder(
+    String assetId,
+    DateTime? at, {
+    String title = '',
+    String body = '',
+  }) async {
+    await _metadata.setReminder(assetId, at);
+
+    if (at == null) {
+      await Reminders.cancel(assetId);
+      return false;
+    }
+
+    return Reminders.schedule(
+      assetId: assetId,
+      at: at,
+      title: title,
+      body: body,
+    );
+  }
+
+  @override
+  Future<Map<String, DateTime>> getPendingReminders() =>
+      _metadata.getPendingReminders(DateTime.now());
+
   @override
   Future<void> assignFolder(List<String> assetIds, int? folderId) =>
       _metadata.assignFolder(assetIds, folderId);
@@ -472,11 +505,15 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
       customIntents,
     );
     final int? doneAt = meta?['intent_done_at'] as int?;
+    final int? remindAt = meta?['remind_at'] as int?;
 
     return ScreenshotEntity(
       asset: asset,
       isFavorite: (meta?['is_favorite'] as int?) == 1,
       folderId: meta?['folder_id'] as int?,
+      remindAt: remindAt == null
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(remindAt),
       intent: ref == null
           ? null
           : IntentState(

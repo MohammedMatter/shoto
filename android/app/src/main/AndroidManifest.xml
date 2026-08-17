@@ -35,6 +35,19 @@
     -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!--
+      Alarms are dropped when the phone restarts, so a reminder set for
+      tomorrow does not survive a reboot tonight unless this app is told the
+      phone came back. BootReceiver re-arms what is still in the future and
+      forgets what is not — see ReminderScheduler.
+
+      Note what is deliberately **absent**: SCHEDULE_EXACT_ALARM. Reminders use
+      setAndAllowWhileIdle, which needs no permission and is allowed to slide a
+      few minutes. The exact variant is a special-access permission Play
+      reviews against a short list of genuine uses — alarm clocks, calendars —
+      and "remind me about this screenshot this evening" is not one of them.
+    -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!--
       Predictive back: the gesture shows where it is going before it commits.
 
       Dragging from the edge shrinks the current screen and reveals what is
@@ -321,6 +334,30 @@
             android:name=".CaptureWatcher"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <!--
+            Fires one reminder. `exported="false"` because the only thing that
+            may send it is the PendingIntent this app handed to AlarmManager,
+            and a broadcast receiver another app can reach is a broadcast
+            receiver another app can use to post notifications as Shoto.
+        -->
+        <receiver
+            android:name=".ReminderReceiver"
+            android:exported="false" />
+
+        <!--
+            Re-arms reminders after a restart. This one must be exported —
+            BOOT_COMPLETED comes from the system, not from us — which is
+            exactly why the filter is narrow and the receiver does nothing but
+            read its own stored list.
+        -->
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <!-- Asks Play services to fetch the OCR model at install time rather
              than on the first scan, which is what makes an unbundled model

@@ -47,6 +47,31 @@ abstract class ScreenshotRepository {
   /// Ticks an intent off, or puts it back on the waiting list.
   Future<void> setIntentDone(String assetId, bool isDone);
 
+  /// Sets or clears when the user should be brought back to a screenshot.
+  ///
+  /// Null [at] cancels, and then [title] and [body] are ignored.
+  ///
+  /// **The stored row and the platform alarm are set together, here**, because
+  /// a caller that wrote one and forgot the other leaves either a reminder
+  /// that never rings or one that rings about a screenshot the app no longer
+  /// believes is due. [title] and [body] arrive already translated: the text
+  /// has to come from a widget that can reach the ARB strings, and the alarm
+  /// has to be armed from a layer that cannot.
+  ///
+  /// Returns whether the reminder will actually be seen — false when Shoto's
+  /// notifications are switched off at the system level, which is worth
+  /// telling the user at the moment they set it rather than at the moment it
+  /// silently does not arrive.
+  Future<bool> setReminder(
+    String assetId,
+    DateTime? at, {
+    String title,
+    String body,
+  });
+
+  /// Every reminder still ahead, as `assetId -> when`.
+  Future<Map<String, DateTime>> getPendingReminders();
+
   /// The verbs this account wrote for itself, in picker order.
   Future<List<CustomIntent>> getCustomIntents();
 

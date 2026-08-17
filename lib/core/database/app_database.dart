@@ -83,14 +83,14 @@ class AppDatabase {
   Future<Database> openAt(String path) {
     return openDatabase(
       path,
-      // **Still 20, with 19 and 20 doing nothing.**
+      // **19 and 20 do nothing**, and the number still counts through them.
       //
       // Both steps belonged to a source-app feature that has been removed. The
       // number does not go back down: databases already at 20 exist on real
       // phones, and sqflite treats a lower number as a downgrade and throws.
       // What the two versions left behind — an unused column and an empty
       // table — is inert, and SQLite cannot drop a column anyway.
-      version: 20,
+      version: 21,
       onCreate: (db, version) => _createTables(db),
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
@@ -234,6 +234,20 @@ class AppDatabase {
         // 19 and 20 are deliberately absent: both belonged to a source-app
         // feature that has been removed. See the note on `version` above for
         // why the number still stops at 20.
+        if (oldVersion < 21) {
+          // When the user asked to be reminded about this screenshot.
+          //
+          // Separate from `intent` even though it is always set alongside one,
+          // because they answer different questions and are cleared by
+          // different events: finishing an intent is the user saying they did
+          // the thing, while a reminder is spent the moment it fires. Folding
+          // them into one column would mean a fired reminder either looked
+          // like a finished intent or kept firing.
+          //
+          // Additive and nullable — no reminder is the right answer for every
+          // screenshot saved before the question could be asked.
+          await _addRemindAt(db);
+        }
       },
       onConfigure: (db) async => db.execute('PRAGMA foreign_keys = ON'),
     );
@@ -265,6 +279,7 @@ class AppDatabase {
         kept_at INTEGER,
         intent TEXT,
         intent_done_at INTEGER,
+        remind_at INTEGER,
         updated_at INTEGER NOT NULL,
         PRIMARY KEY (user_id, asset_id),
         FOREIGN KEY (folder_id) REFERENCES $folders (id) ON DELETE SET NULL
@@ -289,6 +304,22 @@ class AppDatabase {
     final bool exists = columns.any((column) => column['name'] == 'icon_key');
     if (exists) return;
     await db.execute('ALTER TABLE $folders ADD COLUMN icon_key TEXT');
+  }
+
+  /// `ALTER TABLE … ADD COLUMN remind_at`, unless it is already there.
+  ///
+  /// Guarded for the same reason as [_addFolderIconKey]: a database old enough
+  /// to run the v2 step has its whole schema recreated by [_createTables],
+  /// which already has this column, and then runs every later step anyway.
+  Future<void> _addRemindAt(Database db) async {
+    final List<Map<String, Object?>> columns = await db.rawQuery(
+      'PRAGMA table_info($screenshotMeta)',
+    );
+    final bool exists = columns.any((column) => column['name'] == 'remind_at');
+    if (exists) return;
+    await db.execute(
+      'ALTER TABLE $screenshotMeta ADD COLUMN remind_at INTEGER',
+    );
   }
 
   Future<void> _createCustomIntents(Database db) async {
