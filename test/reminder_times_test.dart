@@ -7,30 +7,70 @@ import 'package:shoto/core/utils/reminder_times.dart';
 /// layer notices first, and neither is what the user asked for.
 void main() {
   group('later today', () {
-    test('is three hours on, rounded up to the hour', () {
+    // The reported bug, pinned: asked at 16:22 this used to answer 20:00 —
+    // three hours and thirty-eight minutes, because it rounded up to the next
+    // whole hour. Thirty-eight minutes the user did not ask for, under a
+    // button that only implies one number.
+    test('is exactly three hours on, to the minute', () {
+      expect(
+        resolveReminder(
+          ReminderPreset.laterToday,
+          DateTime(2026, 5, 4, 16, 22),
+        ),
+        DateTime(2026, 5, 4, 19, 22),
+      );
       expect(
         resolveReminder(
           ReminderPreset.laterToday,
           DateTime(2026, 5, 4, 10, 20),
         ),
-        DateTime(2026, 5, 4, 14),
+        DateTime(2026, 5, 4, 13, 20),
       );
     });
 
-    test('rounds up even from the top of an hour, so it never lands on now', () {
-      expect(
-        resolveReminder(ReminderPreset.laterToday, DateTime(2026, 5, 4, 10)),
-        DateTime(2026, 5, 4, 14),
-      );
-    });
-
-    test('crosses midnight rather than clamping to today', () {
+    test('does not round even when it would be tidy to', () {
       expect(
         resolveReminder(
           ReminderPreset.laterToday,
+          DateTime(2026, 5, 4, 10, 59),
+        ),
+        DateTime(2026, 5, 4, 13, 59),
+      );
+    });
+
+    test('and never lands on a time another preset already offers', () {
+      // Rounding *down* was the other way to make it tidy, and at 16:22 it
+      // would have produced 19:00 — the moment "this evening" is offering two
+      // rows below.
+      final DateTime now = DateTime(2026, 5, 4, 16, 22);
+      expect(
+        resolveReminder(ReminderPreset.laterToday, now),
+        isNot(resolveReminder(ReminderPreset.thisEvening, now)),
+      );
+    });
+
+    test('is not offered once three hours is no longer today', () {
+      // 22:30 + 3h is half past one the next morning: a correct offset under a
+      // label that is plainly false.
+      expect(
+        isPresetOffered(
+          ReminderPreset.laterToday,
           DateTime(2026, 5, 4, 22, 30),
         ),
-        DateTime(2026, 5, 5, 2),
+        isFalse,
+      );
+      expect(
+        isPresetOffered(ReminderPreset.laterToday, DateTime(2026, 5, 4, 21)),
+        isFalse,
+        reason: '21:00 + 3h is midnight, which is already tomorrow',
+      );
+      expect(
+        isPresetOffered(
+          ReminderPreset.laterToday,
+          DateTime(2026, 5, 4, 20, 59),
+        ),
+        isTrue,
+        reason: '23:59 is the last minute that is still today',
       );
     });
   });
@@ -72,15 +112,23 @@ void main() {
       );
     });
 
-    test('the others are always honest, so they are always offered', () {
+    test('the two that name their day are always offered', () {
       final DateTime lateAtNight = DateTime(2026, 5, 4, 23, 50);
       for (final ReminderPreset preset in <ReminderPreset>[
-        ReminderPreset.laterToday,
         ReminderPreset.tomorrowMorning,
         ReminderPreset.nextWeek,
       ]) {
         expect(isPresetOffered(preset, lateAtNight), isTrue, reason: '$preset');
       }
+    });
+
+    test('late at night, only those two are left', () {
+      // Both relative presets have stopped being true by now, and neither is
+      // shown saying something it does not mean.
+      expect(offeredPresets(DateTime(2026, 5, 4, 23, 50)), <ReminderPreset>[
+        ReminderPreset.tomorrowMorning,
+        ReminderPreset.nextWeek,
+      ]);
     });
   });
 
@@ -139,17 +187,15 @@ void main() {
   test('offered presets keep their declared order', () {
     // The sheet draws them in this order and the order is a judgement about
     // which answer is most likely, so a filter must not reshuffle it.
+    expect(offeredPresets(DateTime(2026, 5, 4, 9)), ReminderPreset.values);
     expect(
-      offeredPresets(DateTime(2026, 5, 4, 9)),
-      ReminderPreset.values,
-    );
-    expect(
-      offeredPresets(DateTime(2026, 5, 4, 22)),
+      offeredPresets(DateTime(2026, 5, 4, 19, 30)),
       <ReminderPreset>[
         ReminderPreset.laterToday,
         ReminderPreset.tomorrowMorning,
         ReminderPreset.nextWeek,
       ],
+      reason: 'the evening has gone; three hours on is still today',
     );
   });
 }

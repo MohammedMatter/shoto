@@ -12,15 +12,31 @@ library;
 /// **Four, and all of them relative.** A reminder set from a screenshot is set
 /// in the second after deciding to deal with it later, usually one-handed —
 /// so the common answers have to be one tap, and a date picker is what the
-/// fifth option is for. Every preset lands on a round hour rather than "in
-/// three hours", because a reminder at 19:00 is a time somebody can plan
-/// around and 18:47 is an interruption.
+/// fifth option is for.
+///
+/// **A named hour is round; a measured gap is exact.** "This evening" is seven
+/// o'clock because seven o'clock is what the words mean. "Later today" is three
+/// hours, and three hours from 16:22 is 19:22 — rounding that to a tidier
+/// number is the app deciding the user meant something they did not say. Every
+/// resolved time is printed beside its own row, so neither kind is a guess the
+/// reader has to make.
 enum ReminderPreset {
-  /// Three hours from now, rounded up to the hour.
+  /// Three hours from now, to the minute.
   ///
   /// Not a fixed clock time, because "later today" said at nine in the
   /// morning and at nine at night mean different things and only one of them
   /// is today.
+  ///
+  /// **It used to round up to the next whole hour, and that was wrong.** The
+  /// argument was that 20:00 is a time somebody can plan around where 19:22 is
+  /// an interruption — true of a time the user *names*, and not true of one
+  /// the app derives. Asked at 16:22 it produced 20:00: three hours and
+  /// thirty-eight minutes, a 21% overshoot on the only number the button
+  /// implies, and the user is the one who noticed. Rounding a relative offset
+  /// silently spends the user's time on the app's taste in clock faces.
+  ///
+  /// The tidy hours below stay, because there the round number *is* the
+  /// meaning — "this evening" is seven, not "seven-ish derived from now".
   laterToday,
 
   /// 19:00, the same evening — or tomorrow's, if it has already passed.
@@ -39,7 +55,7 @@ const int _eveningHour = 19;
 /// The hour every morning-ish preset lands on.
 const int _morningHour = 9;
 
-/// How far ahead [ReminderPreset.laterToday] reaches before rounding.
+/// How far ahead [ReminderPreset.laterToday] reaches. Exactly this, now.
 const Duration _laterTodayGap = Duration(hours: 3);
 
 /// The moment [preset] refers to, measured from [now].
@@ -54,17 +70,11 @@ const Duration _laterTodayGap = Duration(hours: 3);
 DateTime resolveReminder(ReminderPreset preset, DateTime now) {
   switch (preset) {
     case ReminderPreset.laterToday:
-      final DateTime raw = now.add(_laterTodayGap);
-      // Rounded *up*: rounding down could land before `now` for anything
-      // under an hour away, and this is the one preset whose target is not a
-      // named hour to begin with.
-      final DateTime rounded = DateTime(
-        raw.year,
-        raw.month,
-        raw.day,
-        raw.hour,
-      ).add(const Duration(hours: 1));
-      return rounded;
+      // Exactly three hours. Not rounded in either direction: rounding up
+      // charges the user up to fifty-nine minutes they did not ask for, and
+      // rounding down would land this on 19:00 at 16:22 — the same moment
+      // [ReminderPreset.thisEvening] already offers, two rows apart.
+      return now.add(_laterTodayGap);
 
     case ReminderPreset.thisEvening:
       final DateTime evening = DateTime(
@@ -94,17 +104,33 @@ DateTime resolveReminder(ReminderPreset preset, DateTime now) {
 
 /// Whether [preset] is worth offering at [now].
 ///
-/// **"This evening" at eleven at night is not an option, it is a mistake
-/// waiting to be made.** Resolving it rolls to tomorrow, which is correct and
-/// is not what the words on the button say — so the button comes off the sheet
-/// instead of quietly meaning something else. The rest are always honest:
-/// "later today" is measured from now, and the two morning presets name the
-/// day they land on.
+/// **A button whose words have stopped being true comes off the sheet, rather
+/// than quietly meaning something else.** Both of the relative presets can
+/// stop being true late in the day, and each resolves *correctly* when they do
+/// — which is exactly the problem: the answer is right and the label is not.
+///
+/// The two morning presets name the day they land on and are always honest.
 bool isPresetOffered(ReminderPreset preset, DateTime now) {
-  if (preset != ReminderPreset.thisEvening) return true;
-  // Offered until the evening itself arrives, and for one hour before it so
-  // the last offer is not a reminder three minutes away.
-  return now.hour < _eveningHour - 1;
+  switch (preset) {
+    // "This evening" at eleven at night resolves to tomorrow evening. Offered
+    // until an hour before seven, so the last one shown is not a reminder
+    // three minutes away.
+    case ReminderPreset.thisEvening:
+      return now.hour < _eveningHour - 1;
+
+    // **"Later today" has to still be today.** Three hours on from 22:30 is
+    // half past one the next morning — a correct offset under a label that is
+    // plainly false, and the sort of thing somebody discovers by being woken
+    // up. Checked against the resolved date rather than an hour threshold, so
+    // it stays right if the gap ever changes.
+    case ReminderPreset.laterToday:
+      final DateTime at = now.add(_laterTodayGap);
+      return at.year == now.year && at.month == now.month && at.day == now.day;
+
+    case ReminderPreset.tomorrowMorning:
+    case ReminderPreset.nextWeek:
+      return true;
+  }
 }
 
 /// The presets to draw, at [now], in order.
