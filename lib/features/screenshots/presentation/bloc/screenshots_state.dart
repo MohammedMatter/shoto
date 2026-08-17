@@ -161,9 +161,13 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   /// there was no way to say so.
   ///
   /// [isSelecting] is that same gap reached from the other direction — the
-  /// user's own request for the mode, before they have picked anything. The
-  /// long-press that used to make this getter trivially true now opens the
-  /// per-screenshot sheet instead, so all three terms are load-bearing.
+  /// user's own request for the mode, made from the header's Select button,
+  /// before they have picked anything.
+  ///
+  /// All three terms are load-bearing, and they arrive from three different
+  /// places: a long-press fills `selectedIds` (and *that* is what opens the
+  /// mode — the gesture raises no event of its own), the Select button sets
+  /// [isSelecting], and Home's tools set [intent].
   bool get isSelectionMode =>
       isSelecting || selectedIds.isNotEmpty || intent.isGuided;
 

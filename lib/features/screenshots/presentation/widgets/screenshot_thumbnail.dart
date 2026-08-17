@@ -34,28 +34,35 @@ class ScreenshotThumbnail extends StatelessWidget {
   final bool selectionMode;
   final VoidCallback onTap;
 
-  /// **The way into this screenshot's own actions**, and the reason there is
-  /// no "⋯" disc on the picture any more.
+  /// **Picking this one**, in the grid — and toggling it once a selection is
+  /// running.
   ///
-  /// There was one, bottom-right, 17dp across. `PressableScale` hit-tests the
-  /// box it draws and nothing more, so 17dp was the entire target — against a
-  /// 48dp Material minimum, a 44pt Apple one and the 24dp floor in WCAG 2.5.8.
-  /// It failed the weakest of the three, and a miss did not merely do nothing:
-  /// it landed on the tile underneath and opened the full-screen viewer, so
-  /// the cost of a slightly-off tap was a page transition and a trip back.
+  /// This carried the screenshot's own action sheet for a while, and that was
+  /// the wrong verb on this platform: every Android gallery worth copying
+  /// enters selection on a long-press, and so does the one on the test phone.
+  /// The whole argument is at the call site in `screenshots_body.dart`.
+  ///
+  /// It is still the reason there is no "⋯" disc on the picture, and that part
+  /// stands. There was one, bottom-right, 17dp across. `PressableScale`
+  /// hit-tests the box it draws and nothing more, so 17dp was the entire target
+  /// — against a 48dp Material minimum, a 44pt Apple one and the 24dp floor in
+  /// WCAG 2.5.8. It failed the weakest of the three, and a miss did not merely
+  /// do nothing: it landed on the tile underneath and opened the full-screen
+  /// viewer, so the cost of a slightly-off tap was a page transition and a trip
+  /// back.
   ///
   /// Size was not the only argument. The heart and the intent badge each say
   /// something *about* the screenshot they sit on; a "⋯" says only that a menu
   /// exists, and it said it on every tile at once — two dozen identical doors
   /// painted across the one screen whose whole job is showing the pictures.
   /// Chrome that carries no information cannot justify standing on the
-  /// content. Every verb behind it was already reachable twice over: through
-  /// the viewer one tap away, and through selection mode.
+  /// content. Every verb behind it is still reachable twice over: through the
+  /// viewer one tap away, and through selection mode — which this gesture is
+  /// now the fastest way into.
   ///
-  /// So the gesture carries it, which is what a photo grid does everywhere —
-  /// and the affordance the gesture lacks moved to the header, where a Select
-  /// button is a 42dp target on the app's own surface rather than a 17dp one
-  /// on somebody's photograph.
+  /// The affordance a gesture cannot advertise lives in the header, where a
+  /// Select button is a 42dp target on the app's own surface rather than a 17dp
+  /// one on somebody's photograph.
   final VoidCallback onLongPress;
 
   /// What the user said they would do with this one, if anything.

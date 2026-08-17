@@ -22,7 +22,6 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.da
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/pages/screenshot_detail_page.dart';
-import 'package:shoto/features/screenshots/presentation/widgets/screenshot_actions.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_thumbnail.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshots_filter_row.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/selection_toolbar.dart';
@@ -667,29 +666,36 @@ class _ScreenshotsBodyState extends State<ScreenshotsBody>
                   ),
                 );
               },
-              // **Two meanings, and the mode decides which** — the same split
-              // the tap above already makes.
+              // **One meaning, in both modes: pick this one.**
               //
-              // Browsing, a long-press is this screenshot's own actions. That
-              // is the gesture every photo grid uses for exactly this, and it
-              // is what replaced the "⋯" disc that used to sit on the picture
-              // at a third of a legal tap target; see
-              // [ScreenshotThumbnail.onLongPress].
+              // It used to open the screenshot's own actions while browsing and
+              // toggle only once a selection was already running — two answers
+              // to one gesture, chosen by a mode the user cannot see. The
+              // argument for it was that "a long-press is what every photo grid
+              // uses for actions", and that is **the iOS convention**: Apple
+              // Photos raises a context menu and keeps selection behind a
+              // Select button. On Android it is the other way round, without
+              // exception worth naming — Google Photos, Files, Samsung
+              // Gallery, and the MIUI gallery sitting on the home screen of the
+              // phone this is tested on all enter selection on a long-press.
+              // Shoto is an Android app; reminders do not even exist on iOS.
               //
-              // Selecting, it toggles, like the tap. A sheet about *one*
-              // screenshot opened out of a live selection of forty would be
-              // answering a question nobody in that mode is asking, and the
-              // alternative — a gesture that goes dead half the time — is how
-              // people stop trusting a gesture at all.
-              onLongPress: () {
-                if (loaded.isSelectionMode) {
-                  context.read<ScreenshotsBloc>().add(
-                    ToggleSelectItemEvent(item.id),
-                  );
-                  return;
-                }
-                showScreenshotQuickActionsSheet(context, item);
-              },
+              // It also matches what the app is *for*. Filing screenshots into
+              // folders is a bulk act, so the cheapest gesture in the grid
+              // should be the one that starts a bulk act.
+              //
+              // No event is needed to enter the mode: `isSelectionMode` is true
+              // the moment anything is selected, so picking the first one is
+              // what opens it. See [ScreenshotsLoadedState.isSelectionMode].
+              //
+              // The sheet this replaced is not lost. Move and Delete are on the
+              // selection toolbar one gesture away — along with Safe share,
+              // Merge and Set intent, which the sheet never had — and the rest
+              // (favourite, share, remind) sit in the viewer's action bar, one
+              // tap away through the picture itself.
+              onLongPress: () => context.read<ScreenshotsBloc>().add(
+                ToggleSelectItemEvent(item.id),
+              ),
             ),
           ),
         ),

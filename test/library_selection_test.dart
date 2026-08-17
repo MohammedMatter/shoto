@@ -286,9 +286,7 @@ void main() {
       );
     });
 
-    testWidgets("browsing, a long-press opens that screenshot's own actions", (
-      tester,
-    ) async {
+    testWidgets('browsing, a long-press starts a selection', (tester) async {
       await render(tester, ScreenshotsLoadedState(screenshots: _library()));
       final AppLocalizations l10n = await english();
 
@@ -296,21 +294,33 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
 
-      // What the "⋯" used to reach, now on the gesture every photo grid
-      // already uses for it.
-      expect(find.text(l10n.commonShare), findsOneWidget);
-      expect(find.text(l10n.foldersMoveTitle), findsOneWidget);
-      expect(find.text(l10n.commonDelete), findsOneWidget);
-
-      // And emphatically *not* the old meaning. A long-press that both opened
-      // a sheet and picked the tile underneath it would be two answers to one
-      // gesture.
-      expect(bloc.events.whereType<ToggleSelectItemEvent>(), isEmpty);
+      // **The Android gesture, on an Android app.** This used to raise the
+      // screenshot's own action sheet — the iOS reading of a long-press, on a
+      // grid whose users come from Google Photos, Files, Samsung and MIUI,
+      // every one of which selects.
+      expect(bloc.events.whereType<ToggleSelectItemEvent>(), isNotEmpty);
+      expect(
+        find.text(l10n.commonShare),
+        findsNothing,
+        reason: 'a long-press that also opened a sheet would be two answers',
+      );
     });
 
-    testWidgets('selecting, a long-press picks instead of opening a sheet', (
+    testWidgets('and it needs no event of its own to open the mode', (
       tester,
     ) async {
+      await render(tester, ScreenshotsLoadedState(screenshots: _library()));
+
+      await tester.longPress(find.byType(ScreenshotThumbnail).first);
+      await tester.pump();
+
+      // `isSelectionMode` is true the moment anything is selected, so picking
+      // the first tile *is* entering the mode. An `EnterSelectionModeEvent`
+      // alongside it would be a second source of truth for one state.
+      expect(bloc.events.whereType<EnterSelectionModeEvent>(), isEmpty);
+    });
+
+    testWidgets('selecting, a long-press keeps picking', (tester) async {
       await render(
         tester,
         ScreenshotsLoadedState(
@@ -324,8 +334,8 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
 
-      // A sheet about one screenshot, opened out of a live selection of
-      // several, answers a question nobody in that mode is asking.
+      // The gesture means one thing in both modes, which is the whole point of
+      // the change — nothing about it depends on a mode the user cannot see.
       expect(find.text(l10n.commonShare), findsNothing);
       expect(bloc.events.whereType<ToggleSelectItemEvent>(), isNotEmpty);
     });
