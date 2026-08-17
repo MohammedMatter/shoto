@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// A switch, local to this phone, that makes SHOTO behave as if the user is
+/// A switch, local to this phone, that makes Shoto behave as if the user is
 /// subscribed.
 ///
 /// It exists because the paid features currently cannot be reached at all on
@@ -30,18 +30,29 @@ class DevAccess extends ChangeNotifier {
   /// over a week would still count.
   static const Duration tapWindow = Duration(seconds: 2);
 
-  /// Debug builds only, and deliberately not a switch anybody can flip back.
+  /// Debug builds, plus any build that deliberately asks for it.
   ///
-  /// While this was `true` in a release build, anyone who strings a
-  /// decompiled APK finds both the tap count and the four digits, and gets
-  /// every paid feature for nothing. Tying it to [kDebugMode] means the code
-  /// path is compiled out of release entirely: there is nothing left in the
-  /// binary to find, and no way to forget this at submission time.
+  /// While this was plainly `true`, anyone who strings a decompiled APK finds
+  /// both the tap count and the four digits and gets every paid feature for
+  /// nothing. It became [kDebugMode], which closed that hole and opened a
+  /// smaller one: the paid features could not be reached in a *release* build
+  /// on a real phone, which is the only build worth testing before a launch,
+  /// and RevenueCat cannot issue a real entitlement until the store products
+  /// exist.
   ///
-  /// The cost is that the unlock no longer works in a release build installed
-  /// for testing. Use a profile or debug build to demo the paid features, or
-  /// a RevenueCat sandbox purchase once the store products exist.
-  static const bool enabled = kDebugMode;
+  /// So it is a build-time switch instead, and the default is off:
+  ///
+  /// ```
+  /// flutter build apk --release --dart-define=DEV_UNLOCK=true
+  /// ```
+  ///
+  /// **A store build must never pass that flag**, and nothing but a person
+  /// typing it can turn this on — `bool.fromEnvironment` is a compile-time
+  /// constant, so an ordinary release build compiles this branch out entirely
+  /// and there is nothing left in the binary to find. The safe thing is what
+  /// happens when somebody forgets.
+  static const bool enabled =
+      kDebugMode || bool.fromEnvironment('DEV_UNLOCK');
 
   static const String _key = 'dev_premium_unlocked';
 

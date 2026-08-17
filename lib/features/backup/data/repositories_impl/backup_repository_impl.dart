@@ -270,7 +270,7 @@ class BackupRepositoryImpl implements BackupRepository {
         // duplicates, same as the folder loop above.
         intentsByLabel[key] = created;
       } catch (error) {
-        debugPrint('SHOTO restore could not create "${intent.label}": $error');
+        debugPrint('Shoto restore could not create "${intent.label}": $error');
         restoredIntents.add(null);
       }
     }
@@ -288,7 +288,7 @@ class BackupRepositoryImpl implements BackupRepository {
         onProgress?.call(seen++, total);
 
         try {
-          // Writes the image into SHOTO's album and claims it for this
+          // Writes the image into Shoto's album and claims it for this
           // account, handing back the id the *new* device assigned. Everything
           // below is keyed off that id — the one from the old phone never
           // appears.
@@ -341,7 +341,7 @@ class BackupRepositoryImpl implements BackupRepository {
         } catch (error, stack) {
           // One picture the device refuses to save must not cost the other
           // four hundred. Counted, reported, and the loop carries on.
-          debugPrint('SHOTO restore failed for ${entry.item.path}: $error');
+          debugPrint('Shoto restore failed for ${entry.item.path}: $error');
           debugPrintStack(stackTrace: stack, maxFrames: 6);
           failed++;
         }
@@ -413,7 +413,7 @@ class BackupRepositoryImpl implements BackupRepository {
         }
       }
     } catch (error) {
-      debugPrint('SHOTO cache sweep failed: $error');
+      debugPrint('Shoto cache sweep failed: $error');
     }
   }
 

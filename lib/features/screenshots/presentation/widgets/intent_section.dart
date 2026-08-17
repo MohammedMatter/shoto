@@ -112,7 +112,7 @@ class _IntentSectionState extends State<IntentSection> {
   }
 }
 
-/// The one control in SHOTO that makes a number go down.
+/// The one control in Shoto that makes a number go down.
 ///
 /// **It used to be a line of text with a small circle beside it**, which is
 /// what a checkbox in a settings list looks like — and this is not that. Every
@@ -140,7 +140,9 @@ class _CompletionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color content = isDone ? AppColors.onPrimary : AppColors.textPrimary;
+    final Color content = isDone
+        ? context.colors.onPrimary
+        : context.colors.textPrimary;
 
     return PressableScale(
       scale: 0.97,
@@ -151,12 +153,12 @@ class _CompletionButton extends StatelessWidget {
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 12.h),
         decoration: BoxDecoration(
-          color: isDone ? AppColors.success : Colors.transparent,
+          color: isDone ? context.colors.success : Colors.transparent,
           borderRadius: BorderRadius.circular(14.r),
           // Always 1.5 and only the colour animates, so lighting it up cannot
           // nudge the sheet's layout — same rule as the private-folder row.
           border: Border.all(
-            color: isDone ? Colors.transparent : AppColors.border,
+            color: isDone ? Colors.transparent : context.colors.border,
             width: 1.5,
           ),
         ),
@@ -167,13 +169,14 @@ class _CompletionButton extends StatelessWidget {
               duration: AppMotion.duration(context, AppMotion.normal),
               switchInCurve: AppMotion.standard,
               switchOutCurve: AppMotion.standard,
-              transitionBuilder:
-                  (Widget child, Animation<double> animation) => FadeTransition(
+              transitionBuilder: (Widget child, Animation<double> animation) =>
+                  FadeTransition(
                     opacity: animation,
                     child: ScaleTransition(
-                      scale: Tween<double>(begin: 0.7, end: 1).animate(
-                        animation,
-                      ),
+                      scale: Tween<double>(
+                        begin: 0.7,
+                        end: 1,
+                      ).animate(animation),
                       child: child,
                     ),
                   ),
@@ -189,7 +192,7 @@ class _CompletionButton extends StatelessWidget {
             SizedBox(width: 10.w),
             Text(
               isDone ? context.l10n.intentUndo : context.l10n.intentMarkDone,
-              style: AppTextStyles.bodyMedium.asMedium.copyWith(color: content),
+              style: context.text.bodyMedium.asMedium.copyWith(color: content),
             ),
           ],
         ),

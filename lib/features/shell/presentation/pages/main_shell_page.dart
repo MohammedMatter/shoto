@@ -1,19 +1,30 @@
+import 'dart:async';
+
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
+import 'package:shoto/core/services/app_preferences.dart';
+import 'package:shoto/core/services/capture_alerts.dart';
+import 'package:shoto/core/services/library_quota.dart';
+import 'package:shoto/core/services/reminders.dart';
+import 'package:shoto/core/routes/photo_viewer_route.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/widgets/app_bottom_nav_bar.dart';
 import 'package:shoto/core/widgets/lazy_indexed_stack.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_event.dart';
 import 'package:shoto/features/folders/presentation/pages/folders_page.dart';
+import 'package:shoto/features/folders/presentation/widgets/default_folders.dart';
 import 'package:shoto/features/home/presentation/pages/home_page.dart';
+import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
+import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/pages/library_page.dart';
+import 'package:shoto/features/screenshots/presentation/pages/screenshot_detail_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/share_intent_listener.dart';
 import 'package:shoto/features/settings/presentation/pages/settings_page.dart';
 
@@ -27,7 +38,7 @@ class MainShellPage extends StatefulWidget {
 class _MainShellPageState extends State<MainShellPage>
     with WidgetsBindingObserver {
   /// Always Home. The dashboard is where the app tells you what needs doing;
-  /// starting anywhere else buries that behind a tap and makes SHOTO look
+  /// starting anywhere else buries that behind a tap and makes Shoto look
   /// like a gallery again.
   int _currentIndex = 0;
 
@@ -72,14 +83,120 @@ class _MainShellPageState extends State<MainShellPage>
     ),
   ];
 
+  /// Whether the starter folders have already been offered this launch.
+  ///
+  /// `didChangeDependencies` runs again whenever an inherited widget above
+  /// this one changes — the theme, the locale, the media query — and without
+  /// this the seed event would be posted on every one of them.
+  bool _defaultFoldersOffered = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // **Re-armed on every launch, because Android drops it silently.** The
+    // watcher behind "offer new screenshots" is a content-trigger job, and
+    // those cannot be persisted across a reboot (Android forbids combining
+    // the two) and are cancelled outright by a force-stop or a battery
+    // optimiser. None of that reaches the app as an event — the only moment
+    // Shoto can notice is the next time it runs. Cheap: rescheduling an
+    // already-scheduled job replaces it, and it does nothing at all unless
+    // the user asked for the feature.
+    unawaited(CaptureAlerts.rearm(wanted: sl<AppPreferences>().captureAlerts));
+    unawaited(_openTappedReminder());
+  }
+
+  /// Opens the screenshot a tapped reminder was about.
+  ///
+  /// **Asked on launch and on every resume**, because the activity is
+  /// `singleTop`: a notification tapped while Shoto is already running never
+  /// passes through `initState` at all, and without the resume call it would
+  /// merely bring the app forward on whatever screen it was left on — the one
+  /// outcome that makes a reminder feel broken, since it did fire and did
+  /// nothing.
+  ///
+  /// The id is *consumed* on the platform side, so an ordinary resume gets
+  /// null and nothing happens. Waiting on the library is deliberate: the
+  /// screenshot has to be found before it can be shown, and on a cold start
+  /// this runs while the first load is still going.
+  Future<void> _openTappedReminder() async {
+    final String? assetId = await Reminders.consumeLaunchAssetId();
+    if (assetId == null || !mounted) return;
+
+    final ScreenshotsState state = _screenshotsBloc.state;
+    if (state is! ScreenshotsLoadedState) {
+      // The library is still loading. Rather than race it, ask again once it
+      // has settled — the bloc emits exactly once more for this load.
+      await _screenshotsBloc.stream.firstWhere(
+        (ScreenshotsState next) => next is ScreenshotsLoadedState,
+      );
+      if (!mounted) return;
+      return _showReminded(assetId);
+    }
+    _showReminded(assetId);
+  }
+
+  void _showReminded(String assetId) {
+    final ScreenshotsState state = _screenshotsBloc.state;
+    if (state is! ScreenshotsLoadedState) return;
+
+    final int index = state.screenshots.indexWhere(
+      (ScreenshotEntity item) => item.id == assetId,
+    );
+    // Deleted since the reminder was set. Nothing to open and nothing worth
+    // saying — the notification is already gone from the shade.
+    if (index < 0) return;
+
+    Navigator.of(context).push(
+      PhotoViewerRoute(
+        builder: (_) => BlocProvider<ScreenshotsBloc>.value(
+          value: _screenshotsBloc,
+          child: ScreenshotDetailPage(
+            screenshots: state.screenshots,
+            initialIndex: index,
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Offers the starter folders here rather than on the Folders page itself.
+  ///
+  /// The page is built lazily, on the first tap of its tab (see
+  /// [LazyIndexedStack]) — so seeding there would mean a brand-new install has
+  /// no folders at all until somebody visits the third tab. Everything that
+  /// files a screenshot asks for the folder list first: the share sheet's
+  /// picker, quick save, "move to folder". Each of those would open on
+  /// "no folders yet, make one in the Folders tab" for a user who has seven
+  /// waiting behind a tab they have not tapped.
+  ///
+  /// Not in `initState`, because the names are translated and `context.l10n`
+  /// needs the localizations delegate resolved above it — which is exactly what
+  /// this callback is for. Writing nothing is the normal case: after the first
+  /// launch the repository answers from a flag without touching the folders
+  /// table. See `SeedDefaultFoldersUseCase`.
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_defaultFoldersOffered) return;
+    _defaultFoldersOffered = true;
+    _foldersBloc.add(SeedDefaultFoldersEvent(defaultFolderSeeds(context)));
   }
 
   void _onTabSelected(int index) {
     if (index == 2) _foldersBloc.add(LoadFoldersEvent());
+    // **Library as well as Settings**, for the same reason Folders re-counts
+    // above: the tabs are kept alive by the IndexedStack, so whatever one
+    // painted the first time is what it goes on painting. A quota meter that
+    // still reads 41 after an afternoon of filing is worse than no meter — it
+    // is a number the user has no reason to distrust.
+    //
+    // Settings was the only one here for a while, and that was simply out of
+    // date: the meter moved to the top of the Library and nobody extended this
+    // line to the tab it had moved to. The visible symptom was a band reading
+    // 0 of 100 on a library with things filed in it, which reads as the app
+    // not having noticed any of the work you just did.
+    if (index == 1 || index == 3) unawaited(sl<LibraryQuota>().refresh());
     setState(() => _currentIndex = index);
   }
 
@@ -104,16 +221,13 @@ class _MainShellPageState extends State<MainShellPage>
     _onTabSelected(1);
   }
 
-  /// Home's folder count, which is now a way in rather than a fact.
-  void _openFolders() => _onTabSelected(2);
-
   /// Re-reads the library whenever the app comes back to the foreground.
   ///
   /// Filing a screenshot from the share sheet happens in a **separate
   /// Android activity running its own Flutter engine** — a different process
   /// as far as Dart is concerned. It writes to the same database, but the
   /// blocs living in *this* engine never hear about it, so coming back to
-  /// SHOTO showed the library exactly as it was before: the screenshot
+  /// Shoto showed the library exactly as it was before: the screenshot
   /// missing and its folder's count unchanged, until the app was killed and
   /// reopened. That was the "I have to hot reload" symptom.
   ///
@@ -126,11 +240,49 @@ class _MainShellPageState extends State<MainShellPage>
     if (state != AppLifecycleState.resumed) return;
     _screenshotsBloc.add(RefreshScreenshotsEvent());
     _foldersBloc.add(LoadFoldersEvent());
+    unawaited(_openTappedReminder());
+    // The share sheet files screenshots from a separate engine in another
+    // process, so coming back to the foreground is precisely when the managed
+    // count has moved without this process seeing it happen.
+    unawaited(sl<LibraryQuota>().refresh());
+  }
+
+  /// True while any scrollable on the visible page is moving, including the
+  /// fling after the finger has left the glass. Read by [AppBottomNavBar],
+  /// which stops blurring for exactly as long as it is true.
+  final ValueNotifier<bool> _scrolling = ValueNotifier<bool>(false);
+
+  /// How many scrollables are in motion, rather than a bare flag.
+  ///
+  /// A page can have more than one — a vertical list with a horizontal row of
+  /// chips inside it — and their starts and ends interleave. A flag set by the
+  /// first end notification to arrive would clear while the other was still
+  /// running, which is the bug where the bar starts blurring again halfway
+  /// through a fling.
+  int _active = 0;
+
+  bool _onScroll(ScrollNotification notification) {
+    if (notification is ScrollStartNotification) {
+      _active++;
+    } else if (notification is ScrollEndNotification) {
+      // Floored: notifications can arrive from a scrollable that started
+      // before this listener was in the tree, and a negative count would take
+      // a real scroll to bring back to zero.
+      _active = _active > 0 ? _active - 1 : 0;
+    } else {
+      return false;
+    }
+
+    _scrolling.value = _active > 0;
+    // Never absorbed — anything else listening further up is entitled to see
+    // these, and this listener only observes.
+    return false;
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _scrolling.dispose();
     _foldersBloc.close();
     _screenshotsBloc.close();
     super.dispose();
@@ -150,18 +302,37 @@ class _MainShellPageState extends State<MainShellPage>
           // the Folders counts and the Library's scroll position both depend
           // on) without all four being built before the app has drawn its
           // first frame. See LazyIndexedStack.
-          body: LazyIndexedStack(
-            index: _currentIndex,
-            children: [
-              HomePage(
-                onOpenLibrary: _openLibrary,
-                onOpenLibraryForIntent: _openLibraryForIntent,
-                onOpenFolders: _openFolders,
-              ),
-              LibraryPage(),
-              FoldersPage(),
-              SettingsPage(),
-            ],
+          body: NotificationListener<ScrollNotification>(
+            // **Whether anything under here is moving**, for the bar below.
+            //
+            // A `BackdropFilter` re-filters whatever is behind it on every
+            // frame in which those pixels change, so the bar is free while a
+            // page sits still and is the most expensive object on screen the
+            // moment one scrolls. Measured on the test phone in a profile
+            // build, a few seconds of scrolling Settings produced **125 frames
+            // over budget, the worst at 62ms of raster**, against 1 with the
+            // bar's blur switched off — with Dart build time at 0.4ms
+            // throughout, so all of it was paint. The phone runs Impeller on
+            // OpenGLES (its Vulkan context fails and the engine falls back),
+            // where a backdrop filter costs a full copy of the region behind
+            // it.
+            //
+            // Listened for here rather than in the bar because the bar is not
+            // an ancestor of anything that scrolls — the four pages are, and
+            // notifications only travel up.
+            onNotification: _onScroll,
+            child: LazyIndexedStack(
+              index: _currentIndex,
+              children: [
+                HomePage(
+                  onOpenLibrary: _openLibrary,
+                  onOpenLibraryForIntent: _openLibraryForIntent,
+                ),
+                const LibraryPage(),
+                const FoldersPage(),
+                const SettingsPage(),
+              ],
+            ),
           ),
           bottomNavigationBar: ListenableBuilder(
             listenable: sl<ThemeController>(),
@@ -169,6 +340,7 @@ class _MainShellPageState extends State<MainShellPage>
               currentIndex: _currentIndex,
               items: _items(context),
               onTap: _onTabSelected,
+              scrolling: _scrolling,
             ),
           ),
         ),

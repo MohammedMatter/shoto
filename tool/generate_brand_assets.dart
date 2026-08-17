@@ -1,4 +1,4 @@
-// Generates every raster the SHOTO mark needs, from the one painter that
+// Generates every raster the Shoto mark needs, from the one painter that
 // defines it.
 //
 //     flutter test tool/generate_brand_assets.dart
@@ -33,6 +33,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shoto/core/theme/app_icon.dart';
 import 'package:shoto/core/widgets/shoto_brand_mark.dart';
 
 /// Density buckets, as multipliers on a density-independent pixel.
@@ -124,17 +125,69 @@ void main() {
       );
     }
 
+    // ------------------------------------------ Android, alternate icons
+    //
+    // **Only the background layer is redrawn per variant**, which is what
+    // makes six icons cost fifty files instead of two hundred. The adaptive
+    // foreground is built with `backdrop: false` — it is the tray and the
+    // cards on transparency, with no slab in it at all — so every variant
+    // shares the one already written above, and so does the monochrome layer,
+    // which has no colour by definition.
+    //
+    // The legacy raster is the exception and has to be drawn whole: API 24 and
+    // 25 take a single flat PNG with no layers to compose, and this app's
+    // minSdk is 24.
+    for (final AppIcon icon in AppIcon.all) {
+      if (icon == AppIcon.ink) continue; // Already written, unsuffixed.
+
+      for (final MapEntry<String, double> d in _densities.entries) {
+        await _png(
+          '$_android/mipmap-${d.key}/ic_launcher_background_${icon.id}.png',
+          (_adaptiveCanvas * d.value).round(),
+          (px) => ShotoBrandMarkPainter(
+            markExtent: px,
+            mark: false,
+            backdropCornerRadius: 0,
+            slab: icon.slab,
+          ),
+        );
+
+        await _png(
+          '$_android/mipmap-${d.key}/ic_launcher_${icon.id}.png',
+          (48 * d.value).round(),
+          (px) => ShotoBrandMarkPainter(markExtent: px, slab: icon.slab),
+        );
+      }
+
+      // The adaptive descriptor. Written from here rather than kept by hand in
+      // `res/` because the whole point of this file is that nothing about the
+      // mark exists in two places — a variant added to `AppIcon.all` should
+      // need no XML written for it.
+      File(
+        '$_android/mipmap-anydpi-v26/ic_launcher_${icon.id}.xml',
+      ).writeAsStringSync(_adaptiveXml(icon.id));
+    }
+
     // ------------------------------------------- Android, the launch window
     //
-    // An empty tray, and the emptiness is the point: this is drawn by the OS
-    // before Flutter exists, so it cannot move — and the first Flutter frame
-    // draws exactly this, at exactly this size, in exactly this place, and
-    // then files the cards into it.
+    // The whole mark, at rest, slab included. This used to be the tray with
+    // no cards in it, because a Flutter splash then drew the same empty tray
+    // and filed the cards into it — a handover trick for a screen that no
+    // longer exists (the router decides the first destination before
+    // `runApp`, so nothing is shown between the OS window and the real first
+    // screen). With nothing to hand over to, an incomplete mark is just an
+    // incomplete mark.
+    //
+    // The slab is not optional here even though this is the one place the
+    // mark appears on a known background: that background is `#FAFAFA` in
+    // light mode, and the cards are paper. Without the slab the launch
+    // window would show two grey slivers and a pair of black bars floating on
+    // white.
     for (final MapEntry<String, double> d in _densities.entries) {
       await _png(
         '$_android/drawable-${d.key}/splash_logo.png',
         (_splashMark * d.value).round(),
-        (px) => ShotoBrandMarkPainter(markExtent: px, cards: false),
+        (px) => ShotoBrandMarkPainter(markExtent: px),
       );
     }
 
@@ -170,13 +223,13 @@ void main() {
       );
     }
 
-    // The iOS launch image, matching Android's: the same empty tray, at the
-    // same 96dp, for the same reason.
+    // The iOS launch image, matching Android's: the same mark, at the same
+    // 96dp, for the same reason.
     for (int scale = 1; scale <= 3; scale++) {
       await _png(
         '$_iosLaunch/LaunchImage${scale == 1 ? '' : '@${scale}x'}.png',
         (_splashMark * scale).round(),
-        (px) => ShotoBrandMarkPainter(markExtent: px, cards: false),
+        (px) => ShotoBrandMarkPainter(markExtent: px),
       );
     }
 
@@ -320,3 +373,25 @@ int _crc32(List<int> bytes) {
   }
   return (c ^ 0xFFFFFFFF) & 0xFFFFFFFF;
 }
+
+/// The adaptive-icon descriptor for one alternate variant.
+///
+/// Its foreground and monochrome layers are the *unsuffixed* ones — those are
+/// the tray and cards with no slab in them, so every variant shares them and
+/// only the background differs. See the loop that writes these.
+String _adaptiveXml(String id) =>
+    '''
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Generated by tool/generate_brand_assets.dart — do not edit by hand.
+
+    An alternate launcher icon. Identical to ic_launcher.xml except for the
+    background layer: the foreground (tray and cards) and the monochrome
+    stencil carry no slab, so all six variants share the one drawing.
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@mipmap/ic_launcher_background_$id" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+    <monochrome android:drawable="@mipmap/ic_launcher_monochrome" />
+</adaptive-icon>
+''';

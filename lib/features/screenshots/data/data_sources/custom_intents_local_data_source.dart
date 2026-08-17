@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:shoto/core/database/app_database.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
+import 'package:shoto/core/services/local_identity.dart';
 
 /// The verbs this account wrote for itself.
 ///
@@ -10,11 +10,11 @@ import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 /// them renaming "for the shop" must not rewrite the other's library.
 class CustomIntentsLocalDataSource {
   final AppDatabase _appDatabase;
-  final AuthRepository _authRepository;
+  final LocalIdentity _localIdentity;
 
-  CustomIntentsLocalDataSource(this._appDatabase, this._authRepository);
+  CustomIntentsLocalDataSource(this._appDatabase, this._localIdentity);
 
-  String get _userId => _authRepository.userId;
+  String get _userId => _localIdentity.id;
 
   Future<List<CustomIntent>> getCustomIntents() async {
     final Database db = await _appDatabase.database;

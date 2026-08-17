@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 ///
 /// **Building them all up front was not deliberate**, it was the price of the
 /// first half. `IndexedStack` puts every child in the tree immediately, so
-/// opening SHOTO built four screens before the first frame: the Library grid
+/// opening Shoto built four screens before the first frame: the Library grid
 /// (which resolves thumbnails as it builds, so the image pipeline starts
 /// working on pictures nobody has asked to see), the Folders grid, and
 /// Settings — which walks the cache directory on disk to show how big it is.

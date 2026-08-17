@@ -45,6 +45,129 @@ void main() {
     });
   });
 
+  group('Latin accent folding', () {
+    test('an accent never decides whether a word matches', () {
+      expect(
+        VisualVocabulary.normalize('Käse'),
+        VisualVocabulary.normalize('kase'),
+      );
+      expect(
+        VisualVocabulary.normalize('café'),
+        VisualVocabulary.normalize('cafe'),
+      );
+      expect(
+        VisualVocabulary.normalize('leão'),
+        VisualVocabulary.normalize('leao'),
+      );
+      expect(
+        VisualVocabulary.normalize('pájaro'),
+        VisualVocabulary.normalize('pajaro'),
+      );
+      expect(
+        VisualVocabulary.normalize('Straße'),
+        VisualVocabulary.normalize('strasse'),
+      );
+    });
+
+    test('a search typed without accents still finds the picture', () {
+      // The unaccented spelling is the one people actually type, because an
+      // accent costs two key presses on most phone keyboards.
+      expect(VisualVocabulary.matches(['Bird'], 'pajaro'), isTrue);
+      expect(VisualVocabulary.matches(['Lion'], 'leao'), isTrue);
+      expect(VisualVocabulary.matches(['Cake'], 'gateau'), isTrue);
+      expect(VisualVocabulary.matches(['Vegetable'], 'gemuse'), isTrue);
+      expect(VisualVocabulary.matches(['Road'], 'strasse'), isTrue);
+    });
+
+    test('and typed with them', () {
+      expect(VisualVocabulary.matches(['Bird'], 'pájaro'), isTrue);
+      expect(VisualVocabulary.matches(['Lion'], 'leão'), isTrue);
+      expect(VisualVocabulary.matches(['Vegetable'], 'Gemüse'), isTrue);
+    });
+  });
+
+  group('the shipped languages, not just English', () {
+    // The regression this group exists for: this file held English and Arabic
+    // only, several releases after the app stopped shipping in Arabic and
+    // started shipping in six Latin languages. Visual search — which the
+    // paywall sells — worked in English and nothing else.
+    test('a dog is found by its own word in every shipped language', () {
+      for (final String query in [
+        'dog', // English
+        'Hund', // German
+        'perro', // Spanish
+        'chien', // French
+        'cane', // Italian
+        'hond', // Dutch
+        'cão', // Portuguese
+        'كلب', // Arabic, kept deliberately
+      ]) {
+        expect(
+          VisualVocabulary.matches(['Dog'], query),
+          isTrue,
+          reason: '"$query" should find a Dog',
+        );
+      }
+    });
+
+    test('and so is a cat', () {
+      for (final String query in [
+        'Katze',
+        'gato',
+        'chat',
+        'gatto',
+        'kat',
+        'قطة',
+      ]) {
+        expect(
+          VisualVocabulary.matches(['Cat'], query),
+          isTrue,
+          reason: '"$query" should find a Cat',
+        );
+      }
+    });
+
+    test('the broad question works in every shipped language too', () {
+      // Groups are the half that answers "show me an animal" with a picture
+      // of a cat — useless if only an English speaker can ask.
+      for (final String query in [
+        'animal',
+        'Tier',
+        'animales',
+        'animaux',
+        'animali',
+        'dieren',
+        'animais',
+        'حيوان',
+      ]) {
+        expect(
+          VisualVocabulary.matches(['Cat'], query),
+          isTrue,
+          reason: '"$query" should reach an animal',
+        );
+      }
+    });
+
+    test('food, vehicles and buildings answer in each language as well', () {
+      expect(VisualVocabulary.matches(['Pizza'], 'Essen'), isTrue);
+      expect(VisualVocabulary.matches(['Cake'], 'comida'), isTrue);
+      expect(VisualVocabulary.matches(['Car'], 'voiture'), isTrue);
+      expect(VisualVocabulary.matches(['Car'], 'macchina'), isTrue);
+      expect(VisualVocabulary.matches(['Airplane'], 'vliegtuig'), isTrue);
+      expect(VisualVocabulary.matches(['House'], 'Gebäude'), isTrue);
+      expect(VisualVocabulary.matches(['Book'], 'livro'), isTrue);
+      expect(VisualVocabulary.matches(['Flower'], 'fleur'), isTrue);
+    });
+
+    test('a wrong-language query still does not match the wrong subject', () {
+      // Adding six languages multiplies the terms, and the risk that comes
+      // with that is collisions rather than misses.
+      expect(VisualVocabulary.matches(['Pizza'], 'Hund'), isFalse);
+      expect(VisualVocabulary.matches(['Dog'], 'Essen'), isFalse);
+      expect(VisualVocabulary.matches(['Car'], 'chien'), isFalse);
+    });
+  });
+
   group('finding a specific animal', () {
     test('the English label always works, even spelled differently', () {
       expect(VisualVocabulary.matches(['Cat'], 'cat'), isTrue);

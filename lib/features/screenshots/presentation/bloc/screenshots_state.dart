@@ -2,15 +2,64 @@ import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart
 import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
+import 'package:shoto/features/screenshots/domain/entities/library_summary.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_sort.dart';
 
-class ScreenshotsState {}
+/// **Sealed so that forgetting a state is a compile error, not a blank
+/// screen.**
+///
+/// Home shipped with `isLoading: loaded == null`, which folded four states
+/// into one: a refused photo permission and a failed read both drew the
+/// loading branch, so the count, the sentence and the import button vanished
+/// and the first screen of the app sat empty with no way out of it. Nothing
+/// in the code objected, because `is!` costs nothing to write and says
+/// nothing about what was left out.
+///
+/// Sealing changes that. An exhaustive `switch` over this type — one with no
+/// `default` — will not compile while a subtype is unhandled, so the next
+/// state added here forces every screen that reads it to say what it draws.
+/// The guard is only as good as the switches: `if (state is! …)` still
+/// compiles and still hides everything, which is why the three ways the
+/// library can fail to be a library are drawn once, by [LibraryUnavailable].
+sealed class ScreenshotsState {}
 
 class ScreenshotsInitialState extends ScreenshotsState {}
 
-class ScreenshotsLoadingState extends ScreenshotsState {}
+/// The gallery is being read. **Not necessarily with nothing to show.**
+///
+/// [summary] is the half of the answer that came back from the local tables
+/// while the album enumeration was still running — the unsorted count and the
+/// waiting verbs, which are facts about the database and not about the gallery.
+/// Home draws its real inbox from it, so a cold start opens on the user's own
+/// numbers rather than on a blank frame that rearranges itself a second later.
+///
+/// Null for the reads where it would be wrong or useless: a folder's contents,
+/// which this summary does not describe, and any refresh of a library that is
+/// already on screen, where the state being replaced is better than a summary
+/// of it. Home falls back to neutral placeholders when it is null, and never to
+/// nothing.
+class ScreenshotsLoadingState extends ScreenshotsState {
+  final LibrarySummary? summary;
+
+  ScreenshotsLoadingState({this.summary});
+}
+
+/// Photo access has not been asked for yet — not refused, not granted.
+///
+/// **A separate state because it needs the opposite screen.** Somebody who
+/// refused is told where system settings are, because Android will not show
+/// the dialog a second time. Somebody who has never been asked must be offered
+/// the dialog, and telling *them* to open system settings is telling a person
+/// who installed the app a minute ago to go and repair it.
+///
+/// It exists at all because the app stopped asking at launch. The request used
+/// to fire from the first library load, which put a system dialog in front of
+/// somebody who had not yet done anything — at the one moment they have the
+/// least reason to say yes, spending the single prompt Android grants. Now the
+/// app explains itself first and the dialog follows a deliberate tap.
+class ScreenshotsPermissionUnaskedState extends ScreenshotsState {}
 
 class ScreenshotsPermissionDeniedState extends ScreenshotsState {
   /// True when the OS granted *partial* photo access ("Select photos…").
@@ -73,6 +122,21 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   /// Which end of the library the grid starts from.
   final LibrarySort sort;
 
+  /// Whether the user asked for selection mode themselves and has not picked
+  /// anything yet.
+  ///
+  /// The third way into the mode, and the reason the flag has to exist at all:
+  /// selection used to begin with a long-press, which picks a tile in the same
+  /// motion, so "in the mode" and "has something selected" could never
+  /// disagree. Entering from the header's Select button separates them — the
+  /// grid is waiting for a first tap, exactly as it is under a guided intent.
+  ///
+  /// Only ever true *before* the first pick. Everything that empties the
+  /// selection puts it back to false, because an emptied selection is the end
+  /// of the job rather than the start of another one — see
+  /// `_onClearSelection`.
+  final bool isSelecting;
+
   ScreenshotsLoadedState({
     required this.screenshots,
     this.selectedIds = const {},
@@ -83,6 +147,7 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     this.traitsReady = false,
     this.isScanning = false,
     this.sort = LibrarySort.newest,
+    this.isSelecting = false,
   });
 
   /// **Selection mode is no longer the same thing as "something is
@@ -94,7 +159,17 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   /// describe a selection somebody else started: Home tapping "Merge" has to
   /// leave the Library *waiting* for a choice, and with nothing picked yet
   /// there was no way to say so.
-  bool get isSelectionMode => selectedIds.isNotEmpty || intent.isGuided;
+  ///
+  /// [isSelecting] is that same gap reached from the other direction — the
+  /// user's own request for the mode, made from the header's Select button,
+  /// before they have picked anything.
+  ///
+  /// All three terms are load-bearing, and they arrive from three different
+  /// places: a long-press fills `selectedIds` (and *that* is what opens the
+  /// mode — the gesture raises no event of its own), the Select button sets
+  /// [isSelecting], and Home's tools set [intent].
+  bool get isSelectionMode =>
+      isSelecting || selectedIds.isNotEmpty || intent.isGuided;
 
   /// Whether the guiding prompt still has something to ask for.
   ///
@@ -106,6 +181,36 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     LibraryIntent.protect => selectedIds.length != 1,
   };
 
+  /// The library narrowed by [filter] alone, before [lens] touches it.
+  ///
+  /// Shared rather than rewritten at each call site: the grid, the per-trait
+  /// counts and the question of *which* narrowing emptied the screen all need
+  /// exactly this list, and three copies of one `switch` is how three answers
+  /// drift apart. Kept lazy — every caller either counts it or narrows it
+  /// further, and none of them wants an intermediate list built first.
+  Iterable<ScreenshotEntity> get statusSlice => switch (filter) {
+    LibraryFilter.all => screenshots,
+    LibraryFilter.unsorted => screenshots.where((s) => s.isUnsorted),
+    LibraryFilter.favorites => screenshots.where((s) => s.isFavorite),
+  };
+
+  /// Whether [lens] is the reason the grid is empty.
+  ///
+  /// **An empty screen has to blame the narrowing that actually caused it.**
+  /// Status and content are independent axes, so an empty grid has two possible
+  /// culprits — and the lens was being blamed for both merely because it was
+  /// on. Picking Favourites with none favourited, while a lens happened to be
+  /// active, produced "No screenshots with Links" over a library whose real
+  /// answer was "you have not favourited anything", and offered a *Show all*
+  /// that cleared the lens and left the screen just as empty. A recovery that
+  /// recovers nothing is worse than no recovery, because it spends the one tap
+  /// the user had.
+  ///
+  /// Asked as "would dropping the lens put something back", which is the same
+  /// question the button is about to answer — so the button can only appear
+  /// when pressing it genuinely refills the grid.
+  bool get isEmptyBecauseOfLens => lens != null && statusSlice.isNotEmpty;
+
   /// What the grid actually draws. [screenshots] stays the whole library so
   /// the filter pills can keep showing every count while one of them is on —
   /// a filter that hid its own alternatives' totals would be a dead end.
@@ -113,12 +218,25 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   /// Status narrows first, then content. The order is invisible in the result
   /// — set intersection commutes — but it keeps the cheap test first for a
   /// library where most screenshots have no cached text.
-  List<ScreenshotEntity> get visibleScreenshots {
-    final Iterable<ScreenshotEntity> byStatus = switch (filter) {
-      LibraryFilter.all => screenshots,
-      LibraryFilter.unsorted => screenshots.where((s) => s.isUnsorted),
-      LibraryFilter.favorites => screenshots.where((s) => s.isFavorite),
-    };
+  ///
+  /// **Computed once per state, not once per read, and that is a performance
+  /// fix rather than a style preference.** This was a plain getter, so every
+  /// caller paid a full filter and an `O(n log n)` sort of the whole library.
+  /// Two of them run on the same frame — the grid asks for the items and the
+  /// header asks whether there are any — and **selection lives in this state**,
+  /// so picking each tile in a multi-select emitted a new state and re-sorted
+  /// everything the user owns, twice, per tap.
+  ///
+  /// `late final` keeps the property that made a getter the right shape in the
+  /// first place: it is still *derived*, so it cannot drift from
+  /// [screenshots], [filter], [lens] or [sort] the way a stored copy would.
+  /// The state is immutable and a new one is built for every change, so "once
+  /// per state" and "once per set of inputs" are the same sentence here — and
+  /// a library nobody looks at never sorts at all.
+  late final List<ScreenshotEntity> visibleScreenshots = _computeVisible();
+
+  List<ScreenshotEntity> _computeVisible() {
+    final Iterable<ScreenshotEntity> byStatus = statusSlice;
     final ContentTrait? active = lens;
     final List<ScreenshotEntity> narrowed = active == null
         ? byStatus.toList()
@@ -143,9 +261,52 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   bool hasTrait(String assetId, ContentTrait trait) =>
       traits[assetId]?.contains(trait) ?? false;
 
-  int get unsortedCount => screenshots.where((s) => s.isUnsorted).length;
+  /// Both counts are on the filter pills, which are on screen for the whole
+  /// length of the library — so they are walked on every rebuild too, for the
+  /// same reason and with the same fix as [visibleScreenshots]. Linear rather
+  /// than sorted, so this is the smaller half of it.
+  late final int unsortedCount = screenshots.where((s) => s.isUnsorted).length;
 
-  int get favoritesCount => screenshots.where((s) => s.isFavorite).length;
+  late final int favoritesCount = screenshots.where((s) => s.isFavorite).length;
+
+  /// Every screenshot the user asked to be brought back to, soonest first.
+  ///
+  /// **Derived, and deliberately not split into "due" and "missed" here.**
+  /// Which side of the line a reminder falls on depends on the clock, and a
+  /// clock read baked into an immutable state is a fact that quietly stops
+  /// being true while the state is still on screen. The reader splits it —
+  /// see `RemindersPage` — so the answer is as old as the frame rather than as
+  /// old as the last library load.
+  ///
+  /// Includes reminders whose moment has passed. That is the point: a fired
+  /// reminder clears its own notification, and without this the only thing
+  /// that ever asked for the user's attention would vanish leaving nothing
+  /// behind. See the note on `remind_at` in [AppDatabase].
+  late final List<ScreenshotEntity> reminders = () {
+    final List<ScreenshotEntity> withReminder = <ScreenshotEntity>[
+      for (final ScreenshotEntity item in screenshots)
+        if (item.remindAt != null) item,
+    ];
+    withReminder.sort((a, b) => a.remindAt!.compareTo(b.remindAt!));
+    return withReminder;
+  }();
+
+  /// Whether any status filter would show a different set than *All*.
+  ///
+  /// **A control that cannot change what you see is not a control.** A new
+  /// library has nothing filed and nothing favourited, so all three pills
+  /// describe the same pictures — and on a fresh install they describe no
+  /// pictures at all, three chips reading zero above an empty state that has
+  /// already said so. That is the first screen of the app spending its widest
+  /// row on the answer "nothing", three times.
+  ///
+  /// Derived rather than thresholded on purpose. A count like "show them past
+  /// four screenshots" is a number somebody has to defend later; this asks the
+  /// question the row exists to answer, so the row appears exactly when the
+  /// user has made the first distinction it could act on — filed something, or
+  /// favourited something — and never before.
+  bool get filtersWouldNarrow =>
+      favoritesCount > 0 || unsortedCount != screenshots.length;
 
   /// How many screenshots carry [trait], **within the status slice already
   /// chosen**.
@@ -154,14 +315,8 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   /// together: with "Unsorted" lit, a Links pill reading 40 while the grid can
   /// only ever show the 3 unsorted ones is a number that answers no question
   /// the user asked.
-  int traitCount(ContentTrait trait) {
-    final Iterable<ScreenshotEntity> byStatus = switch (filter) {
-      LibraryFilter.all => screenshots,
-      LibraryFilter.unsorted => screenshots.where((s) => s.isUnsorted),
-      LibraryFilter.favorites => screenshots.where((s) => s.isFavorite),
-    };
-    return byStatus.where((s) => hasTrait(s.id, trait)).length;
-  }
+  int traitCount(ContentTrait trait) =>
+      statusSlice.where((s) => hasTrait(s.id, trait)).length;
 
   /// Everything still waiting under [intent], oldest first.
   ///
@@ -204,18 +359,12 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     final List<MapEntry<IntentRef, int>> ordered = counts.entries.toList()
       ..sort(
         (MapEntry<IntentRef, int> a, MapEntry<IntentRef, int> b) =>
-            _pickerOrder(a.key).compareTo(_pickerOrder(b.key)),
+            IntentRef.pickerOrder(
+              a.key,
+            ).compareTo(IntentRef.pickerOrder(b.key)),
       );
     return Map<IntentRef, int>.fromEntries(ordered);
   }
-
-  /// Built-ins in the order they are declared, then the user's own after all
-  /// of them.
-  static int _pickerOrder(IntentRef ref) => switch (ref) {
-    BuiltInIntent(:final ScreenshotIntent intent) => intent.index,
-    CustomIntent(:final int sortOrder) =>
-      ScreenshotIntent.values.length + sortOrder,
-  };
 
   /// The app's one shrinking number.
   int get waitingCount =>
@@ -243,6 +392,7 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     bool? traitsReady,
     bool? isScanning,
     LibrarySort? sort,
+    bool? isSelecting,
   }) {
     return ScreenshotsLoadedState(
       screenshots: screenshots ?? this.screenshots,
@@ -257,6 +407,7 @@ class ScreenshotsLoadedState extends ScreenshotsState {
       traitsReady: traitsReady ?? this.traitsReady,
       isScanning: isScanning ?? this.isScanning,
       sort: sort ?? this.sort,
+      isSelecting: isSelecting ?? this.isSelecting,
     );
   }
 }

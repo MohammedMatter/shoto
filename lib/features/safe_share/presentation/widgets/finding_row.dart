@@ -31,12 +31,12 @@ class FindingRow extends StatelessWidget {
     return Container(
       padding: EdgeInsets.fromLTRB(12.w, 10.h, 12.w, 10.h),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(AppRadius.sm),
         border: Border.all(
           color: region.treatment == RegionTreatment.keep && !locked
-              ? AppColors.error.withValues(alpha: 0.35)
-              : AppColors.border,
+              ? context.colors.error.withValues(alpha: 0.35)
+              : context.colors.border,
         ),
       ),
       child: Column(
@@ -48,21 +48,22 @@ class FindingRow extends StatelessWidget {
                 width: 30.w,
                 height: 30.w,
                 decoration: BoxDecoration(
-                  color: (certain ? AppColors.error : AppColors.marker)
-                      .withValues(alpha: 0.14),
+                  color:
+                      (certain ? context.colors.error : context.colors.marker)
+                          .withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(AppRadius.xs),
                 ),
                 child: Icon(
                   _iconFor(region.kind),
                   size: 15.sp,
-                  color: certain ? AppColors.error : AppColors.marker,
+                  color: certain ? context.colors.error : context.colors.marker,
                 ),
               ),
               SizedBox(width: 10.w),
               Expanded(
                 child: Text(
                   region.kind.label(context),
-                  style: AppTextStyles.titleSmall,
+                  style: context.text.titleSmall,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -71,7 +72,7 @@ class FindingRow extends StatelessWidget {
                 Icon(
                   Icons.lock_outline_rounded,
                   size: 15.sp,
-                  color: AppColors.textDisabled,
+                  color: context.colors.textDisabled,
                 ),
             ],
           ),
@@ -128,8 +129,8 @@ class _BeforeAfter extends StatelessWidget {
       _ => false,
     };
     final TextStyle valueStyle = numeric
-        ? AppTextStyles.monoBody
-        : AppTextStyles.bodySmall;
+        ? context.text.monoBody
+        : context.text.bodySmall;
 
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
@@ -138,20 +139,20 @@ class _BeforeAfter extends StatelessWidget {
       children: [
         Text(
           region.maskedOriginal,
-          style: valueStyle.copyWith(color: AppColors.textSecondary),
+          style: valueStyle.copyWith(color: context.colors.textSecondary),
         ),
         if (locked)
           Text(
             context.l10n.safeShareLockedPreview,
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.textDisabled,
+            style: context.text.caption.copyWith(
+              color: context.colors.textDisabled,
             ),
           )
         else ...[
           Icon(
             Icons.arrow_forward_rounded,
             size: 12.sp,
-            color: AppColors.textDisabled,
+            color: context.colors.textDisabled,
           ),
           Text(
             region.treatment == RegionTreatment.cover
@@ -159,8 +160,8 @@ class _BeforeAfter extends StatelessWidget {
                 : region.maskedOriginal,
             style: valueStyle.copyWith(
               color: region.treatment == RegionTreatment.keep
-                  ? AppColors.error
-                  : AppColors.textPrimary,
+                  ? context.colors.error
+                  : context.colors.textPrimary,
               fontWeight: FontWeight.w600,
             ),
           ),

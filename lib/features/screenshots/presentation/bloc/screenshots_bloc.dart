@@ -1,17 +1,21 @@
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:shoto/core/localization/app_message.dart';
+import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/extract_and_cache_text_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_cached_ocr_text_use_case.dart';
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:shoto/features/screenshots/domain/entities/library_summary.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/assign_folder_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/check_photo_permission_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/delete_screenshots_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_library_summary_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_by_folder_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/request_photo_permission_use_case.dart';
@@ -28,8 +32,16 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.d
 class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   final RequestPhotoPermissionUseCase requestPhotoPermissionUseCase;
   final CheckPhotoPermissionUseCase checkPhotoPermissionUseCase;
+
+  /// Read for one fact only: whether the photo dialog has ever been shown.
+  /// See [_blocked].
+  final AppPreferences preferences;
   final GetScreenshotsUseCase getScreenshotsUseCase;
   final GetScreenshotsByFolderUseCase getScreenshotsByFolderUseCase;
+
+  /// The local-only counts, read alongside the gallery so the first screen has
+  /// something true on it before the slow half finishes. See [_summaryOrNull].
+  final GetLibrarySummaryUseCase getLibrarySummaryUseCase;
   final SetFavoriteUseCase setFavoriteUseCase;
   final SetIntentUseCase setIntentUseCase;
   final SetIntentsUseCase setIntentsUseCase;
@@ -101,6 +113,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     required this.checkPhotoPermissionUseCase,
     required this.getScreenshotsUseCase,
     required this.getScreenshotsByFolderUseCase,
+    required this.getLibrarySummaryUseCase,
     required this.setFavoriteUseCase,
     required this.setIntentUseCase,
     required this.setIntentsUseCase,
@@ -111,10 +124,12 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     required this.getCachedOcrTextUseCase,
     required this.extractAndCacheTextUseCase,
     required this.intentCatalog,
+    required this.preferences,
   }) : super(ScreenshotsInitialState()) {
     intentCatalog.deletions.addListener(_onCustomIntentDeleted);
     on<LoadScreenshotsEvent>(_onLoad);
     on<RecheckPermissionEvent>(_onRecheckPermission);
+    on<RequestPhotoAccessEvent>(_onRequestPhotoAccess);
     on<RefreshScreenshotsEvent>(_onRefresh);
     on<ToggleFavoriteEvent>(_onToggleFavorite);
     on<DeleteSelectedEvent>(_onDeleteSelected);
@@ -123,6 +138,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     on<MoveScreenshotToFolderEvent>(_onMoveScreenshot);
     on<ToggleSelectItemEvent>(_onToggleSelectItem);
     on<ClearSelectionEvent>(_onClearSelection);
+    on<EnterSelectionModeEvent>(_onEnterSelectionMode);
     on<StartGuidedSelectionEvent>(_onStartGuidedSelection);
     on<SelectAllEvent>(_onSelectAll);
     on<SetLibraryFilterEvent>(_onSetLibraryFilter);
@@ -142,21 +158,109 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   ) async {
     _folderId = event.folderId;
     emit(ScreenshotsLoadingState());
-    final PermissionState permission = await requestPhotoPermissionUseCase();
+
+    // **Started here, awaited below.** Both reads are now in flight at once:
+    // the permission check is a platform channel call that on a cold start also
+    // pays for the plugin waking up, and the summary is sqlite. Awaiting them
+    // in sequence would spend the whole point of the summary — being ready
+    // *early* — waiting on the slower of the two for no reason. Neither depends
+    // on the other's answer.
+    final Future<LibrarySummary?> summaryRead = _summaryOrNull();
+
+    // **Checks, never asks.** This runs on launch, on every Folders tab
+    // select and behind the retry button, and when it asked, the system photo
+    // dialog appeared over a user who had just finished the introduction and
+    // done nothing else. Android grants that dialog roughly once; spending it
+    // at the moment somebody has the least reason to say yes is how an app
+    // ends up permanently unable to read anything.
+    //
+    // Asking now belongs to [RequestPhotoAccessEvent], which a button sends.
+    final PermissionState permission = await checkPhotoPermissionUseCase();
     if (!permission.isAuth) {
-      emit(
-        ScreenshotsPermissionDeniedState(
-          isPartialAccess: permission == PermissionState.limited,
-        ),
-      );
+      emit(_blocked(permission));
       return;
     }
+
+    // **Only when there is something to say.** A summary of an empty library
+    // tells Home nothing it did not already assume, and emitting it would put a
+    // second loading state on the screen for no visible difference.
+    //
+    // Emitted *after* the permission check on purpose: numbers drawn from rows
+    // the app is no longer allowed to see the pictures for would be a library
+    // announced on a screen that is about to say access is blocked.
+    final LibrarySummary? summary = await summaryRead;
+    if (summary != null && !summary.isEmpty) {
+      emit(ScreenshotsLoadingState(summary: summary));
+    }
+
     await _loadAndEmit(emit);
     // Re-read here rather than inside the pickers. The front row is ordered by
     // what this person used most recently, and recomputing that at the moment
     // a sheet opens would reshuffle the chips under a thumb already on its way
     // down. Loading the library is the natural seam: it happens before any
     // picker can be reached, and never while one is open.
+    unawaited(intentCatalog.refresh());
+    _watchLibrary();
+  }
+
+  /// The local counts, or null when they would be wrong or unobtainable.
+  ///
+  /// Two ways of returning null, and they are different things:
+  ///
+  /// * **A folder is being loaded.** This summary describes the whole library
+  ///   and nothing else; handing it to a screen showing one folder's contents
+  ///   would be a number about a different set of pictures.
+  /// * **The read threw.** Which is the entire reason this is wrapped: the
+  ///   summary is an optimisation on top of a load that is still going to
+  ///   happen and still going to succeed or fail on its own terms. A database
+  ///   that cannot answer it must cost the user a blank first frame — the
+  ///   behaviour that shipped before — and never the library itself.
+  Future<LibrarySummary?> _summaryOrNull() async {
+    if (_folderId != null) return null;
+    try {
+      return await getLibrarySummaryUseCase();
+    } catch (error) {
+      debugPrint('Shoto: library summary unavailable — $error');
+      return null;
+    }
+  }
+
+  /// Which blocked screen a refusal deserves.
+  ///
+  /// Android reports *denied* both for somebody who said no and for somebody
+  /// who was never asked, so the difference is read from preferences — see
+  /// [AppPreferences.photoAccessAsked]. The two need opposite screens: one is
+  /// offered the dialog, the other is told where system settings are, because
+  /// for them the dialog will not come back.
+  ScreenshotsState _blocked(PermissionState permission) {
+    if (permission == PermissionState.limited) {
+      return ScreenshotsPermissionDeniedState(isPartialAccess: true);
+    }
+    if (!preferences.photoAccessAsked) {
+      return ScreenshotsPermissionUnaskedState();
+    }
+    return ScreenshotsPermissionDeniedState();
+  }
+
+  /// Raises the system dialog, once, because somebody pressed a button.
+  ///
+  /// The flag is set before the result is known and never cleared: what it
+  /// records is that the question was *put*, and that stays true whichever way
+  /// it was answered. Recording it only on success would send a user who
+  /// refused back to the same screen offering the same button, which Android
+  /// will silently do nothing about.
+  Future<void> _onRequestPhotoAccess(
+    RequestPhotoAccessEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) async {
+    await preferences.markPhotoAccessAsked();
+    final PermissionState permission = await requestPhotoPermissionUseCase();
+    if (!permission.isAuth) {
+      emit(_blocked(permission));
+      return;
+    }
+    emit(ScreenshotsLoadingState());
+    await _loadAndEmit(emit);
     unawaited(intentCatalog.refresh());
     _watchLibrary();
   }
@@ -211,8 +315,30 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     // for it — the shell also refreshes on every resume, and without this a
     // screenshot saved from the share sheet paid for both.
     _refreshDebounce?.cancel();
+
+    // A refresh must not talk its way past a permission the OS is still
+    // refusing. The shell fires one on every resume, and [_loadAndEmit] asks
+    // the gallery directly: without access that read comes back *empty*
+    // rather than failing, so it emitted an ordinary "loaded, and there is
+    // nothing here". Home then said the library was empty and offered the
+    // importer, on the same resume the Library tab was asking for photo
+    // access — two screens, two different stories, neither of them true.
+    //
+    // Nothing is re-emitted while access is still missing, so the screen the
+    // user is looking at does not flicker; same rule as
+    // [_onRecheckPermission], which this now mirrors for the granted case.
+    if (state is ScreenshotsPermissionDeniedState) {
+      final PermissionState permission = await checkPhotoPermissionUseCase();
+      if (!permission.isAuth) return;
+      emit(ScreenshotsLoadingState());
+      await _loadAndEmit(emit);
+      _watchLibrary();
+      return;
+    }
+
     await _loadAndEmit(emit);
   }
+
 
   Future<void> _loadAndEmit(Emitter<ScreenshotsState> emit) async {
     try {
@@ -316,11 +442,32 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
       return;
     }
     final List<String> ids = current.selectedIds.toList();
-    await deleteScreenshotsUseCase(ids);
+
+    // Only what actually went. Refusing the system prompt used to empty the
+    // selection out of the library anyway, leaving the pictures on the phone
+    // and their folders, favourites and intents gone.
+    final Set<String> deleted = (await deleteScreenshotsUseCase(
+      ids,
+    )).toSet();
+    if (deleted.isEmpty) {
+      // Nothing was deleted, so nothing about the library changed — but the
+      // selection is cleared regardless. The user answered the question they
+      // were asked; leaving them in selection mode reads as the tap having
+      // been lost.
+      emit(current.copyWith(selectedIds: {}, isSelecting: false));
+      return;
+    }
+
     final updated = current.screenshots
-        .where((s) => !ids.contains(s.id))
+        .where((s) => !deleted.contains(s.id))
         .toList();
-    emit(current.copyWith(screenshots: updated, selectedIds: {}));
+    emit(
+      current.copyWith(
+        screenshots: updated,
+        selectedIds: {},
+        isSelecting: false,
+      ),
+    );
   }
 
   Future<void> _onDeleteScreenshot(
@@ -329,7 +476,13 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
   ) async {
     final ScreenshotsState current = state;
     if (current is! ScreenshotsLoadedState) return;
-    await deleteScreenshotsUseCase([event.assetId]);
+    final List<String> deleted = await deleteScreenshotsUseCase([
+      event.assetId,
+    ]);
+    // A refused delete leaves the library exactly as it was — see
+    // `_onDeleteSelected`.
+    if (deleted.isEmpty) return;
+
     final updated = current.screenshots
         .where((s) => s.id != event.assetId)
         .toList();
@@ -376,7 +529,13 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
         })
         .where((s) => _folderId == null || s.folderId == _folderId)
         .toList();
-    emit(current.copyWith(screenshots: updated, selectedIds: {}));
+    emit(
+      current.copyWith(
+        screenshots: updated,
+        selectedIds: {},
+        isSelecting: false,
+      ),
+    );
   }
 
   void _onToggleSelectItem(
@@ -419,18 +578,42 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     emit(current.copyWith(selectedIds: selected));
   }
 
-  /// Leaving selection mode drops the guiding intent with it.
+  /// Leaving selection mode drops the guiding intent — and the user's own
+  /// request for the mode — with it.
   ///
-  /// Otherwise `isSelectionMode` would still be true — the intent alone keeps
-  /// it on — and cancelling would leave the Library in a mode with nothing
-  /// selected and no way out.
+  /// Otherwise `isSelectionMode` would still be true, since either of those
+  /// alone keeps it on, and cancelling would leave the Library in a mode with
+  /// nothing selected and no way out. Every one of the three terms behind that
+  /// getter has to be put down here, which is why they are all named
+  /// explicitly rather than left to default.
   void _onClearSelection(
     ClearSelectionEvent event,
     Emitter<ScreenshotsState> emit,
   ) {
     final ScreenshotsState current = state;
     if (current is! ScreenshotsLoadedState) return;
-    emit(current.copyWith(selectedIds: {}, intent: LibraryIntent.none));
+    emit(
+      current.copyWith(
+        selectedIds: {},
+        intent: LibraryIntent.none,
+        isSelecting: false,
+      ),
+    );
+  }
+
+  /// Selection mode the user opened themselves, waiting on a first tap.
+  ///
+  /// Deliberately does **not** touch the filter, unlike the guided version
+  /// below: this is started from the header of the grid being looked at, so
+  /// the narrowing on screen is the narrowing that was asked for. Resetting it
+  /// would throw away the very slice somebody had just lined up to act on.
+  void _onEnterSelectionMode(
+    EnterSelectionModeEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+    emit(current.copyWith(isSelecting: true));
   }
 
   /// Selection mode, opened on somebody else's behalf and with nothing picked.
@@ -450,6 +633,10 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
         selectedIds: {},
         intent: event.intent,
         filter: LibraryFilter.all,
+        // A guided selection is owned by the intent that asked for it, so the
+        // user's own request for the mode is handed over rather than left
+        // standing underneath it.
+        isSelecting: false,
       ),
     );
   }
@@ -473,7 +660,13 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     // Selection is cleared with the filter, because most of what was selected
     // is about to stop being on screen — and a delete button reporting six
     // when four of them are no longer visible is the worst kind of accurate.
-    emit(current.copyWith(filter: event.filter, selectedIds: {}));
+    emit(
+      current.copyWith(
+        filter: event.filter,
+        selectedIds: {},
+        isSelecting: false,
+      ),
+    );
   }
 
   /// **Selection survives a sort**, unlike the filter and the lens.
@@ -505,6 +698,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
         lens: event.lens,
         clearLens: event.lens == null,
         selectedIds: {},
+        isSelecting: false,
       ),
     );
   }
@@ -574,6 +768,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
             )
             .toList(),
         selectedIds: <String>{},
+        isSelecting: false,
       ),
     );
   }

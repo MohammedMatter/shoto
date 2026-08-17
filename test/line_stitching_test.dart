@@ -63,9 +63,9 @@ void main() {
     test('a line far below is a new section, not a continuation', () {
       final List<StitchedPair> pairs = LineStitcher.pairsIn(<StitchLine>[
         _stacked('ID number', 0),
-        StitchLine(
+        const StitchLine(
           text: '1234567890',
-          bounds: const Rect.fromLTWH(20, 200, 260, 20),
+          bounds: Rect.fromLTWH(20, 200, 260, 20),
           blockId: 0,
         ),
       ]);
@@ -161,10 +161,10 @@ void main() {
   });
 
   group('scanning a page of lines', () {
-    Set<SensitiveKind> kindsOf(List<RecognizedLine> lines) => RedactionService
-        .regionsIn(lines)
-        .map((SensitiveRegion r) => r.kind)
-        .toSet();
+    Set<SensitiveKind> kindsOf(List<RecognizedLine> lines) =>
+        RedactionService.regionsIn(
+          lines,
+        ).map((SensitiveRegion r) => r.kind).toSet();
 
     test('a label on one line finds the value on the next', () {
       // The whole point of the second pass. Neither line says anything on its
@@ -178,9 +178,16 @@ void main() {
       );
     });
 
-    test('the same in Arabic', () {
+    test('the same in another shipped language', () {
+      // The stitching is language-agnostic — it joins a label line to the line
+      // under it and re-runs the ordinary patterns — but that only holds if
+      // the label is one the patterns know. This used to be checked in Arabic,
+      // which the recogniser cannot read; German is a label it can return.
       expect(
-        kindsOf(<RecognizedLine>[_line('رقم الهوية', 0), _line('9876543210', 1)]),
+        kindsOf(<RecognizedLine>[
+          _line('Steuer-ID', 0),
+          _line('98765432109', 1),
+        ]),
         contains(SensitiveKind.nationalId),
       );
     });

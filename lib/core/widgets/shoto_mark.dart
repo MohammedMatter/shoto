@@ -7,12 +7,12 @@ import 'package:shoto/core/theme/app_shapes.dart';
 ///
 /// Three cards in a fanned stack: two loose screenshots, and one in front
 /// that has been filed and so carries the clipped corner. It is the whole
-/// product in one shape — *these are yours, this one SHOTO is holding* — and
+/// product in one shape — *these are yours, this one Shoto is holding* — and
 /// every part of it is a rule the app already had.
 ///
 /// It is deliberately **not a creature**. A character with a face would be
 /// the one thing on screen that could not be defended from the app's own
-/// design notes: the palette is achromatic because SHOTO frames other
+/// design notes: the palette is achromatic because Shoto frames other
 /// people's pictures, the onboarding refuses to illustrate anything, and the
 /// promise the whole product rests on is that it is discreet. A mascot with
 /// eyes contradicts all three, and it would read as borrowed — every app has
@@ -105,7 +105,7 @@ class _Fan extends StatelessWidget {
             filed: true,
             child: Icon(
               icon,
-              color: AppColors.textSecondary,
+              color: context.colors.textSecondary,
               size: card.sp * 0.46,
             ),
           ),
@@ -143,12 +143,12 @@ class _Card extends StatelessWidget {
       height: h,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         // A filed card is clipped instead of rounded, exactly as it is
         // everywhere else — the clip and the radius are the same gesture and
         // applying both would round off the cut.
         borderRadius: filed ? null : BorderRadius.circular(AppRadius.xs),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: child,
     );

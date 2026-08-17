@@ -3,12 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/app_preferences.dart';
-import 'package:shoto/core/theme/app_colors.dart';
-import 'package:shoto/core/theme/app_theme.dart';
 import 'package:shoto/features/subscription/presentation/pages/pro_welcome_page.dart';
 import 'package:shoto/l10n/app_localizations.dart';
 
 import 'support/test_fonts.dart';
+import 'support/test_theme.dart';
 
 /// The moment a subscription completes, caught part-way through and at rest.
 ///
@@ -27,7 +26,6 @@ void main() {
 
   Future<void> render(WidgetTester tester, Brightness brightness) async {
     await loadTestFonts();
-    AppColors.setBrightness(brightness);
 
     tester.view.physicalSize = const Size(1080, 2100);
     tester.view.devicePixelRatio = 3;
@@ -42,9 +40,7 @@ void main() {
           locale: const Locale('en'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          theme: brightness == Brightness.dark
-              ? AppTheme.darkTheme
-              : AppTheme.lightTheme,
+          theme: testTheme(brightness),
           home: const ProWelcomePage(),
         ),
       ),
@@ -61,7 +57,7 @@ void main() {
       matchesGoldenFile('goldens/pro_welcome_midflight.png'),
     );
     await tester.pumpAndSettle();
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('pro welcome — dark', (WidgetTester tester) async {
     await render(tester, Brightness.dark);
@@ -70,7 +66,7 @@ void main() {
       find.byType(ProWelcomePage),
       matchesGoldenFile('goldens/pro_welcome_dark.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('pro welcome — light', (WidgetTester tester) async {
     await render(tester, Brightness.light);
@@ -79,5 +75,5 @@ void main() {
       find.byType(ProWelcomePage),
       matchesGoldenFile('goldens/pro_welcome_light.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 }

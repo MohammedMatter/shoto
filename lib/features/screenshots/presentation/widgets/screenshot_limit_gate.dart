@@ -33,6 +33,6 @@ Future<bool> ensureUnderScreenshotLimit(
   if (!context.mounted) return false;
   final bool? purchased = await Navigator.of(
     context,
-  ).push<bool>(FadeSlidePageRoute(builder: (_) => PaywallPage()));
+  ).push<bool>(FadeSlidePageRoute(builder: (_) => const PaywallPage()));
   return purchased == true;
 }

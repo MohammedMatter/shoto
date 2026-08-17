@@ -1,33 +1,33 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:shoto/core/database/app_database.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
+import 'package:shoto/core/services/local_identity.dart';
 
 /// Answers the one question the device gallery cannot: is this screenshot
-/// actually *in* SHOTO's library.
+/// actually *in* Shoto's library.
 ///
-/// SHOTO keeps its images in a single album on the device, `Pictures/SHOTO`.
+/// Shoto keeps its images in a single album on the device, `Pictures/Shoto`.
 /// A folder on disk cannot distinguish an image the user deliberately saved
 /// from one that merely landed there, so membership is recorded here and the
 /// album is only ever read *through* it.
 ///
-/// Note this is about visibility inside SHOTO, not secrecy: the files still
+/// Note this is about visibility inside Shoto, not secrecy: the files still
 /// sit in the shared gallery, where the phone's own photo app can show them
 /// to anyone holding the device. Hiding them from the gallery entirely would
 /// mean giving up being real gallery assets, which the share, delete and
 /// stitch flows are all built on.
 class LibraryOwnershipLocalDataSource {
   final AppDatabase _appDatabase;
-  final AuthRepository _authRepository;
+  final LocalIdentity _localIdentity;
 
-  LibraryOwnershipLocalDataSource(this._appDatabase, this._authRepository);
+  LibraryOwnershipLocalDataSource(this._appDatabase, this._localIdentity);
 
   /// Always present. This used to be the signed-in account's uid and was
   /// therefore nullable, which made every read below carry an "empty library"
   /// branch and every write a StateError it could throw. The device's own
   /// identity exists from first launch and never goes away, so all of that
-  /// is gone: there is no state in which SHOTO does not know whose library
+  /// is gone: there is no state in which Shoto does not know whose library
   /// this is.
-  String get _userId => _authRepository.userId;
+  String get _userId => _localIdentity.id;
 
   /// Every asset id in this device's library.
   ///
@@ -43,6 +43,37 @@ class LibraryOwnershipLocalDataSource {
       whereArgs: [userId],
     );
     return {for (final row in rows) row['asset_id'] as String};
+  }
+
+  /// One row per screenshot in this device's library, carrying only the four
+  /// columns that decide whether it is still waiting on the user.
+  ///
+  /// **The join belongs here rather than in two reads the repository
+  /// intersects**, because that is the point of it: this is the "what is in my
+  /// library, and what have I done with it" question answered entirely inside
+  /// sqlite, with no gallery enumeration anywhere near it. It backs the summary
+  /// Home boots from — see `LibrarySummary`.
+  ///
+  /// `LEFT JOIN`, not an inner one. A screenshot the user imported and never
+  /// touched has no `screenshot_meta` row at all, and it is precisely the
+  /// unsorted pile that is made of those — an inner join would report the
+  /// central number of the app as zero.
+  ///
+  /// Deliberately not `SELECT *`: the same table holds cached OCR text and
+  /// vision labels, which are kilobytes per row of nothing this needs, on the
+  /// one read the app's first frame is waiting for.
+  Future<List<Map<String, Object?>>> getOrganizationFacts() async {
+    final String userId = _userId;
+    final Database db = await _appDatabase.database;
+    return db.rawQuery(
+      'SELECT m.folder_id AS folder_id, m.is_favorite AS is_favorite, '
+      'm.intent AS intent, m.intent_done_at AS intent_done_at '
+      'FROM ${AppDatabase.libraryAssets} a '
+      'LEFT JOIN ${AppDatabase.screenshotMeta} m '
+      'ON m.user_id = a.user_id AND m.asset_id = a.asset_id '
+      'WHERE a.user_id = ?',
+      <Object?>[userId],
+    );
   }
 
   Future<bool> owns(String assetId) async {

@@ -27,7 +27,7 @@ import 'package:shoto/core/widgets/shoto_brand_mark.dart';
 /// existed only to imitate the native launch window. Removing that screen left
 /// the app's single most characteristic piece of motion with nowhere to play —
 /// so it plays here instead, which is a better home than a launch screen was:
-/// the gesture that means "SHOTO is filing this for you" now belongs to the
+/// the gesture that means "Shoto is filing this for you" now belongs to the
 /// moment somebody bought the thing that does the filing.
 class ProWelcomePage extends StatefulWidget {
   const ProWelcomePage({super.key});
@@ -92,7 +92,7 @@ class _ProWelcomePageState extends State<ProWelcomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.background,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 32.w),
@@ -133,14 +133,14 @@ class _ProWelcomePageState extends State<ProWelcomePage>
                       SizedBox(height: 14.h),
                       Text(
                         context.l10n.proWelcomeTitle,
-                        style: AppTextStyles.displayLarge,
+                        style: context.text.displayLarge,
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 8.h),
                       Text(
                         context.l10n.proWelcomeBody,
-                        style: AppTextStyles.bodyLarge.copyWith(
-                          color: AppColors.textSecondary,
+                        style: context.text.bodyLarge.copyWith(
+                          color: context.colors.textSecondary,
                         ),
                         textAlign: TextAlign.center,
                       ),

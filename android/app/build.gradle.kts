@@ -1,8 +1,5 @@
 plugins {
     id("com.android.application")
-    // START: FlutterFire Configuration
-    id("com.google.gms.google-services")
-    // END: FlutterFire Configuration
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
@@ -41,11 +38,41 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+
+            // Named explicitly rather than left to the default, because the
+            // default is *not* to read `proguard-rules.pro` at all — the file
+            // sits there looking applied and does nothing. See that file for
+            // what stops working without it.
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }
 
+// Unbundled OCR — the model lives in Google Play services, not in the APK.
+//
+// The text-recognition plugin depends on `com.google.mlkit:text-recognition`,
+// which carries the model inside the app. `play-services-mlkit-text-recognition`
+// exposes the identical `com.google.mlkit.vision.text` API and fetches the
+// model instead, which is 122.6 MB of release APK down to 93.5.
+//
+// Verified on a device rather than assumed, because the failure mode is at
+// runtime and looks like an app that works but finds nothing. See
+// `docs/decisions/ml-models.md` for the log that proves the unbundled path
+// actually ran, and for the one case still untested.
+//
+// Image labelling stays bundled: its plugin compiles against
+// `image-labeling-custom`, so excluding the bundled artifact breaks the build
+// rather than swapping the model.
+configurations.all {
+    exclude(group = "com.google.mlkit", module = "text-recognition")
+}
+
 dependencies {
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1")
+
     // local_auth_android pins androidx.biometric 1.1.0, which predates
     // Android 12's rework of BiometricPrompt. On 1.1.0 the prompt routes
     // class-2 (weak) biometrics through a legacy path, and face unlock — which

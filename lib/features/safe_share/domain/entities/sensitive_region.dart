@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:shoto/core/utils/sensitive_data.dart';
 
-/// What SHOTO will do about one private detail.
+/// What Shoto will do about one private detail.
 ///
 /// Two states, and the shorter list is the point. There used to be a third —
 /// redrawing the area with an invented but believable value, so the copy did

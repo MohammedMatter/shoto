@@ -8,18 +8,26 @@ import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/services/haptics.dart';
+import 'package:shoto/core/services/premium_bootstrap.dart';
+import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
+import 'package:shoto/features/safe_share/presentation/pages/safe_share_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/intent_picker_row.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/shared_image_choice_sheet.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 import 'package:shoto/features/folders/domain/use_cases/create_folder_use_case.dart';
 import 'package:shoto/features/folders/domain/use_cases/get_folders_use_case.dart';
+import 'package:shoto/features/folders/presentation/widgets/folder_limit_gate.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_colors.dart';
+import 'package:shoto/features/folders/presentation/widgets/folder_name_limit.dart';
+import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/domain/repositories/screenshot_repository.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/screenshot_limit_gate.dart';
 
-/// The sheet that rises when an image is shared into SHOTO.
+/// The sheet that rises when an image is shared into Shoto.
 ///
 /// It runs in its own translucent Android activity, so what the user sees is
 /// their current app dimmed slightly with a small panel sliding up over it —
@@ -34,11 +42,23 @@ class QuickSavePage extends StatefulWidget {
 }
 
 // `signedOut` is gone. It was a dead end that could only be escaped by
-// leaving the sheet, opening SHOTO, handing over a Google account and
+// leaving the sheet, opening Shoto, handing over a Google account and
 // sharing the image again — in front of the one flow whose entire value is
 // that it takes two seconds and never leaves the app you were in. There is
 // always a library to save into now.
-enum _Stage { loading, ready, naming, saving, saved, failed }
+enum _Stage {
+  loading,
+
+  /// Bringing up the subscription stack the covering path needs, which this
+  /// process deliberately skipped at launch. See [ensurePremiumServicesReady].
+  preparing,
+
+  ready,
+  naming,
+  saving,
+  saved,
+  failed,
+}
 
 class _QuickSavePageState extends State<QuickSavePage>
     with SingleTickerProviderStateMixin {
@@ -96,6 +116,23 @@ class _QuickSavePageState extends State<QuickSavePage>
   /// the user is told rather than quietly given fewer than they picked.
   int _skipped = 0;
 
+  /// Where this sheet was opened from, which only ever matters when nothing
+  /// arrived.
+  ///
+  /// **An empty hand has three different causes and three different next
+  /// steps**, and offering the wrong one is worse than offering none:
+  ///
+  /// * a **share** that comes back empty is an image that could not be read,
+  ///   and sharing it again is the fix;
+  /// * a **tile** press with nothing to show means the phone holds no
+  ///   screenshot — telling that person to re-share a picture they never took
+  ///   sends them hunting for a share sheet that was never involved;
+  /// * a tile press **without photo access** looks identical from here and is
+  ///   a dead end: Android revokes permissions from apps left unused for a few
+  ///   months, so "take a screenshot and tap again" becomes a loop they cannot
+  ///   leave, because what is missing was never a screenshot.
+  String _source = 'share';
+
   List<FolderEntity> _folders = const [];
   FolderEntity? _selected;
 
@@ -113,7 +150,7 @@ class _QuickSavePageState extends State<QuickSavePage>
       _images.isNotEmpty && _alreadyInLibraryCount == _images.length;
 
   /// A folder is the point. Saving to the library and stopping there just
-  /// makes another pile to sort later, which is the problem SHOTO exists to
+  /// makes another pile to sort later, which is the problem Shoto exists to
   /// solve — so the button waits until somewhere has been chosen.
   bool get _inert => _selected == null;
 
@@ -143,6 +180,44 @@ class _QuickSavePageState extends State<QuickSavePage>
     // Both start now. Only the rebuild waits — see [_entered].
     _controller.forward().whenComplete(_markEntered);
     _load();
+
+    // Android hands a second share to the instance already on screen rather
+    // than building a new one, so this sheet has to be able to become a
+    // different share without being rebuilt. See `ShareActivity.onNewIntent`.
+    _channel.setMethodCallHandler((MethodCall call) async {
+      if (call.method == 'reshare') await _reshare();
+    });
+  }
+
+  /// A different picture, into the sheet already standing.
+  ///
+  /// **Everything on screen belongs to the picture that has just been
+  /// replaced**, and that includes whatever is stacked over the sheet — a Safe
+  /// Share review of the old image, or the paywall opened from it. Leaving
+  /// those up would show the user findings for a screenshot they are no longer
+  /// sharing, with a button that sends it.
+  ///
+  /// The panel itself is deliberately *not* replayed. It is already up, the
+  /// user is already looking at it, and animating it out and back in to say
+  /// "the thing you just shared arrived" would be the app performing its own
+  /// plumbing.
+  Future<void> _reshare() async {
+    if (!mounted || _closing) return;
+
+    Navigator.of(context).popUntil((Route<dynamic> route) => route.isFirst);
+
+    setState(() {
+      _stage = _Stage.loading;
+      _images = const [];
+      _skipped = 0;
+      // Cleared with the rest: a folder chosen for the previous picture is not
+      // an answer about this one, and leaving it selected would arm the save
+      // button before the user has looked at anything.
+      _selected = null;
+      _intent = null;
+    });
+
+    await _load();
   }
 
   @override
@@ -150,6 +225,7 @@ class _QuickSavePageState extends State<QuickSavePage>
     // A cancelled ticker never completes its future, so `whenComplete` above
     // would not fire and anything awaiting [_entered] would hang forever.
     _markEntered();
+    _channel.setMethodCallHandler(null);
     _controller.dispose();
     _nameController.dispose();
     super.dispose();
@@ -157,12 +233,34 @@ class _QuickSavePageState extends State<QuickSavePage>
 
   Future<void> _load() async {
     try {
+      // **Started before the images are asked for, not after them.**
+      //
+      // The folder list has nothing to do with the picture — it is this
+      // account's folders, the same answer whatever arrived — and it used to
+      // be read at the end, after the channel round trip and after every
+      // shared image had been resolved against the library. That put a
+      // database open, which is the slowest thing on this path, at the back of
+      // a queue it had no reason to be in.
+      //
+      // Kicked off here instead, so it overlaps the platform call and the
+      // lookups below. Not awaited until the moment the form actually needs
+      // it, which is the whole point.
+      final Future<List<FolderEntity>> folders = sl<GetFoldersUseCase>()();
+
       final Map<Object?, Object?>? shared = await _channel
           .invokeMethod<Map<Object?, Object?>>('getSharedImages');
       final List<Object?> raw =
           (shared?['images'] as List<Object?>?) ?? const [];
+      // Read before the early return below, since the empty case is the one
+      // place it matters.
+      final String source = (shared?['source'] as String?) ?? 'share';
       if (raw.isEmpty) {
-        if (mounted) setState(() => _stage = _Stage.failed);
+        if (mounted) {
+          setState(() {
+            _source = source;
+            _stage = _Stage.failed;
+          });
+        }
         return;
       }
 
@@ -173,7 +271,7 @@ class _QuickSavePageState extends State<QuickSavePage>
         final String? path = map['path'] as String?;
         if (path == null) continue;
 
-        // Sharing a screenshot SHOTO already shows used to write a *second*
+        // Sharing a screenshot Shoto already shows used to write a *second*
         // copy into the gallery, so the app then listed the same picture
         // twice and the whole feature looked pointless. Resolving the
         // MediaStore id means anything already in the library is only filed.
@@ -182,6 +280,7 @@ class _QuickSavePageState extends State<QuickSavePage>
           _SharedImage(
             path: path,
             mediaId: mediaId,
+            fromShotoItself: map['fromShoto'] == true,
             existingAssetId: mediaId == null
                 ? null
                 : await repository.findLibraryAsset(mediaId),
@@ -190,11 +289,16 @@ class _QuickSavePageState extends State<QuickSavePage>
       }
 
       if (images.isEmpty) {
-        if (mounted) setState(() => _stage = _Stage.failed);
+        if (mounted) {
+          setState(() {
+            _source = source;
+            _stage = _Stage.failed;
+          });
+        }
         return;
       }
 
-      final List<FolderEntity> folders = await sl<GetFoldersUseCase>()();
+      final List<FolderEntity> loadedFolders = await folders;
 
       await _entered.future;
       // `_closing` as well as `mounted`: the entrance can be released by a
@@ -205,12 +309,168 @@ class _QuickSavePageState extends State<QuickSavePage>
       setState(() {
         _images = images;
         _skipped = (shared?['skipped'] as int?) ?? 0;
-        _folders = folders;
+        _folders = loadedFolders;
+        // **Filing, always, without being asked anything first.**
+        //
+        // Covering briefly got its own stage here — a full-width two-option
+        // gate that every share had to answer before it could reach a folder.
+        // It put the app's best feature in front of people, and it charged the
+        // common case for it: the overwhelming majority of shares are somebody
+        // keeping a picture, and all of them were stopped, made to read two
+        // paragraphs and pick. A sheet whose whole promise is that it takes two
+        // seconds cannot open with a decision.
+        //
+        // So the default is the default again, and covering is one tap from
+        // inside it — see the entry at the foot of the form.
         _stage = _Stage.ready;
       });
     } catch (_) {
       if (mounted) setState(() => _stage = _Stage.failed);
     }
+  }
+
+  /// Whether this share may be covered rather than filed.
+  ///
+  /// Drives the secondary entry at the foot of the form, and nothing else —
+  /// there is no stage to reach and nothing to answer. See [coveringOffered]
+  /// for why a four-image share and Shoto's own output are both excluded.
+  bool get _canCover =>
+      _images.isNotEmpty &&
+      coveringOffered(
+        _images.length,
+        fromShotoItself: _images.first.fromShotoItself,
+      );
+
+  /// Straight into Safe Share on the file the other app handed over.
+  ///
+  /// **Nothing is imported first, and that is the whole promise of this
+  /// path.** Somebody covering an account number asked for the picture to be
+  /// fixed, not filed; growing their library with it on the way past would
+  /// break the sentence the app says on two of its own screens. The file here
+  /// is the copy `ShareActivity` already materialised into the cache, which is
+  /// exactly what [SafeSharePage.incoming] is built to take.
+  ///
+  /// A full page over the sheet rather than more sheet: covering is a review,
+  /// with findings to read and treatments to choose, and none of that fits in
+  /// a panel sized for one question. The activity's window is translucent, so
+  /// the opaque page simply becomes what is on screen.
+  /// Whether filing this share would stay inside the free tier's cap — and if
+  /// not, whether the user came back from the paywall having paid.
+  ///
+  /// **Counts what would newly come *under management*, not what is being
+  /// saved.** The cap is on screenshots Shoto is looking after, which means a
+  /// row in `screenshot_meta` with a folder or a star. Three things arrive at
+  /// this sheet and only two of them add to that number:
+  ///
+  /// * an image not in the library yet — imported and filed, so it counts;
+  /// * one already in the library but unsorted — filing it is what brings it
+  ///   under management, so it counts;
+  /// * one already filed somewhere — moving it between folders changes nothing
+  ///   about how many Shoto looks after, so it must not count, or re-filing
+  ///   your own screenshots would walk you into a paywall.
+  ///
+  /// The third case is why this asks the repository rather than counting the
+  /// list. Guessing high here is not the safe direction: it charges people for
+  /// work they already paid for.
+  Future<bool> _withinFreeLimit() async {
+    setState(() => _stage = _Stage.preparing);
+
+    // Same reasoning as [_protect]: the subscription stack is not up in this
+    // process, and `ensureUnderScreenshotLimit` reads it. Without this a
+    // subscriber would be shown a paywall for a limit they do not have — the
+    // exact failure premium_bootstrap.dart was written about.
+    await ensurePremiumServicesReady();
+    if (!mounted || _closing) return false;
+
+    final ScreenshotRepository repository = sl<ScreenshotRepository>();
+    int newlyManaged = _images.where((i) => !i.isAlreadyInLibrary).length;
+
+    final List<String> existing = _images
+        .map((_SharedImage image) => image.existingAssetId)
+        .nonNulls
+        .toList();
+    if (existing.isNotEmpty) {
+      final List<ScreenshotEntity> known = await repository.getScreenshotsByIds(
+        existing,
+      );
+      newlyManaged += known
+          .where((ScreenshotEntity s) => !s.isFavorite && s.folderId == null)
+          .length;
+    }
+
+    if (!mounted || _closing) return false;
+    final bool allowed = await ensureUnderScreenshotLimit(
+      context,
+      additionalNewItems: newlyManaged,
+    );
+    if (!mounted || _closing) return false;
+
+    // Back to the form either way. Refused, it is what the user returns to;
+    // allowed, [_save] moves straight on to `saving` and this frame is never
+    // seen.
+    setState(() => _stage = _Stage.ready);
+    return allowed;
+  }
+
+  Future<void> _protect() async {
+    setState(() => _stage = _Stage.preparing);
+
+    // Awaited here rather than at launch, so the shares that never touch a
+    // paid feature — most of them — do not pay for the store.
+    await ensurePremiumServicesReady();
+    if (!mounted || _closing) return;
+
+    // **Back to the form before the page goes up, not after it comes down.**
+    //
+    // The spinner covers the bootstrap and nothing else. Left in place it
+    // would sit underneath Safe Share for the whole review — an indeterminate
+    // progress indicator animating every frame behind an opaque page, which is
+    // both a lie about something still loading and a widget the framework can
+    // never consider settled. The form is also exactly what should be revealed
+    // if the page is dismissed, so putting it back now means the retreat path
+    // has nothing left to do.
+    setState(() => _stage = _Stage.ready);
+
+    final SafeShareOutcome? outcome = await Navigator.of(context)
+        .push<SafeShareOutcome>(
+          FadeSlidePageRoute(
+            builder: (_) =>
+                SafeSharePage.incoming(incoming: File(_images.first.path)),
+          ),
+        );
+    if (!mounted || _closing) return;
+
+    // **Three ways out of Safe Share, and only one of them is "nothing
+    // happened".**
+    //
+    // Null is the back gesture, which means "not this" rather than "I am
+    // finished with Shoto" — the form is already showing underneath, so a
+    // mis-tap costs nothing. The other two both mean the user finished, and
+    // for a while they were all treated as the first: somebody who covered an
+    // account number and sent it landed back on the sheet they started from,
+    // the app asking them to begin a task they had just completed.
+    if (outcome == null) return;
+
+    if (outcome.handedOn) {
+      await _close();
+      return;
+    }
+
+    // Kept. The covered copy replaces the picture that arrived, and the sheet
+    // carries on into the filing it already knows how to do — folders, the
+    // intent, the ceiling. Marked as ours because it is: it came out of Safe
+    // Share, so a later `reshare` must not offer to cover it again.
+    setState(() {
+      _images = <_SharedImage>[
+        _SharedImage(
+          path: outcome.kept!.path,
+          mediaId: null,
+          existingAssetId: null,
+          fromShotoItself: true,
+        ),
+      ];
+      _stage = _Stage.ready;
+    });
   }
 
   Future<void> _save() async {
@@ -255,6 +515,28 @@ class _QuickSavePageState extends State<QuickSavePage>
     // reads as the panel being yanked rather than withdrawing.
     final Duration exit = AppMotion.duration(context, AppMotion.sheet);
 
+    // **The free tier's one cap, checked on the path that had never checked
+    // it.**
+    //
+    // `ensureUnderScreenshotLimit` guarded five entry points — the detail
+    // page, the quick-actions sheet, the selection toolbar, the old share
+    // listener — and not this one. That would be a small omission except that
+    // session 14 made *this* the primary way screenshots enter the library:
+    // every other door files something that is already inside. So the one
+    // unguarded door was the front one, and a free account could walk past
+    // fifty without ever meeting the limit it was under.
+    //
+    // Checked on the tap rather than when the sheet opens — the same trade
+    // covering makes (see [_protect]): most shares are under the cap and must
+    // not pay a store round trip to discover it.
+    //
+    // **Below the two lines above, not before them.** They read `context`
+    // synchronously precisely so that nothing awaits ahead of them, and
+    // putting this first quietly turned both into reads across an async gap —
+    // which the analyzer caught and which would, one day, have been the crash
+    // their comment was written to prevent.
+    if (!await _withinFreeLimit()) return;
+
     setState(() => _stage = _Stage.saving);
     try {
       final ScreenshotRepository repository = sl<ScreenshotRepository>();
@@ -287,7 +569,7 @@ class _QuickSavePageState extends State<QuickSavePage>
           try {
             await repository.setIntent(assetId, intent);
           } catch (error) {
-            debugPrint('SHOTO: intent not recorded for $assetId — $error');
+            debugPrint('Shoto: intent not recorded for $assetId — $error');
           }
         }
       }
@@ -305,7 +587,7 @@ class _QuickSavePageState extends State<QuickSavePage>
       // no longer swallowed. Everything that goes wrong in here used to
       // surface as "Could not read that image", which points at the file and
       // sends anyone debugging it to the wrong place.
-      debugPrint('SHOTO: quick save failed — $error\n$stack');
+      debugPrint('Shoto: quick save failed — $error\n$stack');
       if (mounted) setState(() => _stage = _Stage.failed);
       return;
     }
@@ -345,6 +627,15 @@ class _QuickSavePageState extends State<QuickSavePage>
     final String name = _nameController.text.trim();
     if (name.isEmpty) return;
 
+    // The free tier's folder cap, checked here as well as on the Folders tab
+    // — this is the *other* place a folder can be made, and a limit with two
+    // entry points and one guard is not a limit. See [ensureUnderFolderLimit];
+    // it counts for itself rather than trusting [_folders], which was read
+    // when this sheet opened and belongs to a share activity that may have
+    // been sitting behind the app for a while.
+    if (!await ensureUnderFolderLimit(context)) return;
+    if (!mounted) return;
+
     final FolderEntity created = await sl<CreateFolderUseCase>()(
       name,
       _newFolderColor,
@@ -380,12 +671,26 @@ class _QuickSavePageState extends State<QuickSavePage>
   }
 
   void _onDragUpdate(DragUpdateDetails details) {
-    if (_stage == _Stage.saving || _stage == _Stage.saved) return;
+    if (_stage == _Stage.saving ||
+        _stage == _Stage.saved ||
+        // Committed work in flight, with a page about to arrive over the top.
+        // Dragging the panel away underneath it leaves Safe Share standing on
+        // a sheet that has already asked Android to finish the activity.
+        _stage == _Stage.preparing) {
+      return;
+    }
     setState(() => _dragOffset = _resist(_dragOffset + details.delta.dy));
   }
 
   void _onDragEnd(DragEndDetails details) {
-    if (_stage == _Stage.saving || _stage == _Stage.saved) return;
+    if (_stage == _Stage.saving ||
+        _stage == _Stage.saved ||
+        // Committed work in flight, with a page about to arrive over the top.
+        // Dragging the panel away underneath it leaves Safe Share standing on
+        // a sheet that has already asked Android to finish the activity.
+        _stage == _Stage.preparing) {
+      return;
+    }
     // Either a decisive flick or dragged far enough to mean it. Anything else
     // springs back, which is what makes an accidental brush feel forgiving.
     final bool dismissed =
@@ -448,7 +753,7 @@ class _QuickSavePageState extends State<QuickSavePage>
           // It earned its place against a full-width `BoxShadow` at
           // `blurRadius: 32` that used to sit on this panel, redrawn sixty
           // times a second for a surface that was only moving. That shadow is
-          // gone now (see [AppColors]), so the saving is smaller — but the
+          // gone now (see [AppPalette]), so the saving is smaller — but the
           // panel is still the widest, deepest subtree in the app and it still
           // moves under a finger, which is the case this is for.
           child: RepaintBoundary(
@@ -478,36 +783,56 @@ class _QuickSavePageState extends State<QuickSavePage>
   Widget _content() {
     switch (_stage) {
       case _Stage.loading:
-        return Padding(
-          key: const ValueKey('loading'),
-          padding: EdgeInsets.symmetric(vertical: 46.h),
-          child: Center(
-            // A spinner repaints on every single frame, for as long as it is
-            // on screen. Unboxed, that marked the entire sheet dirty sixty
-            // times a second — the whole panel, for a 40-pixel spinner — so
-            // widget whose job is to say "please wait" was itself the reason
-            // the wait looked rough. Its own boundary keeps those repaints to
-            // the 40 or so pixels that actually change.
-            child: RepaintBoundary(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            ),
-          ),
-        );
+        return _spinner(const ValueKey('loading'));
 
+      // Same spinner, its own key. The two waits are indistinguishable to look
+      // at and must stay distinguishable to the AnimatedSwitcher: sharing a key
+      // would let it treat the second as a continuation of the first and skip
+      // the crossfade back from the offer.
+      case _Stage.preparing:
+        return _spinner(const ValueKey('preparing'));
+
+      // Nothing arrived — but *why* differs by where the sheet was opened
+      // from, and so does the only useful next step. See [_fromTile]. The
+      // tile's version is not an error either: a phone with no screenshot on
+      // it is a phone working correctly, so it takes the neutral glyph and the
+      // app's own accent rather than the alarm red kept for things that broke.
       case _Stage.failed:
-        return _Status(
-          key: const ValueKey('failed'),
-          icon: Icons.error_outline_rounded,
-          tint: AppColors.error,
-          title: context.l10n.quickSaveFailedTitle,
-          subtitle: context.l10n.quickSaveFailedBody,
-        );
+        return switch (_source) {
+          // Not an error, so not the alarm colour: a phone with no screenshot
+          // on it is a phone working correctly.
+          'tile' => _Status(
+            key: const ValueKey('no-capture'),
+            icon: Icons.photo_camera_back_outlined,
+            tint: context.colors.primary,
+            title: context.l10n.quickSaveNoCaptureTitle,
+            subtitle: context.l10n.quickSaveNoCaptureBody,
+          ),
+          // This one *is* something the user has to go and fix, and the fix
+          // is not on this sheet — the full app is where access can be asked
+          // for again, so the sentence points there rather than at a button
+          // that cannot exist here.
+          'tile-no-access' => _Status(
+            key: const ValueKey('no-access'),
+            icon: Icons.no_photography_outlined,
+            tint: context.colors.warning,
+            title: context.l10n.quickSaveNoAccessTitle,
+            subtitle: context.l10n.quickSaveNoAccessBody,
+          ),
+          _ => _Status(
+            key: const ValueKey('failed'),
+            icon: Icons.error_outline_rounded,
+            tint: context.colors.error,
+            title: context.l10n.quickSaveFailedTitle,
+            subtitle: context.l10n.quickSaveFailedBody,
+          ),
+        };
 
       case _Stage.saved:
         return _Status(
           key: const ValueKey('saved'),
           icon: Icons.check_rounded,
-          tint: AppColors.success,
+          tint: context.colors.success,
           title: context.l10n.quickSaveSaved,
           subtitle: _savedSubtitle(context),
         );
@@ -520,6 +845,21 @@ class _QuickSavePageState extends State<QuickSavePage>
         return _form();
     }
   }
+
+  /// A spinner repaints on every single frame, for as long as it is on screen.
+  /// Unboxed, that marked the entire sheet dirty sixty times a second — the
+  /// whole panel, for a 40-pixel spinner — so a widget whose job is to say
+  /// "please wait" was itself the reason the wait looked rough. Its own
+  /// boundary keeps those repaints to the 40 or so pixels that actually change.
+  Widget _spinner(Key key) => Padding(
+    key: key,
+    padding: EdgeInsets.symmetric(vertical: 46.h),
+    child: Center(
+      child: RepaintBoundary(
+        child: CircularProgressIndicator(color: context.colors.primary),
+      ),
+    ),
+  );
 
   /// Naming a folder without leaving the sheet.
   ///
@@ -539,29 +879,34 @@ class _QuickSavePageState extends State<QuickSavePage>
               onTap: () => setState(() => _stage = _Stage.ready),
               child: Icon(
                 Icons.arrow_back_rounded,
-                color: AppColors.textSecondary,
+                color: context.colors.textSecondary,
                 size: 20.sp,
               ),
             ),
             SizedBox(width: 12.w),
-            Text(context.l10n.foldersNew, style: AppTextStyles.titleLarge),
+            Text(context.l10n.foldersNew, style: context.text.titleLarge),
           ],
         ),
         SizedBox(height: 16.h),
         TextField(
           controller: _nameController,
           autofocus: true,
+          maxLength: kMaxFolderNameLength,
           textCapitalization: TextCapitalization.sentences,
-          style: AppTextStyles.bodyLarge,
+          style: context.text.bodyLarge,
           onSubmitted: (_) => _createFolder(),
           onChanged: (_) => setState(() {}),
           decoration: InputDecoration(
             hintText: context.l10n.foldersNameHint,
-            hintStyle: AppTextStyles.bodyLarge.copyWith(
-              color: AppColors.textDisabled,
+            hintStyle: context.text.bodyLarge.copyWith(
+              color: context.colors.textDisabled,
             ),
+            // Suppressed for the same reason as the intent label field: the
+            // cap is here so the button and the chips can render the name,
+            // not a budget the user is meant to watch themselves spend.
+            counterText: '',
             filled: true,
-            fillColor: AppColors.surfaceVariant,
+            fillColor: context.colors.surfaceVariant,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14.r),
               borderSide: BorderSide.none,
@@ -587,7 +932,7 @@ class _QuickSavePageState extends State<QuickSavePage>
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: _newFolderColor == color
-                          ? AppColors.textPrimary
+                          ? context.colors.textPrimary
                           : Colors.transparent,
                       width: 2.5,
                     ),
@@ -607,18 +952,18 @@ class _QuickSavePageState extends State<QuickSavePage>
             decoration: BoxDecoration(
               gradient: _nameController.text.trim().isEmpty
                   ? null
-                  : AppColors.primaryGradient,
+                  : context.colors.primaryGradient,
               color: _nameController.text.trim().isEmpty
-                  ? AppColors.surfaceVariant
+                  ? context.colors.surfaceVariant
                   : null,
               borderRadius: BorderRadius.circular(17.r),
             ),
             child: Text(
               context.l10n.foldersCreate,
-              style: AppTextStyles.button.copyWith(
+              style: context.text.button.copyWith(
                 color: _nameController.text.trim().isEmpty
-                    ? AppColors.textDisabled
-                    : AppColors.onPrimary,
+                    ? context.colors.textDisabled
+                    : context.colors.onPrimary,
               ),
             ),
           ),
@@ -636,6 +981,11 @@ class _QuickSavePageState extends State<QuickSavePage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          // Keyed so a test can measure it. The covering entry inside this row
+          // claims to land in space the row was already paying for, and that
+          // claim is only worth making if something checks it — see
+          // `share_covering_test.dart`.
+          key: const ValueKey<String>('shareHeader'),
           children: [
             // The preview is the confirmation that the *right* images
             // arrived, which matters more than it sounds when several apps
@@ -646,26 +996,151 @@ class _QuickSavePageState extends State<QuickSavePage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(_title(context), style: AppTextStyles.titleLarge),
+                  // **One line each, and that is load-bearing now.**
+                  //
+                  // Both of these used to have the whole width and could wrap
+                  // as far as they liked. The cover button on the trailing
+                  // edge takes about ninety points of it, and unbounded these
+                  // two answered by running to three lines — which pushed the
+                  // header past the thumbnail that sets its height and made a
+                  // "free" control cost forty points. Ellipsis is the right
+                  // answer regardless: a header that reflows to three lines
+                  // because the picture came from a different app is a header
+                  // whose size the user cannot predict.
+                  Text(
+                    _title(context),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.text.titleLarge,
+                  ),
                   SizedBox(height: 2.h),
                   Text(
                     _folders.isEmpty
                         ? context.l10n.quickSaveNeedFolder
                         : context.l10n.quickSavePickFolder,
-                    style: AppTextStyles.bodySmall,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.text.bodySmall,
                   ),
                   if (_skipped > 0) ...[
                     SizedBox(height: 3.h),
                     Text(
                       context.l10n.quickSaveSkipped(_images.length),
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.warning,
+                      style: context.text.caption.copyWith(
+                        color: context.colors.warning,
+                      ),
+                    ),
+                  ],
+
+                  // **The way into covering, said in words.**
+                  //
+                  // It was a bare shield on the trailing edge for one build,
+                  // and a glyph on its own does not read as a control — it
+                  // reads as decoration, or as a status badge about the
+                  // picture. Somebody who shared a screenshot *because* it has
+                  // an account number in it had no way to know the thing they
+                  // came for was one tap away.
+                  //
+                  // Placed inside the header's own column rather than under
+                  // the save button, because that column is the one part of
+                  // this sheet with room already going spare: the row's height
+                  // is set by the 62pt thumbnail beside it, and two lines of
+                  // text do not fill 62pt. A third line lands in space the
+                  // sheet was already paying for — asserted as an equal-height
+                  // comparison in `share_covering_test.dart`, not left to this
+                  // paragraph.
+                  //
+                  // Tinted and led by the shield so it reads as an action
+                  // rather than as more description, and it borrows the words
+                  // the paywall and Home already use for this feature.
+                  if (_canCover) ...[
+                    // 2, not the 5 this started at. The header's whole budget
+                    // is the thumbnail's 62pt beside it, and at 5 the three
+                    // lines came to 64.4 — the row grew by two and a half
+                    // pixels and the claim below stopped being true. Measured,
+                    // then set to the number that fits.
+                    SizedBox(height: 2.h),
+                    Text(
+                      context.l10n.quickSaveCoverWhy,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.text.caption.copyWith(
+                        color: context.colors.secondary,
                       ),
                     ),
                   ],
                 ],
               ),
             ),
+
+            // **A button, on the trailing edge, in space the header already
+            // had.**
+            //
+            // Four arrangements got here and the discarded three are worth
+            // recording, because they failed in two different ways. A
+            // two-option gate the sheet opened on, and then a full-width row
+            // under the save button, both charged the common case — nearly
+            // every share is somebody keeping a picture — for a decision only
+            // a few people need. Then a bare shield on this edge, which cost
+            // nothing and *communicated* nothing: a glyph alone reads as
+            // decoration, or as a badge about the picture. Then a tinted line
+            // of text, which said what it did and still looked like writing.
+            //
+            // So: a real surface, a border, a label. It is a button because it
+            // has to look like one before anybody presses it.
+            //
+            // The four-word question to its left carries the *why*, which is
+            // the half a one-word label cannot hold. Together they read "has
+            // private details?" / "cover" — the whole feature, in five words,
+            // at a glance.
+            //
+            // Still on this row rather than below the save button, for the
+            // reason the whole arrangement exists: the row's height is set by
+            // the 62pt thumbnail, so everything placed here is free. Asserted
+            // as an equal-height comparison in `share_covering_test.dart`,
+            // not left to this paragraph.
+            if (_canCover) ...[
+              SizedBox(width: 10.w),
+              PressableScale(
+                scale: 0.94,
+                onTap: busy ? null : _protect,
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 11.w,
+                    vertical: 8.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: context.colors.secondary.withValues(alpha: 0.14),
+                    borderRadius: BorderRadius.circular(13.r),
+                    border: Border.all(
+                      color: context.colors.secondary.withValues(alpha: 0.45),
+                    ),
+                  ),
+                  // Side by side rather than stacked. Stacked was the first
+                  // try and it stood 101pt — the row's budget is the
+                  // thumbnail's 62 — so the chip alone would have made the
+                  // sheet taller than the gate this whole design replaced.
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.shield_outlined,
+                        size: 16.sp,
+                        color: context.colors.secondary,
+                      ),
+                      SizedBox(width: 6.w),
+                      Text(
+                        context.l10n.quickSaveCoverAction,
+                        maxLines: 1,
+                        style: context.text.caption.asSemiBold.copyWith(
+                          color: context.colors.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
         if (_folders.isEmpty) ...[
@@ -678,17 +1153,17 @@ class _QuickSavePageState extends State<QuickSavePage>
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
               decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.1),
+                color: context.colors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(15.r),
                 border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.35),
+                  color: context.colors.primary.withValues(alpha: 0.35),
                 ),
               ),
               child: Row(
                 children: [
                   Icon(
                     Icons.create_new_folder_rounded,
-                    color: AppColors.primary,
+                    color: context.colors.primary,
                     size: 19.sp,
                   ),
                   SizedBox(width: 12.w),
@@ -698,18 +1173,18 @@ class _QuickSavePageState extends State<QuickSavePage>
                       children: [
                         Text(
                           context.l10n.quickSaveCreateFirstFolder,
-                          style: AppTextStyles.titleSmall,
+                          style: context.text.titleSmall,
                         ),
                         Text(
                           context.l10n.quickSaveCreateFirstFolderWhy,
-                          style: AppTextStyles.caption,
+                          style: context.text.caption,
                         ),
                       ],
                     ),
                   ),
                   Icon(
                     Icons.add_rounded,
-                    color: AppColors.primary,
+                    color: context.colors.primary,
                     size: 19.sp,
                   ),
                 ],
@@ -778,9 +1253,13 @@ class _QuickSavePageState extends State<QuickSavePage>
           child: Container(
             height: 54.h,
             alignment: Alignment.center,
+            // Keeps an ellipsized label off the rounded ends. Without it a
+            // long folder name runs the text right into the corner radius,
+            // which reads as clipped rather than shortened.
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
             decoration: BoxDecoration(
-              gradient: _inert ? null : AppColors.primaryGradient,
-              color: _inert ? AppColors.surfaceVariant : null,
+              gradient: _inert ? null : context.colors.primaryGradient,
+              color: _inert ? context.colors.surfaceVariant : null,
               borderRadius: BorderRadius.circular(17.r),
             ),
             child: busy
@@ -789,7 +1268,7 @@ class _QuickSavePageState extends State<QuickSavePage>
                     height: 21.w,
                     child: CircularProgressIndicator(
                       strokeWidth: 2.4,
-                      color: AppColors.onPrimary,
+                      color: context.colors.onPrimary,
                     ),
                   )
                 : Row(
@@ -798,24 +1277,41 @@ class _QuickSavePageState extends State<QuickSavePage>
                       Icon(
                         Icons.folder_open_rounded,
                         color: _inert
-                            ? AppColors.textDisabled
-                            : AppColors.onPrimary,
+                            ? context.colors.textDisabled
+                            : context.colors.onPrimary,
                         size: 20.sp,
                       ),
                       SizedBox(width: 9.w),
-                      Text(
-                        // Branches on where the screenshot is going rather
-                        // than on whether the button is tappable — the two
-                        // are the same thing again now that a folder is the
-                        // only way to file, but writing it this way is what
-                        // keeps `_selected!` provably safe.
-                        _selected != null
-                            ? context.l10n.quickSaveFileIn(_selected!.name)
-                            : context.l10n.quickSavePickFolder,
-                        style: AppTextStyles.button.copyWith(
-                          color: _inert
-                              ? AppColors.textDisabled
-                              : AppColors.onPrimary,
+                      // **Flexible, because the folder name is user-written
+                      // and this label embeds it.** The row is
+                      // `MainAxisSize.min` so the button's contents hug and
+                      // centre, and a bare `Text` in that row is measured at
+                      // its intrinsic width — a long enough folder name simply
+                      // ran off the end and painted the overflow stripes. This
+                      // hands the text whatever is left after the icon and
+                      // lets it ellipsize instead.
+                      //
+                      // Fixed here rather than only by capping the name field:
+                      // names also arrive from the folders screen, from rename,
+                      // and from a restored backup, so the label has to survive
+                      // any length whatever the inputs allow.
+                      Flexible(
+                        child: Text(
+                          // Branches on where the screenshot is going rather
+                          // than on whether the button is tappable — the two
+                          // are the same thing again now that a folder is the
+                          // only way to file, but writing it this way is what
+                          // keeps `_selected!` provably safe.
+                          _selected != null
+                              ? context.l10n.quickSaveFileIn(_selected!.name)
+                              : context.l10n.quickSavePickFolder,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: context.text.button.copyWith(
+                            color: _inert
+                                ? context.colors.textDisabled
+                                : context.colors.onPrimary,
+                          ),
                         ),
                       ),
                     ],
@@ -848,12 +1344,12 @@ class _QuickSavePageState extends State<QuickSavePage>
   }
 }
 
-/// One image handed over by another app, and whether SHOTO already has it.
+/// One image handed over by another app, and whether Shoto already has it.
 class _SharedImage {
   final String path;
 
   /// The gallery id it came from, when Android gave one. Lets an image
-  /// already sitting in SHOTO's album be taken into this account's library
+  /// already sitting in Shoto's album be taken into this account's library
   /// rather than copied a second time.
   final String? mediaId;
 
@@ -861,10 +1357,16 @@ class _SharedImage {
   /// image, in which case there is nothing to import — only to file.
   final String? existingAssetId;
 
+  /// Handed out by Shoto's own share sheet a moment ago — most often the
+  /// covered copy, coming back to be kept. Such a picture has already been
+  /// through the cover-or-keep offer, so it is not asked again.
+  final bool fromShotoItself;
+
   const _SharedImage({
     required this.path,
     required this.mediaId,
     required this.existingAssetId,
+    this.fromShotoItself = false,
   });
 
   bool get isAlreadyInLibrary => existingAssetId != null;
@@ -900,8 +1402,8 @@ class _SharedPreview extends StatelessWidget {
                 height: 50.w,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(13.r),
-                  border: Border.all(color: AppColors.surface, width: 1.5),
-                  color: AppColors.surfaceVariant,
+                  border: Border.all(color: context.colors.surface, width: 1.5),
+                  color: context.colors.surfaceVariant,
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: Image.file(File(images[i].path), fit: BoxFit.cover),
@@ -914,14 +1416,14 @@ class _SharedPreview extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
                 decoration: BoxDecoration(
-                  gradient: AppColors.primaryGradient,
+                  gradient: context.colors.primaryGradient,
                   borderRadius: BorderRadius.circular(999),
-                  border: Border.all(color: AppColors.surface, width: 1.5),
+                  border: Border.all(color: context.colors.surface, width: 1.5),
                 ),
                 child: Text(
                   '+$hidden',
-                  style: AppTextStyles.caption.asSemiBold.copyWith(
-                    color: AppColors.onPrimary,
+                  style: context.text.caption.asSemiBold.copyWith(
+                    color: context.colors.onPrimary,
                   ),
                 ),
               ),
@@ -954,7 +1456,7 @@ class _Sheet extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.colors.surface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
         ),
         child: SafeArea(
@@ -977,7 +1479,7 @@ class _Sheet extends StatelessWidget {
                   height: 4.h,
                   margin: EdgeInsets.only(bottom: 18.h),
                   decoration: BoxDecoration(
-                    color: AppColors.border,
+                    color: context.colors.border,
                     borderRadius: BorderRadius.circular(2.r),
                   ),
                 ),
@@ -1008,7 +1510,7 @@ class _FolderChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color accent = tint ?? AppColors.primary;
+    final Color accent = tint ?? context.colors.primary;
 
     return PressableScale(
       scale: 0.94,
@@ -1020,7 +1522,7 @@ class _FolderChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: selected
               ? accent.withValues(alpha: 0.14)
-              : AppColors.surfaceVariant,
+              : context.colors.surfaceVariant,
           borderRadius: BorderRadius.circular(13.r),
           border: Border.all(
             color: selected ? accent : Colors.transparent,
@@ -1033,15 +1535,25 @@ class _FolderChip extends StatelessWidget {
             Icon(
               icon,
               size: 15.sp,
-              color: selected ? accent : AppColors.textSecondary,
+              color: selected ? accent : context.colors.textSecondary,
             ),
             SizedBox(width: 7.w),
-            Text(
-              label,
-              style: AppTextStyles.bodySmall.asMedium.copyWith(
-                color: selected
-                    ? AppColors.textPrimary
-                    : AppColors.textSecondary,
+            // The strip scrolls horizontally, so a long folder name never
+            // overflows here — it does something quieter and worse: one chip
+            // grows wider than the phone and hides every other folder behind
+            // a scroll nobody knows to perform. Capped so the strip keeps
+            // showing that there are others.
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 150.w),
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.text.bodySmall.asMedium.copyWith(
+                  color: selected
+                      ? context.colors.textPrimary
+                      : context.colors.textSecondary,
+                ),
               ),
             ),
           ],
@@ -1085,13 +1597,13 @@ class _Status extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: AppTextStyles.titleLarge,
+            style: context.text.titleLarge,
           ),
           SizedBox(height: 3.h),
           Text(
             subtitle,
             textAlign: TextAlign.center,
-            style: AppTextStyles.bodySmall,
+            style: context.text.bodySmall,
           ),
         ],
       ),

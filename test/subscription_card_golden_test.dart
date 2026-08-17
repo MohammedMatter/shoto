@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/theme/app_colors.dart';
-import 'package:shoto/core/theme/app_theme.dart';
 import 'package:shoto/features/settings/presentation/widgets/subscription_card_widget.dart';
 import 'package:shoto/l10n/app_localizations.dart';
 
 import 'support/test_fonts.dart';
+import 'support/test_theme.dart';
 
 /// Both states of the Settings subscription card, for looking at.
 ///
@@ -25,7 +25,7 @@ import 'support/test_fonts.dart';
 void main() {
   Future<void> render(WidgetTester tester, Brightness brightness) async {
     await loadTestFonts();
-    AppColors.setBrightness(brightness);
+    final AppPalette palette = testPalette(brightness);
 
     tester.view.physicalSize = const Size(1080, 2300);
     tester.view.devicePixelRatio = 3;
@@ -40,11 +40,9 @@ void main() {
           locale: const Locale('en'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          theme: brightness == Brightness.dark
-              ? AppTheme.darkTheme
-              : AppTheme.lightTheme,
+          theme: testTheme(brightness),
           home: Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: palette.background,
             body: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
               child: Column(
@@ -70,7 +68,7 @@ void main() {
       find.byType(SingleChildScrollView),
       matchesGoldenFile('goldens/subscription_cards_dark.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('subscription cards — light', (WidgetTester tester) async {
     await render(tester, Brightness.light);
@@ -78,5 +76,6 @@ void main() {
       find.byType(SingleChildScrollView),
       matchesGoldenFile('goldens/subscription_cards_light.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
+
 }

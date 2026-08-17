@@ -5,7 +5,7 @@ import 'package:shoto/core/theme/app_motion.dart';
 ///
 /// Eight call sites were reaching for `showModalBottomSheet` directly and
 /// each inherited Material's own timings — 250ms in, 200ms out — while every
-/// other travelling surface in SHOTO runs on [AppMotion.sheet] /
+/// other travelling surface in Shoto runs on [AppMotion.sheet] /
 /// [AppMotion.normal]. Fifty milliseconds is not something anyone can name,
 /// but it is exactly the kind of drift that makes an app feel assembled from
 /// parts rather than designed: the quick-save panel and the folder picker are

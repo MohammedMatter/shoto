@@ -59,13 +59,87 @@ void main() {
   group('codes and identifiers', () {
     test('a verification code needs a cue word', () {
       expect(of('Your code is 483920'), contains(SensitiveKind.code));
-      expect(of('رمز التحقق 4821'), contains(SensitiveKind.code));
+      // One per shipped language, because a cue list is exactly the kind of
+      // thing that gets extended in English and forgotten everywhere else.
+      expect(of('Ihr Sicherheitscode 4821'), contains(SensitiveKind.code));
+      expect(of('Je verificatiecode is 4821'), contains(SensitiveKind.code));
+      expect(of('Il codice è 4821'), contains(SensitiveKind.code));
+      expect(of('O código de verificação é 4821'),
+          contains(SensitiveKind.code));
+      expect(of('Su código de verificación es 4821'),
+          contains(SensitiveKind.code));
+      expect(of('Votre code de vérification est 4821'),
+          contains(SensitiveKind.code));
       expect(of('Room 4821, floor 3'), isNot(contains(SensitiveKind.code)));
+    });
+
+    /// **A label describes the line it is on, and at most the one below.**
+    ///
+    /// The window either side of a number was `\D{0,20}` — any twenty
+    /// non-digits, newlines included — so on a real screenshot the words
+    /// "verification code" reached backwards past a line break and named the
+    /// account number above them. Both numbers came back as codes, and the
+    /// Safe Share review list said so in plain words.
+    ///
+    /// Covering an account number is right. *Naming* it a code is what
+    /// [SensitiveKind.number] exists to avoid — and since the actions sheet
+    /// now takes its private spans from this file, the wrong name also decides
+    /// whether the app offers to copy it.
+    group('a label reaches forward further than it reaches back', () {
+      const String twoLines =
+          'Account number 4820193\nYour verification code is 481920';
+
+      List<SensitiveMatch> codesIn(String text) => SensitiveData.findIn(text)
+          .where((SensitiveMatch m) => m.kind == SensitiveKind.code)
+          .toList();
+
+      test('the label does not claim the number on the line above it', () {
+        final List<SensitiveMatch> codes = codesIn(twoLines);
+        expect(codes, hasLength(1));
+        expect(codes.single.value, '481920');
+      });
+
+      test('the account number above is still covered, just not named', () {
+        // The point is the label, not the redaction: whatever it is called,
+        // it must not be left visible.
+        expect(of(twoLines), contains(SensitiveKind.number));
+      });
+
+      test('a label on its own line still reaches the number beneath it', () {
+        // The layout this rule exists for, and the reason newlines are not
+        // simply banned.
+        expect(
+          codesIn('Your verification code is:\n481920').single.value,
+          '481920',
+        );
+        expect(
+          codesIn('Ihr Bestätigungscode\n4821').single.value,
+          '4821',
+        );
+      });
+
+      test('but not two lines beneath it', () {
+        // Two breaks means the label belongs to something else that has since
+        // been passed over.
+        expect(codesIn('Your verification code\n\n481920'), isEmpty);
+      });
+
+      test('a trailing label still works on its own line', () {
+        expect(codesIn('481920 is your code').single.value, '481920');
+      });
     });
 
     test('a national ID needs its label', () {
       expect(of('National ID 1234567890'), contains(SensitiveKind.nationalId));
-      expect(of('رقم الهوية 1234567890'), contains(SensitiveKind.nationalId));
+      // Nine to eleven digits is the range this rule covers, so the labels
+      // tested here are the ones whose numbers actually fall in it: the Dutch
+      // BSN is nine, the Portuguese NIF nine, the German Steuer-ID eleven.
+      expect(of('BSN: 123456789'), contains(SensitiveKind.nationalId));
+      expect(of('NIF 123456789'), contains(SensitiveKind.nationalId));
+      expect(
+        of('Steuer-ID 12345678901'),
+        contains(SensitiveKind.nationalId),
+      );
       // Unlabelled, so far more likely an order number.
       expect(of('1234567890'), isNot(contains(SensitiveKind.nationalId)));
     });
@@ -75,7 +149,10 @@ void main() {
     test('email and phone', () {
       expect(of('write to sara@example.com'), contains(SensitiveKind.email));
       expect(of('call +962 7 9123 4567'), contains(SensitiveKind.phone));
-      expect(of('اتصل ٠٧٩١٢٣٤٥٦٧'), contains(SensitiveKind.phone));
+      expect(of('Handy 0599123456'), contains(SensitiveKind.phone));
+      expect(of('Telefoonnummer 0599123456'), contains(SensitiveKind.phone));
+      expect(of('Cellulare 0599123456'), contains(SensitiveKind.phone));
+      expect(of('Telemóvel 0599123456'), contains(SensitiveKind.phone));
     });
 
     test('a date is not a phone number', () {
@@ -195,7 +272,7 @@ void _emailRecallAfterOcrDamage() {
     const List<String> notEmails = [
       'Total 1,000.50 SAR',
       'See you at 5 pm',
-      'Copyright © 2026 SHOTO',
+      'Copyright © 2026 Shoto',
       'version 2.5.1',
       'read the docs . thanks',
     ];
@@ -205,6 +282,70 @@ void _emailRecallAfterOcrDamage() {
         expect(
           SensitiveData.kindsIn(text),
           isNot(contains(SensitiveKind.email)),
+        );
+      });
+    }
+  });
+
+  /// **The house number comes last outside the English-speaking world**, and
+  /// until the shipped languages changed nothing in this file could express
+  /// that. The unlabelled street rule required the number to *lead* — the
+  /// English form — so `Hauptstraße 12` and `Via Roma 12` were invisible, and
+  /// a German user sharing a screenshot of a delivery confirmation had their
+  /// home address go out uncovered.
+  ///
+  /// This is the one place in the language swap where a translation gap was
+  /// really a *missing rule*, which is why it gets its own group.
+  group('street lines in the shipped word orders', () {
+    const List<String> streets = <String>[
+      // Number last, type welded to the name.
+      'Hauptstraße 12',
+      'Hauptstrasse 12',
+      'Kerkstraat 5a',
+      'Prinsengracht 263',
+      'Lindenallee 7',
+      'Bahnhofsplatz 3',
+      // Number last, type leading.
+      'Via Roma 12',
+      'Piazza del Duomo 4',
+      'Rua Augusta 24',
+      'Avenida da Liberdade 110',
+      'Calle Mayor 8',
+      'Rue de Rivoli 15',
+      // The English form still works.
+      '221 Baker Street',
+    ];
+
+    for (final String text in streets) {
+      test('"$text" is an address', () {
+        expect(
+          SensitiveData.kindsIn('Lieferung an $text, bitte klingeln'),
+          contains(SensitiveKind.postalAddress),
+          reason: 'an uncovered home address is a leak the user cannot undo',
+        );
+      });
+    }
+  });
+
+  group('the street rules do not invent addresses', () {
+    /// The words carrying the street rules are ordinary nouns in the same
+    /// languages — *Weg*, *Ring*, *hof*, *place*, *corso* — so each of these
+    /// is a sentence the rule must stay out of. The house number is what
+    /// separates the two, which is why it is required.
+    const List<String> notStreets = <String>[
+      'Der Weg war lang und ruhig',
+      'Ring mich morgen an',
+      'Wir treffen uns im Hof',
+      'De kade was druk vandaag',
+      'Il corso di italiano inizia lunedì',
+    ];
+
+    for (final String text in notStreets) {
+      test('"$text" is not an address', () {
+        expect(
+          SensitiveData.kindsIn(text),
+          isNot(contains(SensitiveKind.postalAddress)),
+          reason: text,
         );
       });
     }

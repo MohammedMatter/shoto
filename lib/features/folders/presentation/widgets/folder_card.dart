@@ -1,57 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:photo_manager/photo_manager.dart';
+// `show DateFormat`, not a bare import: `package:intl` exports its own
+// `TextDirection`, which shadows the one from `dart:ui` that the plate painter
+// takes — the whole file stopped compiling on `TextDirection.rtl` the moment
+// this line was added.
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
-import 'package:shoto/core/theme/app_shapes.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
-import 'package:shoto/core/widgets/asset_thumbnail_image.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
+import 'package:shoto/features/folders/presentation/widgets/folder_colors.dart';
+import 'package:shoto/features/folders/presentation/widgets/folder_icons.dart';
 
-/// A folder, shown as **what is inside it**.
+/// The corner radius of both shapes on the card.
 ///
-/// This card used to be a bordered surface holding a 44px tinted square with
-/// `Icons.folder_rounded` in it. Every folder on the page was therefore the
-/// same picture, and the only thing telling twelve of them apart was a line of
-/// text and a hue on a chip small enough to miss. Recognising your own folder
-/// — which is the entire task of this screen — was left to reading.
+/// A plain double rather than `AppRadius.md`, which is `18.r` — a `ScreenUtil`
+/// getter, fine in a widget and unavailable inside a [CustomPainter], which
+/// has no `BuildContext` to have resolved it against. Named once here so the
+/// painter and the pocket beside it cannot drift apart, and smaller than the
+/// scale's card step because these two shapes are stacked: at 18 the pocket's
+/// corners eat visibly into the plate behind it.
+const double _cardRadius = 14;
+
+/// A folder, drawn as a folder.
 ///
-/// So the icon is gone and the newest screenshot filed into the folder is the
-/// card. That is not decoration: a folder of receipts and a folder of recipes
-/// are instantly distinguishable by their contents and by nothing else, and it
-/// is the same reason every gallery app on the phone shows album covers rather
-/// than folder glyphs.
+/// **This replaced a screenshot cover, and the reasoning that put the cover
+/// there is worth writing down before the reasoning that took it away.**
+///
+/// The card used to be the newest screenshot filed inside it, on the argument
+/// that a folder of receipts and a folder of recipes are told apart by their
+/// contents and by nothing else — the same reason a gallery app shows album
+/// covers rather than folder glyphs. That is true of a gallery. It turned out
+/// not to be true here, for two reasons that only show up on a real phone:
+///
+/// 1. **Most folders are empty most of the time.** A folder is made *before*
+///    anything goes in it, and the emptiest folder — the one just created — is
+///    the one being looked for. Every empty folder fell back to the same grey
+///    box with the same glyph, so the grid was a row of identical placeholders
+///    exactly when it needed to be legible.
+/// 2. **A screenshot is a poor thumbnail of itself.** Screenshots are dense,
+///    tall, mostly white text on mostly white chrome. Twelve of them at 98dp
+///    wide is twelve grey rectangles; the thing that identifies the folder —
+///    that it is *the trips one* — is not visible at that size in a way a
+///    picture of a boarding pass can carry.
+///
+/// So the card is an object rather than a window: a card-stock plate in the
+/// folder's own colour with a pocket across the front of it, the name written
+/// on the pocket, and the folder's glyph watermarked on the plate behind.
+/// Shape, colour and glyph are three independent things to recognise it by,
+/// and all three survive being 98dp wide.
 ///
 /// ---
 ///
-/// **The card has no container**, and that is deliberate.
+/// **The colour is allowed to be this loud, and only here.**
 ///
-/// A surface, a border and a radius around each tile is what made this page
-/// read as a template — the same finding Home reached when it replaced three
-/// stat cards with one line of text. Here the cover already *is* a solid
-/// rectangle with an edge; wrapping it in a second one is an outline around an
-/// outline. The name and count sit on the page itself, so a screen of twelve
-/// folders is twelve pictures instead of twelve boxes.
+/// `AppPalette` flattened twenty-two gradients and drained every neutral to
+/// exactly R==G==B, on the rule that the interface has no colour and the
+/// screenshots do. This does not break that rule, it is the rule's one
+/// documented exception — `folder_colors.dart` has said since it was written
+/// that these hues "are not the interface speaking, they are the user's own
+/// filing marks". The gradient lives on the pocket, which is the piece of this
+/// screen the user coloured themselves. Nothing else on the page has one.
 ///
-/// ---
-///
-/// **The colour bar is the one saturated thing here**, and it earns its place
-/// on the terms `folder_colors.dart` sets out: these hues are the user's own
-/// filing marks, not the interface speaking. It sits on the bottom edge of the
-/// cover — the coloured edge of a filed card — rather than as a chip beside
-/// the name, because a photo cover would otherwise leave the colour with
-/// nowhere to be seen.
+/// **There is no shadow**, because the app has none: `AppPalette` deleted the
+/// only shadow token it ever had and explains at length why a soft dark shape
+/// on a near-black canvas reads as a smudge rather than as depth. The
+/// separation here is done with value instead — the plate is the tag colour at
+/// 78% lightness, the pocket sweeps ten points either side of it, and the two
+/// read as stacked because they are two clearly different lightnesses of one
+/// hue.
 class FolderCard extends StatelessWidget {
   final FolderEntity folder;
-
-  /// The newest screenshot filed in this folder, or null when the folder is
-  /// empty or the library has not loaded yet.
-  ///
-  /// Passed in rather than looked up here: the page derives every cover from
-  /// the one library the shell already has in memory, in a single pass, so a
-  /// grid of twelve folders does not run twelve queries.
-  final AssetEntity? cover;
 
   final VoidCallback onTap;
 
@@ -59,18 +79,66 @@ class FolderCard extends StatelessWidget {
   /// long-press: the button is what makes the actions discoverable at all
   /// (a long-press has no visual affordance, so nobody finds it), the
   /// long-press stays as a shortcut for people who already know.
-  final VoidCallback onMoreTap;
+  ///
+  /// Null on the editor sheet's preview, which draws the same card for a
+  /// folder that does not exist yet — a "⋯" there would offer to rename and
+  /// delete the thing currently being named.
+  final VoidCallback? onMoreTap;
+
+  /// What the pocket prints under the name.
+  ///
+  /// **Passed in rather than read from [FolderAppearanceController] here**,
+  /// and the first attempt did read it here — which is how this comment came
+  /// to exist. A leaf widget that reaches into the service locator cannot be
+  /// built without the app's wiring around it: adding that one line broke the
+  /// editor sheet's preview, both of its golden tests and the detail page's,
+  /// none of which have any interest in a global preference. The grid is the
+  /// one place that *has* the user's choice, so the grid is the one place that
+  /// reads it.
+  ///
+  /// The defaults are what the card drew before either switch existed, so
+  /// every other call site — the editor preview above all, which is a folder
+  /// that does not exist yet and has no date worth printing — keeps working
+  /// without knowing anything changed.
+  final bool showCount;
+
+  final bool showCreated;
 
   const FolderCard({
     super.key,
     required this.folder,
     required this.onTap,
-    required this.onMoreTap,
-    this.cover,
+    this.onMoreTap,
+    this.showCount = true,
+    this.showCreated = false,
   });
 
-  /// The bottom edge of the cover, in the folder's own colour.
-  static double get _spine => 4.h;
+  /// How much of the tile's height the card-stock plate takes.
+  ///
+  /// The rest is where the pocket hangs below it. The pocket is *not* sized
+  /// from this — it takes whatever height its two lines of text need and grows
+  /// upward over the plate — which is what keeps the card whole at a large
+  /// system text scale instead of striping the bottom of every tile in the
+  /// grid.
+  static const double _plateFraction = 0.72;
+
+  /// The plate is inset from the leading edge and the pocket from the trailing
+  /// one, so neither is square with the other. That offset is most of what
+  /// makes the two shapes read as *in front of* rather than as one panel split
+  /// in half.
+  static const double _plateInset = 0.10;
+
+  /// **0.90, and it is the count that sets it.** At 0.80 the pocket had about
+  /// 62dp of usable width on a three-column grid, which ellipsizes
+  /// "24 screenshots" — so every folder on the page reported "24 screens…" and
+  /// the one number on the card was the thing being cut off. A name is fine to
+  /// truncate; it is the user's own word and they recognise the first half of
+  /// it. A truncated count is just noise.
+  ///
+  /// This is the widest the pocket can be and still leave the plate showing
+  /// past its trailing edge, which is the other half of what makes the two
+  /// shapes read as stacked rather than as one panel.
+  static const double _pocketWidth = 0.90;
 
   @override
   Widget build(BuildContext context) {
@@ -85,177 +153,291 @@ class FolderCard extends StatelessWidget {
     return PressableScale(
       onTap: onTap,
       onLongPress: onMoreTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Expanded rather than a fixed AspectRatio: the caption below takes
-          // exactly the height its text needs and the cover absorbs whatever
-          // is left. At a large system text scale that means a slightly
-          // shorter picture, which is invisible — where a fixed-ratio cover
-          // would push the caption past the bottom of the tile and stripe it.
-          Expanded(
-            child: _Cover(folder: folder, cover: cover, color: color),
-          ),
-          SizedBox(height: 10.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  folder.name,
-                  style: AppTextStyles.titleSmall,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          final double width = constraints.maxWidth;
+          final double height = constraints.maxHeight;
+          final double plateHeight = height * _plateFraction;
+
+          return Stack(
+            children: <Widget>[
+              PositionedDirectional(
+                top: 0,
+                start: width * _plateInset,
+                end: 0,
+                height: plateHeight,
+                child: _Plate(folder: folder, color: color),
               ),
-              // Below the cover rather than floating on top of it. Overlaid on
-              // a photograph this glyph needs a scrim behind it to stay
-              // legible against every possible screenshot, and a scrim in the
-              // corner of every tile is a smudge on twelve pictures. Down
-              // here it sits on the page's own background and is simply
-              // always readable.
-              PressableScale(
-                scale: 0.85,
-                onTap: onMoreTap,
-                child: Padding(
-                  // Asymmetric: the glyph is pulled tight to the tile's
-                  // trailing edge while the tap target keeps its full size.
-                  padding: EdgeInsetsDirectional.only(
-                    start: 8.w,
-                    end: 2.w,
-                    top: 2.h,
-                    bottom: 6.h,
+              // In the notch the tab leaves free, so it sits on the page's own
+              // background and is legible whatever colour the folder is. The
+              // old card put this under the cover for the same reason: over a
+              // coloured surface the glyph needs a scrim, and a scrim in the
+              // corner of every tile is a smudge on the whole grid.
+              if (onMoreTap != null)
+                PositionedDirectional(
+                  top: 0,
+                  end: 0,
+                  height: plateHeight * _Plate.tabFraction,
+                  child: PressableScale(
+                    scale: 0.85,
+                    onTap: onMoreTap,
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.only(
+                        start: 10.w,
+                        end: 2.w,
+                      ),
+                      child: Icon(
+                        Icons.more_horiz_rounded,
+                        color: context.colors.textSecondary,
+                        size: 16.sp,
+                      ),
+                    ),
                   ),
-                  child: Icon(
-                    Icons.more_horiz_rounded,
-                    color: AppColors.textSecondary,
-                    size: 17.sp,
-                  ),
+                ),
+              PositionedDirectional(
+                bottom: 0,
+                start: 0,
+                end: width * (1 - _pocketWidth),
+                child: _Pocket(
+                  folder: folder,
+                  color: color,
+                  showCount: showCount,
+                  showCreated: showCreated,
                 ),
               ),
             ],
-          ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// The card stock: a tab, and a body under it.
+///
+/// Two rounded rectangles drawn with one [Paint] rather than a single traced
+/// path. They overlap by the corner radius, so the seam between them is inside
+/// solid colour and never visible — and it means the shape is described by the
+/// two rectangles anybody reading this can picture, instead of by eleven path
+/// commands nobody can.
+class _Plate extends StatelessWidget {
+  final FolderEntity folder;
+  final Color color;
+
+  const _Plate({required this.folder, required this.color});
+
+  /// How much of the plate's height the tab stands above the body.
+  ///
+  /// Also, and not by accident, the height of the notch beside it — which is
+  /// where the "⋯" button lives. At 24% that notch is about 22dp tall on a
+  /// three-column grid, which is enough for a 16sp glyph with room around it.
+  static const double tabFraction = 0.24;
+
+  /// How much of the plate's width the tab runs along.
+  static const double _tabWidth = 0.52;
+
+  @override
+  Widget build(BuildContext context) {
+    final bool rtl = Directionality.of(context) == TextDirection.rtl;
+
+    return CustomPaint(
+      painter: _PlatePainter(color: folderPlateColor(folder.color), rtl: rtl),
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          final double bodyHeight = constraints.maxHeight * (1 - tabFraction);
+
+          return Padding(
+            // The watermark belongs to the body, not to the tab above it.
+            padding: EdgeInsets.only(top: constraints.maxHeight * tabFraction),
+            child: Align(
+              // Above centre, because the pocket covers the bottom third of
+              // the body and a centred glyph would be half behind it.
+              alignment: const Alignment(0, -0.35),
+              // **A locked folder says so before it says anything else.**
+              //
+              // The rule survives the redesign that removed the cover it was
+              // written for: the padlock is the whole reason the flag exists,
+              // and a private folder wearing its own cheerful glyph looks
+              // exactly like an unlocked one until you try to open it.
+              //
+              // Sized against the plate rather than against the icon scale
+              // used elsewhere, for the reason the old placeholder gave: at a
+              // row's 20sp a glyph is adrift in the middle of a tile. It is
+              // standing in for the picture the card no longer has.
+              //
+              // Watermarked rather than drawn: the glyph is *behind* the
+              // pocket in the same sense a letterhead is behind the writing.
+              // At full strength it competed with the name for the eye and the
+              // card had two things shouting on it.
+              child: folder.isPrivate
+                  ? Icon(
+                      Icons.lock_rounded,
+                      size: bodyHeight * 0.44,
+                      color: onFolderColor(
+                        folder.color,
+                      ).withValues(alpha: 0.32),
+                    )
+                  : FolderGlyph(
+                      iconKey: folder.iconKey,
+                      size: bodyHeight * 0.44,
+                      color: onFolderColor(
+                        folder.color,
+                      ).withValues(alpha: 0.32),
+                    ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _PlatePainter extends CustomPainter {
+  final Color color;
+
+  /// Which side the tab is on. Mirrored in Arabic and Urdu for the same reason
+  /// `ClippedCorner` mirrors its cut: the tab is the corner you see first, and
+  /// in an RTL layout that is the other one.
+  final bool rtl;
+
+  const _PlatePainter({required this.color, required this.rtl});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()..color = color;
+    final double radius = _cardRadius;
+    final double tabHeight = size.height * _Plate.tabFraction;
+    final double tabWidth = size.width * _Plate._tabWidth;
+
+    final RRect body = RRect.fromRectAndCorners(
+      Rect.fromLTRB(0, tabHeight, size.width, size.height),
+      topLeft: Radius.circular(rtl ? radius : 0),
+      topRight: Radius.circular(rtl ? 0 : radius),
+      bottomLeft: Radius.circular(radius),
+      bottomRight: Radius.circular(radius),
+    );
+
+    // Runs `radius` past the top of the body, so the two shapes overlap by
+    // exactly the amount needed for the join to disappear.
+    final RRect tab = RRect.fromRectAndCorners(
+      rtl
+          ? Rect.fromLTRB(
+              size.width - tabWidth,
+              0,
+              size.width,
+              tabHeight + radius,
+            )
+          : Rect.fromLTRB(0, 0, tabWidth, tabHeight + radius),
+      topLeft: Radius.circular(radius),
+      topRight: Radius.circular(radius),
+    );
+
+    canvas
+      ..drawRRect(tab, paint)
+      ..drawRRect(body, paint);
+  }
+
+  @override
+  bool shouldRepaint(_PlatePainter old) => old.color != color || old.rtl != rtl;
+}
+
+/// The pocket across the front, and the only place a folder's name is written.
+class _Pocket extends StatelessWidget {
+  final FolderEntity folder;
+  final Color color;
+  final bool showCount;
+  final bool showCreated;
+
+  const _Pocket({
+    required this.folder,
+    required this.color,
+    required this.showCount,
+    required this.showCreated,
+  });
+
+  /// One style for both optional lines.
+  ///
+  /// Not a lighter *colour*: on eight different hues there is no single grey
+  /// that stays subordinate without going illegible on one of them.
+  /// Transparency of the foreground already chosen for this swatch keeps the
+  /// relationship right on all eight.
+  TextStyle _subtitle(BuildContext context, Color foreground) =>
+      context.text.caption.copyWith(
+        color: foreground.withValues(alpha: 0.78),
+        fontSize: 10.5.sp,
+        height: 1.2,
+      );
+
+  /// Falls back to the unlocalised format rather than throwing.
+  ///
+  /// The same guard the subscription card documents: `DateFormat` raises for a
+  /// locale whose data has not been loaded, and a folder grid is not a screen
+  /// to lose over a date.
+  String _created(BuildContext context) {
+    final DateTime date = folder.createdAt;
+    try {
+      return DateFormat.yMMMd(
+        Localizations.localeOf(context).toLanguageTag(),
+      ).format(date);
+    } on Exception {
+      return DateFormat.yMMMd().format(date);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Color foreground = onFolderColor(folder.color);
+
+    return Container(
+      padding: EdgeInsetsDirectional.fromSTEB(8.w, 12.h, 6.w, 11.h),
+      decoration: BoxDecoration(
+        gradient: folderPocketGradient(folder.color),
+        borderRadius: BorderRadius.circular(_cardRadius),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
           Text(
-            context.l10n.countScreenshots(folder.screenshotCount),
-            style: AppTextStyles.bodySmall,
+            folder.name,
+            style: context.text.bodySmall.asSemiBold.copyWith(
+              color: foreground,
+              height: 1.2,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Cover extends StatelessWidget {
-  final FolderEntity folder;
-  final AssetEntity? cover;
-  final Color color;
-
-  const _Cover({
-    required this.folder,
-    required this.cover,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // **A private folder never shows its contents.**
-    //
-    // The whole point of the flag is that opening this folder costs a
-    // fingerprint, and a cover thumbnail on the grid hands over the one thing
-    // the lock exists to withhold — to anybody who picks up the phone, without
-    // touching it. So the check is here, in the widget that would draw the
-    // picture, rather than at the call site where a later refactor could
-    // forget it.
-    final bool showContents = !folder.isPrivate && cover != null;
-
-    // **A hairline, for the same reason the recents strip on Home has one.**
-    //
-    // The canvas is `#1A1A1A`, and the two things this cover can be are both
-    // capable of matching it: a screenshot of a dark app, or the placeholder
-    // below, which is the folder's own colour at 14% — very dark for every hue
-    // in `folder_colors.dart`. Either way the tile loses its edge and reads as
-    // a hole in the page rather than as an object on it, which is precisely
-    // what happened to the dark cards in Home's recents strip on a device.
-    //
-    // Drawn *over* the content rather than under it, so it survives whatever
-    // the cover turns out to be.
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: ClipRRect(
-        // Inset by the border so the image does not paint over the line that
-        // is there to contain it.
-        borderRadius: BorderRadius.circular(AppRadius.md - 1),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            if (showContents)
-              AssetThumbnailImage(asset: cover!)
-            else
-              _Placeholder(folder: folder, color: color),
-            // The coloured edge of a filed card. Inside the clip and on the
-            // bottom edge, so it costs no vertical space and follows the
-            // cover's own corners.
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                height: FolderCard._spine,
-                width: double.infinity,
-                child: ColoredBox(color: color),
-              ),
+          // **Both lines are optional now, and the name is not.**
+          //
+          // A folder with neither switched on is a coloured plate and a name,
+          // which is a legitimate thing to want — the grid is mostly scanned
+          // by colour and glyph — and it is the reason these are two switches
+          // rather than one "details" toggle: the count answers "is there
+          // anything in here" and the date answers "how long has this been
+          // sitting", and almost nobody wants both.
+          if (showCount) ...<Widget>[
+            SizedBox(height: 2.h),
+            Text(
+              context.l10n.countScreenshots(folder.screenshotCount),
+              style: _subtitle(context, foreground),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// What stands in for a picture when there is no picture to show: an empty
-/// folder, or a locked one.
-///
-/// **Neutral, with the colour carried by the glyph and the spine.**
-///
-/// This was a wash of the folder's own colour at 14%. The reasoning was that
-/// an empty folder is still one the user made and named and tagged, and a
-/// grey box would make the newest, emptiest folder — the one just created,
-/// which is exactly the one being looked for — the least recognisable thing
-/// on the screen. That reasoning is right, and nothing here gives it up: the
-/// glyph and the spine are both still the folder's colour, at full strength,
-/// which is what identifies it.
-///
-/// What changed is the *area*. SHOTO's stated rule is that the interface has
-/// no colour and the screenshots do — the whole palette is built on it, and
-/// it is the argument that makes a screen full of other apps' screenshots
-/// readable at all. A grid of empty folders was the one place that rule broke
-/// outright: four half-tile fields of tinted colour, none of them a
-/// screenshot, on the second-most-visited tab. Recognition costs a glyph and
-/// a 4px edge; it never needed the whole cover.
-class _Placeholder extends StatelessWidget {
-  final FolderEntity folder;
-  final Color color;
-
-  const _Placeholder({required this.folder, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return ColoredBox(
-      color: AppColors.surfaceVariant,
-      child: Center(
-        child: Icon(
-          folder.isPrivate ? Icons.lock_rounded : Icons.folder_rounded,
-          color: color,
-          // Sized against the cover rather than against the icon scale
-          // elsewhere in the app. At the 28sp a glyph takes in a row it was
-          // adrift in the middle of a half-width tile — the placeholder is
-          // standing in for a photograph, so it has to carry the same weight
-          // the photograph would.
-          size: 36.sp,
-        ),
+          if (showCreated) ...<Widget>[
+            SizedBox(height: 2.h),
+            Text(
+              // Localised through the same `DateFormat.yMMMd` the subscription
+              // card uses, and short-form rather than long: this sits in a
+              // pocket about a third of a phone wide, where "12 September
+              // 2026" cannot fit in any language.
+              _created(context),
+              style: _subtitle(context, foreground),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ],
       ),
     );
   }

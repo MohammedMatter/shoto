@@ -73,7 +73,7 @@ class _MoveToFolderSheetContentState extends State<_MoveToFolderSheetContent> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(widget.title, style: AppTextStyles.headlineMedium),
+              Text(widget.title, style: context.text.headlineMedium),
               SizedBox(height: 12.h),
               if (widget.showNoFolderOption)
                 ListTile(
@@ -81,15 +81,15 @@ class _MoveToFolderSheetContentState extends State<_MoveToFolderSheetContent> {
                   leading: Icon(
                     Icons.remove_circle_outline_rounded,
                     color: widget.currentFolderId == null
-                        ? AppColors.primary
-                        : AppColors.textSecondary,
+                        ? context.colors.primary
+                        : context.colors.textSecondary,
                   ),
                   title: Text(
                     widget.noFolderLabel,
-                    style: AppTextStyles.bodyLarge,
+                    style: context.text.bodyLarge,
                   ),
                   trailing: widget.currentFolderId == null
-                      ? Icon(Icons.check_rounded, color: AppColors.primary)
+                      ? Icon(Icons.check_rounded, color: context.colors.primary)
                       : null,
                   onTap: () {
                     widget.onSelected(null);
@@ -109,7 +109,7 @@ class _MoveToFolderSheetContentState extends State<_MoveToFolderSheetContent> {
                           padding: EdgeInsets.symmetric(vertical: 20.h),
                           child: Center(
                             child: CircularProgressIndicator(
-                              color: AppColors.primary,
+                              color: context.colors.primary,
                             ),
                           ),
                         );
@@ -120,7 +120,7 @@ class _MoveToFolderSheetContentState extends State<_MoveToFolderSheetContent> {
                           padding: EdgeInsets.symmetric(vertical: 12.h),
                           child: Text(
                             context.l10n.foldersMoveNone,
-                            style: AppTextStyles.bodyMedium,
+                            style: context.text.bodyMedium,
                           ),
                         );
                       }
@@ -136,16 +136,16 @@ class _MoveToFolderSheetContentState extends State<_MoveToFolderSheetContent> {
                             ),
                             title: Text(
                               folder.name,
-                              style: AppTextStyles.bodyLarge.weight(
+                              style: context.text.bodyLarge.weight(
                                 isCurrent
-                                    ? AppTextStyles.semiBold
-                                    : AppTextStyles.regular,
+                                    ? AppTypography.semiBold
+                                    : AppTypography.regular,
                               ),
                             ),
                             trailing: isCurrent
                                 ? Icon(
                                     Icons.check_rounded,
-                                    color: AppColors.primary,
+                                    color: context.colors.primary,
                                   )
                                 : null,
                             onTap: () {

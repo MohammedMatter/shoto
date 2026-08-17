@@ -18,7 +18,7 @@
 
     The monochrome layer is Android 13's themed icons: the launcher discards
     every colour and tints the remaining alpha with the user's wallpaper
-    palette. Providing it is what stops SHOTO from being the one icon on a
+    palette. Providing it is what stops Shoto from being the one icon on a
     themed home screen that is still in full colour. Older versions ignore the
     tag.
 -->

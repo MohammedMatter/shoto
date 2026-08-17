@@ -3,134 +3,153 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
-import 'package:shoto/core/widgets/grid_density_selector.dart';
-import 'package:shoto/core/widgets/theme_mode_selector.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_group.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_tiles.dart';
 import 'package:shoto/l10n/app_localizations.dart';
 
 import 'support/test_fonts.dart';
+import 'support/test_theme.dart';
 
 /// Renders the Settings building blocks so the layout can be *looked at*.
 ///
-/// Analyzer and unit tests say nothing about whether a screen reads well,
-/// and this whole change is visual. Running with `--update-goldens` writes a
-/// real PNG, which is the only honest way to review spacing, dividers and
-/// grouping without a device attached.
+/// Analyzer and unit tests say nothing about whether a screen reads well, and
+/// this whole area is visual. The two goldens here are the only way to review
+/// the row rhythm, the card grouping and the divider inset without a device
+/// attached — and both modes matter, because the whole page is now carried by
+/// value contrast rather than by colour, which is the one thing that does not
+/// survive being checked in a single mode.
 ///
-/// It is not a regression gate — no committed baseline to compare against —
-/// so it never fails a normal `flutter test` run.
+/// The rows are built by hand rather than by pumping the real page: that page
+/// reaches into the service locator for six controllers and an auth session,
+/// none of which a golden needs in order to show what a row looks like.
 void main() {
-  testWidgets('settings groups render', (WidgetTester tester) async {
-    await loadTestFonts();
-    AppColors.setBrightness(Brightness.dark);
+  for (final Brightness brightness in <Brightness>[
+    Brightness.dark,
+    Brightness.light,
+  ]) {
+    final String name = brightness == Brightness.dark ? 'dark' : 'light';
 
-    tester.view.physicalSize = const Size(1080, 2100);
-    tester.view.devicePixelRatio = 3;
-    addTearDown(tester.view.reset);
+    testWidgets('settings groups render — $name', (WidgetTester tester) async {
+      await loadTestFonts();
+      final AppPalette palette = testPalette(brightness);
+      final AppTypography type = testTypography(brightness);
 
-    await tester.pumpWidget(
-      ScreenUtilInit(
-        designSize: const Size(360, 690),
-        minTextAdapt: true,
-        builder: (context, _) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          // ThemeModeSelector reads `context.l10n` for its segment labels, so
-          // without these it throws on a null AppLocalizations and this file
-          // could not generate anything at all.
-          locale: const Locale('en'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: Scaffold(
-            backgroundColor: AppColors.background,
-            body: SafeArea(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
-                children: [
-                  Text('Settings', style: AppTextStyles.headlineLarge),
-                  SettingsGroup(
-                    title: 'Appearance',
-                    children: [
-                      SettingsControlRow(
-                        icon: Icons.contrast_rounded,
-                        label: 'Theme',
-                        control: ThemeModeSelector(
-                          value: ThemeMode.dark,
+      tester.view.physicalSize = const Size(1080, 2250);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(
+        ScreenUtilInit(
+          designSize: const Size(360, 690),
+          minTextAdapt: true,
+          builder: (BuildContext context, _) => MaterialApp(
+            theme: testTheme(brightness),
+            debugShowCheckedModeBanner: false,
+            locale: const Locale('en'),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(
+              backgroundColor: palette.background,
+              body: SafeArea(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
+                  children: <Widget>[
+                    Text('Settings', style: type.headlineLarge),
+                    // Deliberately a mix of one-line and two-line rows, which
+                    // is what the real page is: the point of the golden is to
+                    // show that the two heights sit together without the list
+                    // looking ragged.
+                    SettingsGroup(
+                      title: 'Appearance',
+                      children: <Widget>[
+                        SettingsNavTile(
+                          icon: Icons.contrast_outlined,
+                          label: 'Appearance',
+                          value: 'Light',
+                          onTap: () {},
+                        ),
+                        SettingsNavTile(
+                          icon: Icons.language_outlined,
+                          label: 'Language',
+                          value: 'English',
+                          onTap: () {},
+                        ),
+                      ],
+                    ),
+                    SettingsGroup(
+                      title: 'Behaviour',
+                      children: <Widget>[
+                        SettingsSwitchTile(
+                          icon: Icons.vibration_outlined,
+                          label: 'Haptic feedback',
+                          description: 'A small tap when you press things',
+                          value: true,
                           onChanged: (_) {},
                         ),
-                      ),
-                      SettingsControlRow(
-                        icon: Icons.grid_view_rounded,
-                        label: 'Grid density',
-                        control: GridDensitySelector(
-                          value: 3,
+                        SettingsSwitchTile(
+                          icon: Icons.shield_outlined,
+                          label: 'Ask before deleting',
+                          description: 'Deleting cannot be undone',
+                          value: true,
                           onChanged: (_) {},
                         ),
-                      ),
-                    ],
-                  ),
-                  SettingsGroup(
-                    title: 'Behaviour',
-                    children: [
-                      SettingsSwitchTile(
-                        icon: Icons.vibration_rounded,
-                        label: 'Haptic feedback',
-                        description: 'A small tap when you press things',
-                        value: true,
-                        onChanged: (_) {},
-                      ),
-                      SettingsSwitchTile(
-                        icon: Icons.shield_outlined,
-                        label: 'Ask before deleting',
-                        description: 'Deleting cannot be undone',
-                        value: true,
-                        onChanged: (_) {},
-                      ),
-                    ],
-                  ),
-                  SettingsGroup(
-                    title: 'Storage',
-                    children: [
-                      SettingsNavTile(
-                        icon: Icons.content_copy_rounded,
-                        label: 'Find duplicates',
-                        description: 'Spot screenshots you took twice',
-                        showProBadge: true,
-                        onTap: () {},
-                      ),
-                      SettingsNavTile(
-                        icon: Icons.cleaning_services_rounded,
-                        label: 'Clear image cache',
-                        description: '12.4 MB of thumbnails',
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                  SettingsGroup(
-                    title: 'Account',
-                    caption: 'mohammedabomatter@gmail.com',
-                    children: [
-                      SettingsNavTile(
-                        icon: Icons.logout_rounded,
-                        label: 'Sign out',
-                        description: 'Your screenshots stay on this device',
-                        isDestructive: true,
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ],
+                        SettingsSwitchTile(
+                          icon: Icons.inbox_outlined,
+                          label: 'Offer new screenshots',
+                          description: 'Shows what you capture',
+                          value: false,
+                          onChanged: (_) {},
+                        ),
+                      ],
+                    ),
+                    SettingsGroup(
+                      title: 'Storage',
+                      children: <Widget>[
+                        SettingsNavTile(
+                          icon: Icons.backup_outlined,
+                          label: 'Backup',
+                          onTap: () {},
+                        ),
+                        SettingsNavTile(
+                          icon: Icons.content_copy_outlined,
+                          label: 'Find duplicates',
+                          showProBadge: true,
+                          onTap: () {},
+                        ),
+                        SettingsNavTile(
+                          icon: Icons.cleaning_services_outlined,
+                          label: 'Clear image cache',
+                          value: '12.4 MB',
+                          onTap: () {},
+                        ),
+                      ],
+                    ),
+                    SettingsGroup(
+                      title: 'Account',
+                      caption: 'mohammedabomatter@gmail.com',
+                      children: <Widget>[
+                        SettingsNavTile(
+                          icon: Icons.logout_outlined,
+                          label: 'Sign out',
+                          description: 'Your screenshots stay on this device',
+                          isDestructive: true,
+                          onTap: () {},
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-    );
-    await tester.pumpAndSettle();
+      );
+      await tester.pumpAndSettle();
 
-    await expectLater(
-      find.byType(ListView),
-      matchesGoldenFile('goldens/settings_groups.png'),
-    );
-  }, skip: !autoUpdateGoldenFiles);
+      await expectLater(
+        find.byType(ListView),
+        matchesGoldenFile('goldens/settings_groups_$name.png'),
+      );
+    });
+  }
 }

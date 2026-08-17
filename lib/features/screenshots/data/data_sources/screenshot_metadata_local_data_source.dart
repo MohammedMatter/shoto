@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:shoto/core/database/app_database.dart';
 import 'package:shoto/core/utils/visual_label_codec.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
+import 'package:shoto/core/services/local_identity.dart';
 
 /// Owns the locally-stored organization metadata (favorite flag, folder
 /// assignment) keyed by the gallery asset id. Never stores image bytes.
@@ -13,10 +13,10 @@ import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 /// each other's organization.
 class ScreenshotMetadataLocalDataSource {
   final AppDatabase _appDatabase;
-  final AuthRepository _authRepository;
-  ScreenshotMetadataLocalDataSource(this._appDatabase, this._authRepository);
+  final LocalIdentity _localIdentity;
+  ScreenshotMetadataLocalDataSource(this._appDatabase, this._localIdentity);
 
-  String get _userId => _authRepository.userId;
+  String get _userId => _localIdentity.id;
 
   Future<Map<String, Map<String, Object?>>> getAllMeta() async {
     final Database db = await _appDatabase.database;
@@ -260,6 +260,61 @@ class ScreenshotMetadataLocalDataSource {
         }
       }
     });
+  }
+
+  /// Sets or clears when the user asked to be reminded about a screenshot.
+  ///
+  /// Insert-if-missing like [setIntent], because a reminder can be the first
+  /// thing anybody ever says about a screenshot — the row may not exist yet.
+  ///
+  /// **Deliberately independent of the intent**, even though the two are
+  /// almost always set together. Clearing a reminder is not finishing a task
+  /// and finishing a task is not cancelling a reminder; folding them into one
+  /// write would mean a fired reminder looked like a completed intent, or a
+  /// completed intent kept ringing.
+  Future<void> setReminder(String assetId, DateTime? at) async {
+    final Database db = await _appDatabase.database;
+    final int now = DateTime.now().millisecondsSinceEpoch;
+    final int? atMillis = at?.millisecondsSinceEpoch;
+
+    final int updated = await db.update(
+      AppDatabase.screenshotMeta,
+      <String, Object?>{'remind_at': atMillis, 'updated_at': now},
+      where: 'user_id = ? AND asset_id = ?',
+      whereArgs: <Object?>[_userId, assetId],
+    );
+    if (updated != 0) return;
+
+    await db.insert(AppDatabase.screenshotMeta, <String, Object?>{
+      'user_id': _userId,
+      'asset_id': assetId,
+      'is_favorite': 0,
+      'remind_at': atMillis,
+      'updated_at': now,
+    });
+  }
+
+  /// Every reminder still ahead of [now], as `assetId -> when`.
+  ///
+  /// Used to put the alarms back when the app finds them missing — a reinstall,
+  /// a restore, or a phone whose boot broadcast never arrived. Past reminders
+  /// are excluded rather than re-armed: one that has already come and gone is
+  /// history, and arming it now would fire it at the wrong moment entirely.
+  Future<Map<String, DateTime>> getPendingReminders(DateTime now) async {
+    final Database db = await _appDatabase.database;
+    final List<Map<String, Object?>> rows = await db.query(
+      AppDatabase.screenshotMeta,
+      columns: <String>['asset_id', 'remind_at'],
+      where: 'user_id = ? AND remind_at IS NOT NULL AND remind_at > ?',
+      whereArgs: <Object?>[_userId, now.millisecondsSinceEpoch],
+    );
+
+    return <String, DateTime>{
+      for (final Map<String, Object?> row in rows)
+        row['asset_id'] as String: DateTime.fromMillisecondsSinceEpoch(
+          row['remind_at'] as int,
+        ),
+    };
   }
 
   /// Ticks an intent off, or puts it back on the list.

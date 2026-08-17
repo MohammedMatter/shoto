@@ -92,20 +92,44 @@ class TrackingDetails extends ActionDetails {
   const TrackingDetails({required this.carrier, required this.number});
 }
 
-/// The carriers SHOTO can send a tracking number to.
+/// The carriers Shoto can send a tracking number to.
 ///
 /// Brand names, so they are not translated — "Aramex" is "Aramex" in every
 /// language the app speaks, and a localised spelling would only make the row
 /// harder to recognise.
 ///
-/// The list is regional on purpose: the four global integrators, the two big
-/// Gulf carriers, Egypt's Bosta, and the national post as a catch-all.
+/// The list follows the shipped languages: the four global integrators, the
+/// carriers that actually deliver in Germany, the Netherlands, Italy, Portugal,
+/// Spain and France, the Gulf and Egyptian carriers this app was first written
+/// for, and the national post as a catch-all.
+///
+/// **The Gulf carriers stayed when Arabic went.** A brand name is Latin on
+/// every shipping notification — *Aramex*, *SMSA*, *Bosta* — so the recogniser
+/// can still read them, and a user in Riyadh running the app in English is
+/// still served. What went with the language were the transliterations
+/// (`ارامكس`, `سمسا`) in the alias table, which no recogniser this app bundles
+/// could ever produce. See `docs/decisions/shipped-languages.md`.
+///
+/// **The URLs are the one thing here that no test can check.** A pattern that
+/// misreads a number fails a unit test; a tracking link with the wrong query
+/// parameter passes every test in the suite and takes the user to a carrier's
+/// "not found" page — the exact failure `TrackingExtractor` refuses to risk
+/// when it declines to offer a Track button without a carrier. Each of these
+/// must be confirmed against a real notification before release.
 enum ShipmentCarrier {
   aramex('aramex', 'Aramex', 'https://www.aramex.com/track/results?ShipmentNumber='),
   dhl('dhl', 'DHL', 'https://www.dhl.com/en/express/tracking.html?AWB='),
   fedex('fedex', 'FedEx', 'https://www.fedex.com/fedextrack/?trknbr='),
   ups('ups', 'UPS', 'https://www.ups.com/track?tracknum='),
   usps('usps', 'USPS', 'https://tools.usps.com/go/TrackConfirmAction?tLabels='),
+  dpd('dpd', 'DPD', 'https://tracking.dpd.de/status/en_US/parcel/'),
+  gls('gls', 'GLS', 'https://gls-group.eu/EU/en/parcel-tracking?match='),
+  hermes('hermes', 'Hermes', 'https://www.myhermes.de/empfangen/sendungsverfolgung/sendungsinformation/#'),
+  postnl('postnl', 'PostNL', 'https://postnl.nl/tracktrace/?B='),
+  ctt('ctt', 'CTT', 'https://www.ctt.pt/feapl_2/app/open/objectSearch/objectSearch.jspx?objects='),
+  poste('poste', 'Poste Italiane', 'https://www.poste.it/cerca/index.html#/risultati-spedizioni/'),
+  correos('correos', 'Correos', 'https://www.correos.es/es/es/herramientas/localizador/envios/detalle?tracking-number='),
+  colissimo('colissimo', 'Colissimo', 'https://www.laposte.fr/outils/suivre-vos-envois?code='),
   smsa('smsa', 'SMSA', 'https://www.smsaexpress.com/ar/trackingdetails?tracknumbers='),
   jt('jt', 'J&T Express', 'https://www.jtexpress.sa/index/query/gzquery.html?bills='),
   bosta('bosta', 'Bosta', 'https://bosta.co/tracking-shipment/?id='),

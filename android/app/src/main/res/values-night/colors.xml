@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Mirrors AppColors.background (dark). -->
-    <color name="splash_background">#1A1A1A</color>
+    <!-- Mirrors AppPalette.dark.background, which is AppPalette.canvasDark.
+         Must equal the app's first painted frame exactly or launching flashes
+         a different colour. Tracks the canvas: #1A1A1A -> #121212 -> #111213
+         when the ramp took its +2 cool bias. -->
+    <color name="splash_background">#111213</color>
 </resources>

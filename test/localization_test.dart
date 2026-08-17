@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shoto/core/localization/app_locales.dart';
 import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/l10n/app_localizations.dart';
 
@@ -11,10 +12,17 @@ import 'package:shoto/l10n/app_localizations.dart';
 ///
 /// A missing translation does not crash and does not fail a build — it simply
 /// falls back to English, in one corner of one screen, and nobody notices until
-/// somebody using the app in Arabic hits it. These tests turn that into a red
-/// test instead.
+/// somebody using the app in that language hits it. These tests turn that into
+/// a red test instead.
 void main() {
-  const List<String> locales = ['en', 'ar', 'es', 'fr', 'hi', 'ur'];
+  /// Read from [AppLanguage] rather than written out here, so adding or
+  /// dropping a language cannot leave this list behind. It was a literal when
+  /// the shipped set changed from `en, ar, es, fr, hi, ur` to the current one,
+  /// and a stale literal here would have gone on checking files that no longer
+  /// exist while ignoring four that do.
+  final List<String> locales = <String>[
+    for (final AppLanguage language in AppLanguage.values) language.code,
+  ];
 
   Map<String, Object?> arb(String locale) =>
       jsonDecode(File('lib/l10n/app_$locale.arb').readAsStringSync())
@@ -30,7 +38,7 @@ void main() {
   /// English is the template because it is the one `l10n.yaml` generates the
   /// interface from: a key missing from `app_ar.arb` still compiles, still
   /// runs, and silently serves the English sentence to somebody who chose
-  /// Arabic.
+  /// another language.
   test('every locale defines exactly the same keys as English', () {
     final Set<String> english = keysOf('en');
     expect(english, isNotEmpty);
@@ -58,7 +66,7 @@ void main() {
   /// **No locale left a value in English by accident.**
   ///
   /// Only checks the handful of keys that are plain prose in every language.
-  /// Brand words (`SHOTO`, `PRO`, `Pro`) and short shared loanwords are
+  /// Brand words (`Shoto`, `PRO`, `Pro`) and short shared loanwords are
   /// legitimately identical across locales, so a blanket "must differ" rule
   /// would be noise; these six are sentences, and a sentence identical to the
   /// English one is a translation that never happened.
@@ -98,6 +106,8 @@ void main() {
     final List<AppMessage> all = <AppMessage>[
       AppMessage.loadScreenshots,
       AppMessage.loadFolders,
+      AppMessage.saveFolder,
+      AppMessage.deleteFolder,
       AppMessage.scanDuplicates,
       AppMessage.deleteSelected,
       AppMessage.onboarding,

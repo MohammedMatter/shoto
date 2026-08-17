@@ -3,7 +3,8 @@ import 'package:shoto/features/auth/domain/entities/user_entity.dart';
 
 enum AuthMethod { google, apple }
 
-class AuthState {}
+/// Sealed — see `docs/decisions/screen-states.md`.
+sealed class AuthState {}
 
 class AuthInitialState extends AuthState {}
 

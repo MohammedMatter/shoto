@@ -10,7 +10,7 @@
 
 `GridView.builder` has no opinion about what changed. Hand it a shorter list
 and the tiles after the gap simply occupy the previous slot on the next frame.
-Deleting is the most consequential thing SHOTO does and it read as the grid
+Deleting is the most consequential thing Shoto does and it read as the grid
 glitching.
 
 ## Why this was held back, and what changed

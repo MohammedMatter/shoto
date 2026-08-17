@@ -32,7 +32,7 @@ abstract class AppRadius {
 
 /// **The signature: a clipped corner.**
 ///
-/// One shape, used for exactly one meaning: *SHOTO is holding this.*
+/// One shape, used for exactly one meaning: *Shoto is holding this.*
 ///
 /// The corner it clips is the top-**trailing** one — the corner a filing
 /// clerk clips off an index card so a misfiled card stands proud of the row

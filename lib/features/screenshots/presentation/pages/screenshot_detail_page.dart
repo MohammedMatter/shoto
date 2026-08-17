@@ -1,16 +1,24 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
+import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/haptics.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
+import 'package:shoto/core/routes/app_sheet.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
+import 'package:shoto/core/widgets/app_snack_bar.dart';
+import 'package:shoto/core/widgets/premium_gate.dart';
+import 'package:shoto/core/widgets/sheet_surface.dart';
 import 'package:shoto/core/widgets/asset_thumbnail_image.dart';
 import 'package:shoto/core/widgets/confirm_dialog.dart';
 import 'package:shoto/core/widgets/photo_hero.dart';
@@ -21,9 +29,14 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.d
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/intent_full_picker_sheet.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/intent_visuals.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/photo_chrome.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/reminder_sheet.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_actions.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_limit_gate.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/screenshot_text_layer.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/text_selection_bar.dart';
 import 'package:shoto/features/safe_share/presentation/pages/safe_share_page.dart';
+import 'package:shoto/features/smart_actions/presentation/widgets/action_options.dart';
 import 'package:shoto/features/smart_actions/presentation/widgets/smart_actions_sheet.dart';
 import 'package:shoto/core/widgets/glass_layer.dart';
 
@@ -79,6 +92,31 @@ class _ScreenshotDetailPageState extends State<ScreenshotDetailPage> {
   bool _settled = false;
   Animation<double>? _routeAnimation;
 
+  /// The recognised text of the screenshot being looked at, once there is a
+  /// reason to have read it. Null while a page is settling or being swiped
+  /// past — see [_syncText].
+  ScreenshotTextController? _text;
+
+  /// Which screenshot [_text] belongs to, so a swipe cannot leave one
+  /// picture's words highlighted over another's.
+  String? _textFor;
+  Timer? _textDebounce;
+
+  /// Where the finger is while a selection handle is being dragged, in global
+  /// coordinates. Null when nothing is being dragged.
+  Offset? _magnifier;
+
+  /// Whether the one-time "press and hold" hint is on screen.
+  bool _hintVisible = false;
+  Timer? _hintTimer;
+
+  /// The screenshot currently on screen, recorded during build so the things
+  /// that happen outside a build — a page settling, a debounce firing — know
+  /// what they are about.
+  ScreenshotEntity? _currentItem;
+
+  bool get _selecting => _text?.hasSelection ?? false;
+
   @override
   void initState() {
     super.initState();
@@ -111,6 +149,93 @@ class _ScreenshotDetailPageState extends State<ScreenshotDetailPage> {
   void _settle() {
     if (!mounted || _settled) return;
     setState(() => _settled = true);
+
+    // Cleared first, because the picture on screen is already this screen's
+    // current one: [_syncText] does nothing for a screenshot it is *already*
+    // pointed at, and the pointer was set — and the reading skipped — by the
+    // call that ran before the flight had landed.
+    final ScreenshotEntity? item = _currentItem;
+    if (item == null) return;
+    _textFor = null;
+    _syncText(item);
+  }
+
+  /// Points [_text] at [item], reading it shortly after the swiping stops.
+  ///
+  /// **The delay is the whole of the performance story.** Reading a screenshot
+  /// costs a decode and an ML Kit pass on the largest image the phone
+  /// produces, and a thumb flicking through forty pictures would otherwise
+  /// order forty of them — for a feature none of those forty were opened for.
+  /// Waiting for the swiping to stop means the work only happens on the
+  /// picture somebody is actually looking at, and by the time their finger
+  /// gets to a long press it is usually already done.
+  ///
+  /// It waits for [_settled] for the same reason everything else on this
+  /// screen does: nothing but the picture is allowed to happen while the
+  /// opening flight is in the air.
+  void _syncText(ScreenshotEntity item) {
+    if (_textFor == item.id) return;
+
+    _textDebounce?.cancel();
+    _text?.removeListener(_onTextChanged);
+    _text?.dispose();
+    _text = null;
+    _textFor = item.id;
+    _magnifier = null;
+    setState(() {});
+
+    if (!_settled) return;
+
+    _textDebounce = Timer(_readDelay, () {
+      if (!mounted || _textFor != item.id) return;
+      final int width = item.asset.width;
+      final int height = item.asset.height;
+      final ScreenshotTextController controller = ScreenshotTextController(
+        recognition: sl(),
+        open: () => item.asset.file,
+        // The shape [_Photo] is drawing the picture at. Handed over so the
+        // controller can refuse to offer a selection it would have to place by
+        // guesswork — see `_agrees`.
+        displayAspect: (width > 0 && height > 0) ? width / height : 0,
+      )..addListener(_onTextChanged);
+      setState(() => _text = controller);
+      controller.load();
+    });
+  }
+
+  static const Duration _readDelay = Duration(milliseconds: 400);
+
+  void _onTextChanged() {
+    if (!mounted) return;
+    // A selection that arrives while the chrome is hidden has nowhere to put
+    // its bar, and the bar is the only way to act on it.
+    if (_selecting && !_chromeVisible) {
+      _chromeVisible = true;
+      _applySystemBars();
+    }
+    if ((_text?.hasText ?? false) && !_selecting) _maybeHint();
+    setState(() {});
+  }
+
+  /// Says the gesture out loud, once per install.
+  ///
+  /// A long press is the right gesture and an invisible one: nothing about a
+  /// photograph suggests its words can be touched. This is the smallest honest
+  /// fix — one line, on the first screenshot Shoto finds text in, that leaves
+  /// on its own and never comes back. A permanent affordance would be chrome
+  /// over every picture forever to teach a thing you only need told once.
+  Future<void> _maybeHint() async {
+    final AppPreferences prefs = sl<AppPreferences>();
+    if (_hintVisible || prefs.hasSeenCopyTextHint) return;
+
+    await prefs.markCopyTextHintSeen();
+    if (!mounted) return;
+
+    setState(() => _hintVisible = true);
+    _hintTimer?.cancel();
+    _hintTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted) setState(() => _hintVisible = false);
+    });
   }
 
   /// Shows or hides the toolbar, **and the phone's own bars with it**.
@@ -147,8 +272,100 @@ class _ScreenshotDetailPageState extends State<ScreenshotDetailPage> {
     // hand the rest of the app a phone with no status bar.
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     _routeAnimation?.removeStatusListener(_onRouteStatus);
+    _textDebounce?.cancel();
+    _hintTimer?.cancel();
+    _text?.removeListener(_onTextChanged);
+    _text?.dispose();
     _pageController.dispose();
     super.dispose();
+  }
+
+  /// Puts the whole picture's text under a selection, for the two entry points
+  /// that are not a long press.
+  ///
+  /// Everything selected rather than nothing: a button called "Select text"
+  /// that selects no text has only told the user the feature exists. From here
+  /// the handles narrow it down, which is a smaller job than finding the first
+  /// word by hand.
+  Future<void> _selectText() async {
+    final ScreenshotTextController? controller = _text;
+    if (controller == null) return;
+
+    if (!controller.isLoaded) await controller.load();
+    if (!mounted) return;
+
+    if (!controller.hasText) {
+      showAppSnackBar(context, context.l10n.copyTextNone);
+      return;
+    }
+    controller.selectAll();
+  }
+
+  /// **Copying is free, and unlimited, and that is a decision rather than an
+  /// omission.**
+  ///
+  /// It was behind the paywall for exactly one afternoon, with a free copy a
+  /// month, and the argument against it is the one already written into
+  /// `PremiumFeature.all` about search: charging for something the app hands
+  /// out is *«the exact failure ... on the screen where somebody decides
+  /// whether to trust the price»*. Reading a screenshot is one OCR pass, Shoto
+  /// already runs it for free so that search works, and selling the second use
+  /// of a pass it gives away is a distinction only the source code can see.
+  ///
+  /// The stronger reason is what the phone already does. Both platforms lift
+  /// text out of a picture for nothing — Live Text in Photos, Lens in Google
+  /// Photos, on the same screenshot, one app-switch away. A price on this does
+  /// not read as *premium*, it reads as Shoto charging for what the phone does
+  /// free, and that verdict does not stay on this feature: it is carried to
+  /// the price of Safe Share, which genuinely is Shoto's own.
+  ///
+  /// And a paid copy fails in the worst possible moment. The second one lands
+  /// mid-task, on somebody holding a number they can see and cannot take —
+  /// maximum frustration, minimum willingness to pay, and one app-switch from
+  /// learning that Shoto is the slow way to do this. That lesson does not come
+  /// back. What this feature is worth is the *habit*: the person who opens
+  /// Shoto every day to lift a code out of a picture is the person who reaches
+  /// the library ceiling and meets Safe Share. Gating the habit gates the
+  /// funnel that feeds everything else.
+  ///
+  /// What stays paid is [_runSelectionAction] — the layer above the copy,
+  /// which is Shoto's own and which no gallery offers.
+  Future<void> _copySelection() async {
+    final String text = _text?.selectedText ?? '';
+    if (text.isEmpty) return;
+
+    await Clipboard.setData(ClipboardData(text: text));
+    Haptics.confirm();
+    if (!mounted) return;
+    showAppSnackBar(
+      context,
+      context.l10n.actionsCopied,
+      kind: SnackKind.success,
+    );
+  }
+
+  Future<void> _shareSelection() async {
+    final String text = _text?.selectedText ?? '';
+    if (text.isEmpty) return;
+    await SharePlus.instance.share(ShareParams(text: text));
+  }
+
+  /// Opening a link, starting directions, writing the event down — the one
+  /// part of a selection that is **not** something the phone's own gallery
+  /// will do for you.
+  ///
+  /// Gated like the actions sheet it borrows its detectors from, and with no
+  /// free trial for the same reason that sheet has none: it appears only when
+  /// there is genuinely something extra to do, so it is an offer arriving at a
+  /// moment of value rather than a gate standing in front of a task. Copy is
+  /// right there beside it, free, and it can do everything this can — by hand.
+  Future<void> _runSelectionAction(ActionOption option) async {
+    if (!await ensurePremium(context) || !mounted) return;
+    // Read before the run, not after: the sentence is needed on the failure
+    // path, and by then the launch has been awaited.
+    final String noApp = context.l10n.actionsNoApp;
+    final bool handled = await option.run();
+    if (!handled && mounted) showAppSnackBar(context, noApp);
   }
 
   /// Opens Safe Share with **no premium check**.
@@ -245,6 +462,8 @@ class _ScreenshotDetailPageState extends State<ScreenshotDetailPage> {
 
         final int safeIndex = _currentIndex.clamp(0, items.length - 1);
         final ScreenshotEntity current = items[safeIndex];
+        _currentItem = current;
+        final bool selecting = _selecting;
 
         return AnnotatedRegion<SystemUiOverlayStyle>(
           // The page is black in both themes, so the phone's own bars have to
@@ -269,14 +488,32 @@ class _ScreenshotDetailPageState extends State<ScreenshotDetailPage> {
                 Positioned.fill(
                   child: PageView.builder(
                     controller: _pageController,
+                    // A selection is dragged sideways as often as downwards,
+                    // and the page under it must not take that as "next
+                    // picture" — losing the selection *and* the screenshot it
+                    // was on in one gesture.
+                    physics: selecting
+                        ? const NeverScrollableScrollPhysics()
+                        : null,
                     itemCount: items.length,
-                    onPageChanged: (index) =>
-                        setState(() => _currentIndex = index),
+                    onPageChanged: (index) {
+                      setState(() => _currentIndex = index);
+                      _syncText(items[index.clamp(0, items.length - 1)]);
+                    },
                     itemBuilder: (context, index) => GestureDetector(
-                      onTap: _toggleChrome,
+                      // While something is selected, a tap on the picture
+                      // means "never mind" — the way tapping away from a
+                      // selection has meant since text had selections. It
+                      // costs the tap that would have hidden the chrome, which
+                      // is the lesser of the two.
+                      onTap: selecting ? _text!.clear : _toggleChrome,
                       child: InteractiveViewer(
                         minScale: 1,
                         maxScale: 5,
+                        // One finger selects while a selection is live; two
+                        // still pan and zoom. Without this the viewer's own
+                        // recogniser would fight every drag of a handle.
+                        panEnabled: !selecting,
                         child: Center(
                           child: _Photo(
                             item: items[index],
@@ -290,6 +527,12 @@ class _ScreenshotDetailPageState extends State<ScreenshotDetailPage> {
                                 ? '${widget.heroPrefix}-${items[index].id}'
                                 : null,
                             full: _settled && index == safeIndex,
+                            // Only the picture in front of the user can be
+                            // selected on. The neighbours a PageView keeps
+                            // built have no business holding a live gesture.
+                            text: index == safeIndex ? _text : null,
+                            onDragPoint: (Offset? at) =>
+                                setState(() => _magnifier = at),
                           ),
                         ),
                       ),
@@ -299,42 +542,115 @@ class _ScreenshotDetailPageState extends State<ScreenshotDetailPage> {
                 // Built only once the picture has landed — see [_settled]. Until
                 // then these are three full-screen blurs the flight would be
                 // paying for and nobody would be using.
+                //
+                // **And they blur the picture once between them, not three
+                // times each.** Every piece of glass on this screen is over the
+                // same thing — the photograph below — and a `BackdropFilter`
+                // left to itself snapshots and blurs the screen behind it
+                // independently of every other one. Three bars meant three
+                // snapshots and three blurs of one unchanged picture, on every
+                // frame any of them moved. A [BackdropGroup] hands them a
+                // single shared backdrop.
+                //
+                // **The group starts here, below the bars and above the
+                // photo**, and that placement is the whole of its correctness:
+                // a grouped filter reads what was painted *before* the group,
+                // so the picture has to be outside it. Wrapped one level
+                // higher, around the [PageView] as well, the bars would be
+                // blurring the black page behind the photograph instead of the
+                // photograph, and the glass would come out dark and empty.
                 if (_settled) ...[
-                  _Chrome(
-                    visible: _chromeVisible,
-                    alignment: Alignment.topCenter,
-                    child: _TopBar(
-                      position: safeIndex + 1,
-                      total: items.length,
-                    ),
-                  ),
-                  _Chrome(
-                    visible: _chromeVisible,
-                    alignment: Alignment.bottomCenter,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        // Above the verbs, not among them. Everything in the
-                        // bar below *does* something to the screenshot right
-                        // now; this states what the user means to do about it
-                        // later, and a seventh icon in that row would read as
-                        // a seventh thing to trigger — the same reason it sits
-                        // above the actions in the quick-actions sheet.
-                        _IntentBar(item: current),
-                        _ActionBar(
-                          item: current,
-                          onFavorite: () => _toggleFavorite(context, current),
-                          onActions: () =>
-                              showSmartActionsSheet(context, current),
-                          onSafeShare: () => _safeShare(context, current),
-                          onShare: () => shareScreenshot(current),
-                          onMove: () => _move(context, current),
-                          onDelete: () => _delete(context, current),
-                        ),
-                      ],
+                  Positioned.fill(
+                    child: BackdropGroup(
+                      child: Stack(
+                        children: <Widget>[
+                          _Chrome(
+                            visible: _chromeVisible,
+                            alignment: Alignment.topCenter,
+                            child: _TopBar(
+                              position: safeIndex + 1,
+                              total: items.length,
+                              // Only once the picture has been read and turned out to
+                              // have words in it. A button that is present on every
+                              // photograph and does nothing on most of them teaches
+                              // people to stop pressing it.
+                              onSelectText: (_text?.hasText ?? false)
+                                  ? _selectText
+                                  : null,
+                            ),
+                          ),
+                          _Chrome(
+                            visible: _chromeVisible,
+                            alignment: Alignment.bottomCenter,
+                            // Both bars are built at their natural size and one is
+                            // shown — a cross-fade, so the bottom of the screen
+                            // changes its mind in one movement rather than jumping.
+                            child: AnimatedSwitcher(
+                              duration: AppMotion.duration(
+                                context,
+                                AppMotion.normal,
+                              ),
+                              switchInCurve: AppMotion.standard,
+                              switchOutCurve: AppMotion.standard,
+                              child: selecting
+                                  ? TextSelectionBar(
+                                      key: const ValueKey<String>('selection'),
+                                      selection: _text!.selectedText,
+                                      onCopy: _copySelection,
+                                      onShare: _shareSelection,
+                                      onSelectAll: _text!.selectAll,
+                                      onClose: _text!.clear,
+                                      onAction: _runSelectionAction,
+                                    )
+                                  : Column(
+                                      key: const ValueKey<String>('actions'),
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        if (_hintVisible) const _CopyTextHint(),
+                                        // Above the verbs, not among them. Everything
+                                        // in the bar below *does* something to the
+                                        // screenshot right now; this states what the
+                                        // user means to do about it later, and a
+                                        // seventh icon in that row would read as a
+                                        // seventh thing to trigger — the same reason
+                                        // it sits above the actions in the
+                                        // quick-actions sheet.
+                                        _IntentBar(item: current),
+                                        _ActionBar(
+                                          item: current,
+                                          onFavorite: () =>
+                                              _toggleFavorite(context, current),
+                                          onActions: () =>
+                                              showSmartActionsSheet(
+                                                context,
+                                                current,
+                                              ),
+                                          onSafeShare: () =>
+                                              _safeShare(context, current),
+                                          onShare: () =>
+                                              shareScreenshot(current),
+                                          onMove: () => _move(context, current),
+                                          onDelete: () =>
+                                              _delete(context, current),
+                                          onSelectText:
+                                              (_text?.hasText ?? false)
+                                              ? _selectText
+                                              : null,
+                                        ),
+                                      ],
+                                    ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
+                // Outside the group, and last in the stack: it magnifies
+                // whatever is painted beneath it — which has to include the
+                // bars, not just the picture — and a shared backdrop would
+                // hand it the photograph without them.
+                if (_magnifier != null) SelectionMagnifier(at: _magnifier!),
               ],
             ),
           ),
@@ -379,7 +695,18 @@ class _Photo extends StatefulWidget {
   /// Whether this page may load the full-resolution image yet.
   final bool full;
 
-  const _Photo({required this.item, required this.full, this.heroTag});
+  /// The words in this picture, when it is the one in front of the user.
+  final ScreenshotTextController? text;
+
+  final ValueChanged<Offset?> onDragPoint;
+
+  const _Photo({
+    required this.item,
+    required this.full,
+    required this.onDragPoint,
+    this.text,
+    this.heroTag,
+  });
 
   @override
   State<_Photo> createState() => _PhotoState();
@@ -450,6 +777,14 @@ class _PhotoState extends State<_Photo> {
               );
             },
           ),
+          // Inside the picture's own box, so every rectangle the recogniser
+          // reported can be drawn in the picture's own coordinates — and so a
+          // zoom moves the highlight with the words it is on.
+          if (widget.text != null)
+            ScreenshotTextLayer(
+              controller: widget.text!,
+              onDragPoint: widget.onDragPoint,
+            ),
         ],
       ),
     );
@@ -526,7 +861,14 @@ class _TopBar extends StatelessWidget {
   final int position;
   final int total;
 
-  const _TopBar({required this.position, required this.total});
+  /// Null until this screenshot has been read and found to contain text.
+  final VoidCallback? onSelectText;
+
+  const _TopBar({
+    required this.position,
+    required this.total,
+    this.onSelectText,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -545,9 +887,9 @@ class _TopBar extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppColors.overlay.withValues(alpha: 0.55),
-            AppColors.overlay.withValues(alpha: 0.28),
-            AppColors.overlay.withValues(alpha: 0),
+            AppPalette.overlay.withValues(alpha: 0.55),
+            AppPalette.overlay.withValues(alpha: 0.28),
+            AppPalette.overlay.withValues(alpha: 0),
           ],
           stops: const [0, 0.55, 1],
         ),
@@ -558,41 +900,58 @@ class _TopBar extends StatelessWidget {
           padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 14.h),
           child: Row(
             children: [
-              _GlassCircle(
+              PhotoGlassCircle(
                 icon: Icons.arrow_back_ios_new_rounded,
                 onTap: () => Navigator.of(context).pop(),
               ),
               const Spacer(),
               GlassLayer(
                 radius: 999,
-                sigma: AppBlur.bar,
+                sigma: AppBlur.overPhoto,
                 child: Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: 14.w,
                     vertical: 7.h,
                   ),
                   decoration: BoxDecoration(
-                    color: _ChromePalette.circleFill,
+                    color: PhotoChromePalette.circleFill,
                     borderRadius: BorderRadius.circular(999),
-                    border: Border.all(color: _ChromePalette.rim),
+                    border: Border.all(color: PhotoChromePalette.rim),
                   ),
                   child: Text(
                     context.l10n.countPosition(position, total),
-                    style: AppTextStyles.caption.copyWith(color: Colors.white),
+                    style: context.text.caption.copyWith(color: Colors.white),
                   ),
                 ),
               ),
               const Spacer(),
-              // Balances the row so the counter sits truly centred rather than
-              // pushed off-axis by the single button on the left.
-              Opacity(
-                opacity: 0,
-                child: IgnorePointer(
-                  child: _GlassCircle(
-                    icon: Icons.arrow_back_ios_new_rounded,
-                    onTap: () {},
-                  ),
-                ),
+              // The slot on the right is occupied either way: by the button
+              // when there is text to select, and by an invisible copy of the
+              // back button when there is not. That is what keeps the counter
+              // *centred* rather than sliding half a button sideways the
+              // moment recognition finishes — a shift the eye reads as the
+              // screen twitching for no reason.
+              //
+              // A one-frame swap between two things of the same size, so it
+              // fades rather than pops.
+              AnimatedSwitcher(
+                duration: AppMotion.duration(context, AppMotion.normal),
+                child: onSelectText == null
+                    ? Opacity(
+                        key: const ValueKey<String>('balance'),
+                        opacity: 0,
+                        child: IgnorePointer(
+                          child: PhotoGlassCircle(
+                            icon: Icons.arrow_back_ios_new_rounded,
+                            onTap: () {},
+                          ),
+                        ),
+                      )
+                    : PhotoGlassCircle(
+                        key: const ValueKey<String>('select-text'),
+                        icon: Icons.text_fields_rounded,
+                        onTap: onSelectText!,
+                      ),
               ),
             ],
           ),
@@ -636,7 +995,7 @@ class _IntentBar extends StatelessWidget {
           Flexible(
             child: GlassLayer(
               radius: 20.r,
-              sigma: AppBlur.panel,
+              sigma: AppBlur.overPhoto,
               child: PressableScale(
                 scale: 0.97,
                 onTap: () => _pick(context),
@@ -647,8 +1006,8 @@ class _IntentBar extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.r),
-                    gradient: _ChromePalette.barFill,
-                    border: Border.all(color: _ChromePalette.rim),
+                    gradient: PhotoChromePalette.barFill,
+                    border: Border.all(color: PhotoChromePalette.rim),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -666,10 +1025,11 @@ class _IntentBar extends StatelessWidget {
                           // With nothing set, the prompt itself is the label —
                           // the control has to say what it is for before it
                           // has anything to report.
-                          state?.ref.label(context) ?? context.l10n.intentPrompt,
+                          state?.ref.label(context) ??
+                              context.l10n.intentPrompt,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.bodySmall.asMedium.copyWith(
+                          style: context.text.bodySmall.asMedium.copyWith(
                             color: Colors.white.withValues(
                               alpha: isDone ? 0.55 : 0.95,
                             ),
@@ -694,7 +1054,7 @@ class _IntentBar extends StatelessWidget {
           // mistaken verb would risk marking it finished instead.
           if (state != null) ...<Widget>[
             SizedBox(width: 8.w),
-            _GlassCircle(
+            PhotoGlassCircle(
               icon: isDone
                   ? Icons.check_rounded
                   : Icons.radio_button_unchecked_rounded,
@@ -702,7 +1062,7 @@ class _IntentBar extends StatelessWidget {
               // thumbnail turns and the same green the sheet's button fills
               // with, so finishing something looks like one event no matter
               // which of the three surfaces you happened to be on.
-              fill: isDone ? AppColors.success : null,
+              fill: isDone ? context.colors.success : null,
               tint: Colors.white,
               onTap: () {
                 Haptics.confirm();
@@ -737,6 +1097,10 @@ class _ActionBar extends StatelessWidget {
   final VoidCallback onMove;
   final VoidCallback onDelete;
 
+  /// Null when this screenshot has no readable text — the row is simply not
+  /// offered, rather than offered and refused.
+  final VoidCallback? onSelectText;
+
   const _ActionBar({
     required this.item,
     required this.onFavorite,
@@ -745,6 +1109,7 @@ class _ActionBar extends StatelessWidget {
     required this.onShare,
     required this.onMove,
     required this.onDelete,
+    this.onSelectText,
   });
 
   @override
@@ -760,24 +1125,24 @@ class _ActionBar extends StatelessWidget {
       ),
       child: GlassLayer(
         radius: 26.r,
-        sigma: AppBlur.panel,
+        sigma: AppBlur.overPhoto,
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 10.h),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(26.r),
-            gradient: _ChromePalette.barFill,
-            border: Border.all(color: _ChromePalette.rim),
+            gradient: PhotoChromePalette.barFill,
+            border: Border.all(color: PhotoChromePalette.rim),
           ),
           child: Row(
             children: [
               Expanded(
-                child: _BarAction(
+                child: PhotoBarAction(
                   icon: item.isFavorite
                       ? Icons.favorite_rounded
                       : Icons.favorite_border_rounded,
                   // The one coloured icon in the row: it is the only action
                   // here that has an on/off state to communicate.
-                  tint: item.isFavorite ? AppColors.error : Colors.white,
+                  tint: item.isFavorite ? context.colors.error : Colors.white,
                   label: context.l10n.detailFavorite,
                   onTap: onFavorite,
                   // Favouriting changes an outline into a filled shape and
@@ -787,38 +1152,49 @@ class _ActionBar extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: _BarAction(
+                child: PhotoBarAction(
                   icon: Icons.auto_fix_high_rounded,
                   label: context.l10n.detailActions,
                   onTap: onActions,
                 ),
               ),
               Expanded(
-                child: _BarAction(
-                  icon: Icons.shield_moon_rounded,
+                child: PhotoBarAction(
+                  icon: Icons.shield_outlined,
                   label: context.l10n.detailSafeShare,
                   onTap: onSafeShare,
                 ),
               ),
               Expanded(
-                child: _BarAction(
+                child: PhotoBarAction(
                   icon: Icons.ios_share_rounded,
                   label: context.l10n.commonShare,
                   onTap: onShare,
                 ),
               ),
+              // **Move and Delete are behind this, and Delete especially.**
+              //
+              // The row used to be six equal cells, which said the six were
+              // equally ordinary. They are not: four of them are reversible —
+              // unfavourite it, close the sheet, share it again — and one
+              // permanently deletes the picture. Giving *delete the same
+              // weight as favourite*, one cell away from it, on a screen the
+              // user is swiping through quickly, is the shape of an accident.
+              //
+              // Two cells fewer also buys the four that stayed about a third
+              // more width each, which is what stops their labels crowding at
+              // 360pt in German.
               Expanded(
-                child: _BarAction(
-                  icon: Icons.folder_open_rounded,
-                  label: context.l10n.libraryActionMove,
-                  onTap: onMove,
-                ),
-              ),
-              Expanded(
-                child: _BarAction(
-                  icon: Icons.delete_outline_rounded,
-                  label: context.l10n.commonDelete,
-                  onTap: onDelete,
+                child: PhotoBarAction(
+                  icon: Icons.more_horiz_rounded,
+                  label: context.l10n.detailMore,
+                  onTap: () => _showMoreSheet(
+                    context,
+                    item: item,
+                    onMove: onMove,
+                    onDelete: onDelete,
+                    onSelectText: onSelectText,
+                  ),
                 ),
               ),
             ],
@@ -829,154 +1205,170 @@ class _ActionBar extends StatelessWidget {
   }
 }
 
-class _BarAction extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color tint;
-  final VoidCallback onTap;
-
-  /// A value whose change should make the icon pop once. Null for the
-  /// stateless actions in this bar, which have nothing to report.
-  final Object? pop;
-
-  const _BarAction({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    this.tint = Colors.white,
-    this.pop,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final Widget glyph = Icon(icon, color: tint, size: 21.sp);
-
-    return PressableScale(
-      scale: 0.88,
-      onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 3.h),
+/// The two verbs that left the bar.
+///
+/// A sheet rather than a popup menu because that is what the rest of the app
+/// uses for exactly this — see `showFolderActionsSheet`, which offers the same
+/// pair of "rename it / destroy it" choices in the same shape. Two entry
+/// points that behave differently for no reason is its own small bug.
+///
+/// The destructive item keeps its own confirmation ([_delete] still asks); the
+/// red here is not the safeguard, it is the warning that one is coming.
+Future<void> _showMoreSheet(
+  BuildContext context, {
+  required ScreenshotEntity item,
+  required VoidCallback onMove,
+  required VoidCallback onDelete,
+  VoidCallback? onSelectText,
+}) {
+  return showAppSheet<void>(
+    context: context,
+    builder: (sheetContext) => SheetSurface(
+      child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            if (pop == null) glyph else ValuePop(value: pop, child: glyph),
-            SizedBox(height: 4.h),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.caption.copyWith(
-                color: Colors.white.withValues(alpha: 0.85),
-                fontSize: 9.5.sp,
-                height: 1,
+          children: <Widget>[
+            Container(
+              width: 40.w,
+              height: 4.h,
+              margin: EdgeInsets.only(top: 10.h, bottom: 6.h),
+              decoration: BoxDecoration(
+                color: context.colors.border,
+                borderRadius: BorderRadius.circular(2.r),
               ),
             ),
+            // First, and above the two verbs that were always here: it is the
+            // only one of the three that is neither destructive nor a chore,
+            // and it is the one somebody who came looking for a menu is most
+            // likely to be looking for.
+            if (onSelectText != null)
+              ListTile(
+                leading: Icon(
+                  Icons.text_fields_rounded,
+                  color: context.colors.textPrimary,
+                ),
+                title: Text(
+                  context.l10n.copyTextSelect,
+                  style: context.text.bodyLarge,
+                ),
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  onSelectText();
+                },
+              ),
+            // **The viewer had no way to set one, and this is where deciding
+            // to come back actually happens.** Reminders were reachable only
+            // by long-pressing the tile in the grid — so the moment somebody
+            // is looking at a screenshot and thinks "not now", they had to
+            // leave the picture to say so.
+            ListTile(
+              leading: Icon(
+                item.hasPendingReminder
+                    ? Icons.notifications_active_rounded
+                    : Icons.notifications_none_rounded,
+                color: item.hasPendingReminder
+                    ? context.colors.primary
+                    : context.colors.textPrimary,
+              ),
+              title: Text(
+                context.l10n.reminderTitle,
+                style: context.text.bodyLarge,
+              ),
+              onTap: () {
+                final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
+                Navigator.of(sheetContext).pop();
+                showReminderSheet(
+                  context,
+                  item,
+                  onChanged: () => bloc.add(LoadScreenshotsEvent()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.folder_open_rounded,
+                color: context.colors.textPrimary,
+              ),
+              title: Text(
+                context.l10n.libraryActionMove,
+                style: context.text.bodyLarge,
+              ),
+              onTap: () {
+                Navigator.of(sheetContext).pop();
+                onMove();
+              },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.delete_outline_rounded,
+                color: context.colors.error,
+              ),
+              title: Text(
+                context.l10n.commonDelete,
+                style: context.text.bodyLarge.copyWith(
+                  color: context.colors.error,
+                ),
+              ),
+              onTap: () {
+                Navigator.of(sheetContext).pop();
+                onDelete();
+              },
+            ),
+            SizedBox(height: 8.h),
           ],
         ),
       ),
-    );
-  }
-}
-
-/// Chrome that floats over somebody else's picture.
-///
-/// Every control on this screen sits on top of a screenshot SHOTO did not
-/// choose and cannot predict, and all three of them used to be **white glass**:
-/// a white fill at 14%, a white hairline, white glyphs. Over a dark screenshot
-/// that is a beautiful pane of frosted glass. Over a white one — a receipt, a
-/// document, an article, which is most of what anybody screenshots — it is
-/// white on white, and the entire toolbar disappears. Not dimmed: gone.
-///
-/// The rule this replaces it with is the one every photo viewer converges on,
-/// because there is only one answer: **chrome over unknown content is dark with
-/// light glyphs.** A light material can only work over dark content, so it fails
-/// half the time by construction. A dark one works over both — white glyphs keep
-/// their contrast against a dark fill no matter what is behind it.
-///
-/// The alphas are set by the worst case rather than the pretty one. Against pure
-/// white, [barFill] composites to roughly `#565656`, which carries white 9pt
-/// labels at about 5:1; the lighter [circleFill] is for glyphs only, where the
-/// threshold is lower and the shape does more of the work. Both are still
-/// translucent and still blurred — the picture moves underneath them, which is
-/// what keeps them reading as glass rather than as a black bar bolted on.
-abstract class _ChromePalette {
-  _ChromePalette._();
-
-  /// The action bar: the piece carrying small text, so the most opaque.
-  static LinearGradient get barFill => LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [
-      AppColors.overlay.withValues(alpha: 0.7),
-      AppColors.overlay.withValues(alpha: 0.78),
-    ],
+    ),
   );
-
-  /// The back button and the counter — icons and one short line.
-  static Color get circleFill => AppColors.overlay.withValues(alpha: 0.66);
-
-  /// The lit edge. Unchanged from the old white glass, and it still earns its
-  /// place: over a dark screenshot the fill alone has no boundary, and this is
-  /// what gives the control an edge to be seen by.
-  static Color get rim => Colors.white.withValues(alpha: 0.18);
 }
 
-class _GlassCircle extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  /// White everywhere except on the intent tick, which is the one control in
-  /// this chrome with a state worth colouring — see `IntentVisuals.tint`.
-  final Color? tint;
-
-  /// Replaces the glass fill, for the same one exception.
-  final Color? fill;
-
-  const _GlassCircle({
-    required this.icon,
-    required this.onTap,
-    this.tint,
-    this.fill,
-  });
+/// "Press and hold any text to copy it" — once, ever.
+///
+/// Deliberately not a dialog, a coach mark with a cutout, or an arrow pointing
+/// at the picture. All three interrupt somebody who opened a screenshot to
+/// look at it, to teach them about a feature they have not asked for yet. A
+/// line of text at the bottom of the screen that leaves by itself is the
+/// weakest interruption that can still do the job, and the job is small: the
+/// gesture is one people already know from every other place text lives.
+class _CopyTextHint extends StatelessWidget {
+  const _CopyTextHint();
 
   @override
   Widget build(BuildContext context) {
-    return PressableScale(
-      scale: 0.88,
-      onTap: onTap,
-      child: GlassLayer(
-        radius: 999,
-        sigma: AppBlur.bar,
-        child: AnimatedContainer(
-          duration: AppMotion.duration(context, AppMotion.normal),
-          curve: AppMotion.standard,
-          width: 40.w,
-          height: 40.w,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: fill ?? _ChromePalette.circleFill,
-            border: Border.all(
-              color: fill == null ? _ChromePalette.rim : Colors.transparent,
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 10.h),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: GlassLayer(
+          radius: 999,
+          sigma: AppBlur.overPhoto,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 8.h),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(999),
+              color: PhotoChromePalette.circleFill,
+              border: Border.all(color: PhotoChromePalette.rim),
             ),
-          ),
-          child: AnimatedSwitcher(
-            duration: AppMotion.duration(context, AppMotion.normal),
-            switchInCurve: AppMotion.standard,
-            switchOutCurve: AppMotion.standard,
-            transitionBuilder:
-                (Widget child, Animation<double> animation) => FadeTransition(
-                  opacity: animation,
-                  child: ScaleTransition(
-                    scale: Tween<double>(begin: 0.6, end: 1).animate(animation),
-                    child: child,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(
+                  Icons.touch_app_rounded,
+                  size: 15.sp,
+                  color: Colors.white.withValues(alpha: 0.9),
+                ),
+                SizedBox(width: 8.w),
+                Flexible(
+                  child: Text(
+                    context.l10n.copyTextHint,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.text.caption.copyWith(
+                      color: Colors.white.withValues(alpha: 0.9),
+                    ),
                   ),
                 ),
-            child: Icon(
-              icon,
-              key: ValueKey<IconData>(icon),
-              color: tint ?? Colors.white,
-              size: 16.sp,
+              ],
             ),
           ),
         ),

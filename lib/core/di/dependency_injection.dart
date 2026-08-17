@@ -17,9 +17,19 @@ import 'package:shoto/features/smart_actions/domain/repositories/smart_actions_r
 import 'package:shoto/features/smart_actions/domain/use_cases/get_screenshot_actions_use_case.dart';
 import 'package:shoto/core/services/biometric_auth_service.dart';
 import 'package:shoto/core/services/app_preferences.dart';
+import 'package:shoto/core/services/crash_reporting.dart';
+import 'package:shoto/features/auth/data/data_sources/auth_remote_data_source.dart';
+import 'package:shoto/features/auth/data/repositories_impl/auth_repository_impl.dart';
+import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
+import 'package:shoto/features/auth/domain/use_cases/sign_in_with_apple_use_case.dart';
+import 'package:shoto/features/auth/domain/use_cases/sign_in_with_google_use_case.dart';
+import 'package:shoto/features/auth/domain/use_cases/sign_out_use_case.dart';
+import 'package:shoto/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:shoto/core/services/dev_access.dart';
 import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/services/local_identity.dart';
+import 'package:shoto/core/services/feature_trials.dart';
+import 'package:shoto/core/services/library_quota.dart';
 import 'package:shoto/core/services/pro_status.dart';
 import 'package:shoto/features/safe_share/data/services/redaction_service.dart';
 import 'package:shoto/core/services/backup_file_service.dart';
@@ -31,21 +41,18 @@ import 'package:shoto/features/backup/domain/use_cases/preview_backup_use_case.d
 import 'package:shoto/features/backup/domain/use_cases/restore_backup_use_case.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
+import 'package:shoto/core/theme/app_icon_controller.dart';
+import 'package:shoto/core/theme/folder_appearance_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
-import 'package:shoto/features/auth/data/data_sources/auth_remote_data_source.dart';
-import 'package:shoto/features/auth/data/repositories_impl/auth_repository_impl.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
-import 'package:shoto/features/auth/domain/use_cases/sign_in_with_apple_use_case.dart';
-import 'package:shoto/features/auth/domain/use_cases/sign_in_with_google_use_case.dart';
-import 'package:shoto/features/auth/domain/use_cases/sign_out_use_case.dart';
-import 'package:shoto/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:shoto/core/theme/tint_controller.dart';
 import 'package:shoto/features/folders/data/data_sources/folders_local_data_source.dart';
 import 'package:shoto/features/folders/data/repositories_impl/folders_repository_impl.dart';
 import 'package:shoto/features/folders/domain/repositories/folders_repository.dart';
 import 'package:shoto/features/folders/domain/use_cases/create_folder_use_case.dart';
 import 'package:shoto/features/folders/domain/use_cases/delete_folder_use_case.dart';
 import 'package:shoto/features/folders/domain/use_cases/get_folders_use_case.dart';
-import 'package:shoto/features/folders/domain/use_cases/rename_folder_use_case.dart';
+import 'package:shoto/features/folders/domain/use_cases/seed_default_folders_use_case.dart';
+import 'package:shoto/features/folders/domain/use_cases/update_folder_use_case.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/screenshots/data/data_sources/image_labeling_data_source.dart';
 import 'package:shoto/features/screenshots/data/data_sources/library_ownership_local_data_source.dart';
@@ -63,9 +70,12 @@ import 'package:shoto/features/screenshots/domain/use_cases/extract_and_cache_te
 import 'package:shoto/features/screenshots/domain/use_cases/get_cached_ocr_text_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_cached_visual_labels_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_managed_screenshot_count_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_library_summary_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_by_folder_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_screenshots_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_new_captures_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/import_from_system_picker_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/keep_captures_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/import_shared_screenshot_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/request_photo_permission_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_favorite_use_case.dart';
@@ -78,6 +88,7 @@ import 'package:shoto/features/screenshots/domain/use_cases/get_intent_ids_by_re
 import 'package:shoto/features/screenshots/domain/use_cases/set_intent_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_intents_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/set_intent_done_use_case.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/set_reminder_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/update_custom_intent_use_case.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/intent_catalog.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/watch_library_changes_use_case.dart';
@@ -88,6 +99,8 @@ import 'package:shoto/features/subscription/domain/repositories/subscription_rep
 import 'package:shoto/features/subscription/domain/use_cases/get_offerings_use_case.dart';
 import 'package:shoto/features/subscription/domain/use_cases/get_subscription_status_use_case.dart';
 import 'package:shoto/features/subscription/domain/use_cases/purchase_package_use_case.dart';
+import 'package:shoto/features/subscription/domain/use_cases/attach_subscription_account_use_case.dart';
+import 'package:shoto/features/subscription/domain/use_cases/detach_subscription_account_use_case.dart';
 import 'package:shoto/features/subscription/domain/use_cases/restore_purchases_use_case.dart';
 import 'package:shoto/features/subscription/presentation/bloc/subscription_bloc.dart';
 
@@ -95,6 +108,7 @@ final sl = GetIt.instance;
 
 void setupServiceLocator() {
   sl.registerLazySingleton(() => LocalIdentity());
+  sl.registerLazySingleton(() => CrashReporting());
   sl.registerLazySingleton(() => AuthRemoteDataSource());
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(sl(), sl()),
@@ -107,16 +121,25 @@ void setupServiceLocator() {
       signInWithGoogleUseCase: sl(),
       signInWithAppleUseCase: sl(),
       signOutUseCase: sl(),
+      attachSubscriptionAccountUseCase: sl(),
+      detachSubscriptionAccountUseCase: sl(),
+      proStatus: sl(),
     ),
   );
 
   sl.registerLazySingleton(() => AppDatabase(sl()));
   sl.registerLazySingleton(() => ThemeController());
+  sl.registerLazySingleton(() => TintController());
   sl.registerLazySingleton(() => LocaleController());
   sl.registerLazySingleton(() => GridDensityController());
+  sl.registerLazySingleton(() => FolderAppearanceController());
+  sl.registerLazySingleton(() => AppIconController());
   sl.registerLazySingleton(() => CacheService());
   sl.registerLazySingleton(() => AppPreferences());
   sl.registerLazySingleton(() => DevAccess());
+  // Free per-feature tries. Plain local counters — no repository behind it,
+  // because the allowance belongs to the install rather than to an account.
+  sl.registerLazySingleton(() => FeatureTrials());
   sl.registerLazySingleton(() => FunnelLog());
   sl.registerLazySingleton(() => BiometricAuthService());
 
@@ -134,11 +157,13 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => CheckPhotoPermissionUseCase(sl()));
   sl.registerLazySingleton(() => GetScreenshotsUseCase(sl()));
   sl.registerLazySingleton(() => GetScreenshotsByFolderUseCase(sl()));
+  sl.registerLazySingleton(() => GetLibrarySummaryUseCase(sl()));
   sl.registerLazySingleton(() => SetFavoriteUseCase(sl()));
   sl.registerLazySingleton(() => AssignFolderUseCase(sl()));
   sl.registerLazySingleton(() => SetIntentUseCase(sl()));
   sl.registerLazySingleton(() => SetIntentsUseCase(sl()));
   sl.registerLazySingleton(() => SetIntentDoneUseCase(sl()));
+  sl.registerLazySingleton(() => SetReminderUseCase(sl()));
   sl.registerLazySingleton(() => GetCustomIntentsUseCase(sl()));
   sl.registerLazySingleton(() => GetCustomIntentCountUseCase(sl()));
   sl.registerLazySingleton(() => CreateCustomIntentUseCase(sl()));
@@ -161,6 +186,8 @@ void setupServiceLocator() {
   sl.registerLazySingleton(() => WatchLibraryChangesUseCase(sl()));
   sl.registerLazySingleton(() => ImportSharedScreenshotUseCase(sl()));
   sl.registerLazySingleton(() => ImportFromSystemPickerUseCase(sl(), sl()));
+  sl.registerLazySingleton(() => GetNewCapturesUseCase(sl(), sl()));
+  sl.registerLazySingleton(() => KeepCapturesUseCase(sl()));
   sl.registerLazySingleton(() => GetCachedOcrTextUseCase(sl()));
   sl.registerLazySingleton(() => ExtractAndCacheTextUseCase(sl()));
   sl.registerLazySingleton(() => GetCachedVisualLabelsUseCase(sl()));
@@ -172,6 +199,7 @@ void setupServiceLocator() {
       checkPhotoPermissionUseCase: sl(),
       getScreenshotsUseCase: sl(),
       getScreenshotsByFolderUseCase: sl(),
+      getLibrarySummaryUseCase: sl(),
       setFavoriteUseCase: sl(),
       setIntentUseCase: sl(),
       setIntentsUseCase: sl(),
@@ -182,6 +210,7 @@ void setupServiceLocator() {
       getCachedOcrTextUseCase: sl(),
       extractAndCacheTextUseCase: sl(),
       intentCatalog: sl(),
+      preferences: sl(),
     ),
   );
 
@@ -191,14 +220,16 @@ void setupServiceLocator() {
   );
   sl.registerLazySingleton(() => GetFoldersUseCase(sl()));
   sl.registerLazySingleton(() => CreateFolderUseCase(sl()));
-  sl.registerLazySingleton(() => RenameFolderUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateFolderUseCase(sl()));
   sl.registerLazySingleton(() => DeleteFolderUseCase(sl()));
+  sl.registerLazySingleton(() => SeedDefaultFoldersUseCase(sl()));
   sl.registerFactory(
     () => FoldersBloc(
       getFoldersUseCase: sl(),
       createFolderUseCase: sl(),
-      renameFolderUseCase: sl(),
+      updateFolderUseCase: sl(),
       deleteFolderUseCase: sl(),
+      seedDefaultFoldersUseCase: sl(),
     ),
   );
 
@@ -210,10 +241,18 @@ void setupServiceLocator() {
   // prime it before the first frame — a Pro badge that appears a second late
   // reads as the app changing its mind about who you are.
   sl.registerLazySingleton(() => ProStatus(sl(), sl()));
+  // After ProStatus, which it watches: paying is what removes the ceiling, so
+  // the quota's answer changes when the subscription does even though the
+  // count itself has not moved.
+  sl.registerLazySingleton(() => LibraryQuota(sl(), sl()));
   sl.registerLazySingleton(() => GetOfferingsUseCase(sl()));
   sl.registerLazySingleton(() => GetSubscriptionStatusUseCase(sl()));
   sl.registerLazySingleton(() => PurchasePackageUseCase(sl()));
   sl.registerLazySingleton(() => RestorePurchasesUseCase(sl()));
+  // Resolved by AuthBloc, which is registered further up — order is not a
+  // problem because a factory's body runs when it is asked for, not here.
+  sl.registerLazySingleton(() => AttachSubscriptionAccountUseCase(sl()));
+  sl.registerLazySingleton(() => DetachSubscriptionAccountUseCase(sl()));
   sl.registerFactory(
     () => SubscriptionBloc(
       getOfferingsUseCase: sl(),
@@ -241,8 +280,7 @@ void setupServiceLocator() {
   );
   sl.registerLazySingleton(() => GetScreenshotActionsUseCase(sl()));
 
-
-  sl.registerLazySingleton(() => RedactionService(sl(), sl()));
+  sl.registerLazySingleton(() => RedactionService(sl()));
 
   // Backup reads through the screenshot repository rather than the gallery
   // directly, so an archive holds exactly the library the app shows — not

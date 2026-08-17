@@ -9,7 +9,7 @@ import 'package:shoto/core/theme/app_motion.dart';
 /// both put an action in the same corner of the same header doing the same
 /// class of thing — add screenshots, add a folder — and they looked nothing
 /// alike: Library's was a 42px circle in `surface` with a hairline, Folders'
-/// was a filled slab of [AppColors.primaryGradient]. The accent is bone
+/// was a filled slab of [AppPalette.primaryGradient]. The accent is bone
 /// (`#EBEBEB`) in dark mode, so on a device that slab was a **solid white
 /// square, larger and louder than the page title beside it and louder than the
 /// folders it sat above** — the add button was the brightest object on a screen
@@ -62,13 +62,13 @@ class HeaderIconButton extends StatelessWidget {
         height: size,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.colors.surface,
           shape: BoxShape.circle,
           border: Border.all(
             // The rim carries it as well as the dot. A 7px dot alone is easy
             // to miss on a 42px circle at the top of a busy screen, and the
             // two together read as one state rather than as decoration.
-            color: isMarked ? AppColors.primary : AppColors.border,
+            color: isMarked ? context.colors.primary : context.colors.border,
           ),
         ),
         // Swapped rather than replaced. Where the icon changes to reflect a
@@ -89,7 +89,7 @@ class HeaderIconButton extends StatelessWidget {
           child: Icon(
             icon,
             key: ValueKey<IconData>(icon),
-            color: AppColors.textPrimary,
+            color: context.colors.textPrimary,
             size: 19.sp,
           ),
         ),
@@ -110,11 +110,14 @@ class HeaderIconButton extends StatelessWidget {
                   width: 9.w,
                   height: 9.w,
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: context.colors.primary,
                     shape: BoxShape.circle,
                     // Punched out of the page rather than laid on top of it,
                     // so the dot keeps its shape wherever the button lands.
-                    border: Border.all(color: AppColors.background, width: 1.5),
+                    border: Border.all(
+                      color: context.colors.background,
+                      width: 1.5,
+                    ),
                   ),
                 ),
               ),

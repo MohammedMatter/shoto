@@ -5,6 +5,15 @@ class CreateFolderUseCase {
   final FoldersRepository repository;
   CreateFolderUseCase(this.repository);
 
-  Future<FolderEntity> call(String name, int color, {bool isPrivate = false}) =>
-      repository.createFolder(name, color, isPrivate: isPrivate);
+  Future<FolderEntity> call(
+    String name,
+    int color, {
+    bool isPrivate = false,
+    String? iconKey,
+  }) => repository.createFolder(
+    name,
+    color,
+    isPrivate: isPrivate,
+    iconKey: iconKey,
+  );
 }

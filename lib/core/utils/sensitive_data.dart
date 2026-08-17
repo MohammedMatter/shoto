@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:shoto/core/localization/l10n.dart';
 
-/// The kinds of private detail SHOTO knows how to find in a screenshot.
+/// The kinds of private detail Shoto knows how to find in a screenshot.
 ///
 /// Ordered by how badly it hurts to leak one, because that's the order the
 /// review list is shown in — the card number has to be the first thing the
@@ -114,9 +114,14 @@ abstract class SensitiveData {
 
   /// Every private detail in [text], in reading order, never overlapping.
   ///
-  /// [ownerNames] is the signed-in user's own name and its parts, from
-  /// [namesFrom]. It is the one piece of context that turns name detection
-  /// from a guess into a lookup.
+  /// [ownerNames] is the reader's own name and its parts, from [namesFrom].
+  /// It is the one piece of context that turns name detection from a guess
+  /// into a lookup.
+  ///
+  /// **Nothing in the app passes it any more.** The setting that asked for a
+  /// name was removed, so `RedactionService` calls this with the default empty
+  /// set and an unlabelled name goes uncovered. The matching is kept, and kept
+  /// tested, because it is correct — it is waiting on somewhere to be asked.
   static List<SensitiveMatch> findIn(
     String text, {
     Set<String> ownerNames = const {},
@@ -477,13 +482,32 @@ abstract class SensitiveData {
   // Verification codes and ID numbers
   // -------------------------------------------------------------------
 
-  /// National / civil ID numbers across the region run 9-11 digits and are
-  /// nearly always labelled. The label is required — an unlabelled 10-digit
-  /// run is far more often an order number.
+  /// National / civil ID numbers run 9-11 digits and are nearly always
+  /// labelled. The label is required — an unlabelled 10-digit run is far more
+  /// often an order number.
+  ///
+  /// **One label per shipped country, chosen by digit count.** The list is not
+  /// every identity document that exists; it is the ones whose *number* falls
+  /// in this range, because a label whose value can never match is a label
+  /// that does nothing. Spain's DNI is eight digits and a letter, and Italy's
+  /// codice fiscale is sixteen alphanumerics — neither is here, and both would
+  /// need their own pattern rather than a word in this one.
   static final RegExp _nationalIdLabelled = RegExp(
     '(?:national${_gap}id|civil${_gap}id|id$_gap(?:number|no)|identity|'
     'iqama|passport|'
-    'الهويه|هويه|الهوية|هوية|السجل المدني|الرقم الوطني|رقم وطني|جواز)'
+    // German: Steuer-ID is 11 digits, Sozialversicherungsnummer 12 (so the
+    // label is here for the ones that fit, and over-flagging is the right
+    // bias for this file).
+    'steuer$_gap-?${_gap}id|steueridentifikationsnummer|steuernummer|'
+    'personalausweis|ausweisnummer|reisepass|'
+    // Dutch: BSN is 9 digits.
+    'burgerservicenummer|bsn|identiteitskaart|paspoort|'
+    // Portuguese: NIF 9, CPF 11, cartão de cidadão 9.
+    'cart(?:ã|a)o$_gap de$_gap cidad(?:ã|a)o|bilhete$_gap de$_gap identidade|'
+    'n(?:º|o|umero)?$_gap de$_gap contribuinte|nif|cpf|passaporte|'
+    // Italian / Spanish / French passport-and-document wording.
+    'passaporto|pasaporte|passeport|documento$_gap de$_gap identidad|'
+    'num(?:é|e)ro$_gap fiscal)'
     '$_gap(?:[$_numberSep]$_gap)*'
     r'([0-9]{9,11})',
     caseSensitive: false,
@@ -526,14 +550,66 @@ abstract class SensitiveData {
   /// A short number sitting next to a word that says what it is. Unlike the
   /// checksum rules this needs the context, because four digits on their own
   /// are just a number.
+  ///
+  /// **`code` is a substring match here, and that is deliberate.** It is what
+  /// already covers *Bestätigungscode*, *Sicherheitscode*, *verificatiecode*
+  /// and *bevestigingscode* without listing them — German and Dutch build the
+  /// compound around the same four letters. This file over-flags on purpose
+  /// (see [SensitiveKind.isCertain]): every finding here is reviewed by eye
+  /// before anything is shared, so a spurious match costs a glance and a
+  /// missed one costs a leak. Do not tighten this to whole words to match
+  /// `ActionExtractor`; the two have opposite biases for good reasons.
+  ///
+  /// What has to be spelled out is everything the substring cannot reach: the
+  /// accented spellings, and the words that are not built on "code" at all.
   static final RegExp _codeAfterLabel = RegExp(
-    r'(?:code|otp|pin|passcode|password|verification|رمز|كود|التحقق|السري)'
-    r'\D{0,20}([0-9]{4,8})',
+    '(?:code|otp|pin|passcode|password|verification|'
+    // Spanish / Portuguese — the accent puts these out of reach of `code`.
+    'c(?:ó|o)digo|verificaci(?:ó|o)n|verifica(?:ç|c)(?:ã|a)o|contrase(?:ñ|n)a|'
+    'senha|'
+    // French
+    'v(?:é|e)rification|'
+    // Italian
+    'codice|verifica|'
+    // German — Kennwort and Passwort share no stem with any of the above.
+    'kennwort|passwort|'
+    // Dutch
+    'wachtwoord|toegangscode|verificatie)'
+    // **One line break, and only in this direction.** A label often sits on
+    // its own line with the number beneath it — "Your verification code is:"
+    // and then the digits — which is how a great many of these screenshots
+    // are laid out, so refusing newlines outright would lose the ordinary
+    // case. One is the limit: two means the label is describing something
+    // else entirely.
+    r'[^0-9\r\n]{0,20}(?:\r?\n[^0-9\r\n]{0,20})?([0-9]{4,8})',
     caseSensitive: false,
   );
 
+  /// The trailing form — "481920 is your verification code".
+  ///
+  /// **This one may not cross a line at all, and the asymmetry is the point.**
+  /// A label that follows the number it describes is written beside it; a
+  /// label on the *next* line belongs to whatever comes after it, not to the
+  /// number above it.
+  ///
+  /// `\D{0,20}` did cross, and on a real screenshot:
+  ///
+  /// ```
+  /// Account number 4820193
+  /// Your verification code is 481920
+  /// ```
+  ///
+  /// the nineteen characters of the newline plus "Your verification " were
+  /// enough to hand the account number a label belonging to the line below
+  /// it. Both numbers came back as verification codes and the review list
+  /// said so in plain words. Covering the account number is right; *naming*
+  /// it a code is the thing [SensitiveKind.number] exists to avoid — and
+  /// since `ActionExtractor` now reads these kinds, the wrong name also
+  /// decides whether the actions sheet offers to copy it.
   static final RegExp _codeBeforeLabel = RegExp(
-    r'([0-9]{4,8})\D{0,20}(?:code|otp|verification|رمز|كود|التحقق)',
+    r'([0-9]{4,8})[^0-9\r\n]{0,20}'
+    '(?:code|otp|verification|c(?:ó|o)digo|verificaci(?:ó|o)n|'
+    'verifica(?:ç|c)(?:ã|a)o|v(?:é|e)rification|codice|verifica|verificatie)',
     caseSensitive: false,
   );
 
@@ -670,11 +746,25 @@ abstract class SensitiveData {
   );
 
   /// Words that mean the number beside them is a phone number.
+  ///
+  /// `tel` leads the German, Italian, Spanish and French entries by prefix —
+  /// *Telefon*, *telefono*, *teléfono*, *téléphone* all start with it and the
+  /// alternation is a substring match — but the words that do not share that
+  /// stem have to be listed: *Handy*, *Rufnummer*, *cellulare*, *telemóvel*,
+  /// *GSM*.
   static final RegExp _phoneLabelled = RegExp(
     '(?:phone$_gap(?:number|no)?|mobile$_gap(?:number|no)?|cell|'
     'tel|telephone|whatsapp|fax|contact$_gap(?:number|no)|'
-    'جوال|الجوال|موبايل|الموبايل|هاتف|الهاتف|تلفون|التلفون|محمول|المحمول|'
-    'واتساب|واتس|رقم التواصل|للتواصل)'
+    // German
+    'handy|rufnummer|mobilnummer|telefonnummer|'
+    // Dutch
+    'telefoonnummer|mobiel|gsm|'
+    // Italian
+    'cellulare|recapito|'
+    // Portuguese / Spanish
+    'telem(?:ó|o)vel|celular|m(?:ó|o)vil|'
+    // French
+    'portable)'
     '$_gap(?:[$_numberSep]$_gap)*'
     r'(\+?[0-9][0-9\s\-().]{5,20}[0-9])',
     caseSensitive: false,
@@ -743,7 +833,17 @@ abstract class SensitiveData {
   static final RegExp _nameStrongLabel = RegExp(
     '(?:full${_gap}name|account${_gap}holder|card${_gap}holder|cardholder|'
     'beneficiary|recipient|passenger|customer${_gap}name|'
-    'الاسم الكامل|اسم صاحب الحساب|صاحب الحساب|المستفيد|اسم المسافر)'
+    // German
+    'kontoinhaber|karteninhaber|vollst(?:ä|a)ndiger${_gap}name|'
+    'name$_gap des$_gap kontoinhabers|empf(?:ä|a)nger|zahlungsempf(?:ä|a)nger|'
+    // Dutch
+    'rekeninghouder|kaarthouder|volledige${_gap}naam|begunstigde|ontvanger|'
+    // Italian / Portuguese — "nome completo" is the same phrase in both.
+    'intestatario|titolare|beneficiario|nome$_gap completo|'
+    'titular|benefici(?:á|a)rio|'
+    // Spanish / French
+    'titular$_gap de$_gap la$_gap cuenta|nombre$_gap completo|'
+    'titulaire$_gap du$_gap compte|nom$_gap complet|b(?:é|e)n(?:é|e)ficiaire)'
     '$_gap$_colon?$_gap'
     '($_namePhrase)',
     caseSensitive: false,
@@ -751,8 +851,23 @@ abstract class SensitiveData {
 
   /// Labels that only mean a person when a colon says so. Bare "name" is
   /// inside "filename" and "name your folder"; "Name:" is a field.
+  ///
+  /// **The lookbehind is what keeps these safe, and it is ASCII-only.** That
+  /// is correct for every entry here: all of them are Latin, so `filename`,
+  /// `voornaam` and `cognome` cannot smuggle in `name`, `naam` or `nome`.
   static final RegExp _nameWeakLabel = RegExp(
-    '(?<![A-Za-z])(?:name|from|to|sender|الاسم|اسم|من|الى|إلى)'
+    '(?<![A-Za-z])'
+    '(?:name|from|to|sender|'
+    // German: "Name" is spelled identically; "Von"/"An" are the from/to pair.
+    'von|an|absender|'
+    // Dutch
+    'naam|voornaam|achternaam|afzender|van|aan|'
+    // Italian
+    'nome|cognome|mittente|da|a|'
+    // Portuguese / Spanish
+    'apelido|apellidos|remetente|remitente|de|para|'
+    // French
+    'nom|pr(?:é|e)nom|exp(?:é|e)diteur|(?:à|a))'
     '$_gap$_colon$_gap'
     '($_namePhrase)',
     caseSensitive: false,
@@ -897,7 +1012,18 @@ abstract class SensitiveData {
   static final RegExp _addressStrongLabel = RegExp(
     '(?:shipping${_gap}address|billing${_gap}address|delivery${_gap}address|'
     'home${_gap}address|deliver${_gap}to|ship${_gap}to|'
-    'عنوان التوصيل|عنوان الشحن|عنوان المنزل)'
+    // German
+    'lieferadresse|rechnungsadresse|versandadresse|privatadresse|anschrift|'
+    // Dutch
+    'bezorgadres|afleveradres|factuuradres|verzendadres|woonadres|'
+    // Italian
+    'indirizzo$_gap di$_gap(?:spedizione|consegna|fatturazione)|'
+    // Portuguese
+    'morada$_gap de$_gap entrega|endere(?:ç|c)o$_gap de$_gap'
+    '(?:entrega|factura(?:ç|c)(?:ã|a)o|fatura(?:ç|c)(?:ã|a)o)|'
+    // Spanish / French
+    'direcci(?:ó|o)n$_gap de$_gap(?:env(?:í|i)o|entrega|facturaci(?:ó|o)n)|'
+    'adresse$_gap de$_gap(?:livraison|facturation))'
     '$_gap$_colon?$_gap'
     r'([^\n]{6,90})',
     caseSensitive: false,
@@ -905,8 +1031,24 @@ abstract class SensitiveData {
 
   /// Bare "address" or "location" needs the colon: "location services" and
   /// "address book" are not addresses.
+  ///
+  /// German *Adresse* and French *adresse* are reached by the English
+  /// `address`? **No** — and this is the trap worth naming. The lookbehind
+  /// forbids a letter before the match, but nothing forbids letters *inside*
+  /// the alternation's own reach: `address` cannot match `adresse`, which is
+  /// spelled with one `d`. Each spelling is listed.
   static final RegExp _addressWeakLabel = RegExp(
-    '(?<![A-Za-z])(?:address|location|العنوان|عنوان|الموقع|موقع)'
+    '(?<![A-Za-z])'
+    '(?:address|location|'
+    // German / French — one `d`, and German capitalises but the match is
+    // case-insensitive.
+    'adresse|standort|'
+    // Dutch
+    'adres|locatie|woonplaats|'
+    // Italian
+    'indirizzo|posizione|'
+    // Portuguese / Spanish
+    'endere(?:ç|c)o|morada|direcci(?:ó|o)n|ubicaci(?:ó|o)n|localiza(?:ç|c)(?:ã|a)o)'
     '$_gap$_colon$_gap'
     r'([^\n]{6,90})',
     caseSensitive: false,
@@ -915,6 +1057,11 @@ abstract class SensitiveData {
   /// A street line that says what it is without being labelled: a house
   /// number, at least one word, then a word that only ever ends a street
   /// name. The intervening word is required — without it "1 st" matches.
+  ///
+  /// **This is the English word order and only that.** The number leads. Every
+  /// other shipped language writes it last, which no amount of vocabulary
+  /// added here can express — see [_streetLineSuffixed] and
+  /// [_streetLinePrefixed].
   static final RegExp _streetLine = RegExp(
     r'\b[0-9]{1,5}[ ,]+(?:[A-Za-z0-9.À-ɏ\-]+[ ]+){1,4}'
     r'(?:street|st|avenue|ave|road|rd|boulevard|blvd|lane|ln|drive|dr|'
@@ -922,8 +1069,48 @@ abstract class SensitiveData {
     caseSensitive: false,
   );
 
-  static final RegExp _streetLineArabic = RegExp(
-    '(?:شارع|طريق|حي|حى|جاده|جادة|ميدان)[  ]+[^\\n,،]{2,40}',
+  /// German and Dutch: the street type is welded onto the name and the house
+  /// number follows — *Hauptstraße 12*, *Kerkstraat 5a*.
+  ///
+  /// **The house number is required, and it is doing the same job as the
+  /// intervening word in [_streetLine].** Without it, `Weg` and `Ring` are
+  /// ordinary German nouns and `hof` and `kade` ordinary Dutch ones; a number
+  /// after them is what makes the line an address rather than a sentence.
+  ///
+  /// A trailing letter is allowed (`5a`, `12b`) — standard in both countries
+  /// and absent from the English form.
+  static final RegExp _streetLineSuffixed = RegExp(
+    r'\b[A-Za-zÀ-ɏ][A-Za-zÀ-ɏ.\-]{1,30}'
+    r'(?:stra(?:ß|ss)e|str\.|weg|platz|allee|gasse|ring|damm|ufer|'
+    r'straat|laan|plein|kade|singel|dijk|gracht|hof)'
+    r'[ ]+[0-9]{1,4}[ ]?[a-zA-Z]?\b',
+    caseSensitive: false,
+  );
+
+  /// Italian, Portuguese, Spanish and French: the street type leads, the name
+  /// follows, the house number ends it — *Via Roma 12*, *Rua Augusta 24*.
+  ///
+  /// **The number is required, and the first draft of this pattern proved
+  /// why.** It was shaped after the Arabic rule it replaces — lead word, then
+  /// the rest of the line — and *"Il corso di italiano inizia lunedì"* came
+  /// back as somebody's home address. `corso` is a street in Milan and a
+  /// course of study everywhere else; so are `largo`, `carrera` and `place`.
+  /// The lead word alone is not evidence, which is the same conclusion
+  /// [_streetLineSuffixed] reaches from the other direction.
+  ///
+  /// An unnumbered street written on its own is given up deliberately. The
+  /// labelled rules above still catch it whenever the screenshot says
+  /// "Lieferadresse:", and a review list that covers a sentence about a
+  /// language course is a review list the user stops reading.
+  static final RegExp _streetLinePrefixed = RegExp(
+    r'(?<![A-Za-zÀ-ɏ])'
+    r'(?:via|viale|piazza|corso|vicolo|largo|'
+    r'rua|avenida|travessa|pra(?:ç|c)a|alameda|'
+    r'calle|plaza|paseo|carrera|'
+    r'rue|avenue|boulevard|chemin|impasse|place)'
+    r"[ ]+(?:[A-Za-zÀ-ɏ0-9'’.\-]+[ ]+){1,4}"
+    r'[0-9]{1,4}[ ]?[a-zA-Z]?\b',
+    caseSensitive: false,
   );
 
   /// A latitude/longitude pair: the most precise location a screenshot can
@@ -960,7 +1147,7 @@ abstract class SensitiveData {
         );
       }
     }
-    for (final RegExp pattern in <RegExp>[_streetLine, _streetLineArabic]) {
+    for (final RegExp pattern in <RegExp>[_streetLine, _streetLineSuffixed, _streetLinePrefixed]) {
       for (final RegExpMatch match in pattern.allMatches(source)) {
         _addClipped(
           found,
@@ -985,8 +1172,21 @@ abstract class SensitiveData {
     'reference$_gap(?:number|no)|tracking$_gap(?:number|no|id)|'
     'booking$_gap(?:number|no|reference|ref)|'
     'confirmation$_gap(?:number|no|code)|awb|waybill|'
-    'رقم الطلب|رقم الفاتوره|رقم الفاتورة|رقم الحجز|رقم الشحنه|رقم الشحنة|'
-    'رقم المرجع|رقم التتبع|رقم التتبّع)'
+    // German
+    'bestellnummer|rechnungsnummer|auftragsnummer|sendungsnummer|'
+    'buchungsnummer|kundennummer|vorgangsnummer|referenznummer|'
+    // Dutch
+    'bestelnummer|factuurnummer|ordernummer|zendingsnummer|track$_gap&$_gap'
+    'trace|boekingsnummer|klantnummer|referentienummer|'
+    // Italian
+    'numero$_gap(?:d(?:i|ell)$_gap ?ordine|fattura|di$_gap prenotazione|'
+    'di$_gap spedizione|di$_gap riferimento)|'
+    // Portuguese
+    'n(?:ú|u)mero$_gap do$_gap(?:pedido|encomenda)|n(?:ú|u)mero$_gap da$_gap'
+    '(?:factura|fatura|reserva)|c(?:ó|o)digo$_gap de$_gap rastreio|'
+    // Spanish / French
+    'n(?:ú|u)mero$_gap de$_gap(?:pedido|factura|reserva|seguimiento)|'
+    'num(?:é|e)ro$_gap de$_gap(?:commande|facture|suivi|r(?:é|e)servation))'
     '$_gap(?:[$_numberSep]$_gap)*'
     '($_referenceValue)',
     caseSensitive: false,
@@ -997,7 +1197,16 @@ abstract class SensitiveData {
   static final RegExp _orderWeakLabel = RegExp(
     '(?<![A-Za-z])'
     '(?:order|invoice|reference|ref|tracking|booking|'
-    'الطلب|الفاتوره|الفاتورة|المرجع|الحجز)'
+    // German
+    'bestellung|rechnung|auftrag|sendung|buchung|referenz|beleg|'
+    // Dutch
+    'bestelling|factuur|order|zending|boeking|referentie|'
+    // Italian
+    'ordine|fattura|prenotazione|spedizione|riferimento|ricevuta|'
+    // Portuguese / Spanish
+    'pedido|encomenda|fatura|factura|reserva|rastreio|seguimiento|'
+    // French
+    'commande|facture|r(?:é|e)servation|suivi)'
     '$_gap(?:[$_numberSep]$_gap)+'
     '($_referenceValue)',
     caseSensitive: false,

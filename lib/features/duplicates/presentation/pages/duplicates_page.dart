@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
+import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/widgets/app_snack_bar.dart';
 import 'package:shoto/core/theme/app_colors.dart';
@@ -46,14 +47,14 @@ class DuplicatesPage extends StatelessWidget {
         },
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: context.colors.background,
             appBar: AppBar(
-              backgroundColor: AppColors.background,
+              backgroundColor: context.colors.background,
               elevation: 0,
-              iconTheme: IconThemeData(color: AppColors.textPrimary),
+              iconTheme: IconThemeData(color: context.colors.textPrimary),
               title: Text(
                 context.l10n.dupTitle,
-                style: AppTextStyles.titleLarge,
+                style: context.text.titleLarge,
               ),
             ),
             body: SafeArea(top: false, child: _Body(state: state)),
@@ -74,31 +75,36 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DuplicatesState current = state;
+    // Exhaustive on purpose, with no `default` — see
+    // `docs/decisions/screen-states.md`. This was an `is!` chain ending in
+    // `SizedBox.shrink()`, which drew *initial* and *deleted* as a blank page
+    // under a title bar. Both are brief, and neither is nothing.
+    return switch (state) {
+      DuplicatesScanningState scanning => _ScanningView(state: scanning),
 
-    if (current is DuplicatesScanningState) {
-      return _ScanningView(state: current);
-    }
+      // The scan is dispatched in the frame the page is built, so this is one
+      // frame wide — until the day it isn't. A scan that never starts used to
+      // be indistinguishable from a library with no duplicates in it.
+      DuplicatesInitialState() => _ScanningView(state: DuplicatesScanningState()),
 
-    if (current is DuplicatesErrorState) {
-      return EmptyState(
+      // Deleting ends here and the listener immediately re-scans, so this is
+      // the same one frame. Drawn as a scan for the same reason: whatever the
+      // user sees between the delete and the fresh list, it is not "done".
+      DuplicatesDeletedState() => _ScanningView(state: DuplicatesScanningState()),
+
+      DuplicatesErrorState(:final AppMessage message) => EmptyState(
         icon: Icons.error_outline_rounded,
         title: context.l10n.commonSomethingWentWrong,
-        message: current.message.resolve(context),
+        message: message.resolve(context),
         action: PrimaryButton(
           label: context.l10n.commonRetry,
           onPressed: () =>
               context.read<DuplicatesBloc>().add(ScanForDuplicatesEvent()),
         ),
-      );
-    }
+      ),
 
-    if (current is! DuplicatesLoadedState) {
-      return const SizedBox.shrink();
-    }
-
-    if (!current.hasDuplicates) {
-      return EmptyState(
+      // The tick is earned only by a scan that finished and found nothing.
+      DuplicatesLoadedState(hasDuplicates: false) => EmptyState(
         icon: Icons.verified_rounded,
         title: context.l10n.dupNoneTitle,
         message: context.l10n.dupNoneBody,
@@ -107,39 +113,37 @@ class _Body extends StatelessWidget {
           onPressed: () =>
               context.read<DuplicatesBloc>().add(ScanForDuplicatesEvent()),
         ),
-      );
-    }
+      ),
 
-    final int totalReclaimable = current.groups.fold(
-      0,
-      (sum, group) => sum + group.reclaimableBytes,
-    );
-
-    return ListView(
-      padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 20.h),
-      children: [
-        _SummaryBanner(
-          groupCount: current.groups.length,
-          reclaimableBytes: totalReclaimable,
-        ),
-        SizedBox(height: 18.h),
-        ...current.groups.map(
-          (DuplicateGroup group) => DuplicateGroupCard(
-            group: group,
-            selectedIds: current.selectedIds,
-            onToggle: (assetId) => context.read<DuplicatesBloc>().add(
-              ToggleCandidateEvent(assetId),
-            ),
-            onKeepAll: () => context.read<DuplicatesBloc>().add(
-              KeepEntireGroupEvent(group.id),
-            ),
-            onResetSelection: () => context.read<DuplicatesBloc>().add(
-              ResetGroupSelectionEvent(group.id),
+      DuplicatesLoadedState loaded => ListView(
+        padding: EdgeInsets.fromLTRB(20.w, 8.h, 20.w, 20.h),
+        children: [
+          _SummaryBanner(
+            groupCount: loaded.groups.length,
+            reclaimableBytes: loaded.groups.fold(
+              0,
+              (int sum, DuplicateGroup group) => sum + group.reclaimableBytes,
             ),
           ),
-        ),
-      ],
-    );
+          SizedBox(height: 18.h),
+          ...loaded.groups.map(
+            (DuplicateGroup group) => DuplicateGroupCard(
+              group: group,
+              selectedIds: loaded.selectedIds,
+              onToggle: (assetId) => context.read<DuplicatesBloc>().add(
+                ToggleCandidateEvent(assetId),
+              ),
+              onKeepAll: () => context.read<DuplicatesBloc>().add(
+                KeepEntireGroupEvent(group.id),
+              ),
+              onResetSelection: () => context.read<DuplicatesBloc>().add(
+                ResetGroupSelectionEvent(group.id),
+              ),
+            ),
+          ),
+        ],
+      ),
+    };
   }
 }
 
@@ -161,14 +165,14 @@ class _ScanningView extends StatelessWidget {
               child: CircularProgressIndicator(
                 value: state.total == 0 ? null : state.fraction,
                 strokeWidth: 4,
-                color: AppColors.primary,
-                backgroundColor: AppColors.surfaceVariant,
+                color: context.colors.primary,
+                backgroundColor: context.colors.surfaceVariant,
               ),
             ),
             SizedBox(height: 22.h),
             Text(
               context.l10n.dupScanning,
-              style: AppTextStyles.titleLarge,
+              style: context.text.titleLarge,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 6.h),
@@ -176,7 +180,7 @@ class _ScanningView extends StatelessWidget {
               state.total == 0
                   ? context.l10n.dupReading
                   : context.l10n.dupProgress(state.processed, state.total),
-              style: AppTextStyles.bodyMedium,
+              style: context.text.bodyMedium,
               textAlign: TextAlign.center,
             ),
           ],
@@ -200,14 +204,14 @@ class _SummaryBanner extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
+        gradient: context.colors.primaryGradient,
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Row(
         children: [
           Icon(
             Icons.auto_awesome_rounded,
-            color: AppColors.onPrimary,
+            color: context.colors.onPrimary,
             size: 26.sp,
           ),
           SizedBox(width: 14.w),
@@ -217,15 +221,15 @@ class _SummaryBanner extends StatelessWidget {
               children: [
                 Text(
                   context.l10n.dupSetsFound(groupCount),
-                  style: AppTextStyles.titleLarge.copyWith(
-                    color: AppColors.onPrimary,
+                  style: context.text.titleLarge.copyWith(
+                    color: context.colors.onPrimary,
                   ),
                 ),
                 SizedBox(height: 2.h),
                 Text(
                   context.l10n.dupReclaimable(formatBytes(reclaimableBytes)),
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.onPrimary.withValues(alpha: 0.9),
+                  style: context.text.bodySmall.copyWith(
+                    color: context.colors.onPrimary.withValues(alpha: 0.9),
                   ),
                 ),
               ],
@@ -250,8 +254,8 @@ class _DeleteBar extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 12.h),
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          border: Border(top: BorderSide(color: AppColors.border)),
+          color: context.colors.surface,
+          border: Border(top: BorderSide(color: context.colors.border)),
         ),
         child: PrimaryButton(
           label: count == 0

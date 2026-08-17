@@ -333,6 +333,24 @@ class PressableScale extends StatefulWidget {
 
   final bool haptic;
 
+  /// What a screen reader should call this control.
+  ///
+  /// **Only needed when the child does not say it itself.** A row containing
+  /// the words "Find duplicates" is already announced by its own text, and
+  /// repeating it here would have it read twice. An icon has no text at all,
+  /// and that is what this is for — before it existed, every icon-only control
+  /// in the app was an unlabelled node offering "double tap to activate" with
+  /// no statement of what would happen.
+  final String? semanticLabel;
+
+  /// Whether this control is currently the chosen one of a set — a filter
+  /// chip, a theme card, a tint swatch.
+  ///
+  /// Left null for anything that is not a choice. Reporting `selected: false`
+  /// on an ordinary button tells a screen-reader user there is a state to
+  /// track where there is none.
+  final bool? selected;
+
   const PressableScale({
     super.key,
     required this.child,
@@ -341,6 +359,8 @@ class PressableScale extends StatefulWidget {
     this.scale = 0.97,
     this.haptic = true,
     this.feedback = PressFeedback.scale,
+    this.semanticLabel,
+    this.selected,
   });
 
   @override
@@ -422,6 +442,40 @@ class _PressableScaleState extends State<PressableScale> {
   Widget build(BuildContext context) {
     final bool enabled = widget.onTap != null || widget.onLongPress != null;
 
+    return _describe(enabled, _detector(enabled));
+  }
+
+  /// Says what the gesture detector alone cannot.
+  ///
+  /// **This is the app's one tap primitive, so what it omits, everything
+  /// omits.** [GestureDetector] contributes the tap *action* to the semantics
+  /// tree and nothing else — no role and no name. TalkBack therefore read out
+  /// whatever text happened to be inside and never said the thing was
+  /// pressable, and read nothing at all for the icon-only controls. Sixty-odd
+  /// call sites, one wrapper.
+  ///
+  /// [MergeSemantics] is what keeps a control to a single announcement: the
+  /// role and label set here, and the action the detector adds below, would
+  /// otherwise be two adjacent nodes — the user swipes twice and hears half
+  /// the control each time.
+  ///
+  /// Skipped entirely when there is nothing to add, so a decorative wrapper
+  /// does not put an empty node in the tree.
+  Widget _describe(bool enabled, Widget child) {
+    if (!enabled && widget.semanticLabel == null) return child;
+
+    return MergeSemantics(
+      child: Semantics(
+        button: enabled,
+        enabled: enabled ? true : null,
+        label: widget.semanticLabel,
+        selected: widget.selected,
+        child: child,
+      ),
+    );
+  }
+
+  Widget _detector(bool enabled) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapDown: enabled ? (_) => _pressIn() : null,
@@ -484,7 +538,7 @@ class _PressableScaleState extends State<PressableScale> {
                   child: ColoredBox(
                     // Derived from the text colour, so it darkens on paper and
                     // lightens on near-black without a second token.
-                    color: AppColors.textPrimary.withValues(alpha: 0.055),
+                    color: context.colors.textPrimary.withValues(alpha: 0.055),
                   ),
                 ),
               ),

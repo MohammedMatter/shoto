@@ -5,7 +5,7 @@ import 'package:shoto/core/widgets/glass_layer.dart';
 
 /// The panel a bottom sheet is drawn on: frosted, not filled.
 ///
-/// Every sheet in the app used to paint itself an opaque [AppColors.surface]
+/// Every sheet in the app used to paint itself an opaque [AppPalette.surface]
 /// rectangle, which makes a fine card and a poor sheet. A sheet is a thing that
 /// has *arrived over* the screen you were looking at, and an opaque fill throws
 /// away the only cue that says so — once it stops moving there is nothing left
@@ -58,37 +58,123 @@ class SheetSurface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BorderRadius shape = BorderRadius.vertical(
-      top: Radius.circular(cornerRadius.r),
+      top: Radius.circular(SheetSurface.cornerRadius.r),
     );
+    final double target = sigma ?? AppBlur.panel;
 
-    return GlassLayer(
-      borderRadius: shape,
-      sigma: sigma ?? AppBlur.panel,
-      child: GlassRim(
+    // **The frost waits until the sheet has stopped moving, and this is the
+    // most expensive thing in the app made cheap.**
+    //
+    // Measured on a real phone in a profile build, opening the intent picker
+    // over the photo viewer: Dart build time never passed 2ms while *raster*
+    // ran 32–74ms a frame against a 16.6ms budget — up to four and a half
+    // frames of GPU work per frame, none of it the widget tree's fault. A
+    // `BackdropFilter` that is travelling re-samples and re-blurs a fresh
+    // region every frame, over whatever it happens to be crossing; on that
+    // screen, a full-resolution screenshot under three more pieces of glass.
+    //
+    // Nothing is lost by waiting. The fill below sits at 82–90% opacity, so
+    // during a 220ms slide there is almost nothing of the backdrop to see
+    // through it. The frost does its work once the panel is *still* and being
+    // looked at, which is exactly when it can be afforded.
+    //
+    // **Read straight off the route's own animation rather than held in
+    // state.** A [StatefulWidget] that flipped a flag when the entrance
+    // finished was the obvious version and it was wrong in a way only the
+    // tests caught: its `setState` schedules an *extra* frame, `pumpAndSettle`
+    // then runs one frame longer, and every blinking text caret in a sheet
+    // lands on a different phase — two golden failures forty-four pixels each,
+    // in a sliver two pixels wide, having changed nothing anybody could see.
+    // Listening to the animation that is already ticking adds no frame at all:
+    // the last tick of the entrance and the arrival of the blur are the same
+    // frame.
+    final Animation<double>? travel = ModalRoute.of(context)?.animation;
+    final bool frosted = target > 0 && (travel?.isCompleted ?? true);
+
+    final Widget panel = _Panel(frosted: frosted, shape: shape, child: child);
+
+    if (travel == null || target <= 0) {
+      return GlassLayer(
         borderRadius: shape,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: AppColors.isDark
-                  ? [
-                      const Color(0xFF303030).withValues(alpha: 0.78),
-                      const Color(0xFF212121).withValues(alpha: 0.86),
-                    ]
-                  : [
-                      const Color(0xFFFFFFFF).withValues(alpha: 0.82),
-                      const Color(0xFFF4F4F4).withValues(alpha: 0.9),
-                    ],
-              // Past a third of the way down the panel is one flat colour.
-              // Running the ramp to the bottom would make a tall sheet — the
-              // rule builder is nearly full-screen — visibly a gradient.
-              stops: const [0, 0.32],
-            ),
-            borderRadius: shape,
+        sigma: frosted ? target : 0,
+        child: panel,
+      );
+    }
+
+    return ListenableBuilder(
+      listenable: travel,
+      builder: (BuildContext context, Widget? _) => GlassLayer(
+        borderRadius: shape,
+        sigma: travel.isCompleted ? target : 0,
+        child: _Panel(frosted: travel.isCompleted, shape: shape, child: child),
+      ),
+    );
+  }
+}
+
+/// The fill and the lit edge — everything about the sheet except the blur.
+///
+/// **The fill closes up whenever the blur is not there**, and the two are one
+/// decision rather than two. A translucent fill only works because a blur is
+/// smearing what is behind it into a wash; put the same fill over a sharp
+/// backdrop and the sheet turns into a window with somebody's screenshot
+/// legible through it, which is the one thing this surface must never be —
+/// text on it stops being readable and the panel stops reading as a panel.
+///
+/// So: frosted and translucent, or sharp and nearly solid. Never translucent
+/// and sharp.
+class _Panel extends StatelessWidget {
+  final bool frosted;
+  final BorderRadius shape;
+  final Widget child;
+
+  const _Panel({
+    required this.frosted,
+    required this.shape,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bool dark = context.colors.isDark;
+
+    // The same two stops in both states — a step toward the light at the top,
+    // a step toward the canvas at the bottom — only their opacity changes.
+    final Color top = dark
+        ? context.colors.surfaceVariant
+        : context.colors.surface;
+    final Color bottom = dark
+        ? context.colors.surface
+        : context.colors.background;
+
+    final double topAlpha = frosted ? (dark ? 0.78 : 0.82) : 0.985;
+    final double bottomAlpha = frosted ? (dark ? 0.86 : 0.9) : 1;
+
+    return GlassRim(
+      borderRadius: shape,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            // Derived from the palette rather than written out, which is how
+            // this pair had already drifted once: they were literals of a
+            // *previous* neutral ramp, so a sheet stayed the old grey while
+            // every card around it moved to the new one. A glass fill is
+            // still a surface — it belongs to the surface system even though
+            // it is translucent.
+            colors: <Color>[
+              top.withValues(alpha: topAlpha),
+              bottom.withValues(alpha: bottomAlpha),
+            ],
+            // Past a third of the way down the panel is one flat colour.
+            // Running the ramp to the bottom would make a tall sheet — the
+            // rule builder is nearly full-screen — visibly a gradient.
+            stops: const [0, 0.32],
           ),
-          child: child,
+          borderRadius: shape,
         ),
+        child: child,
       ),
     );
   }

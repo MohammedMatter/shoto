@@ -16,13 +16,13 @@ import 'package:image_picker_platform_interface/image_picker_platform_interface.
 ///   else — it never learns what else is on the phone.
 ///
 /// On Android 13+ this is the platform Photo Picker, which needs no media
-/// permission at all; on iOS it is `PHPicker`, same story. SHOTO does hold photo
+/// permission at all; on iOS it is `PHPicker`, same story. Shoto does hold photo
 /// permission for its own album, so this is not what makes the app work — it is
 /// what keeps "import" honest about its scope.
 ///
 /// The files that come back are **copies in the app's cache**, not gallery
 /// assets. There is no asset id to claim in place, which is why importing a
-/// picked file goes through the same copy-into-SHOTO's-album path a shared
+/// picked file goes through the same copy-into-Shoto's-album path a shared
 /// screenshot does.
 class SystemPhotoPickerDataSource {
   final ImagePicker _picker;

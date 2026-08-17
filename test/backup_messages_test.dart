@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/l10n/app_localizations.dart';
-import 'package:shoto/l10n/app_localizations_ar.dart';
+import 'package:shoto/l10n/app_localizations_de.dart';
 import 'package:shoto/l10n/app_localizations_en.dart';
 
 /// The backup screen reports counts, and counts need grammar.
@@ -42,24 +42,37 @@ void main() {
     });
   });
 
-  group('Arabic counts use the forms Arabic actually has', () {
-    final AppLocalizations l10n = AppLocalizationsAr();
+  /// The same guard in a second language, because the bug this file exists for
+  /// is not an English one.
+  ///
+  /// It was Arabic here until Arabic stopped shipping — a better test, since
+  /// Arabic has four plural forms and catches a one/other assumption three
+  /// ways. German has the same two forms as English, so this can only catch
+  /// the *structural* mistake: a translator collapsing the two independent
+  /// counts into one plural decision. That is exactly what went wrong on the
+  /// device, so it is still worth holding.
+  group('German counts decide each number on its own', () {
+    final AppLocalizations l10n = AppLocalizationsDe();
 
-    test('one, two, and few are each their own form', () {
-      // Arabic does not simply split at one. Two is dual and 3-10 takes the
-      // broken plural, so a one/other pair — which is all English needs —
-      // would be wrong here three times over.
-      final String one = l10n.backupDone(1, 1);
-      final String two = l10n.backupDone(2, 2);
-      final String few = l10n.backupDone(5, 5);
-      final String many = l10n.backupDone(30, 30);
+    test('each count picks its own form', () {
+      final String oneOne = l10n.backupDone(1, 1);
+      final String manyOne = l10n.backupDone(18, 1);
+      final String oneMany = l10n.backupDone(1, 4);
 
-      expect(one, contains('لقطة وحدة'));
-      expect(two, contains('لقطتين'));
-      expect(few, contains('5 لقطات'));
-      expect(many, contains('30 لقطة'));
+      // Singular and plural must differ for *each* count independently. A
+      // translation that reads the same either way has collapsed them.
+      expect(oneOne, isNot(manyOne));
+      expect(oneOne, isNot(oneMany));
+      expect(manyOne, isNot(oneMany));
 
-      expect(<String>{one, two, few, many}, hasLength(4));
+      // And the number itself has to survive into the sentence.
+      expect(manyOne, contains('18'));
+      expect(oneMany, contains('4'));
+    });
+
+    test('the skipped counts agree with their verbs', () {
+      expect(l10n.backupDoneWithSkips(9, 1), isNot(l10n.backupDoneWithSkips(9, 3)));
+      expect(l10n.restoreDoneWithSkips(1, 3), contains('3'));
     });
   });
 }

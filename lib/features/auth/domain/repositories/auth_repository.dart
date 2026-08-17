@@ -9,7 +9,7 @@ abstract class AuthRepository {
   /// The signed-in account, or null when nobody has signed in.
   ///
   /// Null is now an ordinary state rather than a reason to block the app:
-  /// most people will use SHOTO without ever signing in. Ask this when the
+  /// most people will use Shoto without ever signing in. Ask this when the
   /// question really is about the *account* — what name to show on the
   /// settings card, whether to offer sign-out. It is the wrong thing to ask
   /// when the question is whose data to read; see [userId].

@@ -6,7 +6,6 @@ import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/utils/line_stitching.dart';
 import 'package:shoto/core/utils/sensitive_data.dart';
 import 'package:shoto/core/utils/text_line_geometry.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 import 'package:shoto/features/safe_share/domain/entities/sensitive_region.dart';
 import 'package:shoto/features/screenshots/data/data_sources/text_recognition_data_source.dart';
 
@@ -32,9 +31,8 @@ import 'package:shoto/features/screenshots/data/data_sources/text_recognition_da
 ///   copy is the only version of that image which exists.
 class RedactionService {
   final TextRecognitionDataSource _textRecognition;
-  final AuthRepository _auth;
 
-  RedactionService(this._textRecognition, this._auth);
+  RedactionService(this._textRecognition);
 
   /// Scans [imageFile] and reports what it found and where.
   Future<RedactionPlan> scan(File imageFile) async {
@@ -55,16 +53,12 @@ class RedactionService {
     );
     image.dispose();
 
-    // The signed-in user's own name is the one piece of context that lets an
-    // unlabelled name be recognised without guessing. See [SensitiveData].
-    final Set<String> ownerNames = SensitiveData.namesFrom(
-      _auth.currentUser?.name,
-    );
-
-    final List<SensitiveRegion> regions = regionsIn(
-      lines,
-      ownerNames: ownerNames,
-    );
+    // No owner name is passed any more: the setting that asked for one was
+    // removed, so there is nothing on the device to pass. [regionsIn] still
+    // takes the argument — the matching itself works and is tested — but a
+    // scan on a real screenshot now finds only what it can prove: a checksum,
+    // a label, an `@`. An unlabelled name goes uncovered.
+    final List<SensitiveRegion> regions = regionsIn(lines);
 
     // Most damaging first: the review list is read top down, and the card
     // number is what the user actually needs to see is handled.
@@ -314,7 +308,7 @@ class RedactionService {
   /// Whether a run reads right to left.
   ///
   /// Decided by which script the letters are in rather than by the app's
-  /// language: SHOTO's interface being in English says nothing about the
+  /// language: Shoto's interface being in English says nothing about the
   /// screenshot, which may well be an Arabic banking app. Digits are ignored
   /// because they are written left to right in both.
   static bool _isRtl(String text) {

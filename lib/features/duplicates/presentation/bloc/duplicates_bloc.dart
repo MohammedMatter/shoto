@@ -109,12 +109,27 @@ class DuplicatesBloc extends Bloc<DuplicatesEvent, DuplicatesState> {
     }
 
     emit(current.copyWith(isDeleting: true));
-    final int count = current.selectedCount;
-    final int bytes = current.selectedBytes;
 
     try {
-      await deleteDuplicatesUseCase(current.selectedIds.toList());
-      emit(DuplicatesDeletedState(deletedCount: count, freedBytes: bytes));
+      // Counted from what went, not from what was selected. The confirmation
+      // used to read "Deleted 5 · freed 12 MB" after the user pressed Deny on
+      // the system prompt and nothing at all had been removed — a number the
+      // app had no basis for, about storage the user did not get back.
+      final Set<String> deleted = (await deleteDuplicatesUseCase(
+        current.selectedIds.toList(),
+      )).toSet();
+
+      if (deleted.isEmpty) {
+        emit(current.copyWith(isDeleting: false));
+        return;
+      }
+
+      emit(
+        DuplicatesDeletedState(
+          deletedCount: deleted.length,
+          freedBytes: current.bytesOf(deleted),
+        ),
+      );
     } catch (error) {
       emit(DuplicatesErrorState(AppMessage.deleteSelected));
     }

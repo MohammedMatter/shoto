@@ -7,6 +7,7 @@ import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/l10n/app_localizations.dart';
 
 import 'support/test_fonts.dart';
+import 'support/test_theme.dart';
 
 /// Renders the Library density button in each of its three states.
 ///
@@ -20,7 +21,9 @@ import 'support/test_fonts.dart';
 void main() {
   testWidgets('density icons are distinguishable', (WidgetTester tester) async {
     await loadTestFonts();
-    AppColors.setBrightness(Brightness.dark);
+    const Brightness brightness = Brightness.dark;
+    final AppPalette palette = testPalette(brightness);
+    final AppTypography type = testTypography(brightness);
 
     tester.view.physicalSize = const Size(900, 460);
     tester.view.devicePixelRatio = 3;
@@ -31,6 +34,7 @@ void main() {
         designSize: const Size(360, 690),
         minTextAdapt: true,
         builder: (context, _) => MaterialApp(
+          theme: testTheme(brightness),
           debugShowCheckedModeBanner: false,
           // The density names are translated now, so `labelFor` needs a
           // context that can reach AppLocalizations.
@@ -42,7 +46,7 @@ void main() {
           // MaterialApp where no Localizations exists yet.
           home: Builder(
             builder: (BuildContext context) => Scaffold(
-              backgroundColor: AppColors.background,
+              backgroundColor: palette.background,
               body: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -56,13 +60,13 @@ void main() {
                             height: 60,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: AppColors.surface,
+                              color: palette.surface,
                               shape: BoxShape.circle,
-                              border: Border.all(color: AppColors.border),
+                              border: Border.all(color: palette.border),
                             ),
                             child: Icon(
                               GridDensityController.iconFor(columns),
-                              color: AppColors.textPrimary,
+                              color: palette.textPrimary,
                               size: 27,
                             ),
                           ),
@@ -71,7 +75,7 @@ void main() {
                             '${GridDensityController.labelFor(context, columns)}\n'
                             '$columns columns',
                             textAlign: TextAlign.center,
-                            style: AppTextStyles.caption,
+                            style: type.caption,
                           ),
                         ],
                       ),
@@ -89,5 +93,5 @@ void main() {
       find.byType(Row).first,
       matchesGoldenFile('goldens/grid_density_icons.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 }

@@ -142,7 +142,7 @@ class _CustomIntentEditorContentState
                     width: 40.w,
                     height: 4.h,
                     decoration: BoxDecoration(
-                      color: AppColors.border,
+                      color: context.colors.border,
                       borderRadius: BorderRadius.circular(2.r),
                     ),
                   ),
@@ -157,15 +157,16 @@ class _CustomIntentEditorContentState
                           _isEditing
                               ? context.l10n.intentEditTitle
                               : context.l10n.intentNewTitle,
-                          style: AppTextStyles.headlineMedium,
+                          style: context.text.headlineMedium,
                         ),
                       ),
                       if (_isEditing)
                         IconButton(
+                          tooltip: context.l10n.commonDelete,
                           onPressed: _delete,
                           icon: Icon(
                             Icons.delete_outline_rounded,
-                            color: AppColors.error,
+                            color: context.colors.error,
                             size: 22.sp,
                           ),
                         ),
@@ -189,15 +190,15 @@ class _CustomIntentEditorContentState
                     maxLength: _maxLabelLength,
                     textCapitalization: TextCapitalization.sentences,
                     textInputAction: TextInputAction.done,
-                    style: AppTextStyles.bodyLarge,
+                    style: context.text.bodyLarge,
                     // Rebuilds the preview on every keystroke, deliberately
                     // without an animation on the text — see _Preview.
                     onChanged: (_) => setState(() {}),
                     onSubmitted: (_) => _save(),
                     decoration: InputDecoration(
                       hintText: context.l10n.intentNameHint,
-                      hintStyle: AppTextStyles.bodyLarge.copyWith(
-                        color: AppColors.textDisabled,
+                      hintStyle: context.text.bodyLarge.copyWith(
+                        color: context.colors.textDisabled,
                       ),
                       // The character counter is suppressed: it is a limit that
                       // exists for the chip's sake, not a budget the user is
@@ -205,7 +206,7 @@ class _CustomIntentEditorContentState
                       // two-word field reads as a warning.
                       counterText: '',
                       filled: true,
-                      fillColor: AppColors.surfaceVariant,
+                      fillColor: context.colors.surfaceVariant,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14.r),
                         borderSide: BorderSide.none,
@@ -365,7 +366,7 @@ class _Preview extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
         decoration: BoxDecoration(
-          color: AppColors.primary,
+          color: context.colors.primary,
           borderRadius: BorderRadius.circular(21.r),
         ),
         child: Row(
@@ -394,7 +395,7 @@ class _Preview extends StatelessWidget {
                 // crossfades nothing.
                 key: ValueKey<String>(iconKey),
                 size: 17.sp,
-                color: AppColors.onPrimary,
+                color: context.colors.onPrimary,
               ),
             ),
             SizedBox(width: 8.w),
@@ -402,8 +403,10 @@ class _Preview extends StatelessWidget {
               // The hint stands in until there is a word, so the chip is never
               // a lone glyph with a gap where its name goes.
               isEmpty ? context.l10n.intentNameLabel : label,
-              style: AppTextStyles.bodyMedium.asMedium.copyWith(
-                color: AppColors.onPrimary.withValues(alpha: isEmpty ? 0.5 : 1),
+              style: context.text.bodyMedium.asMedium.copyWith(
+                color: context.colors.onPrimary.withValues(
+                  alpha: isEmpty ? 0.5 : 1,
+                ),
               ),
             ),
           ],
@@ -448,14 +451,16 @@ class _ConfirmButton extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: isEnabled
-                  ? AppColors.primary
-                  : AppColors.textDisabled.withValues(alpha: 0.18),
+                  ? context.colors.primary
+                  : context.colors.textDisabled.withValues(alpha: 0.18),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.check_rounded,
               size: 20.sp,
-              color: isEnabled ? AppColors.onPrimary : AppColors.textDisabled,
+              color: isEnabled
+                  ? context.colors.onPrimary
+                  : context.colors.textDisabled,
             ),
           ),
         ),
@@ -490,10 +495,12 @@ class _IconChoice extends StatelessWidget {
         // the same rhythm as the spacing around them on every screen width.
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.surfaceVariant,
+          color: isSelected
+              ? context.colors.primary
+              : context.colors.surfaceVariant,
           borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
-            color: isSelected ? Colors.transparent : AppColors.border,
+            color: isSelected ? Colors.transparent : context.colors.border,
           ),
         ),
         // The chosen glyph sits slightly larger as well as lit. Two signals
@@ -506,7 +513,9 @@ class _IconChoice extends StatelessWidget {
           child: Icon(
             IntentIcons.resolve(iconKey),
             size: 21.sp,
-            color: isSelected ? AppColors.onPrimary : AppColors.textSecondary,
+            color: isSelected
+                ? context.colors.onPrimary
+                : context.colors.textSecondary,
           ),
         ),
       ),

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:shoto/core/services/reminders.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/core/utils/visual_vocabulary.dart';
 import 'package:shoto/features/screenshots/data/data_sources/custom_intents_local_data_source.dart';
@@ -10,10 +11,11 @@ import 'package:shoto/features/screenshots/data/data_sources/library_ownership_l
 import 'package:shoto/features/screenshots/data/data_sources/screenshot_gallery_data_source.dart';
 import 'package:shoto/features/screenshots/data/data_sources/screenshot_metadata_local_data_source.dart';
 import 'package:shoto/features/screenshots/data/data_sources/text_recognition_data_source.dart';
+import 'package:shoto/features/screenshots/domain/entities/library_summary.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/domain/repositories/screenshot_repository.dart';
 
-/// Joins three things into one library: the images in SHOTO's gallery album,
+/// Joins three things into one library: the images in Shoto's gallery album,
 /// which account each of them belongs to, and how that account organized
 /// them.
 ///
@@ -57,6 +59,69 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
     return _withMetadata(mine);
   }
 
+  /// Home's numbers, without the gallery.
+  ///
+  /// Note what is *not* here: no `getScreenshotAssets`, no legacy adoption, no
+  /// intersection against the album. This is one indexed read of two local
+  /// tables, and it is the whole reason the first frame can carry real content
+  /// — see [LibrarySummary].
+  ///
+  /// The custom-intent table is read only when some row actually points at one.
+  /// It is a small table, but this runs on the path that exists to be short,
+  /// and the great majority of libraries have no custom verbs in them at all.
+  @override
+  Future<LibrarySummary> getLibrarySummary() async {
+    final List<Map<String, Object?>> rows = await _ownership
+        .getOrganizationFacts();
+    if (rows.isEmpty) return LibrarySummary.empty;
+
+    final bool hasCustom = rows.any((Map<String, Object?> row) {
+      final String? intentId = row['intent'] as String?;
+      return intentId != null && IntentRef.isCustomId(intentId);
+    });
+    final Map<String, CustomIntent> customIntents = hasCustom
+        ? <String, CustomIntent>{
+            for (final CustomIntent intent
+                in await _customIntents.getCustomIntents())
+              intent.id: intent,
+          }
+        : const <String, CustomIntent>{};
+
+    int unsorted = 0;
+    final Map<IntentRef, int> waiting = <IntentRef, int>{};
+
+    for (final Map<String, Object?> row in rows) {
+      // The two conditions below are `ScreenshotEntity.isUnsorted` and
+      // `IntentState.isWaiting` read straight off the columns they are built
+      // from. They cannot literally call those getters — an entity needs an
+      // `AssetEntity`, which is the gallery read this method exists to skip —
+      // so if either definition ever changes, it changes here too.
+      final bool isFavorite = (row['is_favorite'] as int?) == 1;
+      final int? folderId = row['folder_id'] as int?;
+      if (folderId == null && !isFavorite) unsorted++;
+
+      if (row['intent_done_at'] != null) continue;
+      final IntentRef? ref = _resolveIntent(
+        row['intent'] as String?,
+        customIntents,
+      );
+      if (ref == null) continue;
+      waiting.update(ref, (int n) => n + 1, ifAbsent: () => 1);
+    }
+
+    final List<MapEntry<IntentRef, int>> ordered = waiting.entries.toList()
+      ..sort(
+        (MapEntry<IntentRef, int> a, MapEntry<IntentRef, int> b) =>
+            IntentRef.pickerOrder(a.key).compareTo(IntentRef.pickerOrder(b.key)),
+      );
+
+    return LibrarySummary(
+      total: rows.length,
+      unsorted: unsorted,
+      waiting: Map<IntentRef, int>.fromEntries(ordered),
+    );
+  }
+
   /// Imports the images the user hand-picked in the system picker.
   ///
   /// Each one is a file the OS handed over, so this is the same operation as a
@@ -83,11 +148,39 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
         await importSharedFile(path);
         imported++;
       } catch (error, stack) {
-        debugPrint('SHOTO import failed for $path: $error');
+        debugPrint('Shoto import failed for $path: $error');
         debugPrintStack(stackTrace: stack, maxFrames: 6);
       }
     }
     return imported;
+  }
+
+  @override
+  Future<List<AssetEntity>> getNewCaptures({required DateTime since}) {
+    return _gallery.getDeviceCaptures(since: since);
+  }
+
+  /// Keeping a capture is importing it, and it goes through exactly the same
+  /// path a picked file does — including the per-file failure handling, which
+  /// matters more here: a triage queue is a bulk action the user is watching,
+  /// and one unreadable capture must not end the review.
+  ///
+  /// The asset's file is resolved rather than its bytes read here, because
+  /// `importSharedFile` already owns what an import *is* — the copy, the
+  /// ownership row, the metadata. A second implementation of that, for a
+  /// second entry point, is how two entry points start disagreeing about what
+  /// is in the library.
+  @override
+  Future<int> keepCaptures(List<String> assetIds) async {
+    final List<AssetEntity> assets = await _gallery.getAssetsByIds(assetIds);
+
+    final List<String> paths = [];
+    for (final AssetEntity asset in assets) {
+      final File? file = await asset.originFile;
+      if (file != null) paths.add(file.path);
+    }
+
+    return importPickedFiles(paths);
   }
 
   @override
@@ -166,23 +259,76 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
   Future<void> setIntentDone(String assetId, bool isDone) =>
       _metadata.setIntentDone(assetId, isDone);
 
+  /// The row first, then the alarm.
+  ///
+  /// That order is deliberate for the failure case: if arming throws, the
+  /// database still says a reminder exists, which the app can see and re-arm.
+  /// The other order would leave an alarm ringing about a screenshot with no
+  /// reminder on it, which nothing in the app could explain or cancel.
+  @override
+  Future<bool> setReminder(
+    String assetId,
+    DateTime? at, {
+    String title = '',
+    String body = '',
+  }) async {
+    await _metadata.setReminder(assetId, at);
+
+    if (at == null) {
+      await Reminders.cancel(assetId);
+      return false;
+    }
+
+    return Reminders.schedule(
+      assetId: assetId,
+      at: at,
+      title: title,
+      body: body,
+    );
+  }
+
+  @override
+  Future<Map<String, DateTime>> getPendingReminders() =>
+      _metadata.getPendingReminders(DateTime.now());
+
   @override
   Future<void> assignFolder(List<String> assetIds, int? folderId) =>
       _metadata.assignFolder(assetIds, folderId);
 
+  /// Deletes what the OS lets it delete, and returns exactly that.
+  ///
+  /// **The gallery is asked first, and its answer decides the rest.** On
+  /// Android 11+ the delete is a system prompt the app cannot see the outcome
+  /// of in advance; `deleteWithIds` returns the ids that actually went. This
+  /// used to release ownership and erase the metadata *before* asking, and
+  /// then ignore the answer — so tapping Delete and pressing **Deny** left the
+  /// picture on the phone and threw away everything Shoto knew about it. The
+  /// user refused a deletion and lost the folder it was filed in, the
+  /// favourite, the intent, for a screenshot still sitting in their gallery.
+  ///
+  /// Refusing is not an error and is not rare: it is one of the two buttons
+  /// the system offers, and it means "leave it alone" — which has to include
+  /// leaving the record alone.
+  ///
+  /// Every file a library holds is one Shoto wrote into its own album —
+  /// importing copies, it never claims a picture where it already sits — so
+  /// there is no case here where this reaches a file the app didn't create.
+  ///
+  /// This used to also check whether a *second account on the same phone*
+  /// still had the image, and skip the file delete if so. There are no
+  /// second accounts any more: the library belongs to the device, so
+  /// leaving it and erasing the file are now the same decision.
   @override
-  Future<void> deleteScreenshots(List<String> assetIds) async {
-    // Every file a library holds is one SHOTO wrote into its own album —
-    // importing copies, it never claims a picture where it already sits — so
-    // there is no case here where this reaches a file the app didn't create.
-    //
-    // This used to also check whether a *second account on the same phone*
-    // still had the image, and skip the file delete if so. There are no
-    // second accounts any more: the library belongs to the device, so
-    // leaving it and erasing the file are now the same decision.
-    await _ownership.release(assetIds);
-    await _gallery.deleteAssets(assetIds);
-    await _metadata.deleteMeta(assetIds);
+  Future<List<String>> deleteScreenshots(List<String> assetIds) async {
+    final List<String> deleted = await _gallery.deleteAssets(assetIds);
+    if (deleted.isEmpty) return const <String>[];
+
+    // Scoped to what went, not to what was asked for. A partial result is
+    // possible — the system prompt is per-batch on some versions and per-item
+    // on others — and the ones that survived must keep their records.
+    await _ownership.release(deleted);
+    await _metadata.deleteMeta(deleted);
+    return deleted;
   }
 
   @override
@@ -191,7 +337,7 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
     String? sourceAssetId,
   }) async {
     if (sourceAssetId != null && await _gallery.isInOurAlbum(sourceAssetId)) {
-      // The file is already in SHOTO's album, put there by another account
+      // The file is already in Shoto's album, put there by another account
       // (or by this one before it was signed in). Copying it would leave two
       // identical pictures in the user's gallery for no reason, so this
       // account just takes it into its own library as it stands.
@@ -222,7 +368,7 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
   @override
   Future<String?> findLibraryAsset(String assetId) async {
     if (!await _ownership.owns(assetId)) return null;
-    // Owned but no longer on disk means the file was removed outside SHOTO;
+    // Owned but no longer on disk means the file was removed outside Shoto;
     // treating that as "already here" would leave the user unable to re-add
     // a screenshot the app can't actually show them.
     return await _gallery.isInOurAlbum(assetId) ? assetId : null;
@@ -324,32 +470,50 @@ class ScreenshotRepositoryImpl implements ScreenshotRepository {
     await _ownership.markLegacyAdoptionDone();
   }
 
+  /// The verb a stored `screenshot_meta.intent` names, or null.
+  ///
+  /// An unresolvable id yields no intent rather than a guess. That covers a
+  /// value written by a newer build, and also a custom intent this account has
+  /// since deleted — deletion clears the references itself, so reaching this
+  /// with a `c:` id means the two are momentarily out of step, and "none set"
+  /// is the honest reading of that, not whichever constant happens to sit first
+  /// in the enum.
+  ///
+  /// Its own method because [getLibrarySummary] resolves the same column
+  /// without ever building an entity, and Home draws one straight after the
+  /// other — two readings of one string is exactly how the count shown for a
+  /// custom verb would come out different in the two frames.
+  IntentRef? _resolveIntent(
+    String? intentId,
+    Map<String, CustomIntent> customIntents,
+  ) {
+    if (intentId == null) return null;
+    if (IntentRef.isCustomId(intentId)) return customIntents[intentId];
+    return switch (ScreenshotIntent.fromId(intentId)) {
+      final ScreenshotIntent intent => BuiltInIntent(intent),
+      null => null,
+    };
+  }
+
   ScreenshotEntity _toEntity(
     AssetEntity asset,
     Map<String, Object?>? meta,
     Map<String, CustomIntent> customIntents,
   ) {
-    // An unresolvable id yields no intent rather than a guess. That covers a
-    // value written by a newer build, and now also a custom intent this
-    // account has since deleted — deletion clears the references itself, so
-    // reaching this with a `c:` id means the two are momentarily out of step,
-    // and "none set" is the honest reading of that, not whichever constant
-    // happens to sit first in the enum.
-    final String? intentId = meta?['intent'] as String?;
-    final IntentRef? ref = intentId == null
-        ? null
-        : IntentRef.isCustomId(intentId)
-        ? customIntents[intentId]
-        : switch (ScreenshotIntent.fromId(intentId)) {
-            final ScreenshotIntent intent => BuiltInIntent(intent),
-            null => null,
-          };
+    final IntentRef? ref = _resolveIntent(
+      meta?['intent'] as String?,
+      customIntents,
+    );
     final int? doneAt = meta?['intent_done_at'] as int?;
+    final int? remindAt = meta?['remind_at'] as int?;
 
     return ScreenshotEntity(
       asset: asset,
       isFavorite: (meta?['is_favorite'] as int?) == 1,
       folderId: meta?['folder_id'] as int?,
+      remindAt: remindAt == null
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(remindAt),
       intent: ref == null
           ? null
           : IntentState(

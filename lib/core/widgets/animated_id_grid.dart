@@ -239,6 +239,34 @@ class AnimatedIdGrid<T> extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final double? cacheExtent;
 
+  /// Slivers placed above the grid inside **this** scroll view.
+  ///
+  /// The point is that they scroll with the tiles rather than sitting in a
+  /// `Column` above them. A page header stacked outside the scroll view is
+  /// charged for on every frame no matter how far down the list you are, and
+  /// on a screen built for browsing that is the top sixth of the phone
+  /// permanently. A caller that passes a `SliverAppBar` here gets it collapsing
+  /// for free; one that passes a pinned filter row gets it pinned to the top
+  /// edge instead of pushed off it.
+  ///
+  /// This is also the only way to get either of those right. Wrapping the grid
+  /// in a `NestedScrollView` was tried on the library page and cannot work: the
+  /// body is laid out under the header's *minimum* extent, so a fixed box at
+  /// the top of that body is either painted over by a pinned bar or ends up
+  /// under the status bar once an unpinned one leaves. There is no third
+  /// setting — a box and a sliver cannot share a scroll.
+  final List<Widget> leadingSlivers;
+
+  /// Slivers placed below the grid, inside the same scroll view.
+  ///
+  /// The mirror of [leadingSlivers] and there for the smaller of the two jobs:
+  /// giving a short list a bottom edge. A list of two tiles on a tall phone is
+  /// two tiles and then a screenful of nothing, which reads as content that
+  /// failed to load rather than as a list that has ended — and no amount of
+  /// styling on the tiles fixes it, because the problem is the absence below
+  /// them. A closing line costs one row and answers it.
+  final List<Widget> trailingSlivers;
+
   const AnimatedIdGrid({
     super.key,
     required this.items,
@@ -247,6 +275,8 @@ class AnimatedIdGrid<T> extends StatelessWidget {
     required this.gridDelegate,
     this.padding = EdgeInsets.zero,
     this.cacheExtent,
+    this.leadingSlivers = const <Widget>[],
+    this.trailingSlivers = const <Widget>[],
   });
 
   @override
@@ -258,6 +288,7 @@ class AnimatedIdGrid<T> extends StatelessWidget {
     return CustomScrollView(
       cacheExtent: cacheExtent,
       slivers: [
+        ...leadingSlivers,
         AnimatedIdSliverGrid<T>(
           items: items,
           idOf: idOf,
@@ -265,6 +296,7 @@ class AnimatedIdGrid<T> extends StatelessWidget {
           gridDelegate: gridDelegate,
           padding: padding,
         ),
+        ...trailingSlivers,
       ],
     );
   }
@@ -312,6 +344,9 @@ class SectionedIdGrid<T> extends StatelessWidget {
   final double headerExtent;
   final double? cacheExtent;
 
+  /// See [AnimatedIdGrid.leadingSlivers].
+  final List<Widget> leadingSlivers;
+
   const SectionedIdGrid({
     super.key,
     required this.sections,
@@ -321,12 +356,13 @@ class SectionedIdGrid<T> extends StatelessWidget {
     required this.headerExtent,
     this.padding = EdgeInsets.zero,
     this.cacheExtent,
+    this.leadingSlivers = const <Widget>[],
   });
 
   @override
   Widget build(BuildContext context) {
     final EdgeInsets resolved = padding.resolve(Directionality.of(context));
-    final List<Widget> slivers = <Widget>[];
+    final List<Widget> slivers = <Widget>[...leadingSlivers];
     int offset = 0;
 
     for (int s = 0; s < sections.length; s++) {

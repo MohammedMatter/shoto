@@ -17,14 +17,14 @@ import 'package:shoto/core/theme/app_colors.dart';
 /// it. On is indistinguishable from on.
 ///
 /// That is what the create-folder sheet shipped: `activeThumbColor:
-/// AppColors.primary` and nothing else, so the one switch in the app guarding
+/// AppPalette.primary` and nothing else, so the one switch in the app guarding
 /// a security decision was the one switch you could not read. The settings
 /// tiles and the rules page had already been fixed, each with its own copy of
 /// the five properties below and its own comment explaining them — which is
 /// the real lesson. A five-line correction that must be remembered at every
 /// call site is not a correction, it is a trap with a delay on it.
 ///
-/// **The rule for "on".** The accent is the *track*; [AppColors.onPrimary] —
+/// **The rule for "on".** The accent is the *track*; [AppPalette.onPrimary] —
 /// the token whose whole job is "whatever reads on the accent" — is the thumb.
 /// That relationship is what inverts correctly, in both modes, without anyone
 /// having to think about which mode they are in.
@@ -35,8 +35,8 @@ import 'package:shoto/core/theme/app_colors.dart';
 ///
 /// The first version of this widget took the five properties the settings
 /// tiles had been using, and they carried a second bug of their own: the
-/// inactive track was [AppColors.surfaceVariant] and its outline was
-/// [AppColors.border]. Those are the *same tokens the rows themselves are
+/// inactive track was [AppPalette.surfaceVariant] and its outline was
+/// [AppPalette.border]. Those are the *same tokens the rows themselves are
 /// built from* — so on a row filled with `surfaceVariant` (the create-folder
 /// sheet) the track was literally the colour of the thing behind it, and the
 /// outline was four points away from both. Switched off, the control was a
@@ -47,13 +47,13 @@ import 'package:shoto/core/theme/app_colors.dart';
 /// surface this can be dropped onto, rather than from the one surface it
 /// happened to be tested on:
 ///
-/// * [AppColors.surfaceElevated] for the track — the palette defines it in as
+/// * [AppPalette.surfaceElevated] for the track — the palette defines it in as
 ///   many words as "for chips and inputs sitting *on* a surface where
 ///   surfaceVariant would disappear against it". This is that case exactly.
-/// * [AppColors.textDisabled] as a real hairline, because on near-black a
+/// * [AppPalette.textDisabled] as a real hairline, because on near-black a
 ///   10-point step between two greys is not enough on its own. The outline is
 ///   what states "there is a control here" before any state is read off it.
-/// * [AppColors.textSecondary] for the thumb — a mid grey, legible on the
+/// * [AppPalette.textSecondary] for the thumb — a mid grey, legible on the
 ///   track without being the white that would make an *off* switch the
 ///   brightest thing in the row.
 ///
@@ -77,14 +77,14 @@ class AppSwitch extends StatelessWidget {
       // these, and it plays its own confirming buzz on the way on so the thing
       // being switched on demonstrates itself — a second buzz fired from
       // inside the control would double it.
-      activeThumbColor: AppColors.onPrimary,
-      activeTrackColor: AppColors.primary,
-      inactiveThumbColor: AppColors.textSecondary,
-      inactiveTrackColor: AppColors.surfaceElevated,
+      activeThumbColor: context.colors.onPrimary,
+      activeTrackColor: context.colors.primary,
+      inactiveThumbColor: context.colors.textSecondary,
+      inactiveTrackColor: context.colors.surfaceElevated,
       trackOutlineColor: WidgetStateProperty.resolveWith(
         (Set<WidgetState> states) => states.contains(WidgetState.selected)
             ? Colors.transparent
-            : AppColors.textDisabled,
+            : context.colors.textDisabled,
       ),
       // Material's own default here is 2px, which at this size reads as a
       // drawn border rather than as the edge of a control.

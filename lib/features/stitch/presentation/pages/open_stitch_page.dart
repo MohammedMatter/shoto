@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
+import 'package:shoto/core/services/feature_trials.dart';
 import 'package:shoto/core/widgets/premium_gate.dart';
 import 'package:shoto/features/stitch/data/services/image_stitch_service.dart';
 import 'package:shoto/features/stitch/presentation/pages/stitch_page.dart';
@@ -23,7 +24,7 @@ Future<bool> openStitchPage(BuildContext context, List<String> assetIds) async {
     return false;
   }
 
-  if (!await ensurePremium(context)) return false;
+  if (!await ensurePremium(context, trial: FeatureTrial.stitch)) return false;
   if (!context.mounted) return false;
   final bool? saved = await Navigator.of(context).push<bool>(
     FadeSlidePageRoute(builder: (_) => StitchPage(assetIds: assetIds)),

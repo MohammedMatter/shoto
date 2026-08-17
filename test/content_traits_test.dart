@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/utils/content_traits.dart';
+import 'package:shoto/features/smart_actions/data/services/action_extractor.dart';
 
 /// A Visa test number that genuinely passes Luhn — the filter's whole claim is
 /// that it is arithmetic rather than shape, so a fake number here would test
@@ -27,6 +28,24 @@ void main() {
       final Set<ContentTrait> email = ContentTraits.of('write to a@b.com');
       expect(phone, contains(ContentTrait.contact));
       expect(email, contains(ContentTrait.contact));
+    });
+
+    /// **A number may describe a screenshot and still never be offered as a
+    /// thing to do.**
+    ///
+    /// This is the one invariant holding the two halves apart after the
+    /// actions sheet lost its phone rule for offering to dial IBANs. The chip
+    /// survives because it is believed at a glance and costs a narrowed list
+    /// when wrong; the button does not, because it costs a call to a stranger.
+    /// A change that reunites them will fail here rather than in the field.
+    test('a corroborated number is a chip and never an action', () {
+      const String text = 'Mobile 0599 123 456';
+      expect(ContentTraits.of(text), contains(ContentTrait.contact));
+      expect(
+        ActionExtractor.extract(text),
+        isEmpty,
+        reason: 'a phone rule has come back to the actions sheet',
+      );
     });
 
     test('a cued verification code is recognised', () {
@@ -122,21 +141,23 @@ void main() {
     });
 
     test('a cue word rescues a bare local number', () {
-      expect(
-        ContentTraits.of('جوال 0599123456'),
-        contains(ContentTrait.contact),
-      );
-      expect(
-        ContentTraits.of('Mobile 0599123456'),
-        contains(ContentTrait.contact),
-      );
+      for (final String text in <String>[
+        'Mobile 0599123456',
+        'Telefon 0599123456',
+        'Cellulare 0599123456',
+        'Telemóvel 0599123456',
+        'Telefoonnummer 0599123456',
+      ]) {
+        expect(ContentTraits.of(text), contains(ContentTrait.contact),
+            reason: text);
+      }
     });
 
     test('"order number" is not a phone cue', () {
       // The bare word for "number" prefixes far more order references than
       // phones, which is why it is kept out of the cue list.
       expect(
-        ContentTraits.of('رقم الطلب 5551234'),
+        ContentTraits.of('Bestellnummer 5551234'),
         isNot(contains(ContentTrait.contact)),
       );
     });
@@ -167,16 +188,25 @@ void main() {
       }
     });
 
-    test('non-Latin cues still match as whole words', () {
-      // `\b` is ASCII-only in Dart, so a naive word-boundary fix would have
-      // silently killed every Arabic, Hindi and Urdu cue.
+    test('an accented cue still matches as a whole word', () {
+      // `\b` is ASCII-only in Dart, so a naive word-boundary fix breaks on the
+      // first cue carrying a diacritic — which is most of them outside
+      // English. This was checked with Arabic and Hindi cues until those
+      // languages stopped shipping; the property is identical and the letters
+      // are ones the recogniser can actually return.
       expect(
-        ContentTraits.of('هاتف 0599123456'),
+        ContentTraits.of('Telemóvel 0599123456'),
         contains(ContentTrait.contact),
       );
       expect(
-        ContentTraits.of('मोबाइल 0599123456'),
+        ContentTraits.of('Téléphone 0599123456'),
         contains(ContentTrait.contact),
+      );
+      // And the substring trap in an accented cue: a compound beginning with
+      // "Telefon" is not the cue "Telefon".
+      expect(
+        ContentTraits.of('Telefonbuchhandlung 5551234 Eintrag'),
+        isNot(contains(ContentTrait.contact)),
       );
     });
 
@@ -273,21 +303,36 @@ void main() {
     });
   });
 
-  group('Arabic', () {
-    // Arabic-Indic digits are the recurring trap in this codebase: \d matches
-    // none of them, so an Arabic-UI screenshot silently yields nothing unless
-    // the extractor normalises first.
-    test('a code written in Arabic-Indic digits is still recognised', () {
+  /// Content in a language the app does not ship in.
+  ///
+  /// The distinction this group exists to hold: **the app's language and the
+  /// screenshot's language are different questions.** Arabic, Hindi and Urdu
+  /// were dropped from the interface because the recogniser cannot read those
+  /// scripts, and nothing about that decision says a German user never
+  /// photographs a page written in German-with-something-else on it. Anything
+  /// the recogniser *can* return still has to be handled.
+  ///
+  /// `ActionExtractor.normalizeDigits` therefore stays, and so does
+  /// `RedactionService`'s right-to-left run handling: both read what was
+  /// recognised, never what language the menus are in.
+  group('content is not the interface', () {
+    test('a link is found inside a sentence in any language', () {
       expect(
-        ContentTraits.of('رمز التحقق الخاص بك هو ٤٨١٩٢٠'),
-        contains(ContentTrait.code),
+        ContentTraits.of('Lesen Sie mehr auf https://example.com/news'),
+        contains(ContentTrait.link),
+      );
+      expect(
+        ContentTraits.of('Leia mais em https://example.com/news'),
+        contains(ContentTrait.link),
       );
     });
 
-    test('an Arabic sentence with a link finds the link', () {
+    test('a cued code survives around unfamiliar words', () {
+      // The cue and the digits are Latin; whatever surrounds them is not the
+      // rule's business.
       expect(
-        ContentTraits.of('اقرأ المزيد على https://example.com/news'),
-        contains(ContentTrait.link),
+        ContentTraits.of('Sicherheitscode 481920 — Landesvorwahl unbekannt'),
+        contains(ContentTrait.code),
       );
     });
   });

@@ -9,42 +9,158 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/widgets/app_switch.dart';
 import 'package:shoto/core/widgets/pro_badge.dart';
 
-/// A row whose control is too wide to sit beside its label — a segmented
-/// picker rather than a switch or a chevron.
+/// The glyph at the head of a settings row.
 ///
-/// Naming these ("Theme", "Grid density") rather than letting a bare row of
-/// pills float under a heading matters more than it looks: a control with no
-/// label is only obvious to whoever built it.
-class SettingsControlRow extends StatelessWidget {
+/// **One tone for all seventeen, and this is the second attempt at that.**
+///
+/// The first attempt gave every row a hue off the [AppTint] wheel on a pale
+/// plate — sixteen colours walking the wheel down the page, each one solved and
+/// contrast-checked by machinery the app already had. Every individual piece of
+/// that was defensible and the whole thing was wrong, which is the same lesson
+/// `app_colors.dart` records about the paywall card: *a component can obey
+/// every token in the system and still be the wrong thing to put on the
+/// screen.* Seventeen coloured squares do not read as an index. They read as
+/// decoration applied to a list, and decoration applied evenly to every item in
+/// a list carries no information at all — if everything is marked, nothing is.
+///
+/// It also broke the rule that actually matters here, which is not about
+/// contrast: **colour in this app means something.** Red is destructive, green
+/// is done, amber is attention. Spending the whole wheel on "this is the
+/// haptics row" spends the vocabulary on nothing and leaves the four hues that
+/// do mean something competing with sixteen that do not.
+///
+/// So the glyphs are quiet, and the work they were being asked to do — telling
+/// one row from another at a glance — is done by the two things that were
+/// always better at it: **shorter rows, and headings with air above them.**
+/// [AppPalette.textSecondary] rather than `textPrimary`, so the glyph sits a
+/// step behind the label it belongs to instead of competing with it.
+class SettingsGlyph extends StatelessWidget {
   final IconData icon;
-  final String label;
-  final Widget control;
 
-  const SettingsControlRow({
-    super.key,
+  /// Overrides the tone — the alert red on a destructive row, the disabled
+  /// grey on one that cannot be tapped.
+  final Color? tone;
+
+  const SettingsGlyph({super.key, required this.icon, this.tone});
+
+  /// The column the glyph occupies. Fixed rather than measured, so every row's
+  /// text starts in the same place whatever glyph is in it.
+  static double get size => 22.w;
+
+  /// Where a row's text begins, measured from the edge of the group's card.
+  /// Read by [SettingsDivider] so the hairline starts where the labels do
+  /// rather than at a number copied by hand and left behind.
+  static double get textInset => 16.w + size + 14.w;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: size,
+    child: Icon(icon, size: 20.sp, color: tone ?? context.colors.textSecondary),
+  );
+}
+
+/// The shape every row on this page is: a glyph, a label, and the answer on
+/// the trailing edge.
+///
+/// Private and shared rather than copied into the two public tiles below,
+/// because the one thing a settings page cannot survive is its rows disagreeing
+/// about their own metrics — a switch row two pixels taller than the nav row
+/// above it is the sort of wrongness nobody can name and everybody feels.
+class _SettingsRow extends StatelessWidget {
+  final IconData icon;
+  final Color? glyphTone;
+  final String label;
+  final Color labelColor;
+
+  /// The line under the label.
+  ///
+  /// **Most rows no longer have one.** Every row on this page used to carry a
+  /// sentence, which turned Settings into seventeen paragraphs stacked on top
+  /// of each other — twice the height it needed and nothing on it leading. A
+  /// description now has to earn its line by saying something the label does
+  /// not: what a switch will actually change, or a fact like an address or a
+  /// size. "Watch the opening sequence again" under "Replay the introduction"
+  /// is not information, it is the label written twice.
+  final String? description;
+
+  /// **The row's current answer, on the trailing edge.**
+  ///
+  /// A setting that already has a value should say it where the eye goes
+  /// looking for it, which is the same place a switch would be — so a row can
+  /// be read without being opened. Putting it in [description] instead is what
+  /// made "Language" a two-line row to hold one word.
+  final String? value;
+
+  final List<Widget> trailing;
+
+  const _SettingsRow({
     required this.icon,
     required this.label,
-    required this.control,
+    required this.labelColor,
+    this.glyphTone,
+    this.description,
+    this.value,
+    this.trailing = const <Widget>[],
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsetsDirectional.fromSTEB(15.w, 14.h, 15.w, 15.h),
-      color: AppColors.surface,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: AppColors.textPrimary, size: 19.sp),
-              SizedBox(width: 14.w),
-              Text(label, style: AppTextStyles.bodyLarge),
+    return ConstrainedBox(
+      // **A floor rather than a fixed height.** The rows are deliberately no
+      // longer all the same height — some have a second line and most do not —
+      // and without a minimum the one-line ones collapse to something too
+      // small to hit comfortably, which is the price a page usually pays for
+      // being tightened.
+      constraints: BoxConstraints(minHeight: 56.h),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        child: Row(
+          children: <Widget>[
+            SettingsGlyph(icon: icon, tone: glyphTone),
+            SizedBox(width: 14.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    label,
+                    // A half step of weight on the label, and none on the line
+                    // under it. That is the whole hierarchy of a row: with both
+                    // at the same weight the eye has to read the sentence to
+                    // find out it was not the title.
+                    style: context.text.bodyLarge.asMedium.copyWith(
+                      color: labelColor,
+                    ),
+                  ),
+                  if (description != null) ...<Widget>[
+                    SizedBox(height: 2.h),
+                    Text(description!, style: context.text.caption),
+                  ],
+                ],
+              ),
+            ),
+            if (value != null) ...<Widget>[
+              SizedBox(width: 12.w),
+              // Bounded so a long answer — a language endonym, a formatted
+              // size — ellipsises instead of pushing the chevron off the card.
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 130.w),
+                child: Text(
+                  value!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
+                  style: context.text.bodyMedium,
+                ),
+              ),
             ],
-          ),
-          SizedBox(height: 12.h),
-          control,
-        ],
+            for (final Widget widget in trailing) ...<Widget>[
+              SizedBox(width: 10.w),
+              widget,
+            ],
+          ],
+        ),
       ),
     );
   }
@@ -101,13 +217,17 @@ class _SettingsClearCacheTileState extends State<SettingsClearCacheTile> {
   Widget build(BuildContext context) {
     return FutureBuilder<int>(
       future: _sizeFuture,
-      builder: (context, snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
         final int bytes = snapshot.data ?? 0;
         return SettingsNavTile(
-          icon: Icons.cleaning_services_rounded,
+          icon: Icons.cleaning_services_outlined,
           label: context.l10n.settingsClearCache,
-          description: snapshot.hasData
-              ? context.l10n.settingsCacheSize(_format(bytes))
+          // **The size is the answer, so it goes where the answers go** — and
+          // the sentence that used to carry it ("12.4 MB of thumbnails") goes
+          // with it, because a row that says the same number twice reads as a
+          // rendering fault rather than as emphasis.
+          value: snapshot.hasData
+              ? _format(bytes)
               : context.l10n.settingsCacheMeasuring,
           onTap: bytes == 0 ? null : _clear,
         );
@@ -119,7 +239,12 @@ class _SettingsClearCacheTileState extends State<SettingsClearCacheTile> {
 class SettingsNavTile extends StatelessWidget {
   final IconData icon;
   final String label;
-  final String description;
+  final String? description;
+
+  /// What this setting currently says, drawn on the trailing edge — see
+  /// [_SettingsRow.value].
+  final String? value;
+
   final VoidCallback? onTap;
   final bool isDestructive;
 
@@ -140,19 +265,21 @@ class SettingsNavTile extends StatelessWidget {
     super.key,
     required this.icon,
     required this.label,
-    required this.description,
     required this.onTap,
+    this.description,
+    this.value,
     this.isDestructive = false,
     this.showProBadge = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final Color tint = isDestructive
-        ? AppColors.error
-        : onTap == null
-        ? AppColors.textDisabled
-        : AppColors.textPrimary;
+    final bool disabled = onTap == null && !isDestructive;
+    final Color tone = isDestructive
+        ? context.colors.error
+        : disabled
+        ? context.colors.textDisabled
+        : context.colors.textPrimary;
 
     return PressableScale(
       // A tint, not a shrink. This row is full-bleed inside a scrolling page,
@@ -161,37 +288,26 @@ class SettingsNavTile extends StatelessWidget {
       // PressFeedback.
       feedback: PressFeedback.highlight,
       onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 14.h),
-        // No background or border of its own: the row lives inside a
-        // [SettingsGroup] card, which draws both once for the whole group.
-        color: AppColors.surface,
-        child: Row(
-          children: [
-            Icon(icon, color: tint, size: 19.sp),
-            SizedBox(width: 14.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: AppTextStyles.bodyLarge.copyWith(color: tint),
-                  ),
-                  SizedBox(height: 1.h),
-                  Text(description, style: AppTextStyles.caption),
-                ],
-              ),
+      child: _SettingsRow(
+        icon: icon,
+        // The glyph follows the label only where the label has left the
+        // ordinary case — red on a destructive row, grey on a dead one.
+        // Everywhere else it stays a step behind, which is the whole point of
+        // it being one tone.
+        glyphTone: isDestructive || disabled ? tone : null,
+        label: label,
+        labelColor: tone,
+        description: description,
+        value: value,
+        trailing: <Widget>[
+          if (showProBadge) const ProBadge(),
+          if (onTap != null && !isDestructive)
+            Icon(
+              Icons.chevron_right_rounded,
+              color: context.colors.textDisabled,
+              size: 20.sp,
             ),
-            if (showProBadge) ...[const ProBadge(), SizedBox(width: 8.w)],
-            if (onTap != null && !isDestructive)
-              Icon(
-                Icons.chevron_right_rounded,
-                color: AppColors.textDisabled,
-                size: 20.sp,
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -200,7 +316,7 @@ class SettingsNavTile extends StatelessWidget {
 class SettingsSwitchTile extends StatelessWidget {
   final IconData icon;
   final String label;
-  final String description;
+  final String? description;
   final bool value;
   final ValueChanged<bool> onChanged;
 
@@ -208,33 +324,19 @@ class SettingsSwitchTile extends StatelessWidget {
     super.key,
     required this.icon,
     required this.label,
-    required this.description,
     required this.value,
     required this.onChanged,
+    this.description,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsetsDirectional.fromSTEB(15.w, 8.h, 10.w, 8.h),
-      color: AppColors.surface,
-      child: Row(
-        children: [
-          Icon(icon, color: AppColors.textPrimary, size: 19.sp),
-          SizedBox(width: 14.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: AppTextStyles.bodyLarge),
-                SizedBox(height: 1.h),
-                Text(description, style: AppTextStyles.caption),
-              ],
-            ),
-          ),
-          AppSwitch(value: value, onChanged: onChanged),
-        ],
-      ),
+    return _SettingsRow(
+      icon: icon,
+      label: label,
+      labelColor: context.colors.textPrimary,
+      description: description,
+      trailing: <Widget>[AppSwitch(value: value, onChanged: onChanged)],
     );
   }
 }

@@ -7,7 +7,7 @@ import 'package:share_plus/share_plus.dart';
 /// Getting a backup file out of the app and back into it.
 ///
 /// Both directions deliberately hand the choice to the operating system rather
-/// than to SHOTO. The app never learns where the backup ends up, which is the
+/// than to Shoto. The app never learns where the backup ends up, which is the
 /// only version of "your data stays yours" that survives contact with a
 /// feature whose whole job is producing a copy of everything.
 class BackupFileService {
@@ -34,7 +34,7 @@ class BackupFileService {
     try {
       return await _channel.invokeMethod<String>('pickBackup');
     } on PlatformException catch (error) {
-      debugPrint('SHOTO file picker failed: ${error.message}');
+      debugPrint('Shoto file picker failed: ${error.message}');
       return null;
     } on MissingPluginException {
       // The channel lives in MainActivity; the share sheet runs in its own

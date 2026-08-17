@@ -1,5 +1,192 @@
 {
   "@@locale": "es",
+  "settingsCrashReports": "Informes de errores",
+  "settingsCrashReportsHint": "Enviar detalles técnicos cuando algo falla",
+  "settingsOnboarding": "Ver la introducción otra vez",
+  "settingsOnboardingHint": "Reproduce la secuencia de apertura de nuevo",
+  "settingsSignOut": "Cerrar sesión",
+  "settingsSignOutTitle": "¿Cerrar sesión?",
+  "authWelcome": "Bienvenido a Shoto",
+  "authWhy": "No todo lo que guardas merece el mismo estante. Shoto les da a las capturas que de verdad te importan un lugar propio.",
+  "authGoogle": "Continuar con Google",
+  "authApple": "Continuar con Apple",
+  "authLegal": "Al continuar, aceptas nuestros Términos y la Política de privacidad.",
+  "settingsAccount": "Cuenta",
+  "settingsSignOutHint": "Tus capturas se quedan en este dispositivo",
+  "settingsSignIn": "Iniciar sesión",
+  "settingsSignInHint": "Opcional. Solo hace falta para pasar una compra a otro teléfono.",
+  "paywallTrialCta": "{days, plural, =1{Empezar 1 día gratis} other{Empezar {days} días gratis}}",
+  "@paywallTrialCta": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallTrialNote": "{days, plural, =1{Gratis un día y luego {price}. Cancela cuando quieras antes de que acabe.} other{Gratis {days} días y luego {price}. Cancela cuando quieras antes de que acabe.}}",
+  "@paywallTrialNote": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "triageTitle": "Desde la última vez",
+  "triageBody": "Guarda lo que pertenece a Shoto. Todo lo demás se queda donde está.",
+  "triageKeep": "Guardar",
+  "triageSkip": "Omitir",
+  "triageFinish": "Listo",
+  "triageProgress": "{index} de {total}",
+  "@triageProgress": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "triageNewCount": "{count, plural, =1{1 captura nueva} other{{count} capturas nuevas}}",
+  "@triageNewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "triageKept": "{count, plural, =0{No se guardó nada} =1{1 guardada} other{{count} guardadas}}",
+  "@triageKept": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "triageReview": "Revisar",
+  "triageInviteDecline": "Ahora no",
+  "triageInviteTitle": "¿Mostrar aquí las capturas nuevas?",
+  "triageInviteBody": "Shoto puede listar lo que captures a partir de ahora, para que guardes las pocas que importan. Nada entra en tu biblioteca hasta que tú lo digas.",
+  "triageInviteAccept": "Mostrarlas",
+  "triageInviteDismiss": "No, gracias",
+  "settingsTriage": "Ofrecer capturas nuevas",
+  "settingsTriageHint": "Muestra lo que capturas; no guarda nada por su cuenta",
+  "settingsCaptureAlerts": "Avisarme al instante",
+  "settingsCaptureAlertsHint": "Una notificación discreta justo después de hacerla",
+  "settingsCaptureAlertsMuted": "Las notificaciones de Shoto están desactivadas — actívalas en los ajustes del teléfono",
+  "settingsCaptureAlertsStopped": "Android detuvo las comprobaciones. Abre Shoto una vez para reanudarlas",
+  "settingsCaptureAlertsWaiting": "Vigilando. Aún no hay capturas",
+  "settingsCaptureAlertsLastRun": "Última comprobación {when}",
+  "@settingsCaptureAlertsLastRun": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "timeAgoMinutes": "hace {count} min",
+  "@timeAgoMinutes": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "timeAgoHours": "hace {count} h",
+  "@timeAgoHours": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "timeAgoDays": "hace {count} d",
+  "@timeAgoDays": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "settingsQuickTile": "Acceso rápido",
+  "settingsQuickTileHint": "Guarda tu última captura sin abrir el menú de compartir",
+  "settingsQuickTileAdded": "Añadido a los ajustes rápidos",
+  "settingsQuickTileManual": "Añádelo a mano: despliega los ajustes rápidos, toca editar y arrastra el acceso de Shoto.",
+  "settingsQuickTileSheetTitle": "Dos gestos, desde cualquier app",
+  "settingsQuickTileSheetBody": "Shoto puede estar en los Ajustes rápidos de tu móvil, junto a la linterna. Un toque archiva la captura que acabas de hacer: sin abrir la app y sin recorrer el menú de compartir.",
+  "settingsQuickTileStepPull": "Desliza desde arriba en cualquier pantalla",
+  "settingsQuickTileStepTap": "Toca el mosaico de Shoto y tu última captura queda archivada",
+  "settingsQuickTileStepStays": "Se queda en el mismo sitio, al contrario que el menú de compartir",
+  "settingsQuickTileAdd": "Añadir el mosaico",
+  "settingsQuickTileNote": "Solo lee la captura que acabas de hacer. Nada sale de tu móvil.",
+  "folderIconsBasics": "Básicos",
+  "folderIconsWork": "Trabajo",
+  "folderIconsMoney": "Dinero",
+  "folderIconsTravel": "Viajes",
+  "folderIconsHome": "Hogar y salud",
+  "folderIconsMedia": "Medios",
+  "folderIconsPeople": "Personas",
+  "folderIconsSymbols": "Símbolos",
+  "folderIconsSocial": "Redes sociales",
+  "folderIconsApps": "Apps",
+  "quickTileOfferTitle": "Guarda sin el menú de compartir",
+  "quickTileOfferBody": "Añade un acceso rápido para tu última captura",
+  "triageNothingNew": "No hay nada nuevo que revisar",
+  "reminderTitle": "Recordármelo",
+  "reminderLaterToday": "Más tarde hoy",
+  "reminderThisEvening": "Esta tarde",
+  "reminderTomorrow": "Mañana por la mañana",
+  "reminderNextWeek": "La próxima semana",
+  "reminderPickTime": "Elegir una hora",
+  "reminderConfirm": "Crear recordatorio",
+  "reminderOtherDay": "Otro día",
+  "reminderClear": "Quitar recordatorio",
+  "reminderNotificationTitle": "Shoto",
+  "reminderMuted": "Las notificaciones están desactivadas, así que esto no te llegará: actívalas en los ajustes del teléfono.",
+  "reminderUnsupported": "Por ahora los recordatorios solo están disponibles en Android.",
+  "reminderSet": "Recordatorio para {when}",
+  "@reminderSet": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderPending": "Recordatorio para {when}",
+  "@reminderPending": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderNotificationBody": "Querías volver a esta captura",
+  "remindersTitle": "Recordatorios",
+  "remindersMissed": "Perdidos",
+  "remindersUpcoming": "Próximos",
+  "remindersNoneTitle": "Sin recordatorios",
+  "remindersNoneBody": "Abre las acciones de una captura y elige «Recordármelo» para volver a ella más tarde.",
+  "remindersClearOne": "Quitar",
+  "remindersCount": "{count, plural, =1{1 recordatorio} other{{count} recordatorios}}",
+  "@remindersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersMissedCount": "{count, plural, =1{1 perdido} other{{count} perdidos}}",
+  "@remindersMissedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersNextAt": "Siguiente {when}",
+  "@remindersNextAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderPastTime": "Esa hora ya ha pasado; elige una posterior.",
   "commonCancel": "Cancelar",
   "commonDelete": "Eliminar",
   "commonRetry": "Reintentar",
@@ -14,8 +201,9 @@
   "homeGreetingAfternoon": "Buenas tardes",
   "homeGreetingEvening": "Buenas noches",
   "homeInboxEmpty": "Todavía no hay nada guardado",
-  "homeInboxEmptySubtitle": "Elige algunas de tu teléfono ahora, o comparte una captura en SHOTO desde cualquier app.",
+  "homeInboxEmptySubtitle": "Elige algunas de tu teléfono ahora, o comparte una captura en Shoto desde cualquier app.",
   "homeEmptyImportCta": "Elegir desde mi teléfono",
+  "homeNeedsYou": "Te espera",
   "homeInboxClear": "Todo archivado",
   "homeInboxClearSubtitle": "No queda nada por ordenar",
   "homeInboxCountSubtitle": "Capturas que aún no has archivado",
@@ -38,7 +226,7 @@
   "libraryActionProtect": "Proteger",
   "homeSeeAll": "Ver todo",
   "libraryEmptyTitle": "Aún no hay nada guardado",
-  "libraryEmptyMessage": "Comparte una captura con SHOTO o añádela con el botón +. Tu galería nunca se lee: solo se guarda lo que entregas.",
+  "libraryEmptyMessage": "Comparte una captura con Shoto o añádela con el botón +. Tu galería nunca se lee: solo se guarda lo que entregas.",
   "libraryNoFavoritesTitle": "Aún no hay favoritas",
   "libraryNoFavoritesMessage": "Pulsa el corazón de una captura para guardarla aquí.",
   "libraryFilterAll": "Todas",
@@ -67,6 +255,8 @@
     }
   },
   "librarySelectAll": "Seleccionar todo",
+  "librarySelect": "Seleccionar",
+  "librarySelectPrompt": "Selecciona capturas",
   "libraryActionMerge": "Unir",
   "libraryActionMove": "Mover",
   "libraryActionDelete": "Eliminar",
@@ -80,9 +270,12 @@
     }
   },
   "permissionNeededTitle": "Se necesita acceso a fotos",
-  "permissionNeededMessage": "SHOTO guarda las capturas que compartes con él en su propio álbum. Necesita acceso a fotos para escribir ahí y volver a leerlas; nunca consulta el resto de tu galería.",
+  "permissionNeededMessage": "Shoto guarda las capturas que compartes con él en su propio álbum. Necesita acceso a fotos para escribir ahí y volver a leerlas; nunca consulta el resto de tu galería.",
+  "permissionAskTitle": "Shoto necesita ver su álbum de capturas",
+  "permissionAskMessage": "Solo ese álbum, y solo para listar lo que contiene. Nada se sube, y nada entra en tu biblioteca hasta que tú lo elijas.",
+  "permissionAllow": "Permitir acceso",
   "permissionPartialTitle": "Se necesita acceso completo",
-  "permissionPartialMessage": "Ahora mismo SHOTO solo ve unas pocas fotos que elegiste a mano, así que no puede llegar a su propio álbum. Elige «Permitir todas» para continuar.",
+  "permissionPartialMessage": "Ahora mismo Shoto solo ve unas pocas fotos que elegiste a mano, así que no puede llegar a su propio álbum. Elige «Permitir todas» para continuar.",
   "permissionOpenSettings": "Abrir ajustes",
   "settingsTitle": "Ajustes",
   "settingsAppearance": "Apariencia",
@@ -91,6 +284,41 @@
   "settingsThemeLight": "Claro",
   "settingsThemeDark": "Oscuro",
   "settingsGridDensity": "Densidad de cuadrícula",
+  "settingsAppearanceHint": "Tema, color de acento y tamaño de cuadrícula",
+  "appearanceTint": "Color de acento",
+  "appearanceTintHint": "Botones, interruptores y todo lo seleccionado.",
+  "appearancePreview": "Vista previa",
+  "tintTeal": "Verde azulado",
+  "tintSlate": "Pizarra",
+  "tintIndigo": "Índigo",
+  "tintPlum": "Ciruela",
+  "tintRose": "Rosa",
+  "tintEmber": "Brasa",
+  "tintAmber": "Ámbar",
+  "tintMoss": "Musgo",
+  "tintGarnet": "Granate",
+  "tintBrass": "Latón",
+  "tintFern": "Helecho",
+  "tintJade": "Jade",
+  "tintOlive": "Oliva",
+  "tintCyan": "Cian",
+  "tintDenim": "Denim",
+  "tintViolet": "Violeta",
+  "tintSky": "Cielo",
+  "tintOrchid": "Orquídea",
+  "tintFuchsia": "Fucsia",
+  "tintClay": "Arcilla",
+  "tintGraphite": "Grafito",
+  "appearanceMoreColors": "Más colores",
+  "appearanceSelectTint": "Elegir color de acento",
+  "appearanceFolders": "Tarjetas de carpeta",
+  "appearanceFolderCount": "Número de capturas",
+  "appearanceFolderDate": "Fecha de creación",
+  "appearanceFolderSize": "Tarjetas por fila",
+  "appearanceLibrary": "Cuadrícula de la biblioteca",
+  "appIcon": "Icono de la app",
+  "appIconDefault": "Original",
+  "appIconHint": "Al cambiarlo, Shoto se cierra un momento mientras Android sustituye el icono.",
   "settingsLanguage": "Idioma",
   "settingsLanguageSystem": "Seguir a mi teléfono",
   "settingsLanguageSystemHint": "Ahora en {language}",
@@ -108,10 +336,8 @@
   "settingsConfirmDeleteHint": "Eliminar no se puede deshacer",
   "settingsFindDuplicates": "Buscar duplicados",
   "settingsClearCache": "Vaciar caché de imágenes",
-  "settingsShare": "Compartir SHOTO",
-  "settingsSignOut": "Cerrar sesión",
-  "settingsSignOutTitle": "¿Cerrar sesión?",
-  "settingsPrivacyNote": "SHOTO nunca lee tu galería. Solo guarda las capturas que compartes con él, y todo lo que hace con ellas —leer texto, buscar duplicados— ocurre en este dispositivo. Nunca se sube nada.",
+  "settingsShare": "Compartir Shoto",
+  "settingsPrivacyNote": "Shoto solo guarda las capturas que le entregas, y todo lo que hace con ellas —leer texto, buscar duplicados— ocurre en este dispositivo. Tus imágenes nunca se suben. Hay tres cosas que tú activas: ofrecer capturas nuevas lee tu álbum de capturas para poder preguntarte por ellas, una cuenta envía solo tu correo para que la suscripción sobreviva a un cambio de teléfono, y los informes de errores envían qué falló: el código, nunca una imagen.",
   "commonSave": "Guardar",
   "commonConfirm": "Confirmar",
   "commonRename": "Renombrar",
@@ -139,7 +365,28 @@
     }
   },
   "foldersDeleteMessage": "La carpeta se elimina, pero las capturas de dentro siguen en tu biblioteca.",
-  "foldersRenameTitle": "Renombrar carpeta",
+  "foldersEditTitle": "Editar carpeta",
+  "foldersSearchHint": "Buscar carpetas",
+  "foldersSortLabel": "Ordenar carpetas",
+  "foldersSortRecent": "Más recientes primero",
+  "foldersSortName": "Nombre (A–Z)",
+  "foldersSortFullest": "Más capturas",
+  "foldersNoMatchTitle": "Ninguna carpeta coincide",
+  "foldersNoMatchMessage": "Aquí no hay nada que se llame «{query}». Prueba con parte del nombre.",
+  "@foldersNoMatchMessage": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "folderDefaultTrips": "Planes de viaje",
+  "folderDefaultRecipes": "Recetas",
+  "folderDefaultMedications": "Medicamentos",
+  "folderDefaultAiNotes": "Notas de IA",
+  "folderDefaultMoney": "Dinero",
+  "folderDefaultWorkouts": "Entrenamientos",
+  "folderDefaultMusic": "Música",
   "foldersMoveTitle": "Mover a una carpeta",
   "foldersMoveRemove": "Quitar de la carpeta",
   "foldersMoveNone": "Aún no hay carpetas. Crea una desde la pestaña Carpetas.",
@@ -157,11 +404,28 @@
   "detailFavorite": "Favorito",
   "detailUnfavorite": "Quitar de favoritos",
   "detailAddFavorite": "Añadir a favoritos",
+  "a11yScreenshot": "Captura del {date}",
+  "@a11yScreenshot": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yScreenshotFavorite": "Captura del {date}, favorita",
+  "@a11yScreenshotFavorite": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "detailActions": "Acciones",
   "detailSafeShare": "Compartir seguro",
+  "detailMore": "Más",
   "detailDeleteTitle": "¿Eliminar la captura?",
   "detailDeleteMessage": "Se eliminará de tu dispositivo de forma permanente.",
-  "quickSaveTitleOne": "Guardar en SHOTO",
+  "quickSaveTitleOne": "Guardar en Shoto",
   "quickSaveTitleMany": "Guardar {count} capturas",
   "@quickSaveTitleMany": {
     "placeholders": {
@@ -192,7 +456,7 @@
   "quickSaveCreateFirstFolder": "Crea tu primera carpeta",
   "quickSaveCreateFirstFolderWhy": "Las carpetas son como encuentras las cosas después",
   "quickSaveNewChip": "Nueva",
-  "quickSaveSaved": "Guardado en SHOTO",
+  "quickSaveSaved": "Guardado en Shoto",
   "quickSaveFiled": "Archivado en {folder}.",
   "@quickSaveFiled": {
     "placeholders": {
@@ -203,6 +467,10 @@
   },
   "quickSaveFailedTitle": "No se pudo leer esa imagen",
   "quickSaveFailedBody": "Prueba a compartirla otra vez.",
+  "quickSaveNoCaptureTitle": "Todavía no hay ninguna captura",
+  "quickSaveNoCaptureBody": "Haz una captura y vuelve a tocar el acceso rápido.",
+  "quickSaveNoAccessTitle": "Shoto no puede ver tus capturas",
+  "quickSaveNoAccessBody": "Abre Shoto, permite el acceso a las fotos y vuelve a probar.",
   "quickSaveSkipped": "Solo se tomaron las primeras {count}",
   "@quickSaveSkipped": {
     "placeholders": {
@@ -298,6 +566,7 @@
   "safeShareShareUnchanged": "Compartir sin cambios",
   "safeShareShareAnyway": "Compartir igualmente",
   "safeShareShareProtected": "Compartir copia protegida",
+  "safeShareKeepCopy": "Guardar la copia en Shoto",
   "safeShareFailed": "No se pudo crear la copia protegida.",
   "safeShareFoundTitle": "{count, plural, =1{1 dato privado encontrado} other{{count} datos privados encontrados}}",
   "@safeShareFoundTitle": {
@@ -348,11 +617,15 @@
       }
     }
   },
-  "paywallTitle": "Desbloquea SHOTO Pro",
+  "paywallTitle": "Desbloquea Shoto Pro",
   "paywallSubtitle": "Todo lo de abajo, en una sola suscripción.",
   "paywallMonthly": "Mensual",
   "paywallYearly": "Anual",
   "paywallSave": "Ahorra {percent}%",
+  "paywallPerYear": "/año",
+  "paywallPerMonth": "/mes",
+  "paywallPreviewPricing": "Las suscripciones aún no están activas — precios solo de muestra.",
+  "paywallNotSetUp": "Las suscripciones aún no están configuradas — vuelve pronto.",
   "@paywallSave": {
     "placeholders": {
       "percent": {
@@ -363,46 +636,84 @@
   "paywallContinue": "Continuar",
   "paywallUnavailable": "Aún no disponible",
   "paywallRestore": "Restaurar compras",
+  "settingsRestoreHint": "¿Ya pagaste? Recupera tu suscripción.",
+  "settingsRestoreDone": "Tu suscripción ha vuelto.",
   "paywallLegal": "Se renueva automáticamente hasta que la canceles. Cancela cuando quieras desde tu cuenta de App Store o Google Play. Al continuar aceptas nuestros Términos y la Política de privacidad.",
   "subPremiumBadge": "PRO",
-  "subPremiumTitle": "SHOTO Pro",
+  "subPremiumTitle": "Shoto Pro",
   "subPremiumBody": "Todas las funciones desbloqueadas.",
+  "subPremiumRenews": "Se renueva el {date}",
+  "quotaTitle": "Biblioteca",
+  "quotaUsed": "{used} de {limit}",
+  "quotaLeft": "{count, plural, =0{Sin espacio — Pro quita el límite} =1{Queda 1 captura en el plan gratuito} other{Quedan {count} capturas en el plan gratuito}}",
+  "quotaUnlimited": "Ilimitado",
+  "quotaUnlimitedNote": "Sin límite en lo que guardas.",
   "subDevUnlock": "Acceso de prueba",
   "subDevUnlockBody": "Desbloqueado solo en este dispositivo — no es una suscripción real",
   "subUnlockEverything": "Desbloquea todo",
+  "trialUsed": "Esta corre por nuestra cuenta: tu prueba gratis",
+  "trialFree": "Prueba gratis",
+  "proOnly": "Pro",
   "proWelcomeTitle": "Ya tienes Pro",
   "proWelcomeBody": "Todas las funciones están desbloqueadas. No hay nada más que configurar.",
   "proWelcomeAction": "Empezar",
   "featSafeShare": "Compartir seguro",
-  "featSafeShareBody": "Cambia números de tarjeta, direcciones, nombres y datos de contacto por sustitutos realistas: misma longitud, mismo formato, mismo sitio. La copia que envías no parece editada.",
+  "featSafeShareBody": "Encuentra números de tarjeta, direcciones, nombres y datos de contacto, y tapa cada uno con un bloque sólido. El texto de alrededor se mantiene y la captura se sigue entendiendo; la copia que envías no tiene ninguna capa que quitar.",
   "featActions": "Convierte capturas en acciones",
-  "featActionsBody": "Llama a un número, abre un enlace, copia un código o un IBAN: directo desde la imagen, sin reescribir nada.",
+  "featActionsBody": "Abre un enlace, escribe a una dirección, copia un código de verificación o un IBAN: directamente desde la imagen, sin volver a teclear nada.",
+  "featTraits": "Filtrar por lo que contienen",
+  "featTraitsBody": "Muestra solo las capturas que llevan dentro un enlace, un teléfono, un código, una fecha o un número de tarjeta — reconocido en las palabras de la imagen.",
   "featDuplicates": "Buscar duplicados",
   "featDuplicatesBody": "Detecta capturas casi idénticas que guardaste dos veces y elimínalas, siempre con una revisión previa.",
   "featStitch": "Unir capturas largas",
   "featStitchBody": "Une una captura con scroll en una sola imagen alta, detectando y quitando el solapamiento automáticamente.",
-  "featUnlimited": "Sin límite para tu biblioteca",
-  "featUnlimitedBody": "La versión gratuita organiza {count} capturas. Pro elimina el número.",
-  "featSafeShareHow": "Detectar lo privado de una captura es gratis y sin límite. Lo que se paga es convertir esos hallazgos en una copia limpia: cada dato se redibuja con los colores de la propia captura como otro valor igual de corriente.",
-  "featSafeSharePoint1": "Las tarjetas se verifican con Luhn y los IBAN con mod-97, y los sustitutos superan las mismas comprobaciones, así que nada parece inventado.",
+  "featUnlimited": "Capturas ilimitadas",
+  "featUnlimitedBody": "La versión gratuita organiza {count} capturas y guarda {folders} carpetas. Pro elimina ambos números.",
+  "featUnlimitedBodyPro": "Tu biblioteca no tiene límite: guarda todo lo que quieras.",
+  "featSafeShareHow": "Detectar lo privado de una captura es gratis y sin límite. Lo que se paga es convertir esos hallazgos en una copia limpia: cada dato que dejes marcado se tapa en la imagen exportada, y esa imagen es plana, sin ninguna capa que deshacer.",
+  "featSafeSharePoint1": "Las tarjetas se verifican con Luhn y los IBAN con mod-97: esos dos se demuestran en vez de adivinarse, justo en el dato que más importa.",
   "featSafeSharePoint2": "También detecta nombres, direcciones, números de pedido, códigos de verificación, teléfonos y correos.",
-  "featSafeSharePoint3": "Ves cada cambio antes de enviar y puedes taparlo o dejarlo tal cual. La captura original nunca se modifica.",
-  "featActionsHow": "Lo que esté escrito dentro de una captura se convierte en algo que puedes usar. SHOTO extrae las partes útiles y pone un botón en cada una.",
-  "featActionsPoint1": "Se detectan por ti los números de teléfono, enlaces, correos, IBAN y códigos de verificación.",
-  "featActionsPoint2": "Un toque para llamar, abrir o copiar, sin leer dígitos de una imagen.",
+  "featSafeSharePoint3": "Ves todo lo encontrado antes de enviar y puedes dejar a la vista lo que la app haya marcado por error. La captura original nunca se modifica.",
+  "featActionsHow": "Lo que esté escrito dentro de una captura se convierte en algo que puedes usar. Shoto extrae las partes útiles y pone un botón en cada una.",
+  "featActionsPoint1": "Se encuentran por ti los enlaces, las direcciones de correo, los IBAN, los códigos de verificación, las fechas y los números de envío.",
+  "featActionsPoint2": "Un toque para abrir o copiar, sin leer caracteres de una imagen.",
   "featActionsPoint3": "Funciona con las capturas que ya tienes, no solo con las nuevas.",
-  "featStitchHow": "Haz varias capturas mientras recorres un chat o una página larga y SHOTO calcula dónde se solapan y las vuelve a unir en una sola imagen alta.",
+  "featTraitsHow": "Filtrar es gratis sobre todo lo que Shoto ya ha leído: la búsqueda, las acciones y Compartir seguro dejan texto reconocido, y cada filtro se deriva de ahí. Lo que se paga es leer el resto de la biblioteca de una pasada, para que un filtro vea también las capturas que ninguna otra función ha abierto todavía.",
+  "featTraitsPoint1": "Cinco filtros: números de tarjeta e IBAN, enlaces, teléfonos y correos, códigos de verificación, y fechas a las que se espera que acudas.",
+  "featTraitsPoint2": "Los números de tarjeta y los IBAN se demuestran por suma de verificación. El resto se lee de la imagen, así que se queda corto antes que afirmar de más.",
+  "featTraitsPoint3": "La biblioteca siempre dice cuántas capturas no se han leído nunca, para que un resultado vacío no se haga pasar por una ausencia. La lectura ocurre en el teléfono; no se sube nada.",
+  "featTint": "Elige tu color de acento",
+  "featTintBody": "{count} acentos para botones, interruptores y selecciones, cada uno ajustado para seguir siendo legible en claro y en oscuro.",
+  "@featTintBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "featTintHow": "La mayoría de las apps te dan una fila de colores en bruto y dejan el contraste al azar; por eso un acento amarillo suele llegar con un texto blanco que nadie puede leer. Shoto guarda tu elección como una posición en la rueda de color, no como un color fijo, y calcula el tono exacto para el modo claro y para el oscuro, así que elijas el que elijas sostiene el texto con la misma fuerza que el color propio de la app.",
+  "featTintPoint1": "{count} acentos, del verde azulado y el musgo al ámbar y la brasa, hasta la ciruela, el índigo y la pizarra.",
+  "@featTintPoint1": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "featTintPoint2": "Cada uno se calcula dos veces, una para el modo claro y otra para el oscuro, contra el mismo objetivo de contraste: ningún acento brilla en una pantalla oscura ni desaparece en una clara.",
+  "featTintPoint3": "El rojo de eliminar, el verde de hecho y el ámbar de aviso no cambian nunca, así que un color que significa algo nunca se vuelve decoración.",
+  "featStitchHow": "La captura con desplazamiento, en los móviles que la tienen, hay que iniciarla mientras sigues en la página. Shoto funciona después: elige dos o más capturas que ya tengas en tu biblioteca — incluidas las que te haya enviado alguien — y calcula dónde se solapan y las une en una sola imagen alta.",
   "featStitchPoint1": "La franja repetida entre dos capturas se detecta y se elimina automáticamente.",
   "featStitchPoint2": "Ves la unión antes de guardar nada: la detección automática es buena, pero nunca infalible.",
   "featStitchPoint3": "La imagen unida se guarda en tu galería como cualquier otra foto.",
-  "featDuplicatesHow": "SHOTO compara las capturas por su aspecto y no por su nombre o tamaño, así que también detecta las casi idénticas: un reenvío, otro recorte, lo mismo capturado dos veces.",
+  "featDuplicatesHow": "Compartir capturas de una en una casi nunca genera duplicados. Guardar un lote desde \"Desde la última vez\", sí: vas rápido y acabas guardando dos capturas de lo mismo. Shoto las compara por su aspecto y no por su nombre o tamaño, así que detecta esas, y además un reenvío u otro recorte.",
   "featDuplicatesPoint1": "Agrupa lo que se parece y sugiere la copia que conviene conservar.",
   "featDuplicatesPoint2": "Muestra cuánto espacio libera cada grupo antes de que decidas nada.",
   "featDuplicatesPoint3": "No se borra nada hasta que revisas el grupo y lo confirmas.",
-  "featUnlimitedHow": "La versión gratuita es una app real y usable: guardar, carpetas, favoritos y búsqueda completa, sin cuenta y sin subir nada. Tiene un único límite —cuántas capturas organiza— y Pro lo quita. Todo lo que ya organizaste se queda donde está.",
-  "featUnlimitedPoint1": "Las carpetas son ilimitadas en la versión gratuita, como debe ser.",
+  "featUnlimitedHow": "La versión gratuita es una app real y usable: guardar, carpetas, favoritos y búsqueda completa, sin cuenta y sin subir nada. Tiene dos límites —cuántas capturas organiza y cuántas carpetas guarda— y Pro los quita. Todo lo que ya organizaste se queda donde está.",
+  "featUnlimitedPoint1": "La versión gratuita guarda {count} carpetas, justo las que Shoto te da al empezar. Pro también elimina ese número.",
   "featUnlimitedPoint2": "Nombrar para qué es una captura también es gratis e ilimitado.",
-  "featUnlimitedPoint3": "Llegar al límite significa que SHOTO ya es donde guardas las cosas. Nada se borra al llegar.",
+  "featUnlimitedPoint3": "Llegar al límite significa que Shoto ya es donde guardas las cosas. Nada se borra al llegar.",
   "includedSubtitle": "Cada función Pro, explicada.",
   "includedHint": "Toca una función para ver cómo funciona",
   "includedHowLabel": "Cómo funciona",
@@ -419,13 +730,8 @@
       }
     }
   },
-  "authWelcome": "Bienvenido a SHOTO",
-  "authSubtitle": "No necesitas una cuenta para usar SHOTO. Inicia sesión solo para pasar una compra a otro teléfono.",
-  "authGoogle": "Continuar con Google",
-  "authApple": "Continuar con Apple",
-  "authLegal": "Al continuar, aceptas nuestros Términos y la Política de privacidad.",
   "onboardingCta": "Empezar",
-  "onboardingPromise": "Todo se queda en tu teléfono.",
+  "onboardingPromise": "Tus capturas se quedan en tu teléfono.",
   "actionsTitle": "Acciones",
   "actionsWorking": "Leyendo la captura",
   "actionsWorkingBody": "Buscando números, enlaces y códigos.",
@@ -437,7 +743,7 @@
   "devModeOn": "Modo desarrollador activo: todo desbloqueado",
   "devModeBadge": "MODO DESARROLLADOR",
   "devModeOffTitle": "¿Desactivar el modo desarrollador?",
-  "devModeOffBody": "SHOTO volverá al plan gratis en este dispositivo, para que puedas probar el muro de pago y los límites otra vez.",
+  "devModeOffBody": "Shoto volverá al plan gratis en este dispositivo, para que puedas probar el muro de pago y los límites otra vez.",
   "devModeOffConfirm": "Desactivar",
   "devAccessTitle": "Acceso de desarrollador",
   "devAccessBody": "Introduce el código de 4 dígitos para desbloquear todas las funciones Pro en este dispositivo.",
@@ -463,11 +769,7 @@
   "kindCode": "un código de verificación",
   "kindNationalId": "un número de identidad",
   "kindEmail": "un correo electrónico",
-  "kindPhone": "un número de teléfono",
   "kindLink": "un enlace",
-  "actionCall": "Llamar",
-  "actionWhatsapp": "WhatsApp",
-  "actionSms": "Mensaje",
   "actionEmailAction": "Escribir",
   "actionOpen": "Abrir",
   "kindEvent": "un evento",
@@ -547,11 +849,7 @@
     }
   },
   "settingsShareHint": "Cuéntaselo a quien lo necesite",
-  "settingsShareText": "SHOTO ordena mis capturas solo, y todo se queda en el teléfono.",
-  "settingsAccount": "Cuenta",
-  "settingsSignOutHint": "Tus capturas se quedan en este dispositivo",
-  "settingsSignIn": "Iniciar sesión",
-  "settingsSignInHint": "Opcional. Solo hace falta para pasar una compra a otro teléfono.",
+  "settingsShareText": "Shoto ordena mis capturas solo, y todo se queda en el teléfono.",
   "settingsCacheMeasuring": "Midiendo…",
   "settingsCacheSize": "{size} de miniaturas",
   "@settingsCacheSize": {
@@ -571,6 +869,13 @@
       }
     }
   },
+  "shareChoiceTitle": "¿Qué quieres que haga Shoto?",
+  "shareChoiceProtect": "Tapar datos privados",
+  "shareChoiceProtectHint": "Oculta lo privado y envíala. No se guarda aquí.",
+  "quickSaveCoverAction": "Tapar",
+  "quickSaveCoverWhy": "¿Tiene datos privados?",
+  "shareChoiceSave": "Guardar en Shoto",
+  "shareChoiceSaveHint": "Añadirla a tu biblioteca y archivarla.",
   "shareSavedPrompt": "{count, plural, =1{Captura guardada. ¿La añades a una carpeta?} other{Capturas guardadas. ¿Las añades a una carpeta?}}",
   "@shareSavedPrompt": {
     "placeholders": {
@@ -597,6 +902,8 @@
   },
   "errorLoadScreenshots": "No se pudieron cargar tus capturas.",
   "errorLoadFolders": "No se pudieron cargar tus carpetas.",
+  "errorSaveFolder": "No se pudo guardar esa carpeta.",
+  "errorDeleteFolder": "No se pudo eliminar esa carpeta.",
   "errorScanDuplicates": "No se pudo buscar duplicados.",
   "errorDeleteSelected": "No se pudieron eliminar las capturas seleccionadas.",
   "errorStitchFailed": "No se han podido unir estas capturas.",
@@ -649,16 +956,30 @@
   "sensitiveNumber": "Número",
   "onbSkip": "Omitir",
   "onbNext": "Siguiente",
-  "onbPileTitle": "Mil capturas, un solo montón",
-  "onbPileBody": "Capturas para recordar. Una semana después está enterrada bajo otras cuatrocientas.",
-  "onbChooseTitle": "SHOTO nunca lee tu galería",
-  "onbChooseBody": "Nada llega solo. Tú compartes una captura con la app: esa es toda la regla.",
-  "onbFileTitle": "Archivada en cuanto la envías",
-  "onbFileBody": "Elige una carpeta desde el propio menú de compartir. La app ni se abre.",
-  "onbFindTitle": "Busca lo que hay dentro",
-  "onbFindBody": "Las palabras escritas en la captura, y lo que muestra la imagen. Escribe «recibo» o «perro».",
-  "onbSafeShareTitle": "La captura que sí puedes enviar",
-  "onbSafeShareBody": "Un número de tarjeta se convierte en otro: mismo largo, mismo sitio, igual de válido. Nadie nota que se editó.",
+  "onbWelcomeBody": "Un hogar para las capturas que vale la pena guardar. Archivadas, buscables y seguras de enviar.",
+  "onbSaveTitle": "Guárdala en el momento en que la haces",
+  "onbSaveBody": "Toca compartir en cualquier app y elige Shoto. Es la única forma de que entre algo.",
+  "onbChipAnyApp": "Cualquier app",
+  "onbChipOneTap": "Un toque",
+  "onbChipToFolder": "Directo a una carpeta",
+  "onbFileTitle": "Una biblioteca, no un carrete",
+  "onbFileBody": "Todo lo que envías llega archivado y se queda justo donde lo pusiste.",
+  "onbChipFolders": "Carpetas",
+  "onbChipFavourites": "Favoritos",
+  "onbChipDuplicates": "Buscador de duplicados",
+  "onbFindTitle": "Encuentra las palabras dentro de una imagen",
+  "onbFindBody": "Shoto lee tus capturas, así que basta con una palabra que recuerdes.",
+  "onbChipInsideText": "Texto en imágenes",
+  "onbChipOffline": "Funciona sin conexión",
+  "onbChipCards": "Números de tarjeta",
+  "onbChipCodes": "Códigos y documentos",
+  "onbChipPreview": "Ves cada cobertura",
+  "onbChipGallery": "La galería nunca se abre",
+  "onbChipOnDevice": "Se queda en tu teléfono",
+  "onbSendTitle": "Envíalas igualmente",
+  "onbSendBody": "Shoto tapa lo privado primero y te muestra cada cobertura antes de que salga.",
+  "onbYoursTitle": "Nada se mueve sin ti",
+  "onbYoursBody": "Tu galería nunca se abre. Solo se guarda lo que tú entregas.",
   "onbFolderExample": "Recibos",
   "onbSearchExample": "recibo",
   "importTitle": "Añadir capturas",
@@ -705,14 +1026,15 @@
   "restoreConfirmMessage": "Todo lo del archivo se añade a tu biblioteca. Tus capturas actuales se quedan tal cual.",
   "restoreDone": "{screenshots, plural, =1{Se restauró 1 captura} other{Se restauraron {screenshots} capturas}} y {folders, plural, =1{1 carpeta} other{{folders} carpetas}}",
   "restoreDoneWithSkips": "{screenshots, plural, =1{Se restauró 1 captura} other{Se restauraron {screenshots} capturas}}. {skipped, plural, =1{Se omitió 1} other{Se omitieron {skipped}}}.",
-  "restoreNotABackup": "Ese archivo no es una copia de SHOTO",
+  "restoreNotABackup": "Ese archivo no es una copia de Shoto",
   "restoreFailed": "No se pudo terminar la restauración",
   "settingsHelp": "Ayuda",
   "settingsContactSupport": "Contactar con soporte",
-  "supportSubject": "Soporte de SHOTO",
+  "supportSubject": "Soporte de Shoto",
   "supportNoMailApp": "No hay ninguna app de correo. Se copió la dirección.",
-  "supportGreeting": "Hola, equipo de SHOTO:",
+  "supportGreeting": "Hola, equipo de Shoto:",
   "dateToday": "Hoy",
+  "dateTomorrow": "Mañana",
   "dateYesterday": "Ayer",
   "dateThisWeek": "Esta semana",
   "dateThisMonth": "Este mes",
@@ -774,7 +1096,7 @@
   "intentDeleteMessage": "Las capturas se quedan donde están. Solo dejan de esperar algo.",
   "intentSelectionAction": "Marcar como",
   "intentSelectionApplied": "{count, plural, =1{1 captura marcada} other{{count} capturas marcadas}}",
-  "intentPrompt": "¿Qué vas a hacer con esto?",
+  "intentPrompt": "Para qué es, si quieres",
   "intentSkip": "Nada en particular",
   "intentWaitingTitle": "Te espera",
   "intentNothingWaiting": "Nada te espera",
@@ -782,12 +1104,19 @@
   "intentMarkDone": "Hecho",
   "intentUndo": "Devolver",
   "intentDoneToast": "Marcado",
-  "intentChange": "Cambiar para qué es",
+  "intentListEnd": "{count, plural, =1{Esa es la única} other{Esas son las {count}}}",
+  "intentChange": "Cambiar",
   "intentClear": "Para nada en concreto",
   "intentEmptyOne": "Nada que {verb} aquí",
   "intentEmptyBody": "Las capturas que marques aparecen aquí hasta que las taches.",
+  "intentProgress": "{done} de {total} hechas",
   "intentDoneCount": "{count} terminadas",
   "dateDaysAgo": "{count, plural, =1{hace 1 día} other{hace {count} días}}",
   "dateWeeksAgo": "{count, plural, =1{hace 1 semana} other{hace {count} semanas}}",
-  "dateMonthsAgo": "{count, plural, =1{hace 1 mes} other{hace {count} meses}}"
+  "dateMonthsAgo": "{count, plural, =1{hace 1 mes} other{hace {count} meses}}",
+  "copyTextSelect": "Seleccionar texto",
+  "copyTextSelectAll": "Seleccionar todo",
+  "copyTextHint": "Mantén pulsado cualquier texto para copiarlo",
+  "copyTextPrompt": "Arrastra para seleccionar",
+  "copyTextNone": "Shoto no encuentra texto legible en esta captura"
 }

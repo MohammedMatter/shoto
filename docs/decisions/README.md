@@ -1,6 +1,6 @@
 # Decisions
 
-Why things in SHOTO are the way they are, when the reason is a *history*
+Why things in Shoto are the way they are, when the reason is a *history*
 rather than a rule.
 
 ## What belongs here, and what belongs in the source
@@ -52,7 +52,27 @@ old?*
 4. **Write in the past tense.** These are records. If a sentence is in the
    present tense it is probably a constraint and belongs in the source.
 
+[home.md](home.md) breaks rule 4 at the end, and the exception is worth
+knowing about rather than discovering. Home's comments were all removed when
+the page was split into `presentation/widgets/`, so five live constraints had
+no source to stay in. They are gathered there under their own heading, in the
+present tense, clearly marked as not being records. Nothing else in this
+folder works that way.
+
 ## Index
 
-- [home.md](home.md) — the Home tab: why it stopped being a gallery, and
-  what the hero has been.
+- [home.md](home.md) — the Home tab: why it stopped being a gallery, what the
+  hero has been, and the five constraints left without a comment to live in
+  when the page was split.
+- [accounts.md](accounts.md) — the sign-in wall, why it bought nobody
+  anything, and where the user's name went.
+- [library-intake.md](library-intake.md) — two reversals: the gallery mirror,
+  the empty room, and the inbox that answers both.
+- [onboarding.md](onboarding.md) — what the introduction used to describe, and
+  why it no longer ends on a price.
+- [v1-scope.md](v1-scope.md) — cutting two features to sharpen the pitch:
+  proposed, built, and reversed.
+- [ios.md](ios.md) — what a Share Extension actually costs, so "later" stops
+  being a sentence without a number.
+- [ml-models.md](ml-models.md) — the bundled models, the unbundled swap, and
+  what has to be tested on a device before taking it.

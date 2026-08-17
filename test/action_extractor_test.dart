@@ -14,37 +14,79 @@ void main() {
     return of(text, kind).map((action) => action.value).toList();
   }
 
-  group('phone numbers', () {
-    test('international format with separators', () {
+  /// **No bare run of digits may become an action.**
+  ///
+  /// There was a phone rule here once, guarded six ways, and it still read a
+  /// screenshot of a table of IBANs as three numbers to dial — the actions
+  /// sheet offered Call, WhatsApp and Message on every one of them. The text
+  /// below is what the recogniser actually returned from that screenshot, kept
+  /// verbatim so the case cannot come back by accident.
+  ///
+  /// These tests assert an *absence*, which is unusual and deliberate. They
+  /// are the executable form of the rule in [ActionExtractor]'s header: a
+  /// digit run carries nothing that distinguishes a phone number from an
+  /// account number, so anything that reintroduces one will fail here first.
+  group('bare numbers never become actions', () {
+    const String ibanTable = '''
+      123 user_id      ABC iban
+      1   GBFD 5531-5100-6718
+      2   GBFD 8629-9487-4145
+      10  GBFD 3698-5387-302
+      IBAN Generator | Knowledge Center
+      Eingabe BLZ            76350000
+      Eingabe Konto Nr.      159759
+      IBAN nach Bestandteilen  DE 43 76350000 0000159759
+    ''';
+
+    test('a table of account numbers yields no dialable action', () {
+      final List<DetectedAction> actions = ActionExtractor.extract(ibanTable);
+      // Nothing here is a link, an address or a checksum-valid IBAN, so the
+      // only honest answer is that there is nothing to offer.
       expect(
-        valuesOf('Call us on +962 7 9123 4567', DetectedActionKind.phone),
-        ['+962791234567'],
+        actions.where((a) => a.kind != DetectedActionKind.iban),
+        isEmpty,
+        reason: 'a numbers table produced actions: $actions',
       );
     });
 
-    test('local number in brackets', () {
-      expect(valuesOf('Support (06) 465-1234', DetectedActionKind.phone), [
-        '064651234',
-      ]);
+    test('a grouped reference is not chopped into verification codes', () {
+      // The second failure on the same screenshot, found only by re-running
+      // the fix on the device: with the phone rule gone, `8629` and `9487`
+      // came back as codes, cut out of `GBFD 8629-9487-4145` and vouched for
+      // by the words "country code" a few characters away.
+      expect(
+        ActionExtractor.extract(ibanTable)
+            .where((a) => a.kind == DetectedActionKind.code),
+        isEmpty,
+      );
+      expect(
+        ActionExtractor.extract('Country code\nGBFD 8629-9487-4145'),
+        isEmpty,
+      );
     });
 
-    test('Arabic-Indic digits are understood', () {
-      // An Arabic phone UI renders the number in Arabic-Indic numerals; a
-      // plain \d pattern would see nothing at all here.
-      expect(valuesOf('اتصل على ٠٧٩١٢٣٤٥٦٧', DetectedActionKind.phone), [
-        '0791234567',
-      ]);
+    test('a real verification code is still one group and still found', () {
+      expect(
+        valuesOf('Your verification code is 481920', DetectedActionKind.code),
+        ['481920'],
+      );
     });
 
-    test('a date is not a phone number', () {
-      expect(of('Due 12/05/2024', DetectedActionKind.phone), isEmpty);
-      expect(of('Issued 12-05-2024', DetectedActionKind.phone), isEmpty);
-    });
-
-    test('short numbers and prices are ignored', () {
-      expect(of('Total 45.90', DetectedActionKind.phone), isEmpty);
-      expect(of('Order #4482', DetectedActionKind.phone), isEmpty);
-      expect(of('Year 2024', DetectedActionKind.phone), isEmpty);
+    test('a number that reads like a phone is still not an action', () {
+      // Every one of these passed the old rule. None of them is offered now,
+      // and the reason is that no rule can tell them from the ones above.
+      for (final String text in <String>[
+        'Call us on +962 7 9123 4567',
+        'Support (06) 465-1234',
+        'Anruf unter 0791234567',
+        'Meter reading 0000 1597 54',
+      ]) {
+        expect(
+          ActionExtractor.extract(text),
+          isEmpty,
+          reason: '"$text" produced an action',
+        );
+      }
     });
   });
 
@@ -97,7 +139,13 @@ void main() {
       expect(valuesOf('Your code is 483920', DetectedActionKind.code), [
         '483920',
       ]);
-      expect(valuesOf('رمز التحقق 4821', DetectedActionKind.code), ['4821']);
+      // A cue from one of the other shipped languages counts the same. This
+      // was an Arabic phrasing until Arabic stopped shipping — the recogniser
+      // has no model for that script, so the assertion was green over
+      // something no screenshot could ever produce.
+      expect(valuesOf('Sicherheitscode 4821', DetectedActionKind.code), [
+        '4821',
+      ]);
     });
 
     test('a bare number with no cue is not a code', () {
@@ -158,12 +206,12 @@ void main() {
       final List<DetectedAction> actions = ActionExtractor.extract(text);
 
       expect(valuesOf(text, DetectedActionKind.email), ['support@shoto.app']);
-      expect(valuesOf(text, DetectedActionKind.phone), ['+96264651234']);
       expect(valuesOf(text, DetectedActionKind.link), [
         'https://shoto.app/orders',
       ]);
-      // The order number, the date and the total must not become actions.
-      expect(actions, hasLength(3));
+      // The order number, the date, the total and the support number must
+      // not become actions.
+      expect(actions, hasLength(2));
     });
 
     test('empty and trivial text yields nothing', () {
@@ -173,8 +221,8 @@ void main() {
     });
 
     test('duplicates collapse to one action', () {
-      const String text = 'call 0791234567 or 079 123 4567';
-      expect(of(text, DetectedActionKind.phone), hasLength(1));
+      const String text = 'write to sales@shoto.app or Sales@Shoto.App';
+      expect(of(text, DetectedActionKind.email), hasLength(1));
     });
 
     test('results are capped', () {
@@ -225,7 +273,9 @@ void main() {
     test('an invitation screenshotted last week still counts', () {
       // Photographing a card and opening it a few days later is a real
       // pattern, and rejecting the whole past lost it.
-      final EventDetails event = firstEvent('دعوة حفل زفاف\n20/02/2026');
+      final EventDetails event = firstEvent(
+        'Einladung zur Hochzeit\n20/02/2026',
+      );
       expect(event.start, DateTime(2026, 2, 20));
     });
 
@@ -237,7 +287,7 @@ void main() {
     });
 
     test('an occasion older than the window is a record, not a plan', () {
-      expect(eventsIn('دعوة حفل زفاف\n09/11/2024'), isEmpty);
+      expect(eventsIn('Einladung zur Hochzeit\n09/11/2024'), isEmpty);
     });
     test('a bare future date with no time and no cue is left alone', () {
       expect(eventsIn('Total 240.00\n12/05/2026'), isEmpty);
@@ -283,28 +333,108 @@ void main() {
       expect(event.start, DateTime(2026, 6, 20, 9, 30));
     });
 
-    test('Levantine month names are months', () {
-      // "أيار" is May across the Levant and appears in no table built from
-      // "مايو" — an Arabic screenshot from Amman would otherwise find nothing.
-      final EventDetails event = firstEvent('دعوة زفاف\n12 أيار 2026');
-      expect(event.start, DateTime(2026, 5, 12));
-      expect(event.allDay, isTrue);
+    test('a month name from a new market is a month, accent or not', () {
+      // The four languages that replaced ar/ur/hi brought their own month
+      // names, and recognition drops a diacritic often enough that every
+      // spelling of March has to resolve to the same day.
+      for (final String month in <String>['März', 'Maerz', 'Mrz']) {
+        final EventDetails event = firstEvent('Einladung\n12 $month 2026');
+        expect(event.start, DateTime(2026, 3, 12), reason: month);
+        expect(event.allDay, isTrue, reason: month);
+      }
     });
 
-    test('Arabic digits and an Arabic meridiem are understood', () {
+    test('Dutch, Italian and Portuguese months resolve too', () {
+      expect(
+        firstEvent('Uitnodiging\n12 mei 2026').start,
+        DateTime(2026, 5, 12),
+      );
+      expect(
+        firstEvent('Invito\n12 giugno 2026').start,
+        DateTime(2026, 6, 12),
+      );
+      expect(
+        firstEvent('Convite\n12 outubro 2026').start,
+        DateTime(2026, 10, 12),
+      );
+    });
+
+    test('Arabic-Indic digits are still normalised, the letters are not', () {
+      // The digit fold in ActionExtractor survived the Latin-only cut and the
+      // Arabic meridiem did not, which is not an inconsistency. A digit is
+      // rewritten before any rule sees it and costs nothing when it never
+      // arrives; a cue word is a match target, and one that can only ever
+      // match text the recogniser cannot produce is dead weight.
       final EventDetails event = firstEvent(
-        'موعد المقابلة\n٢٠/٠٥/٢٠٢٦ الساعة ٣:٠٠ م',
+        'Vorstellungsgespräch\n٢٠/٠٥/٢٠٢٦ 15:00',
       );
       expect(event.start, DateTime(2026, 5, 20, 15, 0));
     });
 
+    test('a German invitation says the hour with a word, not a meridiem', () {
+      // "20 Uhr" is how a German card writes eight in the evening. Without the
+      // marker the time is lost and the event lands as all-day, which is the
+      // likeliest shape of a German invitation this feature will ever meet.
+      final EventDetails event = firstEvent('Einladung\n12.06.2026, 20 Uhr');
+      expect(event.start, DateTime(2026, 6, 12, 20, 0));
+      expect(event.allDay, isFalse);
+    });
+
+    test('the hour word is a whole word, and does not fold', () {
+      // "Uhren" is clocks, not a time; and `Uhr` states the twenty-four-hour
+      // reading rather than folding onto it, so 20 stays 20 and does not
+      // become thirty-two.
+      expect(
+        firstEvent('Einladung\n12/06/2026\n12 Uhren stehen hier').allDay,
+        isTrue,
+      );
+      expect(
+        firstEvent('Einladung\n12.06.2026, 15:00 Uhr').start,
+        DateTime(2026, 6, 12, 15, 0),
+      );
+    });
+
+    test('a month ending a sentence does not eat the next one', () {
+      // The dot that lets "15. Oktober" read as a date is placed between a
+      // number and a month name only. Allowing one *after* a month name as
+      // well — which an earlier draft of this did — turns the full stop
+      // between two sentences into a date separator, and "im Mai. 15 Personen
+      // kamen" becomes the fifteenth of May.
+      expect(eventsIn('Einladung\nim Mai. 15 Personen kamen'), isEmpty);
+    });
+
+    test('a venue label is a whole word, not the end of one', () {
+      // `ort` ends Support, Transport, Export, Report and Airport, and every
+      // one of them is followed by a colon on a real screen. Without a left
+      // edge the support address was being filed as the venue.
+      for (final String line in <String>[
+        'Support: help@example.com',
+        'Transport: DHL Express',
+        'Export: CSV Datei',
+      ]) {
+        expect(
+          firstEvent('Einladung\n12/06/2026 20 Uhr\n$line').location,
+          isNull,
+          reason: line,
+        );
+      }
+      expect(
+        firstEvent(
+          'Einladung\n12/06/2026 20 Uhr\nOrt: Hauptstrasse 12',
+        ).location,
+        'Hauptstrasse 12',
+      );
+    });
+
     test('decorative type spaces out its separators, and it still reads', () {
       // A printed invitation sets the date in a wide face and recognition
-      // comes back with the separators floating: "12 / 5 / 2026", "8 : 00".
+      // comes back with the separators floating: "12 / 5 / 2026", "20 : 00".
       // Both spellings missed entirely until this was allowed for, which is
       // the difference between the feature working on a real wedding card and
       // only on a calendar app's tidy output.
-      final EventDetails event = firstEvent('دعوة حفل زفاف\n١٢ / ٥ / ٢٠٢٦ - ٨ : ٠٠ مساءً');
+      final EventDetails event = firstEvent(
+        'Einladung zur Hochzeit\n12 / 5 / 2026 - 20 : 00',
+      );
       expect(event.start, DateTime(2026, 5, 12, 20, 0));
     });
 
@@ -339,12 +469,12 @@ void main() {
       expect(eventsIn('Appointment 12/05/2033'), isEmpty);
     });
 
-    test('the event claims its own digits before the phone rule sees them', () {
+    test('the event claims its own digits before any later rule sees them', () {
       final List<DetectedAction> actions = ActionExtractor.extract(
         'Meeting on 12/05/2026 at 3:00 PM',
         now: today,
       );
-      expect(actions.where((a) => a.kind == DetectedActionKind.phone), isEmpty);
+      expect(actions.map((a) => a.kind), everyElement(DetectedActionKind.event));
     });
 
     test('an event leads the list', () {
@@ -363,36 +493,60 @@ void main() {
     //
     // Anchors used: 1 Ramadan 1447 = 18 Feb 2026, 1 Shawwal 1447 (Eid
     // al-Fitr) = 20 Mar 2026, 1 Muharram 1448 = 16 Jun 2026.
-    DateTime hijriStart(String text) =>
-        firstEvent(text, dayFirst: true).start;
+    //
+    // **Every case here is written in Latin, and that is the point.** The
+    // Arabic spellings went with the rest of the unreachable vocabulary; the
+    // converter did not, because two ways in survived it. The romanised month
+    // names below are Latin text, and `15/9/1447` is nothing but digits and a
+    // slash. See `docs/decisions/shipped-languages.md`.
+    DateTime hijriStart(String text) => firstEvent(text, dayFirst: true).start;
 
-    test('a wedding card in Arabic digits converts to the right day', () {
-      // 15 Ramadan 1447 — the fifteenth day of a month beginning 18 Feb.
-      expect(hijriStart('دعوة حفل\n١٥ رمضان ١٤٤٧'), DateTime(2026, 3, 4));
+    test('a wedding card converts to the right day', () {
+      // 15 Ramadan 1447 - the fifteenth day of a month beginning 18 Feb.
+      expect(hijriStart('Einladung\n15 Ramadan 1447'), DateTime(2026, 3, 4));
     });
 
-    test('the era marker and Latin digits are both optional spellings', () {
-      expect(hijriStart('دعوة زفاف\n15 رمضان 1447 هـ'), DateTime(2026, 3, 4));
-      expect(hijriStart('دعوة زفاف\n15 من رمضان 1447'), DateTime(2026, 3, 4));
+    test('the era marker is an optional spelling', () {
+      expect(hijriStart('Einladung\n15 Ramadan 1447 AH'), DateTime(2026, 3, 4));
+      expect(hijriStart('Einladung\n15 Ramadhan 1447'), DateTime(2026, 3, 4));
     });
 
-    test('a month spelled without its hamza is the same month', () {
-      // Printed cards drop the hamza as often as they write it, and a table
-      // holding only ربيع الأول silently ignores half of them.
-      expect(
-        hijriStart('دعوة حفل\n10 ربيع الاول 1448'),
-        hijriStart('دعوة حفل\n10 ربيع الأول 1448'),
-      );
+    test('the romanisations of one month are the same month', () {
+      // There is no standard transliteration, so a card is as likely to say
+      // "Rabi I" as "Rabi al-awwal". A table holding one of them silently
+      // ignores every card that chose the other.
+      // Pinned to a published date rather than to each other. Comparing the
+      // spellings only would pass just as happily if every one of them
+      // resolved to the same wrong day.
+      //
+      // 1 Muharram 1448 = 16 Jun 2026, and Muharram (30) plus Safar (29) puts
+      // 1 Rabi al-awwal at 14 Aug — so the tenth is 23 Aug 2026.
+      for (final String month in <String>[
+        'Rabi al-awwal',
+        'Rabi al awwal',
+        'Rabi ul-awwal',
+        'Rabi I',
+      ]) {
+        expect(
+          hijriStart('Einladung\n10 $month 1448'),
+          DateTime(2026, 8, 23),
+          reason: month,
+        );
+      }
     });
 
     test('a digit-only Hijri date needs no era marker to be recognised', () {
       // A four-digit year in the fourteen-hundreds cannot be a Gregorian date
-      // this feature would accept, so the year settles it on its own.
-      expect(hijriStart('دعوة حفل\n15/9/1447'), DateTime(2026, 3, 4));
+      // this feature would accept, so the year settles it on its own. This is
+      // also the one Hijri spelling that needs no vocabulary at all, which is
+      // why the converter outlived the Arabic cue words.
+      expect(hijriStart('Einladung\n15/9/1447'), DateTime(2026, 3, 4));
     });
 
     test('a Hijri date carries its time across the conversion', () {
-      final EventDetails event = firstEvent('دعوة حفل\n15 رمضان 1447 - 8:00 م');
+      final EventDetails event = firstEvent(
+        'Einladung\n15 Ramadan 1447 - 8:00 PM',
+      );
       expect(event.start, DateTime(2026, 3, 4, 20, 0));
       expect(event.allDay, isFalse);
     });
@@ -401,26 +555,26 @@ void main() {
       // Safar 1447 runs twenty-nine days. Without the length check the
       // conversion rolls quietly into the next month, exactly as DateTime
       // does with the thirty-first of February.
-      expect(eventsIn('دعوة حفل\n30/2/1447'), isEmpty);
+      expect(eventsIn('Einladung\n30/2/1447'), isEmpty);
     });
 
     test('a Hijri occasion already past is still past', () {
       // 1445 ended in 2024; the calendar it was written in changes nothing
       // about which rules apply after the conversion.
-      expect(eventsIn('دعوة حفل\n15 رمضان 1445'), isEmpty);
+      expect(eventsIn('Einladung\n15 Ramadan 1445'), isEmpty);
     });
 
     test('a month name without a year is not a date', () {
-      // صفر is also the word for zero and رجب is a given name. The year is
-      // what makes the month name safe to act on.
-      expect(eventsIn('رمضان مبارك — دعوة'), isEmpty);
-      expect(eventsIn('المبلغ 15 صفر 2024'), isEmpty);
+      // The year is what makes a lone month name safe to act on - "Rajab" is
+      // a given name, and a greeting is not an appointment.
+      expect(eventsIn('Ramadan Mubarak - Einladung'), isEmpty);
+      expect(eventsIn('Betrag 15 Safar 2024'), isEmpty);
     });
 
     test('a Hijri date still has to say it is an occasion', () {
       // The conversion buys no exemption from the gate every other date
       // passes through.
-      expect(eventsIn('الفاتورة\n15 رمضان 1447'), isEmpty);
+      expect(eventsIn('Rechnung\n15 Ramadan 1447'), isEmpty);
     });
   });
   group('wi-fi', () {
@@ -435,9 +589,39 @@ void main() {
       expect(wifi.password, 'latte2026');
     });
 
+    /// A café card in each shipped language. Every one of these read as
+    /// nothing before the language swap: the cue list knew `wi-fi` and
+    /// `wireless` in English and Arabic, so a German card saying **WLAN** and
+    /// **Passwort** produced no action at all.
+    test('a café card is read in every shipped language', () {
+      const Map<String, (String, String)> cards = <String, (String, String)>{
+        'WLAN\nNetzwerk: CafeGast\nPasswort: latte2026': ('CafeGast', 'latte2026'),
+        'Draadloos\nNetwerknaam: CafeGast\nWachtwoord: latte2026':
+            ('CafeGast', 'latte2026'),
+        'Rete wireless\nNome rete: CafeGast\nChiave: latte2026':
+            ('CafeGast', 'latte2026'),
+        'Wi-Fi\nNome da rede: CafeGast\nSenha: latte2026':
+            ('CafeGast', 'latte2026'),
+        'Wi-Fi\nNombre de la red: CafeGast\nContraseña: latte2026':
+            ('CafeGast', 'latte2026'),
+        'Wi-Fi\nNom du réseau: CafeGast\nMot de passe: latte2026':
+            ('CafeGast', 'latte2026'),
+      };
+
+      cards.forEach((String text, (String, String) want) {
+        final WifiDetails wifi = firstWifi(text);
+        expect(wifi.network, want.$1, reason: text);
+        expect(wifi.password, want.$2, reason: text);
+      });
+    });
+
     test('a password with nothing calling it wireless is not a network key', () {
       // The single most likely false positive in the whole feature.
       expect(of('Your password: hunter2024', DetectedActionKind.wifi), isEmpty);
+      // And the same trap in the new languages: a bare login password with no
+      // word anywhere calling the connection wireless.
+      expect(of('Ihr Passwort: hunter2024', DetectedActionKind.wifi), isEmpty);
+      expect(of('Je wachtwoord: hunter2024', DetectedActionKind.wifi), isEmpty);
     });
 
     test('a sentence about a password is not a password', () {
@@ -458,6 +642,65 @@ void main() {
       expect(of(text, DetectedActionKind.wifi), hasLength(1));
       expect(of(text, DetectedActionKind.code), isEmpty);
     });
+
+    test('a short label must begin a word', () {
+      // Each of these handed the user an invented password: `pass` sits in
+      // "Bypass", `key` in "Monkey", `clave` in "Enclave" and `senha` in the
+      // Portuguese "Resenha". A colon after them is not evidence of anything.
+      for (final String line in <String>[
+        'Bypass: latte2026',
+        'Monkey: latte2026',
+        'Enclave: latte2026',
+        'Resenha: latte2026',
+      ]) {
+        expect(
+          of('Free WiFi settings\n$line', DetectedActionKind.wifi),
+          isEmpty,
+          reason: line,
+        );
+      }
+    });
+
+    test('a long label may sit inside a compound', () {
+      // The other half of the same rule, and the half a blind word boundary
+      // would break: German and Dutch build the compound around the head
+      // word, so "Gastpasswort" is exactly as much a password label as
+      // "Passwort" is.
+      for (final String line in <String>[
+        'Gastpasswort: latte2026',
+        'WLAN-Kennwort: latte2026',
+        'Netwerksleutel: latte2026',
+      ]) {
+        expect(
+          firstWifi('Freies WLAN\n$line').password,
+          'latte2026',
+          reason: line,
+        );
+      }
+    });
+
+    test('a network name is held to the same rule', () {
+      // `red` is Spanish for network and also ends "Shared", "Hundred" and
+      // "Required" — the one this language swap actually introduced.
+      final WifiDetails wifi = firstWifi(
+        'Free WiFi\nShared: NotANetwork\nPassword: latte2026',
+      );
+      expect(wifi.password, 'latte2026');
+      expect(wifi.network, isNull);
+
+      // Still found when it really is the label.
+      expect(
+        firstWifi('WiFi gratis\nRed: CafeGuest\nContraseña: latte2026').network,
+        'CafeGuest',
+      );
+      // And still found inside a German compound.
+      expect(
+        firstWifi(
+          'Freies WLAN\nGastnetzwerk: Cafe\nPasswort: latte2026',
+        ).network,
+        'Cafe',
+      );
+    });
   });
 
   group('shipments', () {
@@ -473,14 +716,13 @@ void main() {
       expect(parcel.number, '4512378901');
     });
 
-    test('a labelled number is not a phone number', () {
+    test('a labelled parcel number is claimed, not left to the code rule', () {
       // Ten digits either way; only the label tells them apart.
       expect(
-        of(
+        ActionExtractor.extract(
           'Aramex\nTracking number: 4512378901',
-          DetectedActionKind.phone,
-        ),
-        isEmpty,
+        ).map((a) => a.kind),
+        everyElement(DetectedActionKind.tracking),
       );
     });
 
@@ -497,6 +739,31 @@ void main() {
     test('an unlabelled run of digits is not a parcel', () {
       expect(of('Order Details 4512378901', DetectedActionKind.tracking),
           isEmpty);
+    });
+
+    /// The shipped-language carriers, in the wording their own notifications
+    /// use. Every one of these was invisible before the language swap: the
+    /// label was English-only and the alias table held the Gulf carriers plus
+    /// Arabic transliterations no recogniser could return.
+    test('the European carriers are recognised in their own wording', () {
+      const Map<String, ShipmentCarrier> notifications = <String, ShipmentCarrier>{
+        'DPD\nSendungsnummer: 09876543210987': ShipmentCarrier.dpd,
+        'GLS Sendungsverfolgung\nPaketnummer 12345678901': ShipmentCarrier.gls,
+        'Hermes\nSendungsnummer 33012345678901': ShipmentCarrier.hermes,
+        'PostNL\nTrack & trace: 3SABCD1234567': ShipmentCarrier.postnl,
+        'Poste Italiane\nNumero di spedizione: 12345678901':
+            ShipmentCarrier.poste,
+        'CTT\nNúmero de objeto: RR123456789PT': ShipmentCarrier.ctt,
+        'Correos\nNúmero de seguimiento: PK123456789ES':
+            ShipmentCarrier.correos,
+        'Colissimo\nNuméro de suivi : 6A12345678901': ShipmentCarrier.colissimo,
+      };
+
+      notifications.forEach((String text, ShipmentCarrier want) {
+        final TrackingDetails parcel = firstParcel(text);
+        expect(parcel.carrier, want, reason: text);
+        expect(parcel.number, isNotEmpty, reason: text);
+      });
     });
 
     test('a tracking label with no carrier still yields a number', () {
@@ -526,14 +793,48 @@ void main() {
 
     test('coordinates are not read as a long number', () {
       expect(
-        of('Dropped pin 24.7743, 46.7386', DetectedActionKind.phone),
-        isEmpty,
+        ActionExtractor.extract(
+          'Dropped pin 24.7743, 46.7386',
+        ).map((a) => a.kind),
+        everyElement(DetectedActionKind.place),
       );
     });
 
-    test('an Arabic street line needs no label', () {
-      expect(firstPlace('التوصيل إلى شارع الملك فهد').query,
-          contains('شارع الملك فهد'));
+    /// An unlabelled street line, in each of the two word orders the shipped
+    /// languages actually use.
+    ///
+    /// This was one Arabic case before the language swap, and it was the only
+    /// coverage the *number-last* word order had anywhere in the suite — which
+    /// is how it went unnoticed that removing it would have left German,
+    /// Dutch, Italian, Portuguese, Spanish and French with no unlabelled
+    /// street rule at all. The rule was rewritten rather than deleted; these
+    /// are its cases.
+    test('a street line needs no label, in either word order', () {
+      // Number last, street type welded to the name.
+      expect(firstPlace('Lieferung an Hauptstraße 12').query,
+          contains('Hauptstraße 12'));
+      expect(firstPlace('Bezorgen op Kerkstraat 5a').query,
+          contains('Kerkstraat 5a'));
+      // Number last, street type leading.
+      expect(firstPlace('Consegna in Via Roma 12').query,
+          contains('Via Roma 12'));
+      expect(firstPlace('Entrega na Rua Augusta 24').query,
+          contains('Rua Augusta 24'));
+      // And the English order still works.
+      expect(firstPlace('Deliver to 221 Baker Street').query,
+          contains('221 Baker Street'));
+    });
+
+    test('an ordinary sentence in those languages is not a street', () {
+      // `Weg`, `Ring`, `corso` and `place` are common nouns; the house number
+      // is what separates the address from the sentence.
+      for (final String text in <String>[
+        'Der Weg war lang und ruhig',
+        'Il corso di italiano inizia lunedì',
+        'Er is genoeg plaats voor iedereen',
+      ]) {
+        expect(of(text, DetectedActionKind.place), isEmpty, reason: text);
+      }
     });
 
     test('a settings row is not a place', () {
@@ -548,6 +849,86 @@ void main() {
       expect(actions.where((a) => a.kind == DetectedActionKind.place), isEmpty);
       expect(actions.where((a) => a.kind == DetectedActionKind.link),
           hasLength(1));
+    });
+  });
+
+  /// **The two features may not disagree about the same pixels.**
+  ///
+  /// Safe Share and the actions sheet used to answer "is this private?"
+  /// separately. On a page of generated IBANs they answered it opposite ways
+  /// in the same second: Safe Share offered to cover the account numbers,
+  /// this sheet offered to call three fragments of them. A user who notices
+  /// that concludes there is no single mind behind the app — and Safe Share
+  /// is the feature that needs to be trusted with the most.
+  ///
+  /// So the private spans now come *from* `SensitiveData`. These tests hold
+  /// both halves of that: what it takes away, and what it must never take.
+  group('what Safe Share hides, Actions does not offer', () {
+    test('a national ID is covered, so its digits are not offered', () {
+      // Eight digits with nothing to act on. `SensitiveData` claims it, so
+      // this sheet never sees it — the answer is inherited rather than
+      // derived a second time from the same shape.
+      expect(ActionExtractor.extract('National ID: 29481027'), isEmpty);
+    });
+
+    test('an order reference is covered, not offered', () {
+      expect(ActionExtractor.extract('Order number 4567890'), isEmpty);
+    });
+
+    test('an address is covered while the code beside it survives', () {
+      // The clearest shape of the rule: one screenshot, two private things,
+      // and only one of them is worth doing something about.
+      final List<DetectedAction> actions = ActionExtractor.extract(
+        'Delivery to 221 Baker Street\nDoor code 4821',
+      );
+      expect(
+        actions.where((a) => a.kind == DetectedActionKind.code).map((a) => a.value),
+        contains('4821'),
+      );
+      // The street is claimed by the place pass, which runs before the gate —
+      // so it is offered as a *destination*, never as digits to copy.
+      expect(
+        actions.where((a) => a.kind == DetectedActionKind.code),
+        hasLength(1),
+      );
+    });
+
+    test('a card number produces nothing at all', () {
+      // Luhn-valid, so `SensitiveData` is certain about it.
+      expect(ActionExtractor.extract('Card 4539 1488 0343 6467'), isEmpty);
+    });
+
+    /// The half that stops this becoming a deletion.
+    ///
+    /// All three of these are private *and* actionable, and all three are the
+    /// product. If the gate ever widens to "everything sensitive", these fail
+    /// before any user finds out the feature is gone.
+    test('the three private-and-actionable kinds survive the gate', () {
+      expect(
+        valuesOf('Write to us at help@shoto.test', DetectedActionKind.email),
+        contains('help@shoto.test'),
+      );
+      expect(
+        of('IBAN: DE89 3704 0044 0532 0130 00', DetectedActionKind.iban),
+        hasLength(1),
+      );
+      expect(
+        valuesOf('Your verification code is 481920', DetectedActionKind.code),
+        contains('481920'),
+      );
+    });
+
+    test('a labelled shipment still wins over the private reading', () {
+      // `SensitiveData` calls "Order number …" an order number, and order
+      // numbers are gated. The tracking pass runs first and claims it, which
+      // is the whole reason for that ordering — a label from the screenshot
+      // beats a shape derived from digits.
+      final List<DetectedAction> parcels = of(
+        'DHL — Tracking number: 4512378901',
+        DetectedActionKind.tracking,
+      );
+      expect(parcels, hasLength(1));
+      expect(parcels.single.value, '4512378901');
     });
   });
 }

@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:shoto/core/theme/app_brand.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 
-/// The SHOTO **brand** mark: a tray with three screenshots filed into it.
+/// The Shoto **brand** mark: three screenshots, and the filed one in front.
 ///
-/// Not to be confused with `ShotoMark` in `shoto_mark.dart`, which is a
-/// different object doing a different job — that one is the empty-state
-/// illustration, drawn in the interface's own achromatic palette and holding
-/// whatever icon the screen it appears on is about. This one is the logo: it
-/// is blue, it is the same in both themes, and it never changes.
+/// It is the same object `ShotoMark` draws inside the app — a small fan of
+/// cards with the clipped corner on the one Shoto is holding — in the brand's
+/// fixed values rather than the interface's theme-aware ones. There used to be
+/// two different marks here, a blue moulded tray for the launcher and this fan
+/// for the empty states, and no user has ever been shown a reason for the
+/// difference. See `app_brand.dart` for what the tray was and why it went.
 ///
 /// ---
 ///
@@ -25,13 +26,11 @@ import 'package:shoto/core/theme/app_motion.dart';
 /// files is generated from the painter below (see
 /// `tool/generate_brand_assets.dart`), so there is exactly one description of
 /// what the mark looks like and the icon on the home screen cannot drift away
-/// from the one on the splash.
+/// from the one on the launch window.
 ///
 /// It also buys the thing a bitmap fundamentally cannot: the three cards are
 /// separate objects with their own transforms, so they can be animated in
-/// individually. That is what the splash does, and it is why this is built as
-/// three cards and a tray rather than as one shape that happens to look like
-/// three cards and a tray.
+/// individually.
 ///
 /// ---
 ///
@@ -39,90 +38,59 @@ import 'package:shoto/core/theme/app_motion.dart';
 /// units. [ShotoBrandMarkPainter] scales that box to whatever size it is asked
 /// for, so the numbers here are proportions and never need touching again.
 
-// ---------------------------------------------------------------- the tray
-
-/// Outer walls.
-const double _trayLeft = 5;
-const double _trayRight = 95;
-const double _trayBottom = 100;
-
-/// Where the front face's top edge sits at the left and right walls.
-const double _trayRim = 43;
-
-const double _trayRadiusTop = 6;
-const double _trayRadiusBottom = 26;
-
-/// The scoop in the middle of the front face.
-///
-/// This is the one feature of the shape that is not a rounded rectangle, and
-/// it is doing two jobs: it is how a pocket is drawn — the front is cut down
-/// so you can reach in — and it is what stops the mark from being a folder,
-/// which is a shape every file app on the phone already owns.
-///
-/// 42 units across and 16 deep. An earlier cut was 42 *deep* over the same
-/// width, which is a keyhole rather than a scoop: at that ratio the curve
-/// turns back on itself, reads as a hole punched through the tray, and takes a
-/// bite out of the middle of the picture on the front card.
-const double _notchCentre = 50;
-const double _notchHalfWidth = 21;
-const double _notchBottom = 59;
-
-/// How far the scoop's control points sit from each end.
-///
-/// Half its own half-width, so the curve leaves the rim horizontally and
-/// arrives at the bottom horizontally, and the transition at both ends has no
-/// corner in it at any size.
-const double _notchEase = 11;
-
-/// The inside back wall. Taller than the front face, so a band of it shows
-/// above the rim — that band is the only thing telling the eye the tray is
-/// open at the top rather than solid.
-const double _backLeft = 7.5;
-const double _backRight = 92.5;
-const double _backTop = 38;
-const double _backBottom = 95;
-
 // --------------------------------------------------------------- the cards
 
-const double _cardWidth = 74;
-const double _cardHeight = 66;
-const double _cardRadius = 5;
+const double _cardWidth = 46;
+const double _cardHeight = 62;
+const double _cardRadius = 4;
+
+/// How large each card sits at rest.
+///
+/// The filed one is largest, and only slightly: this is depth, not emphasis,
+/// and the cut corner is already doing the emphasis.
+const List<double> _cardScale = [0.94, 0.97, 1.06];
+
+/// The cut that makes a card a *filed* card.
+///
+/// The same gesture as [ClippedCorner] in `app_shapes.dart`, at the same
+/// proportion — a straight chamfer off the top trailing corner, never a
+/// rounded one, because the clip and the radius are the same idea and doing
+/// both rounds the cut off into a nothing.
+const double _frontCut = 14;
 
 /// Where each card comes to rest, and how far it is turned there.
 ///
-/// **A stack, not a fan**, and the difference is the whole character of the
-/// mark. The fan this replaced spread the three cards across -8.5° to +1.5°
-/// and offset them sideways, which reads as a hand of playing cards — held,
-/// being chosen from, on their way somewhere. Filed screenshots are none of
-/// those things. They are put away, squared up, and left.
+/// Two loose ones leaning back and to the left, and the filed one square in
+/// front of them: the two behind are the screenshots you took, the one in
+/// front is the one Shoto did something with.
 ///
-/// So the three sit almost on top of each other, each stepped down and to the
-/// right by about five units, all turned within a degree of the same slight
-/// angle. What shows of the two behind is a sliver each, which is exactly
-/// what shows of the paper under the top sheet in a real pile.
+/// **They lean one way rather than fanning both ways, and the cut corner is
+/// the reason.** A symmetric fan puts a card directly behind the chamfer, and
+/// a triangle of paper behind a cut corner does not read as a cut — it reads
+/// as a folded page, which is the icon of every document app there has ever
+/// been. Leaning the stack left clears the top trailing corner so the cut
+/// opens onto the slab, where it says what it is.
 const List<Offset> _cardRest = [
-  Offset(45.0, 37.0),
-  Offset(50.0, 42.0),
-  Offset(55.0, 48.0),
+  Offset(36, 48),
+  Offset(42, 45),
+  Offset(53, 52),
 ];
 
-const List<double> _cardRestTurn = [-3.5, -3.0, -2.5];
+const List<double> _cardRestTurn = [-10, -5, 0];
 
 /// Where each card starts before it is filed.
 ///
 /// Above the frame entirely — at these offsets the lowest edge of the lowest
-/// card is still off the top of the mark's box — and spread further apart than
-/// they land, so the movement reads as a gathering rather than as a drop. They
-/// also arrive turned further than they finish, which means the last thing
-/// each card does before it settles is straighten, and straightening is what
-/// reads as landing.
+/// card is still off the top of the mark's box — and turned further than they
+/// finish, which means the last thing each card does before it settles is
+/// straighten. Straightening is what reads as landing.
 const List<Offset> _cardEntry = [
   Offset(-16, -86),
-  Offset(-2, -94),
-  Offset(14, -84),
+  Offset(-2, -90),
+  Offset(12, -94),
 ];
 
-const List<double> _cardEntryTurn = [-13, -5, 12];
+const List<double> _cardEntryTurn = [-10, -8, 10];
 
 /// Smaller while it is far away. Twelve points of scale is not perspective,
 /// it is just enough for the eye to read distance instead of reading a card
@@ -131,9 +99,8 @@ const double _cardEntryScale = 0.88;
 
 /// When each card's own movement starts, as a fraction of the whole.
 ///
-/// Back card first. Filing them front to back would mean each new card lands
-/// *behind* one already at rest, which is not how a stack is built and reads —
-/// oddly specifically — as wrong.
+/// The two loose cards first and the filed one last, because the filed card is
+/// the point being made and the point lands at the end.
 const List<double> _cardDelay = [0.00, 0.15, 0.30];
 
 /// How long one card's movement lasts, as a fraction of the whole. The last
@@ -142,50 +109,37 @@ const double _cardSpan = 0.70;
 
 /// The card is invisible for the first instant of its span.
 ///
-/// Only relevant on the splash, where the painter covers the whole screen and
-/// a card would otherwise blink into existence in open space above the mark.
-/// Fading over the first quarter of the travel hides the arrival without
-/// turning the entrance into a fade, which is a different and much duller
-/// animation.
+/// Only relevant where the painter covers more than the mark's own box and a
+/// card would otherwise blink into existence in open space above it. Fading
+/// over the first quarter of the travel hides the arrival without turning the
+/// entrance into a fade, which is a different and much duller animation.
 const double _cardFadeSpan = 0.25;
 
-/// How far a card's shadow falls on the one behind it, and how soft it is.
-///
-/// Down and very slightly left, matching the light in [AppBrand.backdrop].
-/// Getting this backwards is the classic tell of a drawn icon: a shadow that
-/// disagrees with the gradient behind it makes the whole object read as
-/// pasted on.
-const Offset _cardShadowOffset = Offset(-0.6, 2.2);
-const double _cardShadowBlur = 2.6;
+/// How far the front card's shadow falls on the two behind it, and how soft.
+const Offset _cardShadowOffset = Offset(0, 1.8);
+const double _cardShadowBlur = 2.4;
 
-// ------------------------------------------------------------------ centring
+// ---------------------------------------------------------------- centring
 
-/// The drawn content does not fill its box — it runs from y≈4, the top corner
-/// of the mint card, to y=100 at the bottom of the tray, and from x≈8 to x≈93
-/// — so it is nudged to sit in the middle. Without this the mark looks low and
-/// left in every frame that contains it, which is the kind of thing nobody can
-/// name but everybody sees.
-const double _contentOffsetX = -1.5;
-const double _contentOffsetY = -2.0;
+/// The stack leans left, so its drawn content does not sit in the middle of
+/// the box it is described in. These two put it back. Without them the mark
+/// sits low and left in every frame that contains it, which is the kind of
+/// thing nobody can name but everybody sees.
+const double _contentOffsetX = 6.5;
+const double _contentOffsetY = 0.5;
 
 /// How much of the backdrop slab the mark is allowed to occupy.
 ///
-/// 0.75 of the box, and the box is now ~96% covered by drawn content — the
-/// stack is far taller in its frame than the old fan was — so the mark covers
-/// ~72% of the icon. That is not a taste number: it is the middle of the range
-/// both platforms' icon grids are built around, and a glyph running wider than
-/// about 78% looks cramped beside every other icon on the home screen once the
-/// system rounds its corners off.
-///
-/// It moved from 0.86 with the switch from a fan to a stack. The content got
-/// taller and narrower, so the same inset would have pushed the mark past the
-/// grid; the number that stayed the same is the one that matters, which is how
-/// much of the finished icon the drawing covers.
-const double _markInset = 0.75;
+/// The fan is ~80% as wide as its own box, so this puts the drawing at ~72% of
+/// the finished icon. That is not a taste number: it is the middle of the
+/// range both platforms' icon grids are built around, and a glyph running
+/// wider than about 78% looks cramped beside every other icon on the home
+/// screen once the system rounds its corners off.
+const double _markInset = 0.90;
 
 /// The slab's corner radius as a fraction of its width — Apple's superellipse
 /// ratio, near enough that the mark reads correctly inside whatever mask each
-/// platform applies. It is what the splash and the in-app logo actually
+/// platform applies. It is what the launch window and the in-app logo actually
 /// display, where nothing masks anything.
 const double _backdropRadius = 0.2237;
 
@@ -201,8 +155,7 @@ const double _monochromeGap = 1.6;
 ///
 /// Sized by [markExtent] rather than by the canvas it is given, so the same
 /// painter can fill a 48px icon or sit at 96 logical pixels in the middle of a
-/// full-screen splash with the cards flying in through the empty space around
-/// it.
+/// full screen with the cards flying in through the empty space around it.
 class ShotoBrandMarkPainter extends CustomPainter {
   /// The side length, in logical pixels, of the mark's 100×100 box.
   final double markExtent;
@@ -214,17 +167,17 @@ class ShotoBrandMarkPainter extends CustomPainter {
   /// wants it only has to drive a single number from 0 to 1.
   final double progress;
 
-  /// Paint the blue slab behind the mark. Off gives the tray and cards alone
-  /// on transparency.
+  /// Paint the slab behind the mark. Off gives the cards alone on
+  /// transparency.
   final bool backdrop;
 
-  /// Paint the tray and cards. Off gives the bare slab.
+  /// Paint the cards. Off gives the bare slab.
   ///
   /// [backdrop] and [mark] are separate switches rather than one enum because
   /// Android's adaptive icons need exactly this: the same drawing split into
   /// two layers the launcher can move independently of each other, so the
-  /// slab is one file and the mark is another and they are cut from the same
-  /// geometry rather than from two guesses at it.
+  /// slab is one file and the cards are another and they are cut from the
+  /// same geometry rather than from two guesses at it.
   final bool mark;
 
   /// Overrides the slab's corner radius, as a fraction of its width.
@@ -235,13 +188,11 @@ class ShotoBrandMarkPainter extends CustomPainter {
   /// pale halo where its corners used to be.
   final double? backdropCornerRadius;
 
-  /// Off draws an empty tray.
+  /// Off draws the slab with nothing on it.
   ///
-  /// This exists for the native launch window, which has to show the mark
-  /// *before* Flutter is running and therefore cannot show anything moving.
-  /// It shows the tray empty, the first Flutter frame draws the same empty
-  /// tray at the same size in the same place, and the cards then arrive into
-  /// it — so the handover from the OS to the app has nothing to give it away.
+  /// Kept for anything that needs the mark's container without its contents;
+  /// the launch window used to use it to show an empty tray, back when there
+  /// was a tray to show.
   final bool cards;
 
   /// Flattens the mark to a single-colour stencil, for Android 13's themed
@@ -249,19 +200,40 @@ class ShotoBrandMarkPainter extends CustomPainter {
   /// left with the user's wallpaper palette.
   ///
   /// This is not the same as painting the mark and then discarding its colour,
-  /// which is what the first version did and why it needed replacing: four
-  /// overlapping shapes, all reduced to the same value, fuse into one blob
-  /// with a lumpy outline and nothing readable inside it. Every part of the
-  /// drawing that says "this is a stack of pictures" is a *colour* boundary,
-  /// and colour is exactly what a themed icon does not have.
+  /// which is what the first version did and why it needed replacing:
+  /// overlapping shapes all reduced to the same value fuse into one blob with
+  /// a lumpy outline and nothing readable inside it.
   ///
   /// So in this mode each shape is cut out of the ones behind it along with a
   /// hairline of clearance around it — see [_monochromeGap]. The boundaries
-  /// that were colour become gaps, and the silhouette keeps its structure.
+  /// that were value become gaps, and the silhouette keeps its structure.
   final bool monochrome;
 
   /// Where the centre of the mark sits. Defaults to the centre of the canvas.
   final Offset? centre;
+
+  /// The slab's colour. [AppBrand.ink] unless a caller says otherwise.
+  ///
+  /// **The only parameter here that changes what the mark *is*, and it exists
+  /// for exactly one caller.** `app_brand.dart` states that the mark's values
+  /// are fixed rather than mode-aware, on the grounds that "a brand mark that
+  /// changes with the system theme is not one mark, it is two, and neither of
+  /// them is the one on the store listing". That argument is about the mark
+  /// the app draws for itself, and it still holds — nothing in `lib/` passes
+  /// this.
+  ///
+  /// What passes it is `tool/generate_brand_assets.dart`, building the
+  /// alternate launcher icons. Those are a different case on the same
+  /// reasoning: an alternate icon is not the app changing its mind about its
+  /// mark, it is a set of *fixed* marks the user picks one of, and the one on
+  /// the store listing is still the default. The geometry — the tray, the
+  /// cards, the clipped corner — never changes, which is what keeps six icons
+  /// recognisably one product rather than six logos.
+  ///
+  /// Only the slab moves. The cards stay paper on every variant, which is also
+  /// what makes them legible: every colour offered is solved to the same
+  /// luminance the default ink is judged against.
+  final Color slab;
 
   const ShotoBrandMarkPainter({
     required this.markExtent,
@@ -272,6 +244,7 @@ class ShotoBrandMarkPainter extends CustomPainter {
     this.cards = true,
     this.monochrome = false,
     this.centre,
+    this.slab = AppBrand.ink,
   });
 
   @override
@@ -291,41 +264,18 @@ class ShotoBrandMarkPainter extends CustomPainter {
     }
 
     if (backdrop) {
-      const Rect slab = Rect.fromLTWH(0, 0, 100, 100);
-      final RRect shape = RRect.fromRectAndRadius(
-        slab,
-        Radius.circular((backdropCornerRadius ?? _backdropRadius) * 100),
-      );
-
+      // Named `bounds` rather than `slab`, which is what it was called until
+      // the slab's *colour* became a parameter of the same name — a local Rect
+      // shadowing a Color field is the kind of collision the analyser catches
+      // only because the two types differ.
+      const Rect bounds = Rect.fromLTWH(0, 0, 100, 100);
       canvas.drawRRect(
-        shape,
-        Paint()..shader = AppBrand.backdrop.createShader(slab),
+        RRect.fromRectAndRadius(
+          bounds,
+          Radius.circular((backdropCornerRadius ?? _backdropRadius) * 100),
+        ),
+        Paint()..color = slab,
       );
-
-      // The lit edge, stroked just inside the silhouette and clipped to it so
-      // the outer half of the stroke never widens the shape. It fades out by
-      // halfway down: a rim light that runs the whole way round stops being a
-      // highlight and becomes a border, which is the difference between an
-      // object and a sticker.
-      canvas.save();
-      canvas.clipRRect(shape);
-      canvas.drawRRect(
-        shape.deflate(0.7),
-        Paint()
-          ..shader = const LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              AppBrand.backdropRim,
-              Color(0x66FFFFFF),
-              Color(0x00FFFFFF),
-            ],
-            stops: [0.0, 0.18, 0.55],
-          ).createShader(slab)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.4,
-      );
-      canvas.restore();
 
       canvas.translate(
         (100 - _markInset * 100) / 2,
@@ -334,15 +284,12 @@ class ShotoBrandMarkPainter extends CustomPainter {
       canvas.scale(_markInset);
     }
 
-    if (mark) {
+    if (mark && cards) {
       // Deliberately *not* clipped to the slab. The cards begin outside it and
       // that is the point of the animation — they are things being put away,
       // not things emerging from inside the container they go into.
       canvas.translate(_contentOffsetX, _contentOffsetY);
-
-      _paintTrayBack(canvas);
-      if (cards) _paintCards(canvas);
-      _paintTrayFront(canvas);
+      _paintCards(canvas);
     }
 
     if (monochrome) canvas.restore();
@@ -355,7 +302,7 @@ class ShotoBrandMarkPainter extends CustomPainter {
   /// The clearance is a stroke along the same outline in `clear`: half of it
   /// lands inside the shape, which the fill immediately puts back, and half
   /// lands outside, which is the gap. One pass, no path arithmetic, and it
-  /// works on any outline including the tray's scoop.
+  /// works on any outline including the chamfered one.
   void _fill(Canvas canvas, Path path, Paint paint) {
     if (!monochrome) {
       canvas.drawPath(path, paint);
@@ -373,179 +320,13 @@ class ShotoBrandMarkPainter extends CustomPainter {
     canvas.drawPath(path, Paint()..color = const Color(0xFF000000));
   }
 
-  // ------------------------------------------------------------------ tray
-
-  void _paintTrayBack(Canvas canvas) {
-    final RRect back = RRect.fromLTRBAndCorners(
-      _backLeft,
-      _backTop,
-      _backRight,
-      _backBottom,
-      topLeft: const Radius.circular(9),
-      topRight: const Radius.circular(9),
-      bottomLeft: const Radius.circular(20),
-      bottomRight: const Radius.circular(20),
-    );
-
-    _fill(canvas, Path()..addRRect(back), Paint()..color = AppBrand.trayBack);
-
-    // The lit top edge of the back wall, clipped to the wall so only the inner
-    // half of the stroke survives and the silhouette stays exact. There is no
-    // lit edge without light, so a stencil does not get one.
-    if (monochrome) return;
-
-    canvas.save();
-    canvas.clipRRect(back);
-    canvas.drawRRect(
-      back,
-      Paint()
-        ..color = AppBrand.trayRim.withValues(alpha: 0.30)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.4,
-    );
-    canvas.restore();
-  }
-
-  /// The front face, and the last thing painted — so the cards disappear
-  /// behind it exactly as they would into a real pocket. Nothing about the
-  /// cards has to know the tray exists.
-  void _paintTrayFront(Canvas canvas) {
-    final Path front = _trayFrontPath(closed: true);
-
-    const Rect face = Rect.fromLTRB(
-      _trayLeft,
-      _trayRim,
-      _trayRight,
-      _trayBottom,
-    );
-
-    _fill(
-      canvas,
-      front,
-      Paint()..shader = AppBrand.trayFront.createShader(face),
-    );
-
-    if (monochrome) return;
-
-    // The sides falling away. Laid over the vertical gradient rather than
-    // folded into it, because they are perpendicular — one shader cannot do
-    // both, and a front face lit only from the top reads as a flat panel
-    // leaning back instead of as something round.
-    canvas.save();
-    canvas.clipPath(front);
-    canvas.drawRect(
-      face,
-      Paint()
-        ..shader = const LinearGradient(
-          colors: [
-            AppBrand.trayEdgeShade,
-            Color(0x00001C6E),
-            Color(0x00001C6E),
-            AppBrand.trayEdgeShade,
-          ],
-          stops: [0.0, 0.3, 0.7, 1.0],
-        ).createShader(face),
-    );
-    canvas.restore();
-
-    canvas.save();
-    canvas.clipPath(front);
-    canvas.drawPath(
-      _trayFrontPath(closed: false),
-      Paint()
-        // Faded at both ends rather than drawn at a flat opacity.
-        //
-        // A constant stroke stops dead where the path does, and the clip
-        // leaves two little rounded stubs sitting on the tray's shoulders that
-        // read as a drawing mistake. Running it out to nothing over the last
-        // eighth turns the same line into light falling off the curve, which
-        // is what a lit edge does on a real object.
-        ..shader =
-            const LinearGradient(
-              colors: [
-                Color(0x00000000),
-                AppBrand.trayRim,
-                AppBrand.trayRim,
-                Color(0x00000000),
-              ],
-              stops: [0.0, 0.12, 0.88, 1.0],
-            ).createShader(
-              const Rect.fromLTRB(_trayLeft, _trayRim, _trayRight, _trayBottom),
-            )
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.9
-        ..strokeCap = StrokeCap.round,
-    );
-    canvas.restore();
-  }
-
-  /// The front face.
-  ///
-  /// [closed] false stops after the top edge and returns it as an open path,
-  /// which is what gets stroked for the lit rim. One function rather than two
-  /// because the rim has to follow the fill exactly — the moment they are
-  /// written out separately, a change to the scoop gets made in one of them.
-  Path _trayFrontPath({required bool closed}) {
-    final Path path = Path()
-      ..moveTo(_trayLeft, _trayRim + _trayRadiusTop)
-      ..quadraticBezierTo(
-        _trayLeft,
-        _trayRim,
-        _trayLeft + _trayRadiusTop,
-        _trayRim,
-      )
-      ..lineTo(_notchCentre - _notchHalfWidth, _trayRim)
-      ..cubicTo(
-        _notchCentre - _notchHalfWidth + _notchEase,
-        _trayRim,
-        _notchCentre - _notchEase,
-        _notchBottom,
-        _notchCentre,
-        _notchBottom,
-      )
-      ..cubicTo(
-        _notchCentre + _notchEase,
-        _notchBottom,
-        _notchCentre + _notchHalfWidth - _notchEase,
-        _trayRim,
-        _notchCentre + _notchHalfWidth,
-        _trayRim,
-      )
-      ..lineTo(_trayRight - _trayRadiusTop, _trayRim)
-      ..quadraticBezierTo(
-        _trayRight,
-        _trayRim,
-        _trayRight,
-        _trayRim + _trayRadiusTop,
-      );
-
-    if (!closed) return path;
-
-    return path
-      ..lineTo(_trayRight, _trayBottom - _trayRadiusBottom)
-      ..quadraticBezierTo(
-        _trayRight,
-        _trayBottom,
-        _trayRight - _trayRadiusBottom,
-        _trayBottom,
-      )
-      ..lineTo(_trayLeft + _trayRadiusBottom, _trayBottom)
-      ..quadraticBezierTo(
-        _trayLeft,
-        _trayBottom,
-        _trayLeft,
-        _trayBottom - _trayRadiusBottom,
-      )
-      ..close();
-  }
-
   // ----------------------------------------------------------------- cards
 
   void _paintCards(Canvas canvas) {
     const List<Color> colours = [
-      AppBrand.cardMint,
-      AppBrand.cardCoral,
-      AppBrand.cardPaper,
+      AppBrand.paperBack,
+      AppBrand.paperMid,
+      AppBrand.paper,
     ];
 
     for (int i = 0; i < 3; i++) {
@@ -558,6 +339,8 @@ class ShotoBrandMarkPainter extends CustomPainter {
       );
       final double t = AppMotion.standard.transform(raw);
 
+      final bool isFront = i == 2;
+
       final Offset position = Offset.lerp(
         _cardRest[i] + _cardEntry[i],
         _cardRest[i],
@@ -568,7 +351,11 @@ class ShotoBrandMarkPainter extends CustomPainter {
         _cardRestTurn[i],
         t,
       );
-      final double scale = _lerp(_cardEntryScale, 1, t);
+      final double scale = _lerp(
+        _cardScale[i] * _cardEntryScale,
+        _cardScale[i],
+        t,
+      );
       final double opacity = (raw / _cardFadeSpan).clamp(0.0, 1.0);
 
       canvas.save();
@@ -576,9 +363,9 @@ class ShotoBrandMarkPainter extends CustomPainter {
       canvas.rotate(turn * math.pi / 180);
       canvas.scale(scale);
 
-      // One layer per card, so the fade applies to the card *and the picture
+      // One layer per card, so the fade applies to the card *and what is
       // printed on it* as a single object. Fading them separately lets the
-      // picture show through the card it is printed on.
+      // rules show through the card they are printed on.
       final bool layered = opacity < 1;
       if (layered) {
         canvas.saveLayer(
@@ -587,22 +374,19 @@ class ShotoBrandMarkPainter extends CustomPainter {
         );
       }
 
-      final RRect shape = RRect.fromRectAndRadius(
-        const Rect.fromLTWH(
-          -_cardWidth / 2,
-          -_cardHeight / 2,
-          _cardWidth,
-          _cardHeight,
-        ),
-        const Radius.circular(_cardRadius),
+      const Rect box = Rect.fromLTWH(
+        -_cardWidth / 2,
+        -_cardHeight / 2,
+        _cardWidth,
+        _cardHeight,
       );
+      final Path shape = isFront ? _filedCardPath(box) : _looseCardPath(box);
 
-      // What this card throws onto the one behind it. Skipped for the back
-      // card, which has nothing behind it but the tray's own back wall — a
-      // shadow there lands on a surface far enough away that it would read as
-      // grime rather than as depth.
-      if (i > 0 && !monochrome) {
-        canvas.drawRRect(
+      // Only the front card casts one, onto the two it overlaps. The other
+      // two have nothing behind them but the slab, where a shadow lands on a
+      // surface far enough away that it reads as grime rather than as depth.
+      if (isFront && !monochrome) {
+        canvas.drawPath(
           shape.shift(_cardShadowOffset),
           Paint()
             ..color = AppBrand.cardShadow
@@ -613,66 +397,81 @@ class ShotoBrandMarkPainter extends CustomPainter {
         );
       }
 
-      _fill(canvas, Path()..addRRect(shape), Paint()..color = colours[i]);
-
-      // The picture is skipped in a stencil. Cut out of the front card it
-      // would read as a hole rather than as a photograph, and at the size a
-      // themed icon is actually seen the sun and the hills are two specks.
-      if (i == 2 && !monochrome) _paintPhoto(canvas);
+      _fill(canvas, shape, Paint()..color = colours[i]);
+      if (isFront) _paintRules(canvas);
 
       if (layered) canvas.restore();
       canvas.restore();
     }
   }
 
-  /// The picture on the front card — the only place in the mark where SHOTO
-  /// says what it holds. The two cards behind it are blank on purpose: three
-  /// pictures at 48px is texture, one picture is a subject.
-  void _paintPhoto(Canvas canvas) {
-    const Rect frame = Rect.fromLTRB(-30, -25, 31, 28);
-    final RRect photo = RRect.fromRectAndRadius(
-      frame,
-      const Radius.circular(5),
-    );
+  Path _looseCardPath(Rect box) => Path()
+    ..addRRect(RRect.fromRectAndRadius(box, const Radius.circular(_cardRadius)));
 
-    canvas.drawRRect(photo, Paint()..color = AppBrand.photo);
+  /// The filed card: rounded everywhere except the top trailing corner, which
+  /// is cut straight off. Written out rather than composed from an [RRect]
+  /// because the chamfer is not a corner radius and every attempt to fake it
+  /// with one produces a soft nub instead of a cut.
+  Path _filedCardPath(Rect box) {
+    const double r = _cardRadius;
+    const double c = _frontCut;
 
-    canvas.save();
-    canvas.clipRRect(photo);
-
-    canvas.drawCircle(
-      const Offset(-2, -13),
-      6.5,
-      Paint()..color = AppBrand.photoSun,
-    );
-
-    // Both summits sit *above* the tray's rim, which is the whole reason the
-    // picture is legible at all. Everything below the rim is behind the front
-    // face, so hills drawn at a realistic height would be a landscape nobody
-    // ever sees — only the scoop would show a sliver of them.
-    final Path hills = Path()
-      ..moveTo(-30, 28)
-      ..lineTo(-10, -4)
-      ..lineTo(0, 9)
-      ..lineTo(12, -10)
-      ..lineTo(31, 16)
-      ..lineTo(31, 28)
+    return Path()
+      ..moveTo(box.left + r, box.top)
+      ..lineTo(box.right - c, box.top)
+      ..lineTo(box.right, box.top + c)
+      ..lineTo(box.right, box.bottom - r)
+      ..arcToPoint(
+        Offset(box.right - r, box.bottom),
+        radius: const Radius.circular(r),
+      )
+      ..lineTo(box.left + r, box.bottom)
+      ..arcToPoint(
+        Offset(box.left, box.bottom - r),
+        radius: const Radius.circular(r),
+      )
+      ..lineTo(box.left, box.top + r)
+      ..arcToPoint(
+        Offset(box.left + r, box.top),
+        radius: const Radius.circular(r),
+      )
       ..close();
+  }
 
-    canvas.drawPath(hills, Paint()..color = AppBrand.photoDeep);
-    // Stroked as well as filled, purely to round the summits. At the size an
-    // app icon is actually looked at, a sharp point is the one thing that
-    // reads as an artefact rather than as a drawing.
-    canvas.drawPath(
-      hills,
-      Paint()
-        ..color = AppBrand.photoDeep
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.8
-        ..strokeJoin = StrokeJoin.round,
-    );
+  /// Two short rules on the filed card — the only place in the mark where
+  /// Shoto says what it is holding.
+  ///
+  /// A picture was tried here and it is the wrong claim: a photograph says
+  /// *gallery*, which is the app Shoto deliberately is not. Two lines of
+  /// something written say *screenshot*, and they are what makes searching
+  /// inside a picture make sense as an idea before anybody has read a word
+  /// about it. The two cards behind are blank on purpose — three sets of rules
+  /// at 48px is texture, one is a subject.
+  void _paintRules(Canvas canvas) {
+    const double h = 3.4;
+    // Centred on the card rather than sitting in its lower third, where two
+    // short bars read as a caption under a picture that is not there.
+    const List<Rect> rules = [
+      Rect.fromLTWH(-12, -5, 24, h),
+      Rect.fromLTWH(-12, 3, 15, h),
+    ];
 
-    canvas.restore();
+    for (final Rect rule in rules) {
+      final Path path = Path()
+        ..addRRect(RRect.fromRectAndRadius(rule, const Radius.circular(h / 2)));
+
+      // In a stencil these are holes, not shapes. Running them through [_fill]
+      // cuts them out and then paints them back in the stencil's one colour,
+      // which leaves each bar outlined by its own clearance gap — a hairline
+      // ring around a black bar, at a size where the whole rule is three
+      // pixels tall.
+      canvas.drawPath(
+        path,
+        monochrome
+            ? (Paint()..blendMode = BlendMode.clear)
+            : (Paint()..color = AppBrand.rule),
+      );
+    }
   }
 
   static double _lerp(double a, double b, double t) => a + (b - a) * t;
@@ -685,19 +484,29 @@ class ShotoBrandMarkPainter extends CustomPainter {
       old.mark != mark ||
       old.backdropCornerRadius != backdropCornerRadius ||
       old.cards != cards ||
-      old.centre != centre;
+      old.monochrome != monochrome ||
+      old.centre != centre ||
+      old.slab != slab;
 }
 
 /// The brand mark at rest, sized to [size].
 ///
-/// This is the one to reach for anywhere in the app. The splash drives
-/// [ShotoBrandMarkPainter] directly, because it needs the cards to fly in
-/// through space this widget does not own.
+/// This is the one to reach for anywhere in the app. Anything that needs the
+/// cards to fly in through space this widget does not own drives
+/// [ShotoBrandMarkPainter] directly.
 class ShotoBrandMark extends StatelessWidget {
+  /// The slab's corner radius as a fraction of the mark's width.
+  ///
+  /// Exposed so anything drawing *around* the mark can be concentric with it.
+  /// The onboarding's share sheet puts a selection ring on it, and a ring with
+  /// a radius picked off the radius scale is a rounder shape around a squarer
+  /// one — visible at 38px as a ring that does not fit its icon.
+  static const double cornerRatio = _backdropRadius;
+
   final double size;
 
-  /// Off gives the tray and cards on transparency, for placing on a surface
-  /// that is already coloured.
+  /// Off gives the cards on transparency, for placing on a surface that is
+  /// already coloured.
   final bool backdrop;
 
   const ShotoBrandMark({super.key, this.size = 64, this.backdrop = true});

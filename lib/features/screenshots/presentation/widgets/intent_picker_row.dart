@@ -40,10 +40,19 @@ class IntentPickerRow extends StatefulWidget {
   final IntentRef? selected;
   final ValueChanged<IntentRef?> onChanged;
 
-  /// Whether to print the question above the chips.
+  /// Whether to print the label above the chips.
   ///
   /// On for the save sheet, where the row arrives unannounced. Off where the
   /// surrounding screen has already asked.
+  ///
+  /// **It is a label and not a question, deliberately.** On the save sheet
+  /// this row sits under the folder chips, and the folder is the one answer
+  /// that is actually required — asked by the button, which reads "Pick a
+  /// folder" until one is chosen. So the required half had no written prompt
+  /// and the optional half had the only question mark on the screen, which is
+  /// the hierarchy backwards: a question mark stops a hurried reader, and this
+  /// is the one they are free to walk past. `intentPrompt` names what the
+  /// chips are for and hands the choice back in the same breath.
   final bool showPrompt;
 
   const IntentPickerRow({
@@ -73,9 +82,10 @@ class _IntentPickerRowState extends State<IntentPickerRow> {
     return ListenableBuilder(
       listenable: _catalog,
       builder: (BuildContext context, Widget? child) {
-        final List<IntentRef> frontRow = _catalog.frontRow(
-          selected: widget.selected,
-        );
+        // Not passed the selection, and it no longer takes one: the row is
+        // ordered by this person's history and holds still while they use it.
+        // See [IntentCatalog.frontRow].
+        final List<IntentRef> frontRow = _catalog.frontRow();
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -83,8 +93,8 @@ class _IntentPickerRowState extends State<IntentPickerRow> {
             if (widget.showPrompt) ...<Widget>[
               Text(
                 context.l10n.intentPrompt,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
+                style: context.text.bodySmall.copyWith(
+                  color: context.colors.textSecondary,
                 ),
               ),
               SizedBox(height: 10.h),
@@ -181,10 +191,12 @@ class _IntentChip extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 13.w, vertical: 8.h),
             decoration: BoxDecoration(
               // The accent, not a per-intent hue — see IntentVisuals.tint.
-              color: isSelected ? AppColors.primary : AppColors.surfaceVariant,
+              color: isSelected
+                  ? context.colors.primary
+                  : context.colors.surfaceVariant,
               borderRadius: BorderRadius.circular(19.r),
               border: Border.all(
-                color: isSelected ? Colors.transparent : AppColors.border,
+                color: isSelected ? Colors.transparent : context.colors.border,
               ),
             ),
             child: Row(
@@ -194,16 +206,16 @@ class _IntentChip extends StatelessWidget {
                   icon,
                   size: 15.sp,
                   color: isSelected
-                      ? AppColors.onPrimary
-                      : AppColors.textSecondary,
+                      ? context.colors.onPrimary
+                      : context.colors.textSecondary,
                 ),
                 SizedBox(width: 7.w),
                 Text(
                   label,
-                  style: AppTextStyles.bodySmall.asMedium.copyWith(
+                  style: context.text.bodySmall.asMedium.copyWith(
                     color: isSelected
-                        ? AppColors.onPrimary
-                        : AppColors.textPrimary,
+                        ? context.colors.onPrimary
+                        : context.colors.textPrimary,
                   ),
                 ),
               ],

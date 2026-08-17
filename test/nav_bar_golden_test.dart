@@ -6,6 +6,7 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/widgets/app_bottom_nav_bar.dart';
 
 import 'support/test_fonts.dart';
+import 'support/test_theme.dart';
 
 /// The nav bar is the only frosted surface that is on screen all the time, so
 /// its blur is the only one charged to every scroll in the app. It was dropped
@@ -22,7 +23,8 @@ import 'support/test_fonts.dart';
 void main() {
   Future<void> renderBar(WidgetTester tester, Brightness brightness) async {
     await loadTestFonts();
-    AppColors.setBrightness(brightness);
+    final AppTypography type = testTypography(brightness);
+    final AppPalette palette = testPalette(brightness);
 
     tester.view.physicalSize = const Size(1080, 900);
     tester.view.devicePixelRatio = 3;
@@ -33,9 +35,10 @@ void main() {
         designSize: const Size(360, 690),
         minTextAdapt: true,
         builder: (context, _) => MaterialApp(
+          theme: testTheme(brightness),
           debugShowCheckedModeBanner: false,
           home: Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: palette.background,
             body: Stack(
               children: [
                 // Something with hard edges to blur, so the frost is visible
@@ -48,16 +51,16 @@ void main() {
                           child: Container(
                             width: double.infinity,
                             color: i.isEven
-                                ? AppColors.primary
-                                : AppColors.surfaceVariant,
+                                ? palette.primary
+                                : palette.surfaceVariant,
                             alignment: Alignment.centerLeft,
                             padding: const EdgeInsets.only(left: 16),
                             child: Text(
                               'a screenshot behind the bar $i',
-                              style: AppTextStyles.bodyMedium.copyWith(
+                              style: type.bodyMedium.copyWith(
                                 color: i.isEven
-                                    ? AppColors.onPrimary
-                                    : AppColors.textPrimary,
+                                    ? palette.onPrimary
+                                    : palette.textPrimary,
                               ),
                             ),
                           ),
@@ -109,7 +112,7 @@ void main() {
       find.byType(Stack).first,
       matchesGoldenFile('goldens/nav_bar_light.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 
   testWidgets('nav bar glass — dark', (WidgetTester tester) async {
     await renderBar(tester, Brightness.dark);
@@ -117,5 +120,5 @@ void main() {
       find.byType(Stack).first,
       matchesGoldenFile('goldens/nav_bar_dark.png'),
     );
-  }, skip: !autoUpdateGoldenFiles);
+  });
 }

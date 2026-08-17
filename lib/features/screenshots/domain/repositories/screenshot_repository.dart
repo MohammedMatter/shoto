@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:photo_manager/photo_manager.dart';
 import 'package:shoto/core/utils/screenshot_intent.dart';
+import 'package:shoto/features/screenshots/domain/entities/library_summary.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 
 /// Everything here is scoped to the signed-in account.
@@ -19,6 +20,13 @@ abstract class ScreenshotRepository {
   /// to call from an app-lifecycle listener.
   Future<PermissionState> checkPermission();
   Future<List<ScreenshotEntity>> getAllScreenshots();
+
+  /// The counts behind Home's inbox, read from the local tables alone.
+  ///
+  /// The cheap half of [getAllScreenshots], split out so the first screen has
+  /// something true to draw while the gallery enumeration it cannot avoid is
+  /// still running. See [LibrarySummary] for why that split is sound.
+  Future<LibrarySummary> getLibrarySummary();
   Future<List<ScreenshotEntity>> getScreenshotsByFolder(int folderId);
   Stream<void> get onLibraryChanged;
   Future<void> setFavorite(String assetId, bool isFavorite);
@@ -38,6 +46,31 @@ abstract class ScreenshotRepository {
 
   /// Ticks an intent off, or puts it back on the waiting list.
   Future<void> setIntentDone(String assetId, bool isDone);
+
+  /// Sets or clears when the user should be brought back to a screenshot.
+  ///
+  /// Null [at] cancels, and then [title] and [body] are ignored.
+  ///
+  /// **The stored row and the platform alarm are set together, here**, because
+  /// a caller that wrote one and forgot the other leaves either a reminder
+  /// that never rings or one that rings about a screenshot the app no longer
+  /// believes is due. [title] and [body] arrive already translated: the text
+  /// has to come from a widget that can reach the ARB strings, and the alarm
+  /// has to be armed from a layer that cannot.
+  ///
+  /// Returns whether the reminder will actually be seen — false when Shoto's
+  /// notifications are switched off at the system level, which is worth
+  /// telling the user at the moment they set it rather than at the moment it
+  /// silently does not arrive.
+  Future<bool> setReminder(
+    String assetId,
+    DateTime? at, {
+    String title,
+    String body,
+  });
+
+  /// Every reminder still ahead, as `assetId -> when`.
+  Future<Map<String, DateTime>> getPendingReminders();
 
   /// The verbs this account wrote for itself, in picker order.
   Future<List<CustomIntent>> getCustomIntents();
@@ -67,7 +100,12 @@ abstract class ScreenshotRepository {
   /// Decides which five the picker offers without configuration.
   Future<List<String>> getIntentIdsByRecentUse();
 
-  Future<void> deleteScreenshots(List<String> assetIds);
+  /// Deletes what the OS allows, and returns the ids that actually went.
+  ///
+  /// Not `void`: the system delete prompt can be refused, and a caller that
+  /// assumes success drops a screenshot from the library that is still on the
+  /// phone.
+  Future<List<String>> deleteScreenshots(List<String> assetIds);
 
   /// The screenshots with these ids that belong to the current account,
   /// in the order given. Ids the account doesn't own are simply absent.
@@ -77,7 +115,7 @@ abstract class ScreenshotRepository {
   /// id of the resulting asset.
   ///
   /// [sourceAssetId] is the gallery id the file came from, when the caller
-  /// knows it. If that image is already sitting in SHOTO's album — because
+  /// knows it. If that image is already sitting in Shoto's album — because
   /// another account imported it — it is added to this account's library as
   /// it stands instead of a second identical file being written.
   Future<String> importSharedFile(String filePath, {String? sourceAssetId});
@@ -95,7 +133,24 @@ abstract class ScreenshotRepository {
   /// not take the rest of the batch down with it.
   Future<int> importPickedFiles(List<String> filePaths);
 
-  /// Saves image bytes SHOTO produced itself (a stitched long screenshot,
+  /// Screen captures taken since [since] that the user has not answered about
+  /// yet, oldest first — the triage queue.
+  ///
+  /// This is the one read in the app that looks outside Shoto's own album, and
+  /// it *offers* rather than imports: nothing here is in the library until
+  /// [keepCaptures] is called with it. Only reached when the user has switched
+  /// the queue on. See `ScreenshotGalleryDataSource`.
+  Future<List<AssetEntity>> getNewCaptures({required DateTime since});
+
+  /// Brings the given device captures into the library.
+  ///
+  /// The same operation as importing a picked file, deliberately: a copy into
+  /// Shoto's album, leaving the user's original screenshot exactly where it
+  /// was. Nothing in this app moves or deletes a picture the user did not put
+  /// here.
+  Future<int> keepCaptures(List<String> assetIds);
+
+  /// Saves image bytes Shoto produced itself (a stitched long screenshot,
   /// for instance) into the current account's library.
   Future<String> saveGeneratedImage(
     Uint8List bytes, {
@@ -109,9 +164,9 @@ abstract class ScreenshotRepository {
   /// The id of the screenshot the *current account's* library already holds
   /// for [assetId], or null.
   ///
-  /// Used by the share sheet to tell "a screenshot already in your SHOTO"
+  /// Used by the share sheet to tell "a screenshot already in your Shoto"
   /// apart from "an image to import". Without it, sharing your own screenshot
-  /// back into SHOTO wrote a duplicate of something already on screen — and
+  /// back into Shoto wrote a duplicate of something already on screen — and
   /// scoping it per account matters just as much, since an image another
   /// account imported is not yet in yours.
   Future<String?> findLibraryAsset(String assetId);

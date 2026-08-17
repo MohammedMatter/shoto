@@ -34,15 +34,41 @@ abstract class AppBlur {
   static const double panel = 16;
   static const double dialog = 12;
 
-  /// For sheets that cover most of the screen.
+  /// Chrome floating over a full-screen photograph: **no blur.**
   ///
-  /// Blur cost scales with area, and a near-full-screen panel re-blurs that
-  /// area on every frame of its entrance — so the surfaces that can least
-  /// afford [panel] are exactly the ones large enough to make it visible.
-  /// Frosting reads by *proportion* to the surface it sits on, and at this
-  /// size a lighter sigma is indistinguishable in a still while being
-  /// distinctly cheaper in motion.
-  static const double tallSheet = 10;
+  /// The photo viewer is the one screen where the thing behind the glass is a
+  /// full-resolution screenshot filling the display, and it carries three
+  /// pieces of chrome at once. Measured on a real phone in a profile build,
+  /// that screen cost 20–23ms of raster per frame *by itself*, before any
+  /// sheet was opened on top of it — over a 16.6ms budget with nothing else
+  /// happening. Sharing one backdrop between the three
+  /// ([BackdropGroup]) cut the spikes and left that baseline where it was: one
+  /// blur of a screen-sized picture is simply ~20ms on this class of GPU.
+  ///
+  /// So the chrome over a photograph stops blurring and leans on its fill
+  /// instead, which is where its legibility came from in the first place —
+  /// see `PhotoChromePalette`, whose alphas are set by the worst case rather
+  /// than the pretty one. What is lost is the picture *softening* under the
+  /// bars; what is bought is the entire screen back under budget. On a surface
+  /// whose whole job is to show somebody a picture, that is not a close call.
+  static const double overPhoto = 0;
+
+  /// For sheets that cover most of the screen: **no backdrop blur at all.**
+  ///
+  /// This was 10, down from 16, on the argument that a lighter sigma over a
+  /// large area is invisible in a still and cheaper in motion. Measured on a
+  /// real phone, that argument finishes one step further along than it was
+  /// taken: the surfaces this applies to are 82–90% opaque *and* cover four
+  /// fifths of the screen, so the backdrop contributes a few percent of the
+  /// pixels while costing ~60ms of GPU time a frame — four frames' worth of
+  /// budget for something you cannot point to in a screenshot.
+  ///
+  /// A sheet that big is not a pane you see the room through, it is a page.
+  /// So it stops pretending: no blur, and [SheetSurface] compensates by
+  /// closing the fill to nearly opaque, which is what the eye reads as
+  /// *material* anyway. The small sheets keep their frost, where it is both
+  /// visible and affordable.
+  static const double tallSheet = 0;
 }
 
 /// A frosted region: the clip and the blur, and nothing else.
@@ -80,15 +106,48 @@ class GlassLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BorderRadius shape = borderRadius ?? BorderRadius.circular(radius!);
+    final double resolved = sigma.clamp(0, AppBlur.max);
+
+    // **No filter at all rather than a filter that blurs by nothing.**
+    //
+    // A [BackdropFilter] costs a `saveLayer` and a full filter pass over its
+    // region whether or not the blur it applies amounts to anything, so a zero
+    // sigma is not a cheap blur — it is the entire cost of one, for no visible
+    // effect. Returning the clip on its own is what makes a sigma of zero
+    // genuinely mean *do not do this*, which is what a travelling sheet needs
+    // it to mean. See `SheetSurface`, which spends the whole of its entrance
+    // here.
+    if (resolved <= 0) return ClipRRect(borderRadius: shape, child: child);
+
+    final ImageFilter blur = ImageFilter.blur(
+      sigmaX: resolved,
+      sigmaY: resolved,
+    );
+
+    // **Share one backdrop with the other glass in the same group, when there
+    // is one.**
+    //
+    // Three separate `BackdropFilter`s over one photograph — which is exactly
+    // what the photo viewer is, with a top bar, an intent bar and an action
+    // bar — each snapshot the screen behind them and blur it independently.
+    // The three snapshots are of the *same* picture, so two of the three are
+    // work done twice. A [BackdropGroup] makes them sample one shared layer
+    // instead.
+    //
+    // Grouping is opt-in from above rather than assumed here, because it is
+    // only correct when the surfaces genuinely share a backdrop: a grouped
+    // filter reads what was painted *before the group*, so a piece of glass
+    // that is supposed to blur a sibling drawn beside it would come out blank.
+    // Asking whether an ancestor has declared a group is what keeps that
+    // decision where the layout is known.
+    final bool shared = BackdropGroup.of(context) != null;
+
     return ClipRRect(
-      borderRadius: borderRadius ?? BorderRadius.circular(radius!),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: sigma.clamp(0, AppBlur.max),
-          sigmaY: sigma.clamp(0, AppBlur.max),
-        ),
-        child: child,
-      ),
+      borderRadius: shape,
+      child: shared
+          ? BackdropFilter.grouped(filter: blur, child: child)
+          : BackdropFilter(filter: blur, child: child),
     );
   }
 }
@@ -147,7 +206,7 @@ class GlassRim extends StatelessWidget {
         borderRadius: borderRadius,
         color:
             color ??
-            Colors.white.withValues(alpha: AppColors.isDark ? 0.11 : 0.6),
+            Colors.white.withValues(alpha: context.colors.isDark ? 0.11 : 0.6),
         falloff: falloff,
       ),
       child: child,

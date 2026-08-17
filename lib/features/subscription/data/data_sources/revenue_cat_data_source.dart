@@ -42,6 +42,40 @@ class RevenueCatDataSource {
     }
   }
 
+  /// Attaches this device's entitlements to an account id.
+  ///
+  /// RevenueCat's own recommended flow, and the reason the app can stay
+  /// anonymous until somebody wants an account: `logIn` **aliases** the
+  /// anonymous id rather than replacing it, so a purchase made before signing
+  /// in follows the user into their account instead of being stranded on a
+  /// device id.
+  ///
+  /// This is what makes a subscription survive a new phone with a *different*
+  /// Google account — the entitlement is then keyed to something the store
+  /// does not own. See [AccountService].
+  Future<void> logIn(String accountId) async {
+    if (!_configured) return;
+    try {
+      await Purchases.logIn(accountId);
+    } catch (error) {
+      debugPrint('RevenueCat: logIn failed: $error');
+    }
+  }
+
+  /// Detaches the account, leaving this device anonymous again.
+  ///
+  /// The entitlement stays with the account on RevenueCat's side; signing back
+  /// in brings it back. Signing out of Shoto does not cancel anything, and
+  /// nothing local is touched — the library belongs to the device.
+  Future<void> logOut() async {
+    if (!_configured) return;
+    try {
+      await Purchases.logOut();
+    } catch (error) {
+      debugPrint('RevenueCat: logOut failed: $error');
+    }
+  }
+
   Future<CustomerInfo?> getCustomerInfo() async {
     if (!_configured) return null;
     try {

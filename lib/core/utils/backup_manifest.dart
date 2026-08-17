@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-/// Raised when a file does not describe a SHOTO backup at all, or describes
+/// Raised when a file does not describe a Shoto backup at all, or describes
 /// one this build cannot safely read.
 ///
 /// Deliberately separate from "some entries were unusable": a manifest that
@@ -134,7 +134,7 @@ class BackupItem {
   /// Index into [BackupManifest.customIntents], or null.
   ///
   /// Mutually exclusive with [intentId]: a screenshot has one intent, and it
-  /// is either one SHOTO ships or one the user wrote.
+  /// is either one Shoto ships or one the user wrote.
   final int? customIntentIndex;
 
   /// When the user ticked this intent off, or null while it is still waiting.
@@ -247,7 +247,7 @@ class BackupParseResult {
   bool get isComplete => skippedItems == 0 && skippedFolders == 0;
 }
 
-/// The index of a SHOTO backup: what is in the archive and how it was filed.
+/// The index of a Shoto backup: what is in the archive and how it was filed.
 ///
 /// **Nothing here is a database id.** Asset ids are MediaStore ids, which
 /// belong to one device and are reassigned when an image is imported
@@ -333,7 +333,7 @@ class BackupManifest {
 
     if (root is! Map) throw const BackupFormatException('not an object');
     if (root['kind'] != kind) {
-      throw const BackupFormatException('not a SHOTO backup');
+      throw const BackupFormatException('not a Shoto backup');
     }
 
     final int? version = _asInt(root['version']);
@@ -345,7 +345,7 @@ class BackupManifest {
       // a flag this build has no idea about, and a "best effort" restore of a
       // format we do not know is how a backup quietly loses half of itself.
       throw BackupFormatException(
-        'made by a newer version of SHOTO (format $version)',
+        'made by a newer version of Shoto (format $version)',
       );
     }
 

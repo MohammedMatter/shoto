@@ -16,7 +16,7 @@ import 'package:shoto/core/widgets/glass_layer.dart';
 /// Asks for the four-digit code that turns the developer unlock on.
 ///
 /// Returns true once it is on. Styled like [showConfirmDialog] so it reads as
-/// part of SHOTO rather than a debug panel bolted on — this dialog can appear
+/// part of Shoto rather than a debug panel bolted on — this dialog can appear
 /// in a release build, and anything that looks like a leftover test screen
 /// makes the app feel unfinished.
 Future<bool> showDevUnlockDialog(BuildContext context) async {
@@ -79,8 +79,8 @@ class _DevUnlockDialogState extends State<_DevUnlockDialog> {
           child: Container(
             padding: EdgeInsets.fromLTRB(22.w, 24.h, 22.w, 18.h),
             decoration: BoxDecoration(
-              color: AppColors.surface.withValues(alpha: 0.92),
-              border: Border.all(color: AppColors.border),
+              color: context.colors.surface.withValues(alpha: 0.92),
+              border: Border.all(color: context.colors.border),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -89,25 +89,25 @@ class _DevUnlockDialogState extends State<_DevUnlockDialog> {
                   width: 54.w,
                   height: 54.w,
                   decoration: BoxDecoration(
-                    gradient: AppColors.brandGradient,
+                    gradient: context.colors.brandGradient,
                     borderRadius: BorderRadius.circular(17.r),
                   ),
                   child: Icon(
                     Icons.terminal_rounded,
-                    color: AppColors.onPrimary,
+                    color: context.colors.onPrimary,
                     size: 26.sp,
                   ),
                 ),
                 SizedBox(height: 15.h),
                 Text(
                   context.l10n.devAccessTitle,
-                  style: AppTextStyles.titleLarge,
+                  style: context.text.titleLarge,
                 ),
                 SizedBox(height: 5.h),
                 Text(
                   context.l10n.devAccessBody,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.bodySmall,
+                  style: context.text.bodySmall,
                 ),
                 SizedBox(height: 18.h),
                 TextField(
@@ -122,18 +122,18 @@ class _DevUnlockDialogState extends State<_DevUnlockDialog> {
                     if (_wrong) setState(() => _wrong = false);
                   },
                   onSubmitted: (_) => _submit(),
-                  style: AppTextStyles.headlineMedium.copyWith(
+                  style: context.text.headlineMedium.copyWith(
                     letterSpacing: 12,
                   ),
                   decoration: InputDecoration(
                     counterText: '',
                     hintText: '••••',
-                    hintStyle: AppTextStyles.headlineMedium.copyWith(
-                      color: AppColors.textDisabled,
+                    hintStyle: context.text.headlineMedium.copyWith(
+                      color: context.colors.textDisabled,
                       letterSpacing: 12,
                     ),
                     filled: true,
-                    fillColor: AppColors.surfaceVariant,
+                    fillColor: context.colors.surfaceVariant,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15.r),
                       borderSide: BorderSide.none,
@@ -141,7 +141,9 @@ class _DevUnlockDialogState extends State<_DevUnlockDialog> {
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15.r),
                       borderSide: BorderSide(
-                        color: _wrong ? AppColors.error : Colors.transparent,
+                        color: _wrong
+                            ? context.colors.error
+                            : Colors.transparent,
                         width: 1.5,
                       ),
                     ),
@@ -152,8 +154,8 @@ class _DevUnlockDialogState extends State<_DevUnlockDialog> {
                   SizedBox(height: 8.h),
                   Text(
                     context.l10n.devWrongCode,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.error,
+                    style: context.text.bodySmall.copyWith(
+                      color: context.colors.error,
                     ),
                   ),
                 ],
@@ -168,13 +170,13 @@ class _DevUnlockDialogState extends State<_DevUnlockDialog> {
                           height: 48.h,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceVariant,
+                            color: context.colors.surfaceVariant,
                             borderRadius: BorderRadius.circular(15.r),
                           ),
                           child: Text(
                             context.l10n.commonCancel,
-                            style: AppTextStyles.button.copyWith(
-                              color: AppColors.textSecondary,
+                            style: context.text.button.copyWith(
+                              color: context.colors.textSecondary,
                             ),
                           ),
                         ),
@@ -189,13 +191,13 @@ class _DevUnlockDialogState extends State<_DevUnlockDialog> {
                           height: 48.h,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                            gradient: AppColors.primaryGradient,
+                            gradient: context.colors.primaryGradient,
                             borderRadius: BorderRadius.circular(15.r),
                           ),
                           child: Text(
                             context.l10n.commonUnlock,
-                            style: AppTextStyles.button.copyWith(
-                              color: AppColors.onPrimary,
+                            style: context.text.button.copyWith(
+                              color: context.colors.onPrimary,
                             ),
                           ),
                         ),

@@ -1,0 +1,1256 @@
+{
+  "@@locale": "it",
+  "settingsCrashReports": "Segnalazioni di arresto",
+  "settingsCrashReportsHint": "Invia dettagli tecnici quando qualcosa va storto",
+  "settingsOnboarding": "Rivedi l'introduzione",
+  "settingsOnboardingHint": "Riproduci di nuovo la sequenza iniziale",
+  "settingsSignOut": "Esci",
+  "settingsSignOutTitle": "Vuoi uscire?",
+  "authWelcome": "Benvenuto in Shoto",
+  "authWhy": "Non tutto quello che salvi merita lo stesso scaffale. Shoto dà agli screenshot a cui tieni davvero un posto tutto loro.",
+  "authGoogle": "Continua con Google",
+  "authApple": "Continua con Apple",
+  "authLegal": "Continuando accetti i nostri Termini di servizio e l'Informativa sulla privacy.",
+  "settingsAccount": "Account",
+  "settingsSignOutHint": "I tuoi screenshot restano su questo dispositivo",
+  "settingsSignIn": "Accedi",
+  "settingsSignInHint": "Facoltativo. Serve solo per spostare un acquisto su un altro telefono.",
+  "paywallTrialCta": "{days, plural, =1{Inizia 1 giorno gratis} other{Inizia {days} giorni gratis}}",
+  "@paywallTrialCta": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallTrialNote": "{days, plural, =1{Gratis per un giorno, poi {price}. Puoi annullare quando vuoi prima della fine.} other{Gratis per {days} giorni, poi {price}. Puoi annullare quando vuoi prima della fine.}}",
+  "@paywallTrialNote": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "triageTitle": "Dall'ultima volta",
+  "triageBody": "Tieni ciò che ha senso in Shoto. Tutto il resto resta esattamente dov'è.",
+  "triageKeep": "Tieni",
+  "triageSkip": "Salta",
+  "triageFinish": "Fatto",
+  "triageProgress": "{index} di {total}",
+  "@triageProgress": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "triageNewCount": "{count, plural, =1{1 nuovo screenshot} other{{count} nuovi screenshot}}",
+  "@triageNewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "triageKept": "{count, plural, =0{Niente tenuto} =1{1 tenuto} other{{count} tenuti}}",
+  "@triageKept": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "triageReview": "Rivedi",
+  "triageInviteDecline": "Non ora",
+  "triageInviteTitle": "Mostrare qui i nuovi screenshot?",
+  "triageInviteBody": "Shoto può elencare ciò che catturi d'ora in poi, così tieni i pochi che contano. Nulla entra nella tua libreria finché non lo decidi tu.",
+  "triageInviteAccept": "Mostrali",
+  "triageInviteDismiss": "No, grazie",
+  "settingsTriage": "Proponi i nuovi screenshot",
+  "settingsTriageHint": "Mostra quello che catturi; da solo non tiene nulla",
+  "settingsCaptureAlerts": "Avvisami subito",
+  "settingsCaptureAlertsHint": "Una notifica discreta subito dopo lo scatto",
+  "settingsCaptureAlertsMuted": "Le notifiche di Shoto sono disattivate — attivale nelle impostazioni del telefono",
+  "settingsCaptureAlertsStopped": "Android ha interrotto i controlli. Apri Shoto una volta per riavviarli",
+  "settingsCaptureAlertsWaiting": "In ascolto. Ancora nessuno scatto",
+  "settingsCaptureAlertsLastRun": "Ultimo controllo {when}",
+  "@settingsCaptureAlertsLastRun": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "timeAgoMinutes": "{count} min fa",
+  "@timeAgoMinutes": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "timeAgoHours": "{count} h fa",
+  "@timeAgoHours": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "timeAgoDays": "{count} g fa",
+  "@timeAgoDays": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "settingsQuickTile": "Riquadro impostazioni rapide",
+  "settingsQuickTileHint": "Salva l’ultimo screenshot senza aprire il menu di condivisione",
+  "settingsQuickTileAdded": "Aggiunto alle impostazioni rapide",
+  "settingsQuickTileManual": "Aggiungilo a mano: apri le impostazioni rapide, tocca modifica e trascina dentro il riquadro di Shoto.",
+  "settingsQuickTileSheetTitle": "Due gesti, da qualsiasi app",
+  "settingsQuickTileSheetBody": "Shoto può stare nelle Impostazioni rapide del telefono, accanto alla torcia. Un tocco archivia lo screenshot appena fatto: senza aprire l'app e senza scorrere il menu di condivisione.",
+  "settingsQuickTileStepPull": "Scorri dall'alto in qualsiasi schermata",
+  "settingsQuickTileStepTap": "Tocca il riquadro Shoto: l'ultimo screenshot è archiviato",
+  "settingsQuickTileStepStays": "Resta sempre nello stesso posto, a differenza del menu di condivisione",
+  "settingsQuickTileAdd": "Aggiungi il riquadro",
+  "settingsQuickTileNote": "Legge solo lo screenshot appena fatto. Niente esce dal telefono.",
+  "folderIconsBasics": "Base",
+  "folderIconsWork": "Lavoro",
+  "folderIconsMoney": "Denaro",
+  "folderIconsTravel": "Viaggi",
+  "folderIconsHome": "Casa e salute",
+  "folderIconsMedia": "Media",
+  "folderIconsPeople": "Persone",
+  "folderIconsSymbols": "Simboli",
+  "folderIconsSocial": "Social",
+  "folderIconsApps": "App",
+  "quickTileOfferTitle": "Salva senza il menu di condivisione",
+  "quickTileOfferBody": "Aggiungi una scorciatoia per il tuo ultimo screenshot",
+  "triageNothingNew": "Niente di nuovo da rivedere",
+  "reminderTitle": "Ricordamelo",
+  "reminderLaterToday": "Più tardi oggi",
+  "reminderThisEvening": "Stasera",
+  "reminderTomorrow": "Domani mattina",
+  "reminderNextWeek": "La prossima settimana",
+  "reminderPickTime": "Scegli un orario",
+  "reminderConfirm": "Imposta promemoria",
+  "reminderOtherDay": "Un altro giorno",
+  "reminderClear": "Rimuovi il promemoria",
+  "reminderNotificationTitle": "Shoto",
+  "reminderMuted": "Le notifiche sono disattivate, quindi non ti arriverà — attivale nelle impostazioni del telefono.",
+  "reminderUnsupported": "Per ora i promemoria sono disponibili solo su Android.",
+  "reminderSet": "Promemoria impostato per {when}",
+  "@reminderSet": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderPending": "Promemoria per {when}",
+  "@reminderPending": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderNotificationBody": "Volevi tornare su questo screenshot",
+  "remindersTitle": "Promemoria",
+  "remindersMissed": "Persi",
+  "remindersUpcoming": "In arrivo",
+  "remindersNoneTitle": "Nessun promemoria",
+  "remindersNoneBody": "Apri le azioni di uno screenshot e scegli «Ricordamelo» per tornarci più tardi.",
+  "remindersClearOne": "Rimuovi",
+  "remindersCount": "{count, plural, =1{1 promemoria} other{{count} promemoria}}",
+  "@remindersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersMissedCount": "{count, plural, =1{1 perso} other{{count} persi}}",
+  "@remindersMissedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersNextAt": "Prossimo {when}",
+  "@remindersNextAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderPastTime": "Quell’orario è già passato: scegline uno successivo.",
+  "commonCancel": "Annulla",
+  "commonDelete": "Elimina",
+  "commonRetry": "Riprova",
+  "commonSomethingWentWrong": "Qualcosa è andato storto",
+  "commonPro": "PRO",
+  "navHome": "Home",
+  "navLibrary": "Libreria",
+  "navFolders": "Cartelle",
+  "navSettings": "Impostazioni",
+  "tagline": "I tuoi screenshot, in ordine",
+  "homeGreetingMorning": "Buongiorno",
+  "homeGreetingAfternoon": "Buon pomeriggio",
+  "homeGreetingEvening": "Buonasera",
+  "homeInboxEmpty": "Ancora niente di salvato",
+  "homeInboxEmptySubtitle": "Scegline qualcuno dal telefono adesso, oppure condividi uno screenshot in Shoto da qualsiasi app.",
+  "homeEmptyImportCta": "Scegli dal mio telefono",
+  "homeNeedsYou": "Ti aspetta",
+  "homeInboxClear": "Tutto archiviato",
+  "homeInboxClearSubtitle": "Niente in attesa di essere sistemato",
+  "homeInboxCountSubtitle": "Screenshot che non hai ancora archiviato",
+  "homeStatScreenshots": "Screenshot",
+  "homeStatFavorites": "Preferiti",
+  "homeStatFolders": "Cartelle",
+  "homeToolsTitle": "Strumenti",
+  "homeToolsTitleEmpty": "Comincia da qui",
+  "homeToolSafeShare": "Safe share",
+  "homeToolSafeShareSubtitle": "Prima nascondi i dati privati",
+  "homeToolDuplicates": "Trova i doppioni",
+  "homeToolDuplicatesSubtitle": "Libera spazio",
+  "homeToolSearch": "Cerca dentro",
+  "homeToolSearchSubtitle": "Trova il testo nelle tue immagini",
+  "homeToolStitch": "Unisci scatti lunghi",
+  "homeToolStitchSubtitle": "Ricomponi una cattura a scorrimento",
+  "homeRecent": "Recenti",
+  "libraryPickForMerge": "Scegli due o più scatti della stessa pagina",
+  "libraryPickForProtect": "Scegli lo screenshot da proteggere",
+  "libraryActionProtect": "Proteggi",
+  "homeSeeAll": "Vedi tutti",
+  "libraryEmptyTitle": "Ancora niente di salvato",
+  "libraryEmptyMessage": "Condividi uno screenshot con Shoto, o aggiungine uno con il pulsante +. La tua galleria non viene mai letta: si tiene solo quello che consegni.",
+  "libraryNoFavoritesTitle": "Ancora nessun preferito",
+  "libraryNoFavoritesMessage": "Tocca il cuore su uno screenshot per salvarlo qui.",
+  "libraryFilterAll": "Tutti",
+  "libraryFilterFavorites": "Preferiti",
+  "libraryTraitSensitive": "Sensibili",
+  "libraryTraitLink": "Link",
+  "libraryTraitContact": "Telefono o e-mail",
+  "libraryTraitCode": "Codici",
+  "libraryTraitEvent": "Date",
+  "libraryCertaintyVerified": "Verificato con checksum",
+  "libraryCertaintyRead": "Letto dal testo nei tuoi screenshot",
+  "libraryLensNoteWithUnread": "{basis} · {count} non ancora letti",
+  "@libraryLensNoteWithUnread": {
+    "placeholders": {
+      "basis": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryNoTraitTitle": "Nessuno screenshot con {trait}",
+  "@libraryNoTraitTitle": {
+    "placeholders": {
+      "trait": {
+        "type": "String"
+      }
+    }
+  },
+  "libraryNoTraitMessage": "Nessuno screenshot già letto ne contiene.",
+  "libraryNoTraitUnreadMessage": "Niente trovato in ciò che è stato letto. {count} screenshot non sono mai stati letti, quindi non possono ancora corrispondere.",
+  "@libraryNoTraitUnreadMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryShowAll": "Mostra tutti",
+  "libraryFilterUnsorted": "Da sistemare",
+  "libraryNoUnsortedTitle": "È tutto archiviato",
+  "libraryNoUnsortedMessage": "Niente ti aspetta. I nuovi screenshot restano qui finché non li archivi o li segni.",
+  "librarySelectedCount": "{count} selezionati",
+  "@librarySelectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "librarySelectAll": "Seleziona tutto",
+  "librarySelect": "Seleziona",
+  "librarySelectPrompt": "Seleziona gli scatti",
+  "libraryActionMerge": "Unisci",
+  "libraryActionMove": "Sposta",
+  "libraryActionDelete": "Elimina",
+  "libraryDeleteTitle": "Eliminare gli screenshot?",
+  "libraryDeleteMessage": "{count, plural, =1{Questo eliminerà definitivamente 1 screenshot dal tuo dispositivo.} other{Questo eliminerà definitivamente {count} screenshot dal tuo dispositivo.}}",
+  "@libraryDeleteMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "permissionNeededTitle": "Serve l'accesso alle foto",
+  "permissionNeededMessage": "Shoto tiene gli screenshot che condividi al suo interno in un album tutto suo. Gli serve l'accesso alle foto per scriverci e rileggerli: il resto della tua galleria non viene mai elencato.",
+  "permissionAskTitle": "Shoto deve vedere il suo album di screenshot",
+  "permissionAskMessage": "Solo quell’album, e solo per elencare ciò che contiene. Nulla viene caricato online, e nulla entra nella tua libreria finché non lo scegli tu.",
+  "permissionAllow": "Consenti accesso",
+  "permissionPartialTitle": "Serve l'accesso completo alle foto",
+  "permissionPartialMessage": "Al momento Shoto vede solo poche foto che hai scelto a mano, quindi non riesce a raggiungere il suo album. Scegli «Consenti tutte» nel permesso foto per continuare.",
+  "permissionOpenSettings": "Apri Impostazioni",
+  "settingsTitle": "Impostazioni",
+  "settingsAppearance": "Aspetto",
+  "settingsTheme": "Tema",
+  "settingsThemeSystem": "Sistema",
+  "settingsThemeLight": "Chiaro",
+  "settingsThemeDark": "Scuro",
+  "settingsGridDensity": "Densità griglia",
+  "settingsAppearanceHint": "Tema, colore d'accento e dimensione della griglia",
+  "appearanceTint": "Colore d'accento",
+  "appearanceTintHint": "Pulsanti, interruttori e tutto ciò che è selezionato.",
+  "appearancePreview": "Anteprima",
+  "tintTeal": "Petrolio",
+  "tintSlate": "Ardesia",
+  "tintIndigo": "Indaco",
+  "tintPlum": "Prugna",
+  "tintRose": "Rosa",
+  "tintEmber": "Brace",
+  "tintAmber": "Ambra",
+  "tintMoss": "Muschio",
+  "tintGarnet": "Granato",
+  "tintBrass": "Ottone",
+  "tintFern": "Felce",
+  "tintJade": "Giada",
+  "tintOlive": "Oliva",
+  "tintCyan": "Ciano",
+  "tintDenim": "Denim",
+  "tintViolet": "Viola",
+  "tintSky": "Cielo",
+  "tintOrchid": "Orchidea",
+  "tintFuchsia": "Fucsia",
+  "tintClay": "Argilla",
+  "tintGraphite": "Grafite",
+  "appearanceMoreColors": "Altri colori",
+  "appearanceSelectTint": "Scegli il colore d'accento",
+  "appearanceFolders": "Schede delle cartelle",
+  "appearanceFolderCount": "Numero di scatti",
+  "appearanceFolderDate": "Data di creazione",
+  "appearanceFolderSize": "Schede per riga",
+  "appearanceLibrary": "Griglia della libreria",
+  "appIcon": "Icona dell'app",
+  "appIconDefault": "Originale",
+  "appIconHint": "Cambiarla chiude Shoto per un istante, mentre Android sostituisce l'icona.",
+  "settingsLanguage": "Lingua",
+  "settingsLanguageSystem": "Come il telefono",
+  "settingsLanguageSystemHint": "Ora mostra {language}",
+  "@settingsLanguageSystemHint": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsBehaviour": "Comportamento",
+  "settingsHaptics": "Feedback aptico",
+  "settingsHapticsHint": "Un piccolo tocco quando premi",
+  "settingsConfirmDelete": "Chiedi prima di eliminare",
+  "settingsConfirmDeleteHint": "L'eliminazione non si può annullare",
+  "settingsFindDuplicates": "Trova i doppioni",
+  "settingsClearCache": "Svuota la cache immagini",
+  "settingsShare": "Condividi Shoto",
+  "settingsPrivacyNote": "Shoto tiene solo gli screenshot che gli dai, e tutto quello che ci fa — leggere il testo, trovare i doppioni — avviene su questo dispositivo. Le tue immagini non vengono mai caricate. Tre cose le attivi tu: proporre i nuovi screenshot legge il tuo album Screenshot per poterteli chiedere, un account invia solo il tuo indirizzo e-mail perché l'abbonamento sopravviva a un cambio di telefono, e le segnalazioni di arresto inviano ciò che si è rotto — il codice, mai un'immagine.",
+  "commonSave": "Salva",
+  "commonConfirm": "Conferma",
+  "commonRename": "Rinomina",
+  "commonShare": "Condividi",
+  "commonUnlock": "Sblocca",
+  "foldersEmptyTitle": "Ancora nessuna cartella",
+  "foldersEmptyMessage": "Le cartelle sono il modo per ritrovare le cose dopo. Falne una per gli scontrini, una per le ricette — quello che cerchi davvero.",
+  "foldersNew": "Nuova cartella",
+  "foldersCreate": "Crea cartella",
+  "foldersNameLabel": "Nome cartella",
+  "foldersNameHint": "Scontrini, Ricette, Lavoro…",
+  "foldersPrivate": "Privata (blocco con volto o impronta)",
+  "foldersPrivateFace": "Privata (blocco con volto)",
+  "foldersPrivateFingerprint": "Privata (blocco con impronta)",
+  "foldersPrivateGeneric": "Privata (bloccata)",
+  "foldersOptions": "Opzioni cartella",
+  "foldersDelete": "Elimina cartella",
+  "foldersDeleteKept": "Gli screenshot dentro restano",
+  "foldersDeleteTitle": "Eliminare «{name}»?",
+  "@foldersDeleteTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "foldersDeleteMessage": "La cartella viene rimossa ma gli screenshot dentro restano nella tua libreria.",
+  "foldersEditTitle": "Modifica cartella",
+  "foldersSearchHint": "Cerca cartelle",
+  "foldersSortLabel": "Ordina cartelle",
+  "foldersSortRecent": "Più recenti prima",
+  "foldersSortName": "Nome (A–Z)",
+  "foldersSortFullest": "Più screenshot",
+  "foldersNoMatchTitle": "Nessuna cartella corrisponde",
+  "foldersNoMatchMessage": "Qui non c'è niente che si chiami «{query}». Prova con una parte del nome.",
+  "@foldersNoMatchMessage": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "folderDefaultTrips": "Piani di viaggio",
+  "folderDefaultRecipes": "Ricette",
+  "folderDefaultMedications": "Farmaci",
+  "folderDefaultAiNotes": "Note IA",
+  "folderDefaultMoney": "Soldi",
+  "folderDefaultWorkouts": "Allenamenti",
+  "folderDefaultMusic": "Musica",
+  "foldersMoveTitle": "Sposta nella cartella",
+  "foldersMoveRemove": "Togli dalla cartella",
+  "foldersMoveNone": "Ancora nessuna cartella. Creane una dalla scheda Cartelle.",
+  "folderLockedTitle": "Sblocca «{name}»",
+  "@folderLockedTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "folderLockedMessage": "Questa cartella è protetta. Autenticati per vederla.",
+  "folderEmptyTitle": "Qui non c'è ancora niente",
+  "folderEmptyMessage": "Sposta gli screenshot in questa cartella dalla tua libreria.",
+  "detailFavorite": "Preferito",
+  "detailUnfavorite": "Togli dai preferiti",
+  "detailAddFavorite": "Aggiungi ai preferiti",
+  "a11yScreenshot": "Screenshot del {date}",
+  "@a11yScreenshot": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yScreenshotFavorite": "Screenshot del {date}, preferito",
+  "@a11yScreenshotFavorite": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "detailActions": "Azioni",
+  "detailSafeShare": "Safe share",
+  "detailMore": "Altro",
+  "detailDeleteTitle": "Eliminare lo screenshot?",
+  "detailDeleteMessage": "Questo lo eliminerà definitivamente dal tuo dispositivo.",
+  "quickSaveTitleOne": "Salva in Shoto",
+  "quickSaveTitleMany": "Salva {count} screenshot",
+  "@quickSaveTitleMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSaveFileOne": "Archivia questo screenshot",
+  "quickSaveFileMany": "Archivia {count} screenshot",
+  "@quickSaveFileMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quickSavePickFolder": "Scegli una cartella",
+  "quickSaveNeedFolder": "Crea una cartella dove metterli",
+  "quickSaveFileIn": "Archivia in {folder}",
+  "@quickSaveFileIn": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveCreateFirstFolder": "Crea la tua prima cartella",
+  "quickSaveCreateFirstFolderWhy": "Le cartelle sono il modo per ritrovare le cose dopo",
+  "quickSaveNewChip": "Nuova",
+  "quickSaveSaved": "Salvato in Shoto",
+  "quickSaveFiled": "Archiviato in {folder}.",
+  "@quickSaveFiled": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "quickSaveFailedTitle": "Non sono riuscito a leggere l'immagine",
+  "quickSaveFailedBody": "Prova a condividerla di nuovo.",
+  "quickSaveNoCaptureTitle": "Ancora nessuno screenshot",
+  "quickSaveNoCaptureBody": "Fai uno screenshot, poi tocca di nuovo il riquadro.",
+  "quickSaveNoAccessTitle": "Shoto non vede i tuoi screenshot",
+  "quickSaveNoAccessBody": "Apri Shoto, consenti l’accesso alle foto e riprova.",
+  "quickSaveSkipped": "Sono stati presi solo i primi {count}",
+  "@quickSaveSkipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupTitle": "Trova i doppioni",
+  "dupScanning": "Cerco i doppioni",
+  "dupReading": "Sto leggendo la tua libreria…",
+  "dupProgress": "Controllati {done} di {total} screenshot",
+  "@dupProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dupNoneTitle": "Nessun doppione trovato",
+  "dupNoneBody": "La tua libreria di screenshot è già pulita.",
+  "dupScanAgain": "Cerca di nuovo",
+  "dupReclaimable": "Si possono liberare fino a {size}",
+  "@dupReclaimable": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupNothingSelected": "Niente selezionato",
+  "dupDeleteButton": "Elimina {count} · liberi {size}",
+  "@dupDeleteButton": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupDeleteTitle": "Eliminare {count} copie?",
+  "@dupDeleteTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupDeleteMessage": "Questo le elimina definitivamente dal tuo dispositivo. Le copie segnate da tenere non vengono toccate.",
+  "dupDeleted": "Eliminati {count} · liberati {size}",
+  "@dupDeleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "dupSets": "{count} gruppi",
+  "@dupSets": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupBest": "MIGLIORE",
+  "dupKeepAll": "Tieni tutti",
+  "dupKeepingAll": "Li tieni tutti — non verrà eliminato niente",
+  "dupUndo": "Annulla",
+  "dupFrees": "Libera {size}",
+  "@dupFrees": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "safeShareTitle": "Safe share",
+  "safeShareScanning": "Controllo i dati privati",
+  "safeShareOnDevice": "La lettura avviene sul tuo telefono.",
+  "safeShareCleanTitle": "Niente di privato trovato",
+  "safeShareCleanBody": "In questo screenshot non sono stati notati numeri di carta, numeri di conto, codici o contatti. Puoi condividerlo così com'è.",
+  "safeShareUnreadableTitle": "Non sono riuscito a leggere lo screenshot",
+  "safeShareUnreadableBody": "Il testo al suo interno non è stato riconosciuto.",
+  "safeShareShareUnchanged": "Condividi invariato",
+  "safeShareShareAnyway": "Condividi comunque",
+  "safeShareShareProtected": "Condividi la copia protetta",
+  "safeShareKeepCopy": "Conserva la copia in Shoto",
+  "safeShareFailed": "Non sono riuscito a creare la copia protetta.",
+  "safeShareFoundTitle": "{count, plural, =1{1 dato privato trovato} other{{count} dati privati trovati}}",
+  "@safeShareFoundTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFreeScan": "Il controllo è sempre gratis.",
+  "safeShareCleanAction": "Pulisci questo screenshot",
+  "safeShareShareAsIs": "Condividi senza modifiche",
+  "safeShareHowTitle": "Coperto, per sempre",
+  "safeShareHowBody": "Ogni dato privato viene coperto con un blocco pieno prima che la copia lasci il telefono. Niente è sfocato e niente si può rileggere: la copia coperta è l'unica versione che esiste.",
+  "safeShareTreatmentCover": "Copri",
+  "safeShareTreatmentKeep": "Tieni",
+  "safeShareBuilding": "Sto creando la tua copia pulita",
+  "safeShareNothingSelected": "Non cambierà nulla",
+  "safeShareLockedPreview": "Sblocca per vedere la versione pulita",
+  "safeShareReviewTitle": "Controllali uno per uno",
+  "safeShareFound": "{count} elementi coperti",
+  "@safeShareFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchTitle": "Unisci screenshot",
+  "stitchWorking": "Cerco la sovrapposizione",
+  "stitchWorkingBody": "Sto confrontando dove ogni screenshot continua dal precedente.",
+  "stitchFailed": "Non è stato possibile unire",
+  "stitchSave": "Salva in galleria",
+  "stitchSaved": "Salvato nella tua galleria",
+  "stitchDiscard": "Scarta",
+  "commonDone": "Fatto",
+  "commonBack": "Indietro",
+  "commonClose": "Chiudi",
+  "searchTitle": "Cerca nei tuoi screenshot",
+  "searchHint": "Cerca parole o cosa mostra un'immagine",
+  "searchIntro": "Qualsiasi parola scritta dentro un'immagine, o quello che l'immagine mostra: prova «gatto», «animale», «cibo» o «scontrino».",
+  "searchNoneTitle": "Nessun risultato",
+  "searchNoneBody": "Qui niente dice o somiglia a «{query}».",
+  "@searchNoneBody": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "paywallTitle": "Sblocca Shoto Pro",
+  "paywallSubtitle": "Tutto quello che segue, con un solo abbonamento.",
+  "paywallMonthly": "Mensile",
+  "paywallYearly": "Annuale",
+  "paywallSave": "Risparmi il {percent}%",
+  "paywallPerYear": "/anno",
+  "paywallPerMonth": "/mese",
+  "paywallPreviewPricing": "Gli abbonamenti non sono ancora attivi — prezzi solo di anteprima.",
+  "paywallNotSetUp": "Gli abbonamenti non sono ancora configurati — torna presto.",
+  "@paywallSave": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallContinue": "Continua",
+  "paywallUnavailable": "Non ancora disponibile",
+  "paywallRestore": "Ripristina acquisti",
+  "settingsRestoreHint": "Hai già pagato? Recupera il tuo abbonamento.",
+  "settingsRestoreDone": "Il tuo abbonamento è tornato.",
+  "paywallLegal": "Si rinnova automaticamente fino all'annullamento. Puoi annullare quando vuoi dalle impostazioni account di App Store o Google Play. Continuando accetti i nostri Termini di servizio e l'Informativa sulla privacy.",
+  "subPremiumBadge": "PRO",
+  "subPremiumTitle": "Shoto Pro",
+  "subPremiumBody": "Ogni funzione sbloccata per te.",
+  "subPremiumRenews": "Si rinnova il {date}",
+  "quotaTitle": "Libreria",
+  "quotaUsed": "{used} di {limit}",
+  "quotaLeft": "{count, plural, =0{Spazio esaurito — Pro toglie il limite} =1{1 screenshot rimasto nel piano gratuito} other{{count} screenshot rimasti nel piano gratuito}}",
+  "quotaUnlimited": "Illimitato",
+  "quotaUnlimitedNote": "Nessun limite a ciò che conservi.",
+  "subDevUnlock": "Accesso tester",
+  "subDevUnlockBody": "Sbloccato su questo dispositivo — non è un abbonamento vero",
+  "subUnlockEverything": "Sblocca tutto",
+  "trialUsed": "Questa offriamo noi — la tua prova gratuita",
+  "trialFree": "Prova gratis",
+  "proOnly": "Pro",
+  "proWelcomeTitle": "Sei su Pro",
+  "proWelcomeBody": "Ogni funzione è sbloccata. Non c'è altro da impostare.",
+  "proWelcomeAction": "Inizia a usarlo",
+  "featSafeShare": "Safe share",
+  "featSafeShareBody": "Trova numeri di carta, indirizzi, nomi e recapiti e copre ciascuno con un blocco pieno. Il testo intorno resta, così l'immagine si capisce ancora — e la copia che invii non ha nessun livello da rimuovere.",
+  "featActions": "Trasforma gli screenshot in azioni",
+  "featActionsBody": "Apri un link, scrivi a un indirizzo, copia un codice di verifica o un IBAN — direttamente dall'immagine, senza riscrivere niente.",
+  "featTraits": "Filtra per quello che contengono",
+  "featTraitsBody": "Mostra solo gli screenshot che contengono un link, un numero di telefono, un codice, una data o un numero di carta — riconosciuto nelle parole dell'immagine.",
+  "featDuplicates": "Trova i doppioni",
+  "featDuplicatesBody": "Individua scatti quasi identici che hai tenuto due volte e li toglie di mezzo — sempre passando prima da una revisione.",
+  "featStitch": "Unisci screenshot lunghi",
+  "featStitchBody": "Ricompone una cattura a scorrimento in un'unica immagine alta, trovando e togliendo la sovrapposizione da sola.",
+  "featUnlimited": "Screenshot illimitati",
+  "featUnlimitedBody": "La versione gratuita organizza {count} screenshot e tiene {folders} cartelle. Pro toglie entrambi i numeri.",
+  "featUnlimitedBodyPro": "La tua libreria non ha limiti: conserva quanto vuoi.",
+  "featSafeShareHow": "Trovare ciò che è privato in uno screenshot è gratis e senza limiti. Si paga per trasformare quei ritrovamenti in una copia pulita: ogni dato che lasci selezionato viene coperto nell'immagine esportata, che è piatta, senza livelli da annullare.",
+  "featSafeSharePoint1": "I numeri di carta sono verificati con Luhn e gli IBAN con il modulo 97: questi due sono dimostrati invece che indovinati, proprio sul dato che conta di più.",
+  "featSafeSharePoint2": "Riconosce anche nomi, indirizzi, numeri d'ordine, codici di verifica, numeri di telefono e indirizzi e-mail.",
+  "featSafeSharePoint3": "Vedi tutto ciò che è stato trovato prima di inviare e puoi lasciare in chiaro quello che l'app ha sbagliato. Lo screenshot originale non viene mai toccato.",
+  "featActionsHow": "Quello che è scritto dentro uno screenshot diventa qualcosa che puoi usare. Shoto isola le parti utili e mette un pulsante su ognuna.",
+  "featActionsPoint1": "Link, indirizzi e-mail, IBAN, codici di verifica, date e numeri di spedizione vengono trovati per te.",
+  "featActionsPoint2": "Un tocco per aprire o copiare — niente più caratteri da leggere da un'immagine.",
+  "featActionsPoint3": "Funziona sugli screenshot che hai già, non solo su quelli nuovi.",
+  "featTraitsHow": "Filtrare è gratis su tutto quello che Shoto ha già letto: la ricerca, le azioni e Safe share lasciano ognuna del testo riconosciuto, e ogni filtro deriva da lì. Quello che paghi è leggere il resto della libreria in una sola passata, così un filtro vede anche gli screenshot che nessun'altra funzione ha ancora aperto.",
+  "featTraitsPoint1": "Cinque filtri: numeri di carta e IBAN, link, numeri di telefono e indirizzi e-mail, codici di verifica, e date a cui devi presentarti.",
+  "featTraitsPoint2": "I numeri di carta e gli IBAN sono provati da un checksum. Il resto viene letto dall'immagine, quindi conta per difetto invece di affermare troppo.",
+  "featTraitsPoint3": "La libreria dice sempre quanti screenshot non sono mai stati letti, così un risultato vuoto non viene spacciato per un'assenza. La lettura avviene sul telefono, non viene caricato nulla.",
+  "featTint": "Scegli il tuo colore d'accento",
+  "featTintBody": "{count} accenti per pulsanti, interruttori e selezioni, ognuno calibrato per restare leggibile sia in chiaro sia in scuro.",
+  "@featTintBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "featTintHow": "Molte app ti mettono davanti una fila di colori grezzi e lasciano il contrasto al caso: ecco perché un accento giallo arriva quasi sempre con un testo bianco illeggibile. Shoto salva la tua scelta come posizione sulla ruota dei colori invece che come colore fisso, poi ricava la tonalità esatta per la modalità chiara e per quella scura — qualunque tu scelga regge il testo con la stessa forza del colore dell'app.",
+  "featTintPoint1": "{count} accenti, dal petrolio e il muschio all'ambra e alla brace, fino a prugna, indaco e ardesia.",
+  "@featTintPoint1": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "featTintPoint2": "Ognuno viene calcolato due volte, una per la modalità chiara e una per quella scura, sullo stesso obiettivo di contrasto: nessun accento brilla su uno schermo scuro né sparisce su uno chiaro.",
+  "featTintPoint3": "Il rosso dell'eliminazione, il verde del completato e l'ambra degli avvisi non cambiano mai: un colore che significa qualcosa non diventa mai decorazione.",
+  "featStitchHow": "La cattura a scorrimento, sui telefoni che ce l'hanno, va avviata mentre sei ancora sulla pagina. Shoto lavora dopo: scegli due o più scatti già nella tua libreria — anche quelli che ti ha mandato qualcuno — e trova dove si sovrappongono e li unisce in un'unica immagine alta.",
+  "featStitchPoint1": "La striscia ripetuta fra due scatti viene trovata e tolta da sola.",
+  "featStitchPoint2": "Vedi la giunzione prima che si salvi qualcosa: il riconoscimento automatico è buono, ma mai certo.",
+  "featStitchPoint3": "L'immagine unita si salva nella tua galleria come qualsiasi altra foto.",
+  "featDuplicatesHow": "Condividere gli scatti uno alla volta crea di rado doppioni. Tenere un blocco da «Dall'ultima volta» sì: vai veloce, e due catture della stessa cosa restano entrambe. Shoto confronta l'aspetto di uno scatto, non il nome o la dimensione, così prende anche un rinvio o un ritaglio diverso.",
+  "featDuplicatesPoint1": "Raggruppa quello che sembra uguale e suggerisce la copia da tenere.",
+  "featDuplicatesPoint2": "Mostra quanto spazio libera ogni gruppo prima che tu decida qualsiasi cosa.",
+  "featDuplicatesPoint3": "Niente viene eliminato finché non hai rivisto il gruppo e confermato.",
+  "featUnlimitedHow": "La versione gratuita è un'app vera e usabile: salvataggio, cartelle, preferiti e ricerca completa, senza account e senza caricare nulla. Ha due tetti — quanti screenshot organizza e quante cartelle tiene — e Pro li toglie entrambi. Tutto quello che hai già organizzato resta esattamente dov'è.",
+  "featUnlimitedPoint1": "La versione gratuita tiene {count} cartelle, esattamente quelle che Shoto ti dà all'inizio. Pro toglie anche questo numero.",
+  "featUnlimitedPoint2": "Anche dare un nome a ciò per cui serve uno screenshot è gratis e senza limiti.",
+  "featUnlimitedPoint3": "Arrivare al tetto vuol dire che Shoto è diventato il posto dove tieni le cose. Quando succede, non viene eliminato niente.",
+  "includedSubtitle": "Ogni funzione Pro, spiegata.",
+  "includedHint": "Tocca una funzione per vedere come funziona",
+  "includedHowLabel": "Come funziona",
+  "includedActiveTitle": "Il tuo piano è attivo",
+  "includedActiveBody": "Tutto quello che segue è sbloccato su questo account.",
+  "includedLockedTitle": "Non ancora sbloccato",
+  "includedLockedBody": "Leggi cosa fa davvero ciascuna, poi decidi.",
+  "includedFreeTitle": "Cosa ti dà la versione gratuita",
+  "includedFreeBody": "{count} screenshot organizzati, cartelle illimitate e ricerca completa — gratis per sempre.",
+  "@includedFreeBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingCta": "Inizia",
+  "onboardingPromise": "I tuoi screenshot restano sul tuo telefono.",
+  "actionsTitle": "Azioni",
+  "actionsWorking": "Sto leggendo lo screenshot",
+  "actionsWorkingBody": "Cerco numeri, link e codici.",
+  "actionsNoneTitle": "Niente su cui agire",
+  "actionsNoneBody": "In questo screenshot non sono stati trovati link, codici o numeri di conto.",
+  "actionsCopy": "Copia",
+  "actionsCopied": "Copiato",
+  "actionsNoApp": "Nessuna app su questo dispositivo può farlo.",
+  "devModeOn": "Modalità sviluppatore attiva — ogni funzione sbloccata",
+  "devModeBadge": "MODALITÀ SVILUPPATORE",
+  "devModeOffTitle": "Disattivare la modalità sviluppatore?",
+  "devModeOffBody": "Shoto tornerà alla versione gratuita su questo dispositivo, così puoi riprovare il paywall e i limiti.",
+  "devModeOffConfirm": "Disattiva",
+  "devAccessTitle": "Accesso sviluppatore",
+  "devAccessBody": "Inserisci il codice a 4 cifre per sbloccare ogni funzione Pro su questo dispositivo.",
+  "devWrongCode": "Codice errato",
+  "devTapToDisable": "Tocca {count}× per disattivare",
+  "@devTapToDisable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "appVersion": "Versione {version}",
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "kindCard": "un numero di carta",
+  "kindIban": "un conto bancario",
+  "kindCode": "un codice di verifica",
+  "kindNationalId": "un numero di documento",
+  "kindEmail": "un indirizzo e-mail",
+  "kindLink": "un link",
+  "actionEmailAction": "Scrivi",
+  "actionOpen": "Apri",
+  "kindEvent": "un evento",
+  "kindPlace": "un luogo",
+  "kindWifi": "una rete Wi-Fi",
+  "kindTracking": "una spedizione",
+  "actionAddToCalendar": "Aggiungi al calendario",
+  "actionOpenMaps": "Apri in Maps",
+  "actionDirections": "Indicazioni",
+  "actionCopyNetwork": "Copia il nome",
+  "actionTrack": "Traccia",
+  "actionEventUntitled": "Evento",
+  "countScreenshots": "{count, plural, =0{Nessuno screenshot} =1{1 screenshot} other{{count} screenshot}}",
+  "@countScreenshots": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "countPosition": "{position} di {total}",
+  "@countPosition": {
+    "placeholders": {
+      "position": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "countChip": "{label} · {count}",
+  "@countChip": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSetsFound": "{count, plural, =1{1 gruppo di doppioni} other{{count} gruppi di doppioni}}",
+  "@dupSetsFound": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dupSimilarCopies": "{count} copie simili",
+  "@dupSimilarCopies": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "safeShareFoundCount": "{count, plural, =1{1 elemento trovato} other{{count} elementi trovati}}",
+  "@safeShareFoundCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsStorage": "Spazio",
+  "settingsDuplicatesHint": "Individua gli screenshot che hai fatto due volte",
+  "settingsPremium": "Pro",
+  "settingsWhatsIncluded": "Cosa è incluso",
+  "settingsFeatureCount": "{count} funzioni, un solo piano",
+  "@settingsFeatureCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsShareHint": "Dillo a qualcuno che ne ha bisogno",
+  "settingsShareText": "Shoto tiene i miei screenshot in ordine da solo — resta tutto sul telefono.",
+  "settingsCacheMeasuring": "Sto misurando…",
+  "settingsCacheSize": "{size} di miniature",
+  "@settingsCacheSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSafeShareHint": "Apri uno screenshot, poi tocca Safe share.",
+  "homeStitchHint": "Tieni premuti due o più screenshot nella libreria, poi tocca Unisci.",
+  "stitchLimit": "Puoi unire fino a {count} screenshot alla volta.",
+  "@stitchLimit": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "shareChoiceTitle": "Cosa deve farne Shoto?",
+  "shareChoiceProtect": "Coprire i dati privati",
+  "shareChoiceProtectHint": "Nascondi ciò che è privato e invialo. Non viene salvato qui.",
+  "quickSaveCoverAction": "Copri",
+  "quickSaveCoverWhy": "Contiene dati privati?",
+  "shareChoiceSave": "Salva in Shoto",
+  "shareChoiceSaveHint": "Aggiungilo alla libreria e archivialo.",
+  "shareSavedPrompt": "{count, plural, =1{Screenshot salvato. Vuoi metterlo in una cartella?} other{Screenshot salvati. Vuoi metterli in una cartella?}}",
+  "@shareSavedPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultMerged": "{count} screenshot uniti",
+  "@stitchResultMerged": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "stitchResultTrimmed": "Tolti {count} px di contenuto ripetuto",
+  "@stitchResultTrimmed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorLoadScreenshots": "Non è stato possibile caricare i tuoi screenshot.",
+  "errorLoadFolders": "Non è stato possibile caricare le tue cartelle.",
+  "errorSaveFolder": "Non è stato possibile salvare la cartella.",
+  "errorDeleteFolder": "Non è stato possibile eliminare la cartella.",
+  "errorScanDuplicates": "Non è stato possibile cercare i doppioni.",
+  "errorDeleteSelected": "Non è stato possibile eliminare gli screenshot selezionati.",
+  "errorStitchFailed": "Questi screenshot non è stato possibile unirli.",
+  "errorStitchSave": "L'immagine unita non è stato possibile salvarla.",
+  "errorOnboarding": "Caricamento non riuscito. Riapri l'app.",
+  "errorSignInCancelled": "L'accesso è stato annullato.",
+  "errorSignInInterrupted": "L'accesso è stato interrotto. Riprova.",
+  "errorNetwork": "Errore di rete. Controlla la connessione.",
+  "errorGeneric": "Qualcosa è andato storto. Riprova.",
+  "errorPlans": "Non è stato possibile caricare i piani di abbonamento.",
+  "errorPurchase": "Acquisto non riuscito. Riprova.",
+  "errorNoSubscription": "Nessun abbonamento attivo trovato per questo account.",
+  "errorRestore": "Non è stato possibile ripristinare gli acquisti.",
+  "errorStitchTooFew": "Scegli almeno due screenshot da unire.",
+  "errorStitchTooMany": "Si possono unire fino a {count} screenshot alla volta.",
+  "@errorStitchTooMany": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "errorStitchUnreadable": "Uno degli screenshot non è stato possibile leggerlo.",
+  "errorStitchWidths": "Questi screenshot hanno larghezze diverse, quindi non possono far parte dello stesso scorrimento.",
+  "errorStitchNoOverlap": "Questi screenshot non si sovrappongono. L'unione funziona solo su scatti della stessa pagina presi mentre si scorre.",
+  "errorStitchOverlap": "La sovrapposizione fra questi screenshot non è stato possibile risolverla.",
+  "errorStitchTooTall": "L'immagine unita sarebbe troppo alta. Prova a unire meno screenshot.",
+  "errorStitchEncode": "L'immagine unita non è stato possibile codificarla.",
+  "errorRedactionSave": "La copia protetta non è stato possibile salvarla.",
+  "shareSavedCount": "{count, plural, =1{Screenshot salvato} other{{count} screenshot salvati}}",
+  "@shareSavedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "densityLarge": "Grande",
+  "densityMedium": "Media",
+  "densitySmall": "Piccola",
+  "sensitiveCard": "Numero di carta",
+  "sensitiveIban": "Conto bancario",
+  "sensitiveCode": "Codice di verifica",
+  "sensitiveNationalId": "Numero di documento",
+  "sensitiveEmail": "Indirizzo e-mail",
+  "sensitivePhone": "Numero di telefono",
+  "sensitiveAddress": "Indirizzo",
+  "sensitiveName": "Nome",
+  "sensitiveOrderNumber": "Numero d'ordine",
+  "sensitiveNumber": "Numero",
+  "onbSkip": "Salta",
+  "onbNext": "Avanti",
+  "onbWelcomeBody": "Una casa per gli screenshot che vale la pena tenere. Archiviati, cercabili e sicuri da inviare.",
+  "onbSaveTitle": "Salvalo nell'istante in cui lo fai",
+  "onbSaveBody": "Tocca Condividi in qualsiasi app e scegli Shoto. È l'unico modo in cui entra qualcosa.",
+  "onbChipAnyApp": "Qualsiasi app",
+  "onbChipOneTap": "Un tocco",
+  "onbChipToFolder": "Dritto in una cartella",
+  "onbFileTitle": "Una libreria, non un rullino",
+  "onbFileBody": "Tutto quello che invii arriva archiviato e resta esattamente dove l'hai messo.",
+  "onbChipFolders": "Cartelle",
+  "onbChipFavourites": "Preferiti",
+  "onbChipDuplicates": "Trova duplicati",
+  "onbFindTitle": "Trova le parole dentro un'immagine",
+  "onbFindBody": "Shoto legge i tuoi screenshot: basta una parola che ricordi.",
+  "onbChipInsideText": "Testo nelle immagini",
+  "onbChipOffline": "Funziona offline",
+  "onbChipCards": "Numeri di carta",
+  "onbChipCodes": "Codici e documenti",
+  "onbChipPreview": "Vedi ogni copertura",
+  "onbChipGallery": "La galleria non si apre mai",
+  "onbChipOnDevice": "Resta sul tuo telefono",
+  "onbSendTitle": "Mandali lo stesso",
+  "onbSendBody": "Shoto copre prima le parti private, e ti mostra ogni copertura prima che parta.",
+  "onbYoursTitle": "Niente si muove senza di te",
+  "onbYoursBody": "La tua galleria non viene mai aperta. Resta solo ciò che consegni tu.",
+  "onbFolderExample": "Scontrini",
+  "onbSearchExample": "scontrino",
+  "importTitle": "Aggiungi screenshot",
+  "importDone": "{count, plural, =1{1 screenshot importato} other{{count} screenshot importati}}",
+  "@importDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "importPartial": "{imported} di {picked} importati",
+  "@importPartial": {
+    "placeholders": {
+      "imported": {
+        "type": "int"
+      },
+      "picked": {
+        "type": "int"
+      }
+    }
+  },
+  "importFailed": "Non è stato possibile salvare quegli screenshot",
+  "homeToolImportSubtitle": "Scegli dal telefono — la galleria non viene mai letta",
+  "importPickerUnavailable": "Il selettore di foto non si è aperto",
+  "searchWorking": "Sto leggendo i tuoi screenshot…",
+  "settingsBackup": "Backup e ripristino",
+  "settingsBackupHint": "Tieni una copia della tua libreria in un file",
+  "backupTitle": "Backup",
+  "backupIntro": "La tua libreria vive su questo telefono e da nessun'altra parte. Un backup è la copia che sopravvive alla sua perdita.",
+  "backupCreateTitle": "Crea un backup",
+  "backupCreateBody": "Mette ogni screenshot, cartella ed etichetta in un unico file, poi ti fa scegliere dove tenerlo.",
+  "backupCreateAction": "Crea backup",
+  "backupWorking": "Sto impacchettando la tua libreria…",
+  "backupDone": "{screenshots, plural, =1{Salvato 1 screenshot} other{Salvati {screenshots} screenshot}} e {folders, plural, =1{1 cartella} other{{folders} cartelle}}",
+  "@backupDone": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "folders": {
+        "type": "int"
+      }
+    }
+  },
+  "backupDoneWithSkips": "{screenshots, plural, =1{Salvato 1 screenshot} other{Salvati {screenshots} screenshot}}. {skipped, plural, =1{1 non è stato possibile leggerlo} other{{skipped} non è stato possibile leggerli}}.",
+  "@backupDoneWithSkips": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "backupFailed": "Il backup non è stato completato",
+  "backupPrivacyNote": "Il file viene creato su questo telefono e va solo dove lo mandi tu. Non viene caricato niente.",
+  "restoreTitle": "Ripristina un backup",
+  "restoreBody": "Aggiunge tutto quello che c'è in un file di backup a questa libreria. Niente di ciò che è già qui viene rimosso.",
+  "restoreAction": "Ripristina",
+  "restoreWorking": "Sto rimettendo a posto la tua libreria…",
+  "restoreConfirmTitle": "Ripristinare questo backup?",
+  "restoreConfirmMessage": "Tutto quello che c'è nel file viene aggiunto alla tua libreria. I tuoi screenshot attuali restano esattamente come sono.",
+  "restoreDone": "{screenshots, plural, =1{Ripristinato 1 screenshot} other{Ripristinati {screenshots} screenshot}} e {folders, plural, =1{1 cartella} other{{folders} cartelle}}",
+  "@restoreDone": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "folders": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreDoneWithSkips": "{screenshots, plural, =1{Ripristinato 1 screenshot} other{Ripristinati {screenshots} screenshot}}. {skipped, plural, =1{1 è stato saltato} other{{skipped} sono stati saltati}}.",
+  "@restoreDoneWithSkips": {
+    "placeholders": {
+      "screenshots": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreNotABackup": "Quel file non è un backup di Shoto",
+  "restoreFailed": "Il ripristino non è stato completato",
+  "settingsHelp": "Aiuto",
+  "settingsContactSupport": "Contatta l'assistenza",
+  "supportSubject": "Assistenza Shoto",
+  "supportNoMailApp": "Nessuna app e-mail trovata. L'indirizzo è stato copiato.",
+  "supportGreeting": "Ciao team Shoto,",
+  "dateToday": "Oggi",
+  "dateTomorrow": "Domani",
+  "dateYesterday": "Ieri",
+  "dateThisWeek": "All'inizio di questa settimana",
+  "dateThisMonth": "All'inizio di questo mese",
+  "librarySortNewest": "Prima i più recenti",
+  "librarySortOldest": "Prima i più vecchi",
+  "librarySortLabel": "Ordine",
+  "libraryShowOnly": "Mostra solo",
+  "libraryShowEverything": "Tutto",
+  "libraryScanPrompt": "Leggi {count} screenshot",
+  "libraryScanning": "Sto leggendo…",
+  "@libraryScanPrompt": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashTitle": "{count, plural, =1{1 cartella esiste già qui} other{{count} cartelle esistono già qui}}",
+  "@restoreClashTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashBody": "Questi nomi ci sono nella tua libreria e nel backup. Stesso nome non vuol dire sempre stessa cartella, quindi qui decidi tu.",
+  "restoreClashMore": "{count, plural, =1{e 1 altra} other{e altre {count}}}",
+  "@restoreClashMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "restoreClashMerge": "Mettile insieme",
+  "restoreClashMergeBody": "Gli screenshot vanno nelle cartelle che hai già.",
+  "restoreClashSeparate": "Tienile separate",
+  "restoreClashSeparateBody": "Crea una seconda cartella con lo stesso nome. Niente di esistente viene toccato.",
+  "intentBuy": "Comprare",
+  "intentRead": "Leggere",
+  "intentReply": "Rispondere",
+  "intentTry": "Provare",
+  "intentVisit": "Visitare",
+  "intentBuyWaiting": "Da comprare",
+  "intentReadWaiting": "Da leggere",
+  "intentReplyWaiting": "Da rispondere",
+  "intentTryWaiting": "Da provare",
+  "intentVisitWaiting": "Da visitare",
+  "intentWatch": "Guardare",
+  "intentListen": "Ascoltare",
+  "intentCook": "Cucinare",
+  "intentBook": "Prenotare",
+  "intentPay": "Pagare",
+  "intentSend": "Inviare",
+  "intentDownload": "Scaricare",
+  "intentApply": "Candidarsi",
+  "intentCompare": "Confrontare",
+  "intentFix": "Riparare",
+  "intentWatchWaiting": "Da guardare",
+  "intentListenWaiting": "Da ascoltare",
+  "intentCookWaiting": "Da cucinare",
+  "intentBookWaiting": "Da prenotare",
+  "intentPayWaiting": "Da pagare",
+  "intentSendWaiting": "Da inviare",
+  "intentDownloadWaiting": "Da scaricare",
+  "intentApplyWaiting": "Per candidarsi",
+  "intentCompareWaiting": "Da confrontare",
+  "intentFixWaiting": "Da riparare",
+  "intentMore": "Altro",
+  "intentSectionCommon": "Già pronti",
+  "intentSectionYours": "I tuoi",
+  "intentYoursEmpty": "Un verbo che scrivi tu funziona esattamente come quelli sopra.",
+  "intentNewAction": "Scrivine uno tuo",
+  "intentNewTitle": "Dagli un nome tu",
+  "intentEditTitle": "Modifica questo",
+  "intentNameLabel": "Il verbo",
+  "intentNameHint": "Renderlo, disdirlo, chiamarli…",
+  "intentIconLabel": "Icona",
+  "intentDeleteTitle": "Eliminare «{label}»?",
+  "@intentDeleteTitle": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "intentDeleteMessage": "Gli screenshot restano dove sono. Solo, smettono di aspettare qualcosa.",
+  "intentSelectionAction": "Segna come",
+  "intentSelectionApplied": "{count, plural, =1{1 screenshot segnato} other{{count} screenshot segnati}}",
+  "@intentSelectionApplied": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "intentPrompt": "A cosa serve, se ti va",
+  "intentSkip": "Niente in particolare",
+  "intentWaitingTitle": "In attesa di te",
+  "intentNothingWaiting": "Niente ti sta aspettando",
+  "intentAllDone": "Hai finito tutto quello che avevi messo da parte.",
+  "intentMarkDone": "Fatto",
+  "intentUndo": "Rimettilo",
+  "intentDoneToast": "Spuntato",
+  "intentListEnd": "{count, plural, =1{È l'unica} other{Sono tutte e {count}}}",
+  "intentChange": "Cambia",
+  "intentClear": "Non serve a niente di preciso",
+  "intentEmptyOne": "Qui non c'è niente da {verb}",
+  "@intentEmptyOne": {
+    "placeholders": {
+      "verb": {
+        "type": "String"
+      }
+    }
+  },
+  "intentEmptyBody": "Gli screenshot che segni restano qui finché non li spunti.",
+  "intentProgress": "{done} di {total} fatte",
+  "intentDoneCount": "{count} finiti",
+  "@intentDoneCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateDaysAgo": "{count, plural, =1{1 giorno fa} other{{count} giorni fa}}",
+  "@dateDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateWeeksAgo": "{count, plural, =1{1 settimana fa} other{{count} settimane fa}}",
+  "@dateWeeksAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dateMonthsAgo": "{count, plural, =1{1 mese fa} other{{count} mesi fa}}",
+  "@dateMonthsAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "copyTextSelect": "Seleziona testo",
+  "copyTextSelectAll": "Seleziona tutto",
+  "copyTextHint": "Tieni premuto un testo per copiarlo",
+  "copyTextPrompt": "Trascina per selezionare",
+  "copyTextNone": "Shoto non trova testo leggibile in questo screenshot"
+}

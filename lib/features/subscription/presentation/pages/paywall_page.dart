@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/constants/subscription_constants.dart';
+import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
@@ -76,23 +77,39 @@ class _PaywallPageState extends State<PaywallPage> {
               ..showSnackBar(
                 SnackBar(
                   content: Text(state.errorMessage!.resolve(context)),
-                  backgroundColor: AppColors.error,
+                  backgroundColor: context.colors.error,
                 ),
               );
           }
         },
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: context.colors.background,
+            // Exhaustive, no `default` — see
+            // `docs/decisions/screen-states.md`. A ternary here was one
+            // branch for the error and one for everything else; the three
+            // "everything else" states are now named, because a paywall that
+            // draws a blank price list is a paywall that cannot be bought
+            // from.
             body: SafeArea(
-              child: state is SubscriptionErrorState
-                  ? _ErrorBody(message: state.message.resolve(context))
-                  : _PaywallBody(
-                      state: state,
-                      selectedYearly: _selectedYearly,
-                      onSelect: (isYearly) =>
-                          setState(() => _selectedYearly = isYearly),
-                    ),
+              child: switch (state) {
+                SubscriptionErrorState(:final AppMessage message) => _ErrorBody(
+                  message: message.resolve(context),
+                ),
+
+                // Loading draws the skeleton; loaded draws the real prices.
+                SubscriptionLoadingState() ||
+                SubscriptionLoadedState() ||
+                // Purchase success is one frame — the listener above pops to
+                // the welcome screen. Until it does, the paywall it is leaving
+                // is the right thing to still be on screen.
+                SubscriptionPurchaseSuccessState() => _PaywallBody(
+                  state: state,
+                  selectedYearly: _selectedYearly,
+                  onSelect: (isYearly) =>
+                      setState(() => _selectedYearly = isYearly),
+                ),
+              },
             ),
           );
         },
@@ -115,7 +132,7 @@ class _ErrorBody extends StatelessWidget {
           children: [
             Text(
               message,
-              style: AppTextStyles.bodyMedium,
+              style: context.text.bodyMedium,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 16.h),
@@ -128,6 +145,33 @@ class _ErrorBody extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The yearly card's discount, in whole percent, or null when there is none
+/// worth stating.
+///
+/// Falls back to the preview amounts only while no store product exists —
+/// which is the same pair of numbers the preview prices are drawn from, so
+/// the badge and the prices beside it can never disagree. Once real products
+/// arrive the calculation uses those instead, in whatever currency the store
+/// returned, and the badge is right by construction rather than by somebody
+/// remembering to edit it.
+String? _savingBadge(
+  BuildContext context, {
+  required SubscriptionPackageInfo? yearly,
+  required SubscriptionPackageInfo? monthly,
+}) {
+  final int? percent = yearly == null
+      ? _previewSaving()
+      : yearly.savingAgainst(monthly);
+  return percent == null ? null : context.l10n.paywallSave(percent);
+}
+
+int? _previewSaving() {
+  const double year = SubscriptionConstants.yearlyFallbackAmount;
+  const double twelveMonths = SubscriptionConstants.monthlyFallbackAmount * 12;
+  if (year <= 0 || year >= twelveMonths) return null;
+  return ((1 - year / twelveMonths) * 100).round();
 }
 
 class _PaywallBody extends StatelessWidget {
@@ -162,6 +206,12 @@ class _PaywallBody extends StatelessWidget {
         .cast<SubscriptionPackageInfo?>()
         .firstWhere((_) => true, orElse: () => null);
 
+    /// Whichever plan the button would actually buy. A trial belongs to a
+    /// *product*, so the offer named on the button has to follow the
+    /// selection rather than being a property of the screen — the two plans
+    /// can easily differ, and usually do.
+    final SubscriptionPackageInfo? selected = selectedYearly ? yearly : monthly;
+
     return Stack(
       children: [
         SingleChildScrollView(
@@ -173,10 +223,11 @@ class _PaywallBody extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
+                    tooltip: context.l10n.commonClose,
                     onPressed: () => Navigator.of(context).pop(false),
                     icon: Icon(
                       Icons.close_rounded,
-                      color: AppColors.textSecondary,
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ],
@@ -186,13 +237,13 @@ class _PaywallBody extends StatelessWidget {
               Text(
                 context.l10n.paywallTitle,
                 textAlign: TextAlign.center,
-                style: AppTextStyles.headlineLarge,
+                style: context.text.headlineLarge,
               ),
               SizedBox(height: 6.h),
               Text(
                 context.l10n.paywallSubtitle,
                 textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMedium,
+                style: context.text.bodyMedium,
               ),
               SizedBox(height: 24.h),
               // The full, honest list. Someone hitting this screen has just
@@ -206,7 +257,9 @@ class _PaywallBody extends StatelessWidget {
               SizedBox(height: 10.h),
               if (isLoading)
                 Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
+                  child: CircularProgressIndicator(
+                    color: context.colors.primary,
+                  ),
                 )
               else ...[
                 SubscriptionPackageCard(
@@ -214,8 +267,18 @@ class _PaywallBody extends StatelessWidget {
                   priceString:
                       yearly?.priceString ??
                       SubscriptionConstants.yearlyFallbackPrice,
-                  periodLabel: '/year',
-                  badgeLabel: 'Save 73%',
+                  periodLabel: context.l10n.paywallPerYear,
+                  // **Worked out, not written down.** This read a literal
+                  // "Save 73%", which is true of the two preview figures and
+                  // of nothing else — real prices arrive from the stores in
+                  // the user's own currency, and a percentage typed into the
+                  // source cannot know what they say. A wrong number here is
+                  // not a typo, it is a claim about money.
+                  //
+                  // Null when there is nothing honest to claim — no monthly
+                  // plan to compare against, or a yearly plan that is not
+                  // actually cheaper — and the badge simply does not appear.
+                  badgeLabel: _savingBadge(context, yearly: yearly, monthly: monthly),
                   isSelected: selectedYearly,
                   onTap: () => onSelect(true),
                 ),
@@ -225,24 +288,38 @@ class _PaywallBody extends StatelessWidget {
                   priceString:
                       monthly?.priceString ??
                       SubscriptionConstants.monthlyFallbackPrice,
-                  periodLabel: '/month',
+                  periodLabel: context.l10n.paywallPerMonth,
                   isSelected: !selectedYearly,
                   onTap: () => onSelect(false),
                 ),
                 if (!offeringsLive) ...[
                   SizedBox(height: 12.h),
                   Text(
-                    "Subscriptions aren't live yet — pricing shown for preview.",
+                    context.l10n.paywallPreviewPricing,
                     textAlign: TextAlign.center,
-                    style: AppTextStyles.caption,
+                    style: context.text.caption,
                   ),
                 ],
               ],
               SizedBox(height: 20.h),
+              // Said once, in full, next to the price — never on the button
+              // alone. "Start 7 days free" with the charge unmentioned is how
+              // a trial becomes a complaint.
+              if (selected != null && selected.hasFreeTrial) ...[
+                Text(
+                  context.l10n.paywallTrialNote(
+                    selected.freeTrialDays,
+                    selected.priceString,
+                  ),
+                  textAlign: TextAlign.center,
+                  style: context.text.bodySmall,
+                ),
+                SizedBox(height: 12.h),
+              ],
               Text(
                 context.l10n.paywallLegal,
                 textAlign: TextAlign.center,
-                style: AppTextStyles.caption,
+                style: context.text.caption,
               ),
             ],
           ),
@@ -253,23 +330,25 @@ class _PaywallBody extends StatelessWidget {
           bottom: 0,
           child: Container(
             padding: EdgeInsets.fromLTRB(24.w, 16.h, 24.w, 24.h),
-            decoration: BoxDecoration(gradient: AppColors.scrimGradient),
+            decoration: BoxDecoration(gradient: context.colors.scrimGradient),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 PrimaryButton(
-                  label: offeringsLive
-                      ? context.l10n.paywallContinue
-                      : context.l10n.paywallUnavailable,
+                  label: !offeringsLive
+                      ? context.l10n.paywallUnavailable
+                      : (selected != null && selected.hasFreeTrial
+                            ? context.l10n.paywallTrialCta(
+                                selected.freeTrialDays,
+                              )
+                            : context.l10n.paywallContinue),
                   isLoading: isPurchasing,
                   onPressed: !offeringsLive
                       ? () => ScaffoldMessenger.of(context)
                           ..hideCurrentSnackBar()
                           ..showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                "Subscriptions aren't set up yet — check back soon.",
-                              ),
+                            SnackBar(
+                              content: Text(context.l10n.paywallNotSetUp),
                             ),
                           )
                       : () {
@@ -291,8 +370,8 @@ class _PaywallBody extends StatelessWidget {
                         ),
                   child: Text(
                     context.l10n.paywallRestore,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.textSecondary,
+                    style: context.text.bodySmall.copyWith(
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ),
@@ -318,22 +397,19 @@ class _FeatureRow extends StatelessWidget {
           width: 36.w,
           height: 36.w,
           decoration: BoxDecoration(
-            color: AppColors.primary.withValues(alpha: 0.13),
+            color: context.colors.primary.withValues(alpha: 0.13),
             borderRadius: BorderRadius.circular(11.r),
           ),
-          child: Icon(feature.icon, color: AppColors.primary, size: 18.sp),
+          child: Icon(feature.icon, color: context.colors.primary, size: 18.sp),
         ),
         SizedBox(width: 13.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(feature.title(context), style: AppTextStyles.titleSmall),
+              Text(feature.title(context), style: context.text.titleSmall),
               SizedBox(height: 2.h),
-              Text(
-                feature.description(context),
-                style: AppTextStyles.bodySmall,
-              ),
+              Text(feature.description(context), style: context.text.bodySmall),
             ],
           ),
         ),

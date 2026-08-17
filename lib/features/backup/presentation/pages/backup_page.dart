@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/services/backup_file_service.dart';
+import 'package:shoto/core/services/pro_status.dart';
+import 'package:shoto/core/widgets/premium_gate.dart';
+import 'package:shoto/core/widgets/pro_badge.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
@@ -51,7 +54,23 @@ class _BackupPageState extends State<BackupPage> {
     setState(() => _progress = done / total);
   }
 
+  /// **Writing a backup is the paid half of this page; reading one is not.**
+  ///
+  /// The gate sits here rather than on the Settings row that opens the page,
+  /// and the difference matters more than it looks. Locking the row locks
+  /// [_restore] with it — so somebody who made a backup while subscribed and
+  /// later lapsed could not reach their own library, from inside the app that
+  /// wrote the file. Charging for a feature is a price; charging for the way
+  /// back to data you already own is a hostage, and it is the kind of thing
+  /// that ends up in refund requests and store policy complaints rather than
+  /// in conversions.
+  ///
+  /// Checked before the spinner starts, so a free user meets the paywall
+  /// instead of watching a progress bar begin and then stop.
   Future<void> _createBackup() async {
+    if (!await ensurePremium(context)) return;
+    if (!mounted) return;
+
     setState(() {
       _job = _Job.backup;
       _progress = 0;
@@ -187,7 +206,7 @@ class _BackupPageState extends State<BackupPage> {
         kind: result.isComplete ? SnackKind.success : SnackKind.neutral,
       );
     } on BackupFormatException {
-      // Told apart from a crash on purpose. "That is not a SHOTO backup" is
+      // Told apart from a crash on purpose. "That is not a Shoto backup" is
       // something the user can act on; "something went wrong" is not.
       if (!mounted) return;
       showAppSnackBar(
@@ -215,12 +234,12 @@ class _BackupPageState extends State<BackupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.colors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: context.colors.background,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.textPrimary),
-        title: Text(context.l10n.backupTitle, style: AppTextStyles.titleLarge),
+        iconTheme: IconThemeData(color: context.colors.textPrimary),
+        title: Text(context.l10n.backupTitle, style: context.text.titleLarge),
       ),
       body: SafeArea(
         child: ListView(
@@ -228,17 +247,19 @@ class _BackupPageState extends State<BackupPage> {
           children: [
             Text(
               context.l10n.backupIntro,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+              style: context.text.bodyMedium.copyWith(
+                color: context.colors.textSecondary,
               ),
             ),
             SizedBox(height: 24.h),
 
             _Card(
               icon: Icons.save_alt_rounded,
-              tint: AppColors.primary,
+              tint: context.colors.primary,
               title: context.l10n.backupCreateTitle,
               body: context.l10n.backupCreateBody,
+              // Restoring is deliberately not badged — see [_createBackup].
+              showProBadge: !sl<ProStatus>().isPro,
               action: PrimaryButton(
                 label: context.l10n.backupCreateAction,
                 icon: Icons.save_alt_rounded,
@@ -250,7 +271,7 @@ class _BackupPageState extends State<BackupPage> {
 
             _Card(
               icon: Icons.settings_backup_restore_rounded,
-              tint: AppColors.secondary,
+              tint: context.colors.secondary,
               title: context.l10n.restoreTitle,
               body: context.l10n.restoreBody,
               action: PrimaryButton(
@@ -279,8 +300,8 @@ class _BackupPageState extends State<BackupPage> {
                             _job == _Job.restore
                                 ? context.l10n.restoreWorking
                                 : context.l10n.backupWorking,
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
+                            style: context.text.bodySmall.copyWith(
+                              color: context.colors.textSecondary,
                             ),
                           ),
                           SizedBox(height: 8.h),
@@ -289,9 +310,9 @@ class _BackupPageState extends State<BackupPage> {
                             child: LinearProgressIndicator(
                               value: _progress,
                               minHeight: 6.h,
-                              backgroundColor: AppColors.surfaceVariant,
+                              backgroundColor: context.colors.surfaceVariant,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.primary,
+                                context.colors.primary,
                               ),
                             ),
                           ),
@@ -307,14 +328,14 @@ class _BackupPageState extends State<BackupPage> {
                 Icon(
                   Icons.lock_outline_rounded,
                   size: 15.sp,
-                  color: AppColors.textSecondary,
+                  color: context.colors.textSecondary,
                 ),
                 SizedBox(width: 8.w),
                 Expanded(
                   child: Text(
                     context.l10n.backupPrivacyNote,
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textSecondary,
+                    style: context.text.caption.copyWith(
+                      color: context.colors.textSecondary,
                     ),
                   ),
                 ),
@@ -334,12 +355,20 @@ class _Card extends StatelessWidget {
   final String body;
   final Widget action;
 
+  /// Marks this half of the page as paid, before the button is pressed.
+  ///
+  /// Passed down rather than read from the service locator here, the rule
+  /// `pro_badge.dart` records: a presentational card that reaches for global
+  /// state is one nobody can render in a widget test. The page already knows.
+  final bool showProBadge;
+
   const _Card({
     required this.icon,
     required this.tint,
     required this.title,
     required this.body,
     required this.action,
+    this.showProBadge = false,
   });
 
   @override
@@ -347,9 +376,9 @@ class _Card extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(18.w),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -368,15 +397,19 @@ class _Card extends StatelessWidget {
               ),
               SizedBox(width: 12.w),
               Expanded(
-                child: Text(title, style: AppTextStyles.bodyLarge.asMedium),
+                child: Text(title, style: context.text.bodyLarge.asMedium),
               ),
+              if (showProBadge) ...<Widget>[
+                SizedBox(width: 8.w),
+                const ProBadge(),
+              ],
             ],
           ),
           SizedBox(height: 10.h),
           Text(
             body,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textSecondary,
+            style: context.text.bodySmall.copyWith(
+              color: context.colors.textSecondary,
             ),
           ),
           SizedBox(height: 16.h),

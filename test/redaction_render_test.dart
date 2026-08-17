@@ -4,8 +4,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/utils/sensitive_data.dart';
-import 'package:shoto/features/auth/domain/entities/user_entity.dart';
-import 'package:shoto/features/auth/domain/repositories/auth_repository.dart';
 import 'package:shoto/features/safe_share/data/services/redaction_service.dart';
 import 'package:shoto/features/safe_share/domain/entities/sensitive_region.dart';
 import 'package:shoto/features/screenshots/data/data_sources/text_recognition_data_source.dart';
@@ -33,7 +31,7 @@ void main() {
     workspace = Directory.systemTemp.createTempSync('shoto_redaction');
     // Constructing the recogniser allocates an id and nothing else — no
     // channel call happens until processImage, which redact never makes.
-    service = RedactionService(TextRecognitionDataSource(), _NobodySignedIn());
+    service = RedactionService(TextRecognitionDataSource());
   });
 
   tearDownAll(() => workspace.deleteSync(recursive: true));
@@ -265,28 +263,6 @@ void main() {
       );
     });
   });
-}
-
-/// A fake for the one dependency `redact` never reaches, so the service can
-/// be built without Firebase.
-class _NobodySignedIn implements AuthRepository {
-  @override
-  UserEntity? get currentUser => null;
-
-  @override
-  String get userId => 'local:test';
-
-  @override
-  Stream<UserEntity?> get authStateChanges => const Stream<UserEntity?>.empty();
-
-  @override
-  Future<UserEntity> signInWithGoogle() => throw UnimplementedError();
-
-  @override
-  Future<UserEntity> signInWithApple() => throw UnimplementedError();
-
-  @override
-  Future<void> signOut() async {}
 }
 
 class _Pixels {

@@ -1,7 +1,8 @@
 import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/features/duplicates/domain/entities/duplicate_group.dart';
 
-class DuplicatesState {}
+/// Sealed — see `docs/decisions/screen-states.md`.
+sealed class DuplicatesState {}
 
 class DuplicatesInitialState extends DuplicatesState {}
 
@@ -32,13 +33,18 @@ class DuplicatesLoadedState extends DuplicatesState {
   int get selectedCount => selectedIds.length;
 
   /// Space reclaimed by deleting exactly what's currently selected.
-  int get selectedBytes {
+  int get selectedBytes => bytesOf(selectedIds);
+
+  /// Space taken by [ids], whichever ids those are.
+  ///
+  /// Split out from [selectedBytes] because what the user *selected* and what
+  /// was *deleted* are not the same set once the system delete prompt is
+  /// allowed to be refused, and the confirmation has to report the second.
+  int bytesOf(Set<String> ids) {
     int total = 0;
     for (final DuplicateGroup group in groups) {
       for (final DuplicateCandidate candidate in group.candidates) {
-        if (selectedIds.contains(candidate.id)) {
-          total += candidate.fileSizeBytes;
-        }
+        if (ids.contains(candidate.id)) total += candidate.fileSizeBytes;
       }
     }
     return total;

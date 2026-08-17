@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The Quick Settings tile's glyph.
+
+    It is the app's own signature — the clipped top-trailing corner, the thing
+    a filing clerk cuts off an index card so a misfiled one stands proud of the
+    stack (see core/theme/app_shapes.dart, which explains why that shape means
+    "Shoto is holding this" and why it is withheld from everything else). Using
+    it here is the shape's own rule applied literally: the tile's whole job is
+    to make Shoto hold something.
+
+    Drawn rather than derived from the launcher icon on purpose. A tile icon is
+    rendered at 24dp inside a circle and **tinted by the system** — it must be a
+    single-colour silhouette with no fill of its own, so the panel can paint it
+    white on dark and dark on light. The launcher mark is a filled raster with
+    its own background and would arrive as a grey square.
+
+    White is the source colour only because a tintable drawable needs one; the
+    panel replaces it. Never add a second colour here — the tint would flatten
+    them into each other.
+
+    The theme attribute resolves against **System UI's** theme rather than
+    Shoto's, because that is the process that inflates the resource — which is
+    what makes it the right answer in a panel this app does not own. Verified
+    rendering white beside the torch on the device.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="?android:attr/colorControlNormal">
+
+    <!-- The card, with its corner clipped. Stroked rather than filled so the
+         arrow inside it stays legible at 24dp; round joins are what give the
+         square corners their radius without four arc commands. -->
+    <path
+        android:pathData="M4,3 L14.5,3 L20,8.5 L20,21 L4,21 Z"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.6"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round" />
+
+    <!-- Into it, not out of it. The arrow points at the card's floor, which is
+         the one thing this tile does. -->
+    <path
+        android:pathData="M12,8.5 L12,15.5 M9,12.5 L12,15.5 L15,12.5"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.6"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round" />
+</vector>

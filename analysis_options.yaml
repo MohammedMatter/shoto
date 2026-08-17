@@ -11,21 +11,26 @@ include: package:flutter_lints/flutter.yaml
 
 linter:
   rules:
-    # Deliberately off for this project.
+    # These three were off for most of this project's life, and the reason is
+    # worth keeping rather than deleting: `AppColors` was a mutable global read
+    # during build, so a `const` widget — identical on every rebuild, its
+    # subtree skipped by Flutter's reconciliation — stayed frozen at whatever
+    # the theme was when it first built. That bug shipped twice. Any lint that
+    # pushes `const` back onto a widget constructor reintroduced it, so all
+    # three were disabled.
     #
-    # AppColors is a mutable global read during build (see app_colors.dart),
-    # which is what lets ~40 hand-built widgets support light/dark without
-    # threading Theme through all of them. The cost is that a `const` widget
-    # instance is *identical* on every rebuild, so Flutter's reconciliation
-    # skips its whole subtree — and the colours stay frozen at whatever the
-    # theme was when it first built. That bug shipped twice.
+    # The condition attached to that decision was "until AppColors reads go
+    # through an InheritedWidget", and they now do: the palette and the type
+    # scale are `ThemeData` extensions read as `context.colors` / `context.text`
+    # (see app_colors.dart). A dependent of an InheritedWidget is rebuilt when
+    # it changes whether or not the widget is `const`, so the trap is gone and
+    # the rules are back on.
     #
-    # Any lint that pushes `const` back onto widget constructors reintroduces
-    # it, so they stay disabled until AppColors reads go through an
-    # InheritedWidget.
-    prefer_const_constructors: false
-    prefer_const_constructors_in_immutables: false
-    prefer_const_literals_to_create_immutables: false
+    # Stated explicitly rather than left to `flutter_lints` to supply, so the
+    # next person to read this file sees that their being on is a decision.
+    prefer_const_constructors: true
+    prefer_const_constructors_in_immutables: true
+    prefer_const_literals_to_create_immutables: true
 
   # The lint rules applied to this project can be customized in the
   # section below to disable rules from the `package:flutter_lints/flutter.yaml`

@@ -60,7 +60,7 @@ class ScreenshotPreview extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(AppRadius.md),
         child: ColoredBox(
-          color: AppColors.surfaceVariant,
+          color: context.colors.surfaceVariant,
           child: AspectRatio(
             aspectRatio: imageSize.width / imageSize.height,
             child: Stack(
@@ -82,7 +82,7 @@ class ScreenshotPreview extends StatelessWidget {
                     alignment: Alignment.bottomCenter,
                     child: Padding(
                       padding: EdgeInsets.only(bottom: 10.h),
-                      child: _BusyPill(),
+                      child: const _BusyPill(),
                     ),
                   ),
               ],
@@ -117,14 +117,16 @@ class ScreenshotPreview extends StatelessWidget {
 /// Sits on the picture rather than replacing it: the point of the debounce is
 /// that the previous result stays readable while the next one is drawn.
 class _BusyPill extends StatelessWidget {
+  const _BusyPill();
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: AppColors.background.withValues(alpha: 0.86),
+        color: context.colors.background.withValues(alpha: 0.86),
         borderRadius: BorderRadius.circular(AppRadius.pill),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -134,13 +136,15 @@ class _BusyPill extends StatelessWidget {
             height: 11.w,
             child: CircularProgressIndicator(
               strokeWidth: 1.8,
-              color: AppColors.primary,
+              color: context.colors.primary,
             ),
           ),
           SizedBox(width: 7.w),
           Text(
             context.l10n.safeShareBuilding,
-            style: AppTextStyles.caption.copyWith(color: AppColors.textPrimary),
+            style: context.text.caption.copyWith(
+              color: context.colors.textPrimary,
+            ),
           ),
         ],
       ),
@@ -181,15 +185,17 @@ class _WithMarkers extends StatelessWidget {
           children: [
             Image.file(file, fit: BoxFit.fill),
             // The colour is read here, in a build that reruns on a theme
-            // change, and handed to the painter. A painter that read
-            // `AppColors` itself would keep whatever colour it was first
-            // built with, because `shouldRepaint` has no way to notice a
-            // global changed underneath it.
+            // change, and handed to the painter. A [CustomPainter] has no
+            // `BuildContext` and so cannot read the palette itself: it would
+            // have to be given one from somewhere, and `shouldRepaint` has no
+            // way to notice that something it closed over has changed.
             //
             // The wash is 8% so the eye finds the region at a glance; any
             // heavier and it starts doing the job the subscription is for.
             if (rects.isNotEmpty)
-              CustomPaint(painter: _RegionsOutline(rects, AppColors.marker)),
+              CustomPaint(
+                painter: _RegionsOutline(rects, context.colors.marker),
+              ),
           ],
         );
       },
@@ -207,11 +213,37 @@ class _RegionsOutline extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // **Two rings, and the second one is not decoration.**
+    //
+    // This drew a single stroke in the accent, which is the one place in the
+    // app where a palette colour cannot be trusted to be visible: it is
+    // painted *on a screenshot*, and the screenshot's colours are the whole
+    // set of colours Shoto does not choose. Caught on the real thing — a blue
+    // spreadsheet full of IBANs, where a blue ring around each finding was
+    // indistinguishable from the cell borders already in the picture. The
+    // feature's entire claim is "here is what I found"; a marker that blends
+    // into the content is the one failure it cannot afford.
+    //
+    // There is no hue that contrasts with an unknown image, so the answer is
+    // not a better hue — it is a pair with opposite luminance. A near-black
+    // halo under a near-white ring means one of the two always separates from
+    // whatever is behind it, which is why every crop and selection tool ever
+    // built draws its marquee this way. Both are fixed rather than mode-aware,
+    // for the same reason the viewer's chrome is: the surface underneath is a
+    // photograph, not the app's own material.
+    //
+    // The accent survives as the 8% wash, which is what still makes the marker
+    // *Shoto's*. The wash is deliberately too faint to hide anything — any
+    // heavier and it starts doing the job the subscription is for.
     final Paint wash = Paint()..color = colour.withValues(alpha: 0.08);
+    final Paint halo = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..color = AppPalette.overlay.withValues(alpha: 0.45);
     final Paint stroke = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.4
-      ..color = colour.withValues(alpha: 0.85);
+      ..color = AppPalette.paper.withValues(alpha: 0.95);
 
     for (final Rect rect in rects) {
       final RRect rounded = RRect.fromRectAndRadius(
@@ -219,6 +251,7 @@ class _RegionsOutline extends CustomPainter {
         const Radius.circular(3),
       );
       canvas.drawRRect(rounded, wash);
+      canvas.drawRRect(rounded, halo);
       canvas.drawRRect(rounded, stroke);
     }
   }
@@ -271,6 +304,7 @@ class _FullScreenPreview extends StatelessWidget {
             top: MediaQuery.paddingOf(context).top + 8.h,
             right: 12.w,
             child: IconButton(
+              tooltip: context.l10n.commonClose,
               icon: const Icon(Icons.close_rounded, color: Colors.white),
               onPressed: () => Navigator.of(context).pop(),
             ),

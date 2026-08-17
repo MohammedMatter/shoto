@@ -173,4 +173,68 @@ void main() {
       expect(next.traitsReady, isTrue);
     });
   });
+
+  /// **Two narrowings can empty a grid, and only one of them is the culprit.**
+  ///
+  /// The lens used to answer for both, purely because it was on: picking
+  /// Favourites with nothing favourited, while a lens happened to be active,
+  /// claimed "no screenshots with Links" and offered a *Show all* that cleared
+  /// the lens and left the screen exactly as empty. These tests pin the flag to
+  /// the promise the button makes, so the two can never come apart again.
+  group('an empty grid blames the narrowing that emptied it', () {
+    /// Nothing favourited — the ordinary state of a young library, and the one
+    /// the bug needed.
+    ScreenshotsLoadedState noFavourites({
+      LibraryFilter filter = LibraryFilter.all,
+      ContentTrait? lens,
+    }) => ScreenshotsLoadedState(
+      screenshots: <ScreenshotEntity>[_shot('a'), _shot('b')],
+      filter: filter,
+      lens: lens,
+      traits: const <String, Set<ContentTrait>>{
+        'a': {ContentTrait.link},
+        'b': <ContentTrait>{},
+      },
+      traitsReady: true,
+    );
+
+    test('the lens is blamed when dropping it would put something back', () {
+      final state = noFavourites(lens: ContentTrait.code);
+      expect(state.visibleScreenshots, isEmpty);
+      expect(state.isEmptyBecauseOfLens, isTrue);
+    });
+
+    test('the status filter is blamed when its own slice is empty', () {
+      final state = noFavourites(
+        filter: LibraryFilter.favorites,
+        lens: ContentTrait.link,
+      );
+      expect(state.visibleScreenshots, isEmpty);
+      // A lens is on, and is still not the reason: there is nothing favourited
+      // for it to have hidden.
+      expect(state.isEmptyBecauseOfLens, isFalse);
+    });
+
+    test('blaming the lens guarantees the way out actually works', () {
+      final state = noFavourites(lens: ContentTrait.code);
+      expect(state.isEmptyBecauseOfLens, isTrue);
+      expect(state.copyWith(clearLens: true).visibleScreenshots, isNotEmpty);
+    });
+
+    test('a way out that would change nothing is never offered', () {
+      final state = noFavourites(
+        filter: LibraryFilter.favorites,
+        lens: ContentTrait.link,
+      );
+      expect(state.copyWith(clearLens: true).visibleScreenshots, isEmpty);
+      expect(state.isEmptyBecauseOfLens, isFalse);
+    });
+
+    test('a lens that is not on is never the culprit', () {
+      expect(
+        noFavourites(filter: LibraryFilter.favorites).isEmptyBecauseOfLens,
+        isFalse,
+      );
+    });
+  });
 }

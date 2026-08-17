@@ -28,9 +28,10 @@ class LocaleController extends ChangeNotifier {
 
   /// The language actually being rendered, whether chosen or inherited.
   ///
-  /// Needed because typography has to know: Urdu needs looser lines and
-  /// Arabic needs its own face regardless of *how* the app ended up in that
-  /// language.
+  /// Needed because typography has to know: a language can ask for looser
+  /// lines or its own face, and it gets them regardless of *how* the app
+  /// ended up in that language. No language shipping today asks for either —
+  /// see [AppLanguage].
   AppLanguage get effectiveLanguage {
     if (_language != null) return _language!;
 
@@ -44,10 +45,10 @@ class LocaleController extends ChangeNotifier {
     return AppLanguage.english;
   }
 
-  bool get isRightToLeft {
-    final AppLanguage active = effectiveLanguage;
-    return active == AppLanguage.arabic || active == AppLanguage.urdu;
-  }
+  /// Asked of the language rather than listed here, so a right-to-left
+  /// language arrives as one flag on [AppLanguage] instead of an `||` somebody
+  /// has to remember to extend. False for every language shipping today.
+  bool get isRightToLeft => effectiveLanguage.isRightToLeft;
 
   Future<void> load() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

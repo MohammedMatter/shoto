@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/theme/app_colors.dart';
+import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 
 /// The one way this app shows a passing message.
@@ -26,6 +27,9 @@ void showAppSnackBar(
   BuildContext context,
   String message, {
   SnackKind kind = SnackKind.neutral,
+  String? actionLabel,
+  VoidCallback? onAction,
+  Duration duration = const Duration(seconds: 3),
 }) {
   if (_visibleMessage == message) return;
 
@@ -34,9 +38,9 @@ void showAppSnackBar(
   _visibleMessage = message;
 
   final Color tint = switch (kind) {
-    SnackKind.neutral => AppColors.primary,
-    SnackKind.success => AppColors.success,
-    SnackKind.error => AppColors.error,
+    SnackKind.neutral => context.colors.primary,
+    SnackKind.success => context.colors.success,
+    SnackKind.error => context.colors.error,
   };
 
   final ScaffoldFeatureController<SnackBar, SnackBarClosedReason> controller =
@@ -57,14 +61,41 @@ void showAppSnackBar(
               Expanded(
                 child: Text(
                   message,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.textPrimary,
+                  style: context.text.bodySmall.copyWith(
+                    color: context.colors.textPrimary,
                   ),
                 ),
               ),
+              // **An answer, not a link.**
+              //
+              // Every other snack bar in Shoto reports something that already
+              // happened and needs no reply. This one is used to *ask* — "file
+              // WhatsApp here from now on?" — and a question with no visible
+              // way to say yes is not a question. Dismissing it still means no,
+              // which is why the offer never repeats itself for that app.
+              if (actionLabel != null && onAction != null) ...<Widget>[
+                SizedBox(width: 10.w),
+                PressableScale(
+                  scale: 0.94,
+                  onTap: () {
+                    messenger.hideCurrentSnackBar();
+                    onAction();
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.w,
+                      vertical: 4.h,
+                    ),
+                    child: Text(
+                      actionLabel,
+                      style: context.text.button.copyWith(color: tint),
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
-          backgroundColor: AppColors.surface,
+          backgroundColor: context.colors.surface,
           behavior: SnackBarBehavior.floating,
           elevation: 0,
           // Clears the floating bottom nav, which lives in a Stack above the
@@ -73,9 +104,9 @@ void showAppSnackBar(
           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 13.h),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.r),
-            side: BorderSide(color: AppColors.border),
+            side: BorderSide(color: context.colors.border),
           ),
-          duration: const Duration(seconds: 3),
+          duration: duration,
         ),
       );
 

@@ -53,7 +53,7 @@ object FilePickerChannel {
             // octet-stream or hand back a generic type, and a picker that
             // greys out the user's own backup is worse than one that lets
             // them choose the wrong file — Dart rejects anything that is not
-            // a SHOTO archive with a clear message anyway.
+            // a Shoto archive with a clear message anyway.
             type = "*/*"
             putExtra(
                 Intent.EXTRA_MIME_TYPES,

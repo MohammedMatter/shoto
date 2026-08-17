@@ -36,9 +36,14 @@ class CacheService {
     }
   }
 
-  String formatBytes(int bytes) {
-    if (bytes < 1024) return '$bytes B';
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
-  }
+  // **There used to be a `formatBytes` here and it had no callers.**
+  //
+  // Two other copies of the same function do have them: `byte_formatter.dart`,
+  // which the duplicates screen uses, and a private one in
+  // `settings_tiles.dart`. The settings one is not a duplicate that should be
+  // folded in — it wraps its result in U+2066/U+2069 so a size keeps its unit
+  // when it lands in a right-to-left paragraph, which the shared helper does
+  // not do. A third, unused copy sitting on this service was only ever going to
+  // be picked up by the next person who needed a size formatted, and it is the
+  // one of the three that is wrong for that job.
 }

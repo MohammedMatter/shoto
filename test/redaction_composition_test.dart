@@ -187,9 +187,9 @@ void main() {
     test('a region is covered unless something says otherwise', () {
       // Covering is what an untouched finding does. Somebody who taps
       // straight through to share gets every finding blocked out.
-      final SensitiveRegion fresh = SensitiveRegion(
+      final SensitiveRegion fresh = const SensitiveRegion(
         kind: SensitiveKind.card,
-        bounds: const Rect.fromLTWH(0, 0, 50, 20),
+        bounds: Rect.fromLTWH(0, 0, 50, 20),
         runId: 'a',
         runText: '4111111111111111',
         localStart: 0,

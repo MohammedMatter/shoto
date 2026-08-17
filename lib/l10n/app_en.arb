@@ -1,5 +1,192 @@
 {
   "@@locale": "en",
+  "settingsCrashReports": "Crash reports",
+  "settingsCrashReportsHint": "Send technical details when something goes wrong",
+  "settingsOnboarding": "Replay the introduction",
+  "settingsOnboardingHint": "Watch the opening sequence again",
+  "settingsSignOut": "Sign out",
+  "settingsSignOutTitle": "Sign out?",
+  "authWelcome": "Welcome to Shoto",
+  "authWhy": "Not everything you save deserves the same shelf. Shoto gives the screenshots you actually care about a place of their own.",
+  "authGoogle": "Continue with Google",
+  "authApple": "Continue with Apple",
+  "authLegal": "By continuing, you agree to our Terms of Service and Privacy Policy.",
+  "settingsAccount": "Account",
+  "settingsSignOutHint": "Your screenshots stay on this device",
+  "settingsSignIn": "Sign in",
+  "settingsSignInHint": "Optional. Only needed to move a purchase to another phone.",
+  "paywallTrialCta": "{days, plural, =1{Start 1 day free} other{Start {days} days free}}",
+  "@paywallTrialCta": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallTrialNote": "{days, plural, =1{Free for a day, then {price}. Cancel any time before it ends.} other{Free for {days} days, then {price}. Cancel any time before it ends.}}",
+  "@paywallTrialNote": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "triageTitle": "Since you last looked",
+  "triageBody": "Keep what belongs in Shoto. Everything else stays exactly where it is.",
+  "triageKeep": "Keep",
+  "triageSkip": "Skip",
+  "triageFinish": "Done",
+  "triageProgress": "{index} of {total}",
+  "@triageProgress": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "triageNewCount": "{count, plural, =1{1 new screenshot} other{{count} new screenshots}}",
+  "@triageNewCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "triageKept": "{count, plural, =0{Nothing kept} =1{1 kept} other{{count} kept}}",
+  "@triageKept": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "triageReview": "Review",
+  "triageInviteDecline": "Not now",
+  "triageInviteTitle": "Show new screenshots here?",
+  "triageInviteBody": "Shoto can list what you capture from now on, so you can keep the few that matter. Nothing joins your library until you say so.",
+  "triageInviteAccept": "Show them",
+  "triageInviteDismiss": "No thanks",
+  "settingsTriage": "Offer new screenshots",
+  "settingsTriageHint": "Shows what you capture; keeps nothing on its own",
+  "settingsCaptureAlerts": "Notify me right away",
+  "settingsCaptureAlertsHint": "A quiet notification right after you take one",
+  "settingsCaptureAlertsMuted": "Notifications are off for Shoto — turn them on in your phone's settings",
+  "settingsCaptureAlertsStopped": "Android stopped the checks. Open Shoto once to start them again",
+  "settingsCaptureAlertsWaiting": "Watching. Nothing captured yet",
+  "settingsCaptureAlertsLastRun": "Last checked {when}",
+  "@settingsCaptureAlertsLastRun": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "timeAgoMinutes": "{count} min ago",
+  "@timeAgoMinutes": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "timeAgoHours": "{count} h ago",
+  "@timeAgoHours": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "timeAgoDays": "{count} d ago",
+  "@timeAgoDays": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "settingsQuickTile": "Quick Settings tile",
+  "settingsQuickTileHint": "Save your last screenshot without opening the share sheet",
+  "settingsQuickTileAdded": "Added to Quick Settings",
+  "settingsQuickTileManual": "Add it by hand: pull down Quick Settings, tap edit, then drag the Shoto tile in.",
+  "settingsQuickTileSheetTitle": "Two swipes, from any app",
+  "settingsQuickTileSheetBody": "Shoto can sit in your phone's Quick Settings, beside the torch. One tap files the screenshot you just took — no app to open, no share sheet to scroll.",
+  "settingsQuickTileStepPull": "Swipe down from the top of any screen",
+  "settingsQuickTileStepTap": "Tap the Shoto tile — your last screenshot is filed",
+  "settingsQuickTileStepStays": "It stays in the same square, unlike the share sheet",
+  "settingsQuickTileAdd": "Add the tile",
+  "settingsQuickTileNote": "Reads only the screenshot you just took. Nothing leaves your phone.",
+  "folderIconsBasics": "Basics",
+  "folderIconsWork": "Work",
+  "folderIconsMoney": "Money",
+  "folderIconsTravel": "Travel",
+  "folderIconsHome": "Home & health",
+  "folderIconsMedia": "Media",
+  "folderIconsPeople": "People",
+  "folderIconsSymbols": "Symbols",
+  "folderIconsSocial": "Social",
+  "folderIconsApps": "Apps",
+  "quickTileOfferTitle": "Save without the share sheet",
+  "quickTileOfferBody": "Add a Quick Settings shortcut for your last screenshot",
+  "triageNothingNew": "Nothing new to review",
+  "reminderTitle": "Remind me about this",
+  "reminderLaterToday": "Later today",
+  "reminderThisEvening": "This evening",
+  "reminderTomorrow": "Tomorrow morning",
+  "reminderNextWeek": "Next week",
+  "reminderPickTime": "Pick a time",
+  "reminderConfirm": "Set reminder",
+  "reminderOtherDay": "Another day",
+  "reminderClear": "Remove reminder",
+  "reminderNotificationTitle": "Shoto",
+  "reminderMuted": "Notifications are off, so this will not reach you — turn them on in your phone settings.",
+  "reminderUnsupported": "Reminders are only available on Android for now.",
+  "reminderSet": "Reminder set for {when}",
+  "@reminderSet": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderPending": "Reminder set for {when}",
+  "@reminderPending": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderNotificationBody": "You wanted to come back to this screenshot",
+  "remindersTitle": "Reminders",
+  "remindersMissed": "Missed",
+  "remindersUpcoming": "Coming up",
+  "remindersNoneTitle": "No reminders",
+  "remindersNoneBody": "Open a screenshot’s actions and pick “Remind me about this” to be brought back to it.",
+  "remindersClearOne": "Clear",
+  "remindersCount": "{count, plural, =1{1 reminder} other{{count} reminders}}",
+  "@remindersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersMissedCount": "{count, plural, =1{1 missed} other{{count} missed}}",
+  "@remindersMissedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersNextAt": "Next {when}",
+  "@remindersNextAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderPastTime": "That time has already passed — pick a later one.",
   "commonCancel": "Cancel",
   "commonDelete": "Delete",
   "commonRetry": "Try again",
@@ -14,8 +201,9 @@
   "homeGreetingAfternoon": "Good afternoon",
   "homeGreetingEvening": "Good evening",
   "homeInboxEmpty": "Nothing saved yet",
-  "homeInboxEmptySubtitle": "Pick a few from your phone now, or share a screenshot into SHOTO from any app.",
+  "homeInboxEmptySubtitle": "Pick a few from your phone now, or share a screenshot into Shoto from any app.",
   "homeEmptyImportCta": "Choose from my phone",
+  "homeNeedsYou": "Needs you",
   "homeInboxClear": "All filed",
   "homeInboxClearSubtitle": "Nothing waiting to be sorted",
   "homeInboxCountSubtitle": "Screenshots you have not filed yet",
@@ -38,7 +226,7 @@
   "libraryActionProtect": "Protect",
   "homeSeeAll": "See all",
   "libraryEmptyTitle": "Nothing saved yet",
-  "libraryEmptyMessage": "Share a screenshot to SHOTO, or add one with the + button. Your gallery is never read — only what you hand over is kept.",
+  "libraryEmptyMessage": "Share a screenshot to Shoto, or add one with the + button. Your gallery is never read — only what you hand over is kept.",
   "libraryNoFavoritesTitle": "No favorites yet",
   "libraryNoFavoritesMessage": "Tap the heart on a screenshot to save it here.",
   "libraryFilterAll": "All",
@@ -91,6 +279,8 @@
     }
   },
   "librarySelectAll": "Select all",
+  "librarySelect": "Select",
+  "librarySelectPrompt": "Select screenshots",
   "libraryActionMerge": "Merge",
   "libraryActionMove": "Move",
   "libraryActionDelete": "Delete",
@@ -104,9 +294,12 @@
     }
   },
   "permissionNeededTitle": "Photo access needed",
-  "permissionNeededMessage": "SHOTO keeps the screenshots you share into it in their own album. It needs photo access to write there and read them back — it never lists the rest of your gallery.",
+  "permissionNeededMessage": "Shoto keeps the screenshots you share into it in their own album. It needs photo access to write there and read them back — it never lists the rest of your gallery.",
+  "permissionAskTitle": "Shoto needs to see its Screenshots album",
+  "permissionAskMessage": "Only that album, and only to list what is in it. Nothing is uploaded, and nothing joins your library until you pick it.",
+  "permissionAllow": "Allow access",
   "permissionPartialTitle": "Full photo access needed",
-  "permissionPartialMessage": "SHOTO can currently only see a few photos you picked manually, so it cannot reach its own album. Choose \"Allow all\" in the photo permission to continue.",
+  "permissionPartialMessage": "Shoto can currently only see a few photos you picked manually, so it cannot reach its own album. Choose \"Allow all\" in the photo permission to continue.",
   "permissionOpenSettings": "Open Settings",
   "settingsTitle": "Settings",
   "settingsAppearance": "Appearance",
@@ -115,6 +308,41 @@
   "settingsThemeLight": "Light",
   "settingsThemeDark": "Dark",
   "settingsGridDensity": "Grid density",
+  "settingsAppearanceHint": "Theme, accent colour and grid size",
+  "appearanceTint": "Accent colour",
+  "appearanceTintHint": "Buttons, switches and anything selected.",
+  "appearancePreview": "Preview",
+  "tintTeal": "Teal",
+  "tintSlate": "Slate",
+  "tintIndigo": "Indigo",
+  "tintPlum": "Plum",
+  "tintRose": "Rose",
+  "tintEmber": "Ember",
+  "tintAmber": "Amber",
+  "tintMoss": "Moss",
+  "tintGarnet": "Garnet",
+  "tintBrass": "Brass",
+  "tintFern": "Fern",
+  "tintJade": "Jade",
+  "tintOlive": "Olive",
+  "tintCyan": "Cyan",
+  "tintDenim": "Denim",
+  "tintViolet": "Violet",
+  "tintSky": "Sky",
+  "tintOrchid": "Orchid",
+  "tintFuchsia": "Fuchsia",
+  "tintClay": "Clay",
+  "tintGraphite": "Graphite",
+  "appearanceMoreColors": "More colours",
+  "appearanceSelectTint": "Select accent colour",
+  "appearanceFolders": "Folder cards",
+  "appearanceFolderCount": "Screenshot count",
+  "appearanceFolderDate": "Date created",
+  "appearanceFolderSize": "Cards per row",
+  "appearanceLibrary": "Library grid",
+  "appIcon": "App icon",
+  "appIconDefault": "Original",
+  "appIconHint": "Changing this closes Shoto for a moment while Android swaps the icon.",
   "settingsLanguage": "Language",
   "settingsLanguageSystem": "Match my phone",
   "settingsLanguageSystemHint": "Now showing {language}",
@@ -132,10 +360,8 @@
   "settingsConfirmDeleteHint": "Deleting cannot be undone",
   "settingsFindDuplicates": "Find duplicates",
   "settingsClearCache": "Clear image cache",
-  "settingsShare": "Share SHOTO",
-  "settingsSignOut": "Sign out",
-  "settingsSignOutTitle": "Sign out?",
-  "settingsPrivacyNote": "SHOTO never reads your gallery. It only holds the screenshots you share into it, and everything it does with them — reading text, finding duplicates — happens on this device. Nothing is ever uploaded.",
+  "settingsShare": "Share Shoto",
+  "settingsPrivacyNote": "Shoto holds only the screenshots you hand it, and everything it does with them — reading text, finding duplicates — happens on this device. Your pictures are never uploaded. Three things are yours to switch on: offering new screenshots reads your Screenshots album so it can ask about them, an account sends only your email address so a subscription survives a change of phone, and crash reports send what broke — the code, never a picture.",
   "commonSave": "Save",
   "commonConfirm": "Confirm",
   "commonRename": "Rename",
@@ -163,7 +389,28 @@
     }
   },
   "foldersDeleteMessage": "The folder is removed but the screenshots inside stay in your library.",
-  "foldersRenameTitle": "Rename folder",
+  "foldersEditTitle": "Edit folder",
+  "foldersSearchHint": "Search folders",
+  "foldersSortLabel": "Sort folders",
+  "foldersSortRecent": "Newest first",
+  "foldersSortName": "Name (A–Z)",
+  "foldersSortFullest": "Most screenshots",
+  "foldersNoMatchTitle": "No folder matches",
+  "foldersNoMatchMessage": "Nothing here is called \"{query}\". Try part of the name.",
+  "@foldersNoMatchMessage": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "folderDefaultTrips": "Trip plans",
+  "folderDefaultRecipes": "Recipes",
+  "folderDefaultMedications": "Medications",
+  "folderDefaultAiNotes": "AI notes",
+  "folderDefaultMoney": "Money",
+  "folderDefaultWorkouts": "Workouts",
+  "folderDefaultMusic": "Music",
   "foldersMoveTitle": "Move to folder",
   "foldersMoveRemove": "Remove from folder",
   "foldersMoveNone": "No folders yet. Create one from the Folders tab.",
@@ -181,11 +428,28 @@
   "detailFavorite": "Favorite",
   "detailUnfavorite": "Remove from favorites",
   "detailAddFavorite": "Add to favorites",
+  "a11yScreenshot": "Screenshot from {date}",
+  "@a11yScreenshot": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yScreenshotFavorite": "Screenshot from {date}, favorite",
+  "@a11yScreenshotFavorite": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "detailActions": "Actions",
   "detailSafeShare": "Safe share",
+  "detailMore": "More",
   "detailDeleteTitle": "Delete screenshot?",
   "detailDeleteMessage": "This will permanently delete it from your device.",
-  "quickSaveTitleOne": "Save to SHOTO",
+  "quickSaveTitleOne": "Save to Shoto",
   "quickSaveTitleMany": "Save {count} screenshots",
   "@quickSaveTitleMany": {
     "placeholders": {
@@ -216,7 +480,7 @@
   "quickSaveCreateFirstFolder": "Create your first folder",
   "quickSaveCreateFirstFolderWhy": "Folders are how you find things later",
   "quickSaveNewChip": "New",
-  "quickSaveSaved": "Saved to SHOTO",
+  "quickSaveSaved": "Saved to Shoto",
   "quickSaveFiled": "Filed in {folder}.",
   "@quickSaveFiled": {
     "placeholders": {
@@ -227,6 +491,10 @@
   },
   "quickSaveFailedTitle": "Could not read that image",
   "quickSaveFailedBody": "Try sharing it again.",
+  "quickSaveNoCaptureTitle": "No screenshot yet",
+  "quickSaveNoCaptureBody": "Take a screenshot, then tap the tile again.",
+  "quickSaveNoAccessTitle": "Shoto can't see your screenshots",
+  "quickSaveNoAccessBody": "Open Shoto and allow photo access, then try the tile again.",
   "quickSaveSkipped": "Only the first {count} were taken",
   "@quickSaveSkipped": {
     "placeholders": {
@@ -322,6 +590,7 @@
   "safeShareShareUnchanged": "Share unchanged",
   "safeShareShareAnyway": "Share anyway",
   "safeShareShareProtected": "Share protected copy",
+  "safeShareKeepCopy": "Keep the copy in Shoto",
   "safeShareFailed": "Could not build the protected copy.",
   "safeShareFoundTitle": "{count, plural, =1{1 private detail found} other{{count} private details found}}",
   "@safeShareFoundTitle": {
@@ -372,11 +641,15 @@
       }
     }
   },
-  "paywallTitle": "Unlock SHOTO Pro",
+  "paywallTitle": "Unlock Shoto Pro",
   "paywallSubtitle": "Everything below, on one subscription.",
   "paywallMonthly": "Monthly",
   "paywallYearly": "Yearly",
   "paywallSave": "Save {percent}%",
+  "paywallPerYear": "/year",
+  "paywallPerMonth": "/month",
+  "paywallPreviewPricing": "Subscriptions aren't live yet — pricing shown for preview.",
+  "paywallNotSetUp": "Subscriptions aren't set up yet — check back soon.",
   "@paywallSave": {
     "placeholders": {
       "percent": {
@@ -387,46 +660,108 @@
   "paywallContinue": "Continue",
   "paywallUnavailable": "Not available yet",
   "paywallRestore": "Restore purchases",
+  "settingsRestoreHint": "Already paid? Bring your subscription back.",
+  "settingsRestoreDone": "Your subscription is back.",
   "paywallLegal": "Auto-renews until cancelled. Cancel anytime from your App Store or Google Play account settings. By continuing you agree to our Terms of Service and Privacy Policy.",
   "subPremiumBadge": "PRO",
-  "subPremiumTitle": "SHOTO Pro",
+  "subPremiumTitle": "Shoto Pro",
   "subPremiumBody": "Every feature unlocked for you.",
+  "subPremiumRenews": "Renews {date}",
+  "@subPremiumRenews": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "quotaTitle": "Library",
+  "quotaUsed": "{used} of {limit}",
+  "@quotaUsed": {
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "quotaLeft": "{count, plural, =0{No room left — Pro removes the limit} =1{1 screenshot left on the free tier} other{{count} screenshots left on the free tier}}",
+  "@quotaLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "quotaUnlimited": "Unlimited",
+  "quotaUnlimitedNote": "No ceiling on what you keep.",
   "subDevUnlock": "Tester access",
   "subDevUnlockBody": "Unlocked on this device — not a real subscription",
   "subUnlockEverything": "Unlock everything",
+  "trialUsed": "That one was on us — your free try",
+  "trialFree": "Free try",
+  "proOnly": "Pro",
   "proWelcomeTitle": "You are on Pro",
   "proWelcomeBody": "Every feature is unlocked. There is nothing else to set up.",
   "proWelcomeAction": "Start using it",
   "featSafeShare": "Safe share",
-  "featSafeShareBody": "Swaps card numbers, addresses, names and contact details for realistic stand-ins — same length, same format, same place. The copy you send does not look edited.",
+  "featSafeShareBody": "Finds card numbers, addresses, names and contact details and covers each with a solid block. The words around them stay, so the picture still reads — and the copy you send has no layer to peel back.",
   "featActions": "Turn screenshots into actions",
-  "featActionsBody": "Call a number, open a link, copy a verification code or an IBAN — straight from the picture, without retyping anything.",
+  "featActionsBody": "Open a link, write to an address, copy a verification code or an IBAN — straight from the picture, without retyping anything.",
+  "featTraits": "Filter by what's inside",
+  "featTraitsBody": "Show only the screenshots with a link, a phone number, a code, a date or a card number in them — matched on the words inside the picture.",
   "featDuplicates": "Find duplicates",
   "featDuplicatesBody": "Spot near-identical shots you kept twice and clear them out — always with a review step first.",
   "featStitch": "Merge long screenshots",
   "featStitchBody": "Join a scrolling capture back into one tall image, with the overlap found and removed automatically.",
-  "featUnlimited": "No ceiling on your library",
-  "featUnlimitedBody": "The free tier organizes {count} screenshots. Pro takes the number away.",
-  "featSafeShareHow": "Finding what is private in a screenshot is free and unlimited. Paying is what turns those findings into a clean copy: each detail is redrawn in the screenshot's own colours as a different, equally ordinary value.",
-  "featSafeSharePoint1": "Card numbers are Luhn-checked and IBANs mod-97 checked — and the stand-ins pass the same checks, so nothing looks fabricated.",
+  "featUnlimited": "Unlimited screenshots",
+  "featUnlimitedBody": "The free tier organizes {count} screenshots and keeps {folders} folders. Pro takes both numbers away.",
+  "featUnlimitedBodyPro": "Your library has no ceiling — keep as much as you like.",
+  "featSafeShareHow": "Finding what is private in a screenshot is free and unlimited. Paying is what turns those findings into a clean copy: each detail you leave selected is covered in the exported image, which is flat — no layer to undo.",
+  "featSafeSharePoint1": "Card numbers are Luhn-checked and IBANs mod-97 checked, so those two are found by proof rather than by pattern — no guessing on the detail that matters most.",
   "featSafeSharePoint2": "Also catches names, addresses, order numbers, verification codes, phone numbers and email addresses.",
-  "featSafeSharePoint3": "You see every change before you send, and can cover or keep any of them instead. The original screenshot is never touched.",
-  "featActionsHow": "Whatever is written inside a screenshot becomes something you can use. SHOTO picks out the useful parts and puts a button on each one.",
-  "featActionsPoint1": "Phone numbers, links, email addresses, IBANs and verification codes are found for you.",
-  "featActionsPoint2": "One tap to call, open or copy — no reading digits off a picture.",
+  "featSafeSharePoint3": "You see everything found before you send, and can leave any of it showing if the app got it wrong. The original screenshot is never touched.",
+  "featActionsHow": "Whatever is written inside a screenshot becomes something you can use. Shoto picks out the useful parts and puts a button on each one.",
+  "featActionsPoint1": "Links, email addresses, IBANs, verification codes, dates and parcel numbers are found for you.",
+  "featActionsPoint2": "One tap to open or copy — no reading characters off a picture.",
   "featActionsPoint3": "Works on the screenshots you already have, not only on new ones.",
-  "featStitchHow": "Take a few shots as you scroll through a long chat or page, and SHOTO works out where they overlap and joins them back into one tall image.",
+  "featTraitsHow": "Filtering is free on whatever Shoto has already read: search, smart actions and Safe share each leave recognised text behind, and every filter is derived from that. Paying is what reads the rest of the library in one pass, so a filter can also see the screenshots no other feature has opened yet.",
+  "featTraitsPoint1": "Five filters — card numbers and IBANs, links, phone numbers and email addresses, verification codes, and dates you are expected to turn up for.",
+  "featTraitsPoint2": "Card numbers and IBANs are proven by checksum. The rest are read from the picture, so they under-report rather than over-claim.",
+  "featTraitsPoint3": "The library always says how many screenshots have never been read, so an empty result is never passed off as an absence. Reading happens on the phone; nothing is uploaded.",
+  "featTint": "Choose your accent",
+  "featTintBody": "{count} accents for the buttons, switches and selections — each one tuned to stay readable in both light and dark.",
+  "@featTintBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "featTintHow": "Most apps hand you a row of raw colours and let the contrast fall where it may, which is why a yellow accent usually arrives carrying white text nobody can read. Shoto stores your choice as a position on the colour wheel rather than as a fixed colour, then works out the exact shade for light mode and for dark mode — so whichever you pick carries text at the same strength the app's own colour does.",
+  "featTintPoint1": "{count} accents, from teal and moss through amber and ember to plum, indigo and slate.",
+  "@featTintPoint1": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "featTintPoint2": "Each one is worked out twice, once for light mode and once for dark, against the same contrast target — so no accent glows on a dark screen or disappears on a pale one.",
+  "featTintPoint3": "Red for delete, green for done and amber for warnings never change, so a colour that means something never becomes decoration.",
+  "featStitchHow": "Scrolling capture, on a phone that has it, has to be started while you are still on the page. Shoto works afterwards: pick two or more shots already in your library — including ones somebody sent you — and it finds where they overlap and joins them into one tall image.",
   "featStitchPoint1": "The repeated strip between two shots is found and removed automatically.",
   "featStitchPoint2": "You see the join before anything is saved — automatic detection is good, but never certain.",
   "featStitchPoint3": "The merged image saves to your gallery like any other picture.",
-  "featDuplicatesHow": "SHOTO compares screenshots by what they look like rather than by name or size, so it catches the near-identical ones too — a resend, a different crop, the same thing captured twice.",
+  "featDuplicatesHow": "Sharing shots in one at a time rarely makes duplicates. Keeping a batch from \"Since you last looked\" does — you move fast, and two captures of the same thing both get kept. Shoto compares by what a shot looks like, not its name or size, so it catches those, along with a resend or a different crop.",
   "featDuplicatesPoint1": "Groups whatever looks the same and suggests the copy worth keeping.",
   "featDuplicatesPoint2": "Shows how much space each group frees before you decide anything.",
   "featDuplicatesPoint3": "Nothing is deleted until you have reviewed the group and confirmed it.",
-  "featUnlimitedHow": "The free tier is a real, usable app: saving, folders, favourites and full search, with no account and nothing uploaded. It has exactly one ceiling — how many screenshots it organizes — and Pro removes it. Everything you already organized stays exactly where it is.",
-  "featUnlimitedPoint1": "Folders are unlimited on the free tier, and always were meant to be.",
+  "featUnlimitedHow": "The free tier is a real, usable app: saving, folders, favourites and full search, with no account and nothing uploaded. It has two ceilings — how many screenshots it organizes, and how many folders it keeps — and Pro removes both. Everything you already organized stays exactly where it is.",
+  "featUnlimitedPoint1": "The free tier keeps {count} folders, which is exactly the starter set Shoto gives you. Pro takes that number away too.",
   "featUnlimitedPoint2": "Naming what a screenshot is for is free and uncapped too.",
-  "featUnlimitedPoint3": "Hitting the ceiling means SHOTO became where you keep things. Nothing is deleted when you do.",
+  "featUnlimitedPoint3": "Hitting the ceiling means Shoto became where you keep things. Nothing is deleted when you do.",
   "includedSubtitle": "Every Pro feature, explained.",
   "includedHint": "Tap a feature to see how it works",
   "includedHowLabel": "How it works",
@@ -443,13 +778,8 @@
       }
     }
   },
-  "authWelcome": "Welcome to SHOTO",
-  "authSubtitle": "You don't need an account to use SHOTO. Sign in only to move a purchase to another phone.",
-  "authGoogle": "Continue with Google",
-  "authApple": "Continue with Apple",
-  "authLegal": "By continuing, you agree to our Terms of Service and Privacy Policy.",
   "onboardingCta": "Get started",
-  "onboardingPromise": "Everything stays on your phone.",
+  "onboardingPromise": "Your screenshots stay on your phone.",
   "actionsTitle": "Actions",
   "actionsWorking": "Reading the screenshot",
   "actionsWorkingBody": "Looking for numbers, links and codes.",
@@ -461,7 +791,7 @@
   "devModeOn": "Developer mode on — every feature unlocked",
   "devModeBadge": "DEVELOPER MODE",
   "devModeOffTitle": "Turn off developer mode?",
-  "devModeOffBody": "SHOTO will go back to the free tier on this device, so you can test the paywall and the limits again.",
+  "devModeOffBody": "Shoto will go back to the free tier on this device, so you can test the paywall and the limits again.",
   "devModeOffConfirm": "Turn off",
   "devAccessTitle": "Developer access",
   "devAccessBody": "Enter the 4-digit code to unlock every Pro feature on this device.",
@@ -487,11 +817,7 @@
   "kindCode": "a verification code",
   "kindNationalId": "an ID number",
   "kindEmail": "an email address",
-  "kindPhone": "a phone number",
   "kindLink": "a link",
-  "actionCall": "Call",
-  "actionWhatsapp": "WhatsApp",
-  "actionSms": "Message",
   "actionEmailAction": "Write",
   "actionOpen": "Open",
   "kindEvent": "an event",
@@ -571,11 +897,7 @@
     }
   },
   "settingsShareHint": "Tell someone who needs it",
-  "settingsShareText": "SHOTO keeps my screenshots organized on their own — everything stays on the phone.",
-  "settingsAccount": "Account",
-  "settingsSignOutHint": "Your screenshots stay on this device",
-  "settingsSignIn": "Sign in",
-  "settingsSignInHint": "Optional. Only needed to move a purchase to another phone.",
+  "settingsShareText": "Shoto keeps my screenshots organized on their own — everything stays on the phone.",
   "settingsCacheMeasuring": "Measuring…",
   "settingsCacheSize": "{size} of thumbnails",
   "@settingsCacheSize": {
@@ -595,6 +917,13 @@
       }
     }
   },
+  "shareChoiceTitle": "What should Shoto do with it?",
+  "shareChoiceProtect": "Cover private details",
+  "shareChoiceProtectHint": "Hide what is private and send it on. It is not saved here.",
+  "quickSaveCoverAction": "Cover",
+  "quickSaveCoverWhy": "Has private details?",
+  "shareChoiceSave": "Save to Shoto",
+  "shareChoiceSaveHint": "Add it to your library and file it.",
   "shareSavedPrompt": "{count, plural, =1{Screenshot saved. Add it to a folder?} other{Screenshots saved. Add them to a folder?}}",
   "@shareSavedPrompt": {
     "placeholders": {
@@ -621,6 +950,8 @@
   },
   "errorLoadScreenshots": "Could not load your screenshots.",
   "errorLoadFolders": "Could not load your folders.",
+  "errorSaveFolder": "Could not save that folder.",
+  "errorDeleteFolder": "Could not delete that folder.",
   "errorScanDuplicates": "Could not scan for duplicates.",
   "errorDeleteSelected": "Could not delete the selected screenshots.",
   "errorStitchFailed": "These screenshots could not be merged.",
@@ -673,16 +1004,30 @@
   "sensitiveNumber": "Number",
   "onbSkip": "Skip",
   "onbNext": "Next",
-  "onbPileTitle": "A thousand screenshots, one pile",
-  "onbPileBody": "You screenshot to remember. A week later it is buried under four hundred others.",
-  "onbChooseTitle": "SHOTO never reads your gallery",
-  "onbChooseBody": "Nothing arrives on its own. You share a screenshot in — that is the whole rule.",
-  "onbFileTitle": "Filed the moment you send it",
-  "onbFileBody": "Pick a folder right in the share sheet. The app does not even open.",
-  "onbFindTitle": "Search what is inside them",
-  "onbFindBody": "The words printed in a screenshot, and what the picture shows. Type “receipt”, or “dog”.",
-  "onbSafeShareTitle": "The screenshot you can actually send",
-  "onbSafeShareBody": "A card number becomes a different card number — same length, same place, still valid. Nobody can tell it was edited.",
+  "onbWelcomeBody": "A home for the screenshots worth keeping. Filed, searchable, and safe to send.",
+  "onbSaveTitle": "Save it the second you take it",
+  "onbSaveBody": "Tap share in any app and pick Shoto. That is the only way anything gets in.",
+  "onbChipAnyApp": "Any app",
+  "onbChipOneTap": "One tap",
+  "onbChipToFolder": "Straight to a folder",
+  "onbFileTitle": "A library, not a camera roll",
+  "onbFileBody": "Everything you send lands filed, and stays exactly where you put it.",
+  "onbChipFolders": "Folders",
+  "onbChipFavourites": "Favourites",
+  "onbChipDuplicates": "Duplicate finder",
+  "onbFindTitle": "Find the words inside a picture",
+  "onbFindBody": "Shoto reads your screenshots, so one word you remember is enough.",
+  "onbChipInsideText": "Text in images",
+  "onbChipOffline": "Works offline",
+  "onbChipCards": "Card numbers",
+  "onbChipCodes": "Codes and IDs",
+  "onbChipPreview": "You see every cover",
+  "onbChipGallery": "Gallery never opened",
+  "onbChipOnDevice": "Stays on your phone",
+  "onbSendTitle": "Send them anyway",
+  "onbSendBody": "Shoto hides the private parts first, and shows you every cover before it goes.",
+  "onbYoursTitle": "Nothing moves without you",
+  "onbYoursBody": "Your gallery is never opened. Only what you hand over is kept.",
   "onbFolderExample": "Receipts",
   "onbSearchExample": "receipt",
   "importTitle": "Add screenshots",
@@ -769,14 +1114,15 @@
       }
     }
   },
-  "restoreNotABackup": "That file is not a SHOTO backup",
+  "restoreNotABackup": "That file is not a Shoto backup",
   "restoreFailed": "The restore could not be finished",
   "settingsHelp": "Help",
   "settingsContactSupport": "Contact support",
-  "supportSubject": "SHOTO support",
+  "supportSubject": "Shoto support",
   "supportNoMailApp": "No email app found. The address is copied instead.",
-  "supportGreeting": "Hi SHOTO team,",
+  "supportGreeting": "Hi Shoto team,",
   "dateToday": "Today",
+  "dateTomorrow": "Tomorrow",
   "dateYesterday": "Yesterday",
   "dateThisWeek": "Earlier this week",
   "dateThisMonth": "Earlier this month",
@@ -873,7 +1219,7 @@
       }
     }
   },
-  "intentPrompt": "What will you do with it?",
+  "intentPrompt": "What it's for, if you like",
   "intentSkip": "Nothing in particular",
   "intentWaitingTitle": "Waiting on you",
   "intentNothingWaiting": "Nothing waiting on you",
@@ -881,7 +1227,15 @@
   "intentMarkDone": "Done",
   "intentUndo": "Put it back",
   "intentDoneToast": "Ticked off",
-  "intentChange": "Change what this is for",
+  "intentListEnd": "{count, plural, =1{That is the only one waiting} other{That is all {count} of them}}",
+  "@intentListEnd": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "intentChange": "Change",
   "intentClear": "Not for anything",
   "intentEmptyOne": "Nothing here to {verb}",
   "@intentEmptyOne": {
@@ -892,6 +1246,17 @@
     }
   },
   "intentEmptyBody": "Screenshots you mark land here until you tick them off.",
+  "intentProgress": "{done} of {total} done",
+  "@intentProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "intentDoneCount": "{count} finished",
   "@intentDoneCount": {
     "placeholders": {
@@ -923,5 +1288,10 @@
         "type": "int"
       }
     }
-  }
+  },
+  "copyTextSelect": "Select text",
+  "copyTextSelectAll": "Select all",
+  "copyTextHint": "Press and hold any text to copy it",
+  "copyTextPrompt": "Drag to select",
+  "copyTextNone": "No text Shoto can read in this screenshot"
 }

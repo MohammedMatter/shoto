@@ -5,13 +5,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/services/dev_access.dart';
+import 'package:shoto/core/services/feature_trials.dart';
 import 'package:shoto/core/services/pro_status.dart';
-import 'package:shoto/core/theme/app_colors.dart';
-import 'package:shoto/core/theme/app_theme.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_state.dart';
 import 'package:shoto/features/home/presentation/pages/home_page.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:shoto/features/screenshots/domain/repositories/screenshot_repository.dart';
+import 'package:shoto/features/screenshots/domain/use_cases/get_new_captures_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/import_from_system_picker_use_case.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
@@ -19,6 +21,8 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.d
 import 'package:shoto/features/subscription/domain/entities/subscription_status.dart';
 import 'package:shoto/features/subscription/domain/repositories/subscription_repository.dart';
 import 'package:shoto/l10n/app_localizations.dart';
+
+import 'support/test_theme.dart';
 
 /// What Home must do on the day the app is installed.
 ///
@@ -30,7 +34,8 @@ import 'package:shoto/l10n/app_localizations.dart';
 /// nothing.
 class _EmptyScreenshotsBloc extends Cubit<ScreenshotsState>
     implements ScreenshotsBloc {
-  _EmptyScreenshotsBloc() : super(ScreenshotsLoadedState(screenshots: const []));
+  _EmptyScreenshotsBloc()
+    : super(ScreenshotsLoadedState(screenshots: const []));
 
   @override
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -49,6 +54,15 @@ class _FakeSubscriptionRepository implements SubscriptionRepository {
 
   @override
   Stream<SubscriptionStatus> get statusChanges => const Stream.empty();
+
+  @override
+  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _NoCaptures implements ScreenshotRepository {
+  @override
+  Future<List<AssetEntity>> getNewCaptures({required DateTime since}) async =>
+      const [];
 
   @override
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -90,6 +104,9 @@ void main() {
     if (!sl.isRegistered<DevAccess>()) {
       sl.registerLazySingleton<DevAccess>(() => DevAccess());
     }
+    if (!sl.isRegistered<FeatureTrials>()) {
+      sl.registerLazySingleton<FeatureTrials>(() => FeatureTrials());
+    }
     if (!sl.isRegistered<ProStatus>()) {
       sl.registerLazySingleton<ProStatus>(
         () => ProStatus(_FakeSubscriptionRepository(), sl<DevAccess>()),
@@ -99,10 +116,18 @@ void main() {
       sl.unregister<ImportFromSystemPickerUseCase>();
     }
     sl.registerSingleton<ImportFromSystemPickerUseCase>(import);
+
+    // Home asks this on mount. The preference it reads is off in a fresh
+    // install, so the answer is an empty list without any gallery being
+    // touched — but the *lookup* still has to resolve.
+    if (!sl.isRegistered<GetNewCapturesUseCase>()) {
+      sl.registerLazySingleton<GetNewCapturesUseCase>(
+        () => GetNewCapturesUseCase(_NoCaptures(), sl<AppPreferences>()),
+      );
+    }
   });
 
   Future<void> render(WidgetTester tester) async {
-    AppColors.setBrightness(Brightness.light);
     tester.view.physicalSize = const Size(1080, 2200);
     tester.view.devicePixelRatio = 3;
     addTearDown(tester.view.reset);
@@ -115,7 +140,7 @@ void main() {
           debugShowCheckedModeBanner: false,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          theme: AppTheme.lightTheme,
+          theme: testTheme(Brightness.light),
           home: MultiBlocProvider(
             providers: [
               BlocProvider<ScreenshotsBloc>(
@@ -126,7 +151,6 @@ void main() {
             child: HomePage(
               onOpenLibrary: (_) {},
               onOpenLibraryForIntent: intentsOpened.add,
-              onOpenFolders: () {},
             ),
           ),
         ),

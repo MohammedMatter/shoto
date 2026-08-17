@@ -23,16 +23,16 @@ class AppDatabase {
   static const String folders = 'folders';
   static const String screenshotMeta = 'screenshot_meta';
 
-  /// Which account each image in SHOTO's album belongs to.
+  /// Which account each image in Shoto's album belongs to.
   ///
   /// The album on disk is one folder shared by the whole device — it has no
   /// idea accounts exist. Without this table every account signing in on the
   /// same phone saw every other account's screenshots, because "the library"
-  /// was really just "the contents of Pictures/SHOTO". Membership is a
+  /// was really just "the contents of Pictures/Shoto". Membership is a
   /// decision the app makes, so it belongs here rather than on the filesystem.
   static const String libraryAssets = 'library_assets';
 
-  /// Intents the user wrote themselves, as opposed to the ones SHOTO ships.
+  /// Intents the user wrote themselves, as opposed to the ones Shoto ships.
   ///
   /// A table rather than a JSON blob in preferences because the ids in it are
   /// foreign keys in spirit — `screenshot_meta.intent` points at them — and
@@ -53,7 +53,7 @@ class AppDatabase {
   /// and v12 still carry the table until they are upgraded.
   static const String filingRules = 'filing_rules';
 
-  /// Set to '1' once the images that were already in SHOTO's album before
+  /// Set to '1' once the images that were already in Shoto's album before
   /// ownership existed have been handed to an account. Absent on a fresh
   /// install, because there is nothing there to hand over.
   static const String legacyLibraryAdoptedFlag = 'legacy_library_adopted';
@@ -83,7 +83,14 @@ class AppDatabase {
   Future<Database> openAt(String path) {
     return openDatabase(
       path,
-      version: 17,
+      // **19 and 20 do nothing**, and the number still counts through them.
+      //
+      // Both steps belonged to a source-app feature that has been removed. The
+      // number does not go back down: databases already at 20 exist on real
+      // phones, and sqflite treats a lower number as a downgrade and throws.
+      // What the two versions left behind — an unused column and an empty
+      // table — is inert, and SQLite cannot drop a column anyway.
+      version: 21,
       onCreate: (db, version) => _createTables(db),
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
@@ -210,6 +217,37 @@ class AppDatabase {
         if (oldVersion < 17) {
           await _adoptEverythingOntoThisDevice(db);
         }
+        if (oldVersion < 18) {
+          // Which glyph a folder wears. Additive and nullable, because null is
+          // the honest answer for every folder made before the grid had
+          // pictures on it — and the plain folder glyph they already had is
+          // exactly what a null key resolves to.
+          //
+          // Guarded for the same reason `_createCustomIntents` says
+          // `IF NOT EXISTS`: a database old enough to run the v2 step has just
+          // had its whole schema recreated by `_createTables` — which already
+          // includes this column — and then runs every later step anyway. An
+          // unguarded `ADD COLUMN` there fails on a duplicate name and takes
+          // the app down on launch.
+          await _addFolderIconKey(db);
+        }
+        // 19 and 20 are deliberately absent: both belonged to a source-app
+        // feature that has been removed. See the note on `version` above for
+        // why the number still stops at 20.
+        if (oldVersion < 21) {
+          // When the user asked to be reminded about this screenshot.
+          //
+          // Separate from `intent` even though it is always set alongside one,
+          // because they answer different questions and are cleared by
+          // different events: finishing an intent is the user saying they did
+          // the thing, while a reminder is spent the moment it fires. Folding
+          // them into one column would mean a fired reminder either looked
+          // like a finished intent or kept firing.
+          //
+          // Additive and nullable — no reminder is the right answer for every
+          // screenshot saved before the question could be asked.
+          await _addRemindAt(db);
+        }
       },
       onConfigure: (db) async => db.execute('PRAGMA foreign_keys = ON'),
     );
@@ -223,6 +261,7 @@ class AppDatabase {
         name TEXT NOT NULL,
         color INTEGER NOT NULL,
         is_private INTEGER NOT NULL DEFAULT 0,
+        icon_key TEXT,
         created_at INTEGER NOT NULL
       )
     ''');
@@ -240,6 +279,7 @@ class AppDatabase {
         kept_at INTEGER,
         intent TEXT,
         intent_done_at INTEGER,
+        remind_at INTEGER,
         updated_at INTEGER NOT NULL,
         PRIMARY KEY (user_id, asset_id),
         FOREIGN KEY (folder_id) REFERENCES $folders (id) ON DELETE SET NULL
@@ -250,6 +290,36 @@ class AppDatabase {
     // Deliberately left empty on a fresh install: a brand-new database has no
     // pre-ownership images, so the adoption step must never run for it.
     await _createAppFlags(db);
+  }
+
+  /// `ALTER TABLE … ADD COLUMN icon_key`, unless it is already there.
+  ///
+  /// sqflite has no `ADD COLUMN IF NOT EXISTS`, so the presence check is a
+  /// `table_info` read — cheap, and it runs once per upgrade rather than once
+  /// per launch.
+  Future<void> _addFolderIconKey(Database db) async {
+    final List<Map<String, Object?>> columns = await db.rawQuery(
+      'PRAGMA table_info($folders)',
+    );
+    final bool exists = columns.any((column) => column['name'] == 'icon_key');
+    if (exists) return;
+    await db.execute('ALTER TABLE $folders ADD COLUMN icon_key TEXT');
+  }
+
+  /// `ALTER TABLE … ADD COLUMN remind_at`, unless it is already there.
+  ///
+  /// Guarded for the same reason as [_addFolderIconKey]: a database old enough
+  /// to run the v2 step has its whole schema recreated by [_createTables],
+  /// which already has this column, and then runs every later step anyway.
+  Future<void> _addRemindAt(Database db) async {
+    final List<Map<String, Object?>> columns = await db.rawQuery(
+      'PRAGMA table_info($screenshotMeta)',
+    );
+    final bool exists = columns.any((column) => column['name'] == 'remind_at');
+    if (exists) return;
+    await db.execute(
+      'ALTER TABLE $screenshotMeta ADD COLUMN remind_at INTEGER',
+    );
   }
 
   Future<void> _createCustomIntents(Database db) async {
@@ -297,7 +367,7 @@ class AppDatabase {
     ''');
   }
 
-  /// Decides who owns the screenshots that were already in SHOTO's album
+  /// Decides who owns the screenshots that were already in Shoto's album
   /// before ownership was recorded.
   ///
   /// Only deliberate organization counts as proof: favoriting a screenshot or
@@ -325,7 +395,7 @@ class AppDatabase {
   /// Hands every row on this device to [LocalIdentity], whatever account it
   /// was filed under before.
   ///
-  /// Signing in is no longer how you get into SHOTO, so `user_id` can no
+  /// Signing in is no longer how you get into Shoto, so `user_id` can no
   /// longer mean "which Google account". If it kept meaning that, the first
   /// launch after this upgrade would show an empty library to somebody whose
   /// screenshots are all still there — filed under a uid nothing asks for any

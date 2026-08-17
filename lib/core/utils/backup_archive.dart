@@ -257,7 +257,7 @@ class BackupReader {
   }
 }
 
-/// Reads and writes the SHOTO backup container.
+/// Reads and writes the Shoto backup container.
 ///
 /// **A plain ZIP, deliberately.** A private format would be marginally smaller
 /// and would make the backup worthless the day this app stops being

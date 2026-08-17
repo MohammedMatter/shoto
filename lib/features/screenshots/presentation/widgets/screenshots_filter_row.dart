@@ -144,11 +144,11 @@ class _CountPill extends StatelessWidget {
             curve: AppMotion.standard,
             padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
             decoration: BoxDecoration(
-              color: isActive ? null : AppColors.surface,
-              gradient: isActive ? AppColors.primaryGradient : null,
+              color: isActive ? null : context.colors.surface,
+              gradient: isActive ? context.colors.primaryGradient : null,
               borderRadius: BorderRadius.circular(20.r),
               border: Border.all(
-                color: isActive ? Colors.transparent : AppColors.border,
+                color: isActive ? Colors.transparent : context.colors.border,
               ),
             ),
             child: Row(
@@ -162,16 +162,16 @@ class _CountPill extends StatelessWidget {
                   // and the selected pill's label vanished. onPrimary flips
                   // with the fill it sits on.
                   color: isActive
-                      ? AppColors.onPrimary
-                      : AppColors.textSecondary,
+                      ? context.colors.onPrimary
+                      : context.colors.textSecondary,
                 ),
                 SizedBox(width: 6.w),
                 Text(
                   context.l10n.countChip(label, count),
-                  style: AppTextStyles.bodySmall.asMedium.copyWith(
+                  style: context.text.bodySmall.asMedium.copyWith(
                     color: isActive
-                        ? AppColors.onPrimary
-                        : AppColors.textSecondary,
+                        ? context.colors.onPrimary
+                        : context.colors.textSecondary,
                   ),
                 ),
               ],

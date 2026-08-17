@@ -1,7 +1,10 @@
 import 'package:shoto/core/localization/app_message.dart';
 import 'package:shoto/features/stitch/domain/entities/stitch_outcome.dart';
 
-abstract class StitchState {}
+/// Sealed rather than merely abstract — see `docs/decisions/screen-states.md`.
+/// `abstract` stopped the base class being instantiated; it did nothing about
+/// a subtype being added and never drawn, which is the failure that matters.
+sealed class StitchState {}
 
 class StitchInitialState extends StitchState {}
 

@@ -12,12 +12,31 @@ class ScreenshotEntity {
   /// not something every screenshot acquires by existing.
   final IntentState? intent;
 
+  /// When the user asked to be brought back to this, if they did.
+  ///
+  /// Kept beside [intent] rather than inside it because they are cleared by
+  /// different events: an intent ends when the user says they did the thing, a
+  /// reminder is spent the moment it fires. A screenshot can also carry one
+  /// without the other — a reminder with no verb is "look at this again", and
+  /// most verbs never need an alarm.
+  final DateTime? remindAt;
+
   const ScreenshotEntity({
     required this.asset,
     required this.isFavorite,
     required this.folderId,
     this.intent,
+    this.remindAt,
   });
+
+  /// A reminder that has been set and has not yet come round.
+  ///
+  /// Defined here for the same reason as [isWaiting]: the detail page, the
+  /// picker sheet and anything that lists pending reminders all have to agree
+  /// about what "still coming" means, and `remindAt!.isAfter(DateTime.now())`
+  /// written three times is how they stop agreeing.
+  bool get hasPendingReminder =>
+      remindAt != null && remindAt!.isAfter(DateTime.now());
 
   /// An intent the user has set and not yet ticked off.
   ///
@@ -43,12 +62,15 @@ class ScreenshotEntity {
     bool clearFolder = false,
     IntentState? intent,
     bool clearIntent = false,
+    DateTime? remindAt,
+    bool clearReminder = false,
   }) {
     return ScreenshotEntity(
       asset: asset,
       isFavorite: isFavorite ?? this.isFavorite,
       folderId: clearFolder ? null : (folderId ?? this.folderId),
       intent: clearIntent ? null : (intent ?? this.intent),
+      remindAt: clearReminder ? null : (remindAt ?? this.remindAt),
     );
   }
 }

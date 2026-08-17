@@ -70,10 +70,10 @@ class _Option extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color accent = danger ? AppColors.error : AppColors.primary;
+    final Color accent = danger ? context.colors.error : context.colors.primary;
     final Color foreground = selected
-        ? (danger ? AppColors.error : AppColors.onPrimary)
-        : AppColors.textSecondary;
+        ? (danger ? context.colors.error : context.colors.onPrimary)
+        : context.colors.textSecondary;
 
     return PressableScale(
       scale: 0.96,
@@ -90,7 +90,7 @@ class _Option extends StatelessWidget {
           border: Border.all(
             color: selected
                 ? (danger ? accent.withValues(alpha: 0.55) : accent)
-                : AppColors.border,
+                : context.colors.border,
           ),
         ),
         child: Column(
@@ -103,7 +103,7 @@ class _Option extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
-              style: AppTextStyles.caption.copyWith(
+              style: context.text.caption.copyWith(
                 color: foreground,
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
               ),

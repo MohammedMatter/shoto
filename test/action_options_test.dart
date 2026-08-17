@@ -53,10 +53,7 @@ void main() {
       expect(uri.queryParameters['text'], 'Team sync');
       // No trailing Z and no offset: Google reads this in the calendar's own
       // timezone, which is what a screenshot saying "3:00 PM" means.
-      expect(
-        uri.queryParameters['dates'],
-        '20260512T150000/20260512T163000',
-      );
+      expect(uri.queryParameters['dates'], '20260512T150000/20260512T163000');
       expect(uri.queryParameters['location'], 'Room 4');
       expect(uri.queryParameters['details'], contains('Team sync'));
     });
@@ -71,11 +68,7 @@ void main() {
 
     test('an all-day event uses dates and an exclusive end', () {
       final Uri uri = calendarUriFor(
-        EventDetails(
-          title: 'Eid',
-          start: DateTime(2026, 5, 12),
-          allDay: true,
-        ),
+        EventDetails(title: 'Eid', start: DateTime(2026, 5, 12), allDay: true),
         'Eid',
       );
       expect(uri.queryParameters['dates'], '20260512/20260513');
@@ -213,12 +206,12 @@ void main() {
     testWidgets('copy never hands back the internal identity value', (
       WidgetTester tester,
     ) async {
-      final DetectedAction place = DetectedAction(
+      final DetectedAction place = const DetectedAction(
         kind: DetectedActionKind.place,
         // Case-folded, because that is what makes two detections the same one.
         value: '12 king fahd road',
         display: '12 King Fahd Road',
-        details: const PlaceDetails(query: '12 King Fahd Road'),
+        details: PlaceDetails(query: '12 King Fahd Road'),
       );
 
       await withContext(tester, 'en', (BuildContext context) {
@@ -281,7 +274,14 @@ void main() {
     testWidgets('every kind has a label in every language', (
       WidgetTester tester,
     ) async {
-      for (final String locale in <String>['en', 'ar', 'es', 'fr', 'hi', 'ur']) {
+      for (final String locale in <String>[
+        'en',
+        'ar',
+        'es',
+        'fr',
+        'hi',
+        'ur',
+      ]) {
         await withContext(tester, locale, (BuildContext context) {
           for (final DetectedActionKind kind in DetectedActionKind.values) {
             expect(

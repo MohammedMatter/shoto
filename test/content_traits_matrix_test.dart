@@ -48,8 +48,8 @@ const List<_Case> _cases = <_Case>[
     want: ContentTrait.sensitive,
   ),
   _Case(
-    'card arabic digits',
-    'البطاقة ٤٥٣٩ ١٤٨٨ ٠٣٤٣ ٦٤٦٧',
+    'card, German label',
+    'Kartennummer 4539 1488 0343 6467',
     want: ContentTrait.sensitive,
   ),
   _Case(
@@ -81,7 +81,8 @@ const List<_Case> _cases = <_Case>[
   _Case('uppercase domain', 'Visit EXAMPLE.COM today', want: ContentTrait.link),
   _Case('trailing dot', 'see example.com.', want: ContentTrait.link),
   _Case('co.uk', 'visit shop.co.uk now', want: ContentTrait.link),
-  _Case('arabic + link', 'زوروا example.com اليوم', want: ContentTrait.link),
+  _Case('german + link', 'besuchen Sie example.com heute',
+      want: ContentTrait.link),
   _Case('spanish tld', 'visita ejemplo.es hoy', want: ContentTrait.link),
   _Case(
     'OCR space after scheme',
@@ -98,7 +99,7 @@ const List<_Case> _cases = <_Case>[
   _Case('email both spaces', 'help @ example.com', want: ContentTrait.contact),
   _Case(
     'email uppercase',
-    'Write To SALES@SHOTO.APP',
+    'Write To SALES@Shoto.APP',
     want: ContentTrait.contact,
   ),
   _Case('email plus tag', 'me+news@example.com', want: ContentTrait.contact),
@@ -123,9 +124,11 @@ const List<_Case> _cases = <_Case>[
   // ---------------- CONTACT: phone ----------------
   _Case('phone +country', 'call +962 7 9123 4567', want: ContentTrait.contact),
   _Case('phone cue en', 'Mobile 0599123456', want: ContentTrait.contact),
-  _Case('phone cue ar', 'جوال 0599123456', want: ContentTrait.contact),
-  _Case('phone arabic digits', 'هاتف ٠٥٩٩١٢٣٤٥٦', want: ContentTrait.contact),
-  _Case('phone urdu digits', 'فون ۰۵۹۹۱۲۳۴۵۶', want: ContentTrait.contact),
+  _Case('phone cue de', 'Telefon 0599123456', want: ContentTrait.contact),
+  _Case('phone cue it', 'Cellulare 0599123456', want: ContentTrait.contact),
+  _Case('phone cue pt', 'Telemóvel 0599123456', want: ContentTrait.contact),
+  _Case('phone cue nl', 'Telefoonnummer 0599123456',
+      want: ContentTrait.contact),
   _Case(
     'phone brackets + cue',
     'Tel (06) 465-1234',
@@ -169,7 +172,8 @@ const List<_Case> _cases = <_Case>[
     'Your verification code is\n481920',
     want: ContentTrait.code,
   ),
-  _Case('code ar', 'رمز التحقق الخاص بك هو ٤٨١٩٢٠', want: ContentTrait.code),
+  _Case('code de', 'Ihr Bestätigungscode lautet 481920',
+      want: ContentTrait.code),
   _Case(
     'code es',
     'Su código de verificación es 481920',
@@ -180,8 +184,11 @@ const List<_Case> _cases = <_Case>[
     'Votre code de vérification est 481920',
     want: ContentTrait.code,
   ),
-  _Case('code hi', 'आपका सत्यापन कोड 481920 है', want: ContentTrait.code),
-  _Case('code ur', 'آپ کا تصدیقی کوڈ 481920 ہے', want: ContentTrait.code),
+  _Case('code it', 'Il tuo codice di verifica è 481920',
+      want: ContentTrait.code),
+  _Case('code pt', 'O seu código de verificação é 481920',
+      want: ContentTrait.code),
+  _Case('code nl', 'Je verificatiecode is 481920', want: ContentTrait.code),
   _Case('code OTP word', 'OTP 4821 valid 5 min', want: ContentTrait.code),
   _Case(
     'NOT barcode page',
@@ -208,8 +215,8 @@ const List<_Case> _cases = <_Case>[
     want: ContentTrait.event,
   ),
   _Case(
-    'event cue ar',
-    'موعد الاجتماع ١٥/٠٩/٢٠٢٦ الساعة ٣:٠٠',
+    'event cue de',
+    'Termin am 15/09/2026 um 15:00',
     want: ContentTrait.event,
   ),
   _Case(
@@ -223,13 +230,13 @@ const List<_Case> _cases = <_Case>[
     want: ContentTrait.event,
   ),
   _Case(
-    'event cue hi',
-    'बैठक 15/09/2026 को 3:00 बजे',
+    'event cue it',
+    'Riunione il 15/09/2026 alle 15:00',
     want: ContentTrait.event,
   ),
   _Case(
-    'event cue ur',
-    'ملاقات 15/09/2026 کو 3:00 بجے',
+    'event cue nl',
+    'Afspraak op 15/09/2026 om 15:00',
     want: ContentTrait.event,
   ),
   _Case(
@@ -251,9 +258,21 @@ const List<_Case> _cases = <_Case>[
 ];
 
 void main() {
+  /// The clock the dated cases are measured against.
+  ///
+  /// Without it the negative ones rot the quiet way: "NOT eventually" asserts
+  /// that the word *eventually* does not vouch for 15/09/2026, and the moment
+  /// the real clock passes that date it is refused for being in the past
+  /// instead — still green, no longer testing anything.
+  final DateTime today = DateTime(2026, 3, 1);
+
   for (final _Case c in _cases) {
     test(c.label, () {
-      final Set<ContentTrait> got = ContentTraits.of(c.text);
+      final Set<ContentTrait> got = ContentTraits.of(
+        c.text,
+        now: today,
+        dayFirst: true,
+      );
       final String detail =
           'got {${got.map((ContentTrait t) => t.name).join(", ")}}';
       if (c.want != null) {

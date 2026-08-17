@@ -35,9 +35,9 @@ class DuplicateGroupCard extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 16.h),
       padding: EdgeInsets.all(14.w),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: context.colors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,7 +50,7 @@ class DuplicateGroupCard extends StatelessWidget {
                   children: [
                     Text(
                       context.l10n.dupSimilarCopies(group.candidates.length),
-                      style: AppTextStyles.titleLarge,
+                      style: context.text.titleLarge,
                     ),
                     SizedBox(height: 2.h),
                     Text(
@@ -59,10 +59,10 @@ class DuplicateGroupCard extends StatelessWidget {
                           : context.l10n.dupFrees(
                               formatBytes(_selectedBytes()),
                             ),
-                      style: AppTextStyles.bodySmall.copyWith(
+                      style: context.text.bodySmall.copyWith(
                         color: nothingSelected
-                            ? AppColors.secondary
-                            : AppColors.textSecondary,
+                            ? context.colors.secondary
+                            : context.colors.textSecondary,
                       ),
                     ),
                   ],
@@ -79,8 +79,8 @@ class DuplicateGroupCard extends StatelessWidget {
                   nothingSelected
                       ? context.l10n.dupUndo
                       : context.l10n.dupKeepAll,
-                  style: AppTextStyles.bodySmall.asMedium.copyWith(
-                    color: AppColors.primary,
+                  style: context.text.bodySmall.asMedium.copyWith(
+                    color: context.colors.primary,
                   ),
                 ),
               ),
@@ -174,8 +174,8 @@ class _CandidateTile extends StatelessWidget {
                         borderRadius: BorderRadius.circular(14.r),
                         border: Border.all(
                           color: isMarkedForDeletion
-                              ? AppColors.error
-                              : AppColors.secondary,
+                              ? context.colors.error
+                              : context.colors.secondary,
                           width: 2,
                         ),
                       ),
@@ -193,8 +193,8 @@ class _CandidateTile extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: isMarkedForDeletion
-                            ? AppColors.error
-                            : AppColors.secondary,
+                            ? context.colors.error
+                            : context.colors.secondary,
                       ),
                       child: AnimatedSwitcher(
                         duration: AppMotion.duration(context, AppMotion.press),
@@ -218,7 +218,7 @@ class _CandidateTile extends StatelessWidget {
                               ? Icons.delete_outline_rounded
                               : Icons.check_rounded,
                           key: ValueKey<bool>(isMarkedForDeletion),
-                          color: AppColors.onPrimary,
+                          color: context.colors.onPrimary,
                           size: 14.sp,
                         ),
                       ),
@@ -234,13 +234,13 @@ class _CandidateTile extends StatelessWidget {
                           vertical: 2.h,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.secondary,
+                          color: context.colors.secondary,
                           borderRadius: BorderRadius.circular(6.r),
                         ),
                         child: Text(
                           context.l10n.dupBest,
-                          style: AppTextStyles.caption.asSemiBold.copyWith(
-                            color: AppColors.onPrimary,
+                          style: context.text.caption.asSemiBold.copyWith(
+                            color: context.colors.onPrimary,
                             fontSize: 8.sp,
                           ),
                         ),
@@ -252,7 +252,7 @@ class _CandidateTile extends StatelessWidget {
             SizedBox(height: 5.h),
             Text(
               formatBytes(candidate.fileSizeBytes),
-              style: AppTextStyles.caption,
+              style: context.text.caption,
               maxLines: 1,
             ),
           ],

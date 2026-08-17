@@ -62,8 +62,8 @@ class LensProvenanceNote extends StatelessWidget {
                     // reported in the same muted grey as any other caption,
                     // so the stronger claim is the one that stands out.
                     color: active.certainty == TraitCertainty.verified
-                        ? AppColors.success
-                        : AppColors.textSecondary,
+                        ? context.colors.success
+                        : context.colors.textSecondary,
                   ),
                   SizedBox(width: 6.w),
                   Expanded(
@@ -78,8 +78,8 @@ class LensProvenanceNote extends StatelessWidget {
                               unreadCount,
                             )
                           : active.certaintyNote(context),
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textSecondary,
+                      style: context.text.caption.copyWith(
+                        color: context.colors.textSecondary,
                       ),
                     ),
                   ),

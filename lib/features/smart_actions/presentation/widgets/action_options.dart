@@ -34,7 +34,6 @@ extension DetectedActionOptions on DetectedAction {
     DetectedActionKind.place => Icons.place_rounded,
     DetectedActionKind.wifi => Icons.wifi_rounded,
     DetectedActionKind.tracking => Icons.local_shipping_rounded,
-    DetectedActionKind.phone => Icons.call_rounded,
     DetectedActionKind.email => Icons.alternate_email_rounded,
     DetectedActionKind.link => Icons.link_rounded,
     DetectedActionKind.code => Icons.password_rounded,
@@ -48,7 +47,6 @@ extension DetectedActionOptions on DetectedAction {
     DetectedActionKind.place => context.l10n.kindPlace,
     DetectedActionKind.wifi => context.l10n.kindWifi,
     DetectedActionKind.tracking => context.l10n.kindTracking,
-    DetectedActionKind.phone => context.l10n.kindPhone,
     DetectedActionKind.email => context.l10n.kindEmail,
     DetectedActionKind.link => context.l10n.kindLink,
     DetectedActionKind.code => context.l10n.kindCode,
@@ -175,28 +173,6 @@ extension DetectedActionOptions on DetectedAction {
             },
           ),
       ],
-      DetectedActionKind.phone => [
-        ActionOption(
-          icon: Icons.call_rounded,
-          label: context.l10n.actionCall,
-          // DIAL rather than CALL: it opens the dialler with the number
-          // filled in, so a misread digit can never place a real call by
-          // itself. It also needs no extra permission.
-          run: () => _open(Uri(scheme: 'tel', path: value)),
-        ),
-        ActionOption(
-          icon: Icons.chat_rounded,
-          label: context.l10n.actionWhatsapp,
-          run: () => _open(
-            Uri.parse('https://wa.me/${value.replaceAll(RegExp(r'\D'), '')}'),
-          ),
-        ),
-        ActionOption(
-          icon: Icons.sms_rounded,
-          label: context.l10n.actionSms,
-          run: () => _open(Uri(scheme: 'sms', path: value)),
-        ),
-      ],
       DetectedActionKind.email => [
         ActionOption(
           icon: Icons.send_rounded,
@@ -233,7 +209,7 @@ extension DetectedActionOptions on DetectedAction {
   ];
 }
 
-/// A Google Calendar event template with every field SHOTO managed to read.
+/// A Google Calendar event template with every field Shoto managed to read.
 ///
 /// `dates` is written as a floating local stamp with no `Z` and no offset,
 /// which Google reads in the calendar's own timezone. That is exactly right

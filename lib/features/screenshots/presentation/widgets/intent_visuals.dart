@@ -72,7 +72,7 @@ extension IntentVisuals on ScreenshotIntent {
   /// **Deliberately no per-intent colour.**
   ///
   /// The obvious design is a hue per intent, and it is wrong for this app.
-  /// `AppColors` is down to three hues on purpose and says why: with the
+  /// `AppPalette` is down to three hues on purpose and says why: with the
   /// accent and every neutral achromatic, the surviving colours "are legible
   /// as meaning rather than as decoration". Spending a palette on identity
   /// would undo that everywhere, not just here — once the library has a dozen
@@ -84,7 +84,7 @@ extension IntentVisuals on ScreenshotIntent {
   /// which is all the row has to be. Colour is kept for the one thing in this
   /// feature that is genuinely a state rather than a name: waiting versus
   /// done.
-  Color get tint => AppColors.secondary;
+  Color tint(BuildContext context) => context.colors.secondary;
 }
 
 /// The same three questions, asked of any intent at all.
@@ -116,6 +116,16 @@ extension IntentRefVisuals on IntentRef {
     BuiltInIntent(:final ScreenshotIntent intent) => intent.icon,
     CustomIntent(:final String iconKey) => IntentIcons.resolve(iconKey),
   };
+
+  /// The same one hue for every intent, built-in or invented — see
+  /// [IntentVisuals.tint] for why there is no palette per verb.
+  ///
+  /// It lives here as well as on the enum because of the rule at the top of
+  /// this extension: widgets read intents through [IntentRef] and never through
+  /// [ScreenshotIntent], and a widget that had to unwrap the ref to find out
+  /// what colour to use would be the first exception to that — for a colour
+  /// that is the same either way.
+  Color tint(BuildContext context) => context.colors.secondary;
 }
 
 /// The glyphs a user-authored intent can be given.
