@@ -838,6 +838,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get detailAddFavorite => 'Adicionar aos favoritos';
 
   @override
+  String a11yScreenshot(String date) {
+    return 'Captura de $date';
+  }
+
+  @override
+  String a11yScreenshotFavorite(String date) {
+    return 'Captura de $date, favorita';
+  }
+
+  @override
   String get detailActions => 'Ações';
 
   @override

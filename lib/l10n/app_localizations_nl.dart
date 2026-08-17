@@ -840,6 +840,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get detailAddFavorite => 'Aan favorieten toevoegen';
 
   @override
+  String a11yScreenshot(String date) {
+    return 'Screenshot van $date';
+  }
+
+  @override
+  String a11yScreenshotFavorite(String date) {
+    return 'Screenshot van $date, favoriet';
+  }
+
+  @override
   String get detailActions => 'Acties';
 
   @override

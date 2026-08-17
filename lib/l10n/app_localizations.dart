@@ -1554,6 +1554,18 @@ abstract class AppLocalizations {
   /// **'Add to favorites'**
   String get detailAddFavorite;
 
+  /// No description provided for @a11yScreenshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshot from {date}'**
+  String a11yScreenshot(String date);
+
+  /// No description provided for @a11yScreenshotFavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshot from {date}, favorite'**
+  String a11yScreenshotFavorite(String date);
+
   /// No description provided for @detailActions.
   ///
   /// In en, this message translates to:

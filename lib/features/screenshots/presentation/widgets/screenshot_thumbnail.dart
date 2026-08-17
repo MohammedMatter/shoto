@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_shapes.dart';
@@ -93,6 +94,32 @@ class ScreenshotThumbnail extends StatelessWidget {
     this.heroTag,
   });
 
+  /// What this tile is, for somebody who cannot see it.
+  ///
+  /// **A date, because a screenshot has nothing else to be called.** Every
+  /// other identifying fact about it is inside the picture, and the app knows
+  /// none of it here — the recognised text belongs to the viewer, one screen
+  /// down. Without this a library was a grid of identical unnamed buttons, and
+  /// swiping through it announced the same nothing forty times.
+  ///
+  /// The date is formatted by [MaterialLocalizations] rather than by the app's
+  /// own strings, so it follows the reader's locale conventions without
+  /// needing a date format written seven times.
+  ///
+  /// **Full, not medium**, which is verbose on screen and correct out loud:
+  /// `formatMediumDate` returns "Sat, Mar 14" with no year, and a library
+  /// holds screenshots from several. Two tiles a year apart would have been
+  /// announced identically, which is the one thing this label exists to stop.
+  String _describe(BuildContext context) {
+    final String date = MaterialLocalizations.of(
+      context,
+    ).formatFullDate(asset.createDateTime);
+
+    return isFavorite
+        ? context.l10n.a11yScreenshotFavorite(date)
+        : context.l10n.a11yScreenshot(date);
+  }
+
   Widget _withHero(Widget child) => heroTag == null
       ? child
       // The radius is declared rather than only drawn, so the flight can open
@@ -111,6 +138,11 @@ class ScreenshotThumbnail extends StatelessWidget {
       scale: 0.97,
       onTap: onTap,
       onLongPress: onLongPress,
+      semanticLabel: _describe(context),
+      // Only while choosing. Outside selection mode a tile is not a member of
+      // a set, and reporting "not selected" on every picture in a library
+      // invents a state for a screen reader to track.
+      selected: selectionMode ? isSelected : null,
       // Deliberately *not* clipped.
       //
       // The clipped corner was tried here first and taken back out: on a

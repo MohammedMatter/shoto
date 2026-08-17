@@ -344,6 +344,22 @@
   "detailFavorite": "Favorito",
   "detailUnfavorite": "Quitar de favoritos",
   "detailAddFavorite": "Añadir a favoritos",
+  "a11yScreenshot": "Captura del {date}",
+  "@a11yScreenshot": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yScreenshotFavorite": "Captura del {date}, favorita",
+  "@a11yScreenshotFavorite": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "detailActions": "Acciones",
   "detailSafeShare": "Compartir seguro",
   "detailMore": "Más",

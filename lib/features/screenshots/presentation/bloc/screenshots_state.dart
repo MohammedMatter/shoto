@@ -214,7 +214,24 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   /// Status narrows first, then content. The order is invisible in the result
   /// — set intersection commutes — but it keeps the cheap test first for a
   /// library where most screenshots have no cached text.
-  List<ScreenshotEntity> get visibleScreenshots {
+  ///
+  /// **Computed once per state, not once per read, and that is a performance
+  /// fix rather than a style preference.** This was a plain getter, so every
+  /// caller paid a full filter and an `O(n log n)` sort of the whole library.
+  /// Two of them run on the same frame — the grid asks for the items and the
+  /// header asks whether there are any — and **selection lives in this state**,
+  /// so picking each tile in a multi-select emitted a new state and re-sorted
+  /// everything the user owns, twice, per tap.
+  ///
+  /// `late final` keeps the property that made a getter the right shape in the
+  /// first place: it is still *derived*, so it cannot drift from
+  /// [screenshots], [filter], [lens] or [sort] the way a stored copy would.
+  /// The state is immutable and a new one is built for every change, so "once
+  /// per state" and "once per set of inputs" are the same sentence here — and
+  /// a library nobody looks at never sorts at all.
+  late final List<ScreenshotEntity> visibleScreenshots = _computeVisible();
+
+  List<ScreenshotEntity> _computeVisible() {
     final Iterable<ScreenshotEntity> byStatus = statusSlice;
     final ContentTrait? active = lens;
     final List<ScreenshotEntity> narrowed = active == null
@@ -240,9 +257,13 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   bool hasTrait(String assetId, ContentTrait trait) =>
       traits[assetId]?.contains(trait) ?? false;
 
-  int get unsortedCount => screenshots.where((s) => s.isUnsorted).length;
+  /// Both counts are on the filter pills, which are on screen for the whole
+  /// length of the library — so they are walked on every rebuild too, for the
+  /// same reason and with the same fix as [visibleScreenshots]. Linear rather
+  /// than sorted, so this is the smaller half of it.
+  late final int unsortedCount = screenshots.where((s) => s.isUnsorted).length;
 
-  int get favoritesCount => screenshots.where((s) => s.isFavorite).length;
+  late final int favoritesCount = screenshots.where((s) => s.isFavorite).length;
 
   /// Whether any status filter would show a different set than *All*.
   ///
@@ -312,7 +333,9 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     final List<MapEntry<IntentRef, int>> ordered = counts.entries.toList()
       ..sort(
         (MapEntry<IntentRef, int> a, MapEntry<IntentRef, int> b) =>
-            IntentRef.pickerOrder(a.key).compareTo(IntentRef.pickerOrder(b.key)),
+            IntentRef.pickerOrder(
+              a.key,
+            ).compareTo(IntentRef.pickerOrder(b.key)),
       );
     return Map<IntentRef, int>.fromEntries(ordered);
   }

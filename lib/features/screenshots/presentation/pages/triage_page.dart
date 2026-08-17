@@ -161,6 +161,7 @@ class _Header extends StatelessWidget {
             ),
           ),
           IconButton(
+            tooltip: context.l10n.commonClose,
             onPressed: onClose,
             icon: Icon(
               Icons.close_rounded,

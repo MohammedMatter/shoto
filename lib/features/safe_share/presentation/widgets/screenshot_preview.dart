@@ -304,6 +304,7 @@ class _FullScreenPreview extends StatelessWidget {
             top: MediaQuery.paddingOf(context).top + 8.h,
             right: 12.w,
             child: IconButton(
+              tooltip: context.l10n.commonClose,
               icon: const Icon(Icons.close_rounded, color: Colors.white),
               onPressed: () => Navigator.of(context).pop(),
             ),

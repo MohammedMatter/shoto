@@ -223,6 +223,7 @@ class _PaywallBody extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
+                    tooltip: context.l10n.commonClose,
                     onPressed: () => Navigator.of(context).pop(false),
                     icon: Icon(
                       Icons.close_rounded,

@@ -231,6 +231,7 @@ class _LibraryActions extends StatelessWidget {
         Builder(
           builder: (context) => HeaderIconButton(
             icon: Icons.search_rounded,
+            tooltip: context.l10n.searchTitle,
             onTap: () =>
                 openSearchPage(context, bloc: context.read<ScreenshotsBloc>()),
           ),

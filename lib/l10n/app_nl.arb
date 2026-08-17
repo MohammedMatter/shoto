@@ -368,6 +368,22 @@
   "detailFavorite": "Favoriet",
   "detailUnfavorite": "Uit favorieten halen",
   "detailAddFavorite": "Aan favorieten toevoegen",
+  "a11yScreenshot": "Screenshot van {date}",
+  "@a11yScreenshot": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yScreenshotFavorite": "Screenshot van {date}, favoriet",
+  "@a11yScreenshotFavorite": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "detailActions": "Acties",
   "detailSafeShare": "Safe share",
   "detailMore": "Meer",

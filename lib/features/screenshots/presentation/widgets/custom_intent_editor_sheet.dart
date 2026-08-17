@@ -162,6 +162,7 @@ class _CustomIntentEditorContentState
                       ),
                       if (_isEditing)
                         IconButton(
+                          tooltip: context.l10n.commonDelete,
                           onPressed: _delete,
                           icon: Icon(
                             Icons.delete_outline_rounded,

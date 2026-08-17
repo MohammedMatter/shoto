@@ -368,6 +368,22 @@
   "detailFavorite": "Favorit",
   "detailUnfavorite": "Aus Favoriten entfernen",
   "detailAddFavorite": "Zu Favoriten hinzufügen",
+  "a11yScreenshot": "Screenshot vom {date}",
+  "@a11yScreenshot": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yScreenshotFavorite": "Screenshot vom {date}, Favorit",
+  "@a11yScreenshotFavorite": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
   "detailActions": "Aktionen",
   "detailSafeShare": "Safe Share",
   "detailMore": "Mehr",
