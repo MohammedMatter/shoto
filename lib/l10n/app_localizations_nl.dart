@@ -363,6 +363,10 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String get reminderPastTime =>
+      'Dat tijdstip is al voorbij — kies een later moment.';
+
+  @override
   String get commonCancel => 'Annuleren';
 
   @override

@@ -184,6 +184,7 @@
       }
     }
   },
+  "reminderPastTime": "Quell’orario è già passato: scegline uno successivo.",
   "commonCancel": "Annulla",
   "commonDelete": "Elimina",
   "commonRetry": "Riprova",

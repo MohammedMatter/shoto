@@ -129,7 +129,7 @@ class _ReminderSheet extends StatelessWidget {
 
     final TimeOfDay? time = await showTimePicker(
       context: context,
-      initialTime: const TimeOfDay(hour: 9, minute: 0),
+      initialTime: _openTimeAt(day),
     );
     if (time == null || !context.mounted) return;
 
@@ -141,13 +141,28 @@ class _ReminderSheet extends StatelessWidget {
       time.minute,
     );
 
-    // A moment already gone is the one answer the pickers can produce that
-    // this feature cannot honour — the alarm would fire at once or not at
-    // all. Treated as a correction rather than an error: the sheet stays open
-    // and says nothing, because the user can see the date they chose.
-    if (!at.isAfter(DateTime.now())) return;
+    // **A moment already gone gets said out loud.**
+    //
+    // This used to `return` in silence, on the reasoning that the user can see
+    // the date they chose. They cannot see *why nothing happened*, and the
+    // report that came back was exactly that: "it won't make a reminder for
+    // today". Nothing in the app is more corrosive than a control that answers
+    // a deliberate tap by doing nothing at all — it reads as broken, and there
+    // is no way for the user to find out otherwise.
+    //
+    // The sheet deliberately stays open, so the correction costs one tap
+    // rather than a second trip through both pickers.
+    if (!at.isAfter(DateTime.now())) {
+      showAppSnackBar(context, context.l10n.reminderPastTime);
+      return;
+    }
     await _set(context, at);
   }
+
+  /// What the clock face opens on — see [pickerOpensAt] for why it is not a
+  /// constant.
+  TimeOfDay _openTimeAt(DateTime day) =>
+      TimeOfDay.fromDateTime(pickerOpensAt(day, DateTime.now()));
 
   Future<void> _set(BuildContext context, DateTime? at) async {
     final NavigatorState navigator = Navigator.of(context);

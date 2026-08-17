@@ -184,6 +184,7 @@
       }
     }
   },
+  "reminderPastTime": "That time has already passed — pick a later one.",
   "commonCancel": "Cancel",
   "commonDelete": "Delete",
   "commonRetry": "Try again",

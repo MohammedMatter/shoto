@@ -184,6 +184,49 @@ void main() {
     }
   });
 
+  group('what the custom picker opens on', () {
+    // The reported bug: "it won't make a reminder for today, five minutes from
+    // now." The dial opened on a flat 09:00, so choosing today and moving only
+    // the minutes composed 09:05 — already gone — and the save was then
+    // refused in silence.
+    test('today opens five minutes from now, not nine in the morning', () {
+      final DateTime now = DateTime(2026, 5, 4, 16, 51);
+      expect(
+        pickerOpensAt(DateTime(2026, 5, 4), now),
+        DateTime(2026, 5, 4, 16, 56),
+      );
+    });
+
+    test('and what it opens on is always still ahead', () {
+      for (int hour = 0; hour < 24; hour++) {
+        final DateTime now = DateTime(2026, 5, 4, hour, 30);
+        expect(
+          pickerOpensAt(DateTime(2026, 5, 4), now).isAfter(now),
+          isTrue,
+          reason: 'at $hour:30',
+        );
+      }
+    });
+
+    test('a later date opens on nine, where nine is a sensible guess', () {
+      expect(
+        pickerOpensAt(DateTime(2026, 5, 9), DateTime(2026, 5, 4, 16, 51)),
+        DateTime(2026, 5, 9, 9),
+      );
+    });
+
+    test('late at night, today rolls the opening time into tomorrow', () {
+      // 23:58 + 5 minutes is 00:03. The picker takes only the *time* off this,
+      // so it opens on 00:03 — and the composed moment is then in the past for
+      // today, which is exactly the case the message now explains rather than
+      // swallowing.
+      expect(
+        pickerOpensAt(DateTime(2026, 5, 4), DateTime(2026, 5, 4, 23, 58)),
+        DateTime(2026, 5, 5, 0, 3),
+      );
+    });
+  });
+
   test('offered presets keep their declared order', () {
     // The sheet draws them in this order and the order is a judgement about
     // which answer is most likely, so a filter must not reshuffle it.

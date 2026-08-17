@@ -364,6 +364,10 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get reminderPastTime =>
+      'Quell’orario è già passato: scegline uno successivo.';
+
+  @override
   String get commonCancel => 'Annulla';
 
   @override

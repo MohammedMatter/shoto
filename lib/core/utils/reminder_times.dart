@@ -138,3 +138,35 @@ List<ReminderPreset> offeredPresets(DateTime now) => <ReminderPreset>[
   for (final ReminderPreset preset in ReminderPreset.values)
     if (isPresetOffered(preset, now)) preset,
 ];
+
+/// How far past [now] the custom time picker opens when it has to guess.
+const Duration _pickerHeadStart = Duration(minutes: 5);
+
+/// The moment the clock face should open on, once [day] has been chosen.
+///
+/// **This was a flat nine in the morning, and that is what made "today, in
+/// five minutes" impossible.** Choosing today put the dial on 09:00 — a time
+/// already gone for most of the day — so somebody reaching for a few minutes
+/// ahead moved the *minute* hand, which is the half the task is about, and
+/// composed 09:05 out of an hour nobody chose. The reminder was then refused
+/// for being in the past, and refused in silence, so the whole feature looked
+/// broken for the most ordinary request anybody would make of it.
+///
+/// So the default belongs to the day. Any later date opens on nine, which is
+/// the sensible guess for a morning nobody has expressed an opinion about.
+/// **Today opens five minutes from now**: that is the request this exists to
+/// serve, and a dial that opened exactly on the current minute would invite a
+/// reminder already late by the time it was confirmed.
+///
+/// Returned as a [DateTime] rather than a `TimeOfDay` so this file stays free
+/// of Flutter and testable against a fixed clock; the caller takes the time
+/// off it.
+DateTime pickerOpensAt(DateTime day, DateTime now) {
+  final bool isToday =
+      day.year == now.year && day.month == now.month && day.day == now.day;
+  if (!isToday) {
+    return DateTime(day.year, day.month, day.day, _morningHour);
+  }
+
+  return now.add(_pickerHeadStart);
+}

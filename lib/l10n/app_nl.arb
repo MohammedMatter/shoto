@@ -184,6 +184,7 @@
       }
     }
   },
+  "reminderPastTime": "Dat tijdstip is al voorbij — kies een later moment.",
   "commonCancel": "Annuleren",
   "commonDelete": "Verwijderen",
   "commonRetry": "Opnieuw proberen",

@@ -184,6 +184,7 @@
       }
     }
   },
+  "reminderPastTime": "Esa hora ya ha pasado; elige una posterior.",
   "commonCancel": "Cancelar",
   "commonDelete": "Eliminar",
   "commonRetry": "Reintentar",

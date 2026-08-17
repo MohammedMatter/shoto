@@ -363,6 +363,9 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get reminderPastTime => 'Esa hora ya ha pasado; elige una posterior.';
+
+  @override
   String get commonCancel => 'Cancelar';
 
   @override

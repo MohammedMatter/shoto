@@ -636,6 +636,12 @@ abstract class AppLocalizations {
   /// **'Next {when}'**
   String remindersNextAt(String when);
 
+  /// No description provided for @reminderPastTime.
+  ///
+  /// In en, this message translates to:
+  /// **'That time has already passed — pick a later one.'**
+  String get reminderPastTime;
+
   /// No description provided for @commonCancel.
   ///
   /// In en, this message translates to:
