@@ -8,6 +8,7 @@ import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/core/routes/photo_viewer_route.dart';
+import 'package:shoto/core/utils/text_folding.dart';
 import 'package:shoto/core/utils/visual_vocabulary.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
@@ -85,6 +86,9 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController _controller = TextEditingController();
   final Map<String, String> _ocrByAssetId = {};
   final Map<String, List<String>> _labelsByAssetId = {};
+
+  /// The query **folded for comparison**, never for display — see the empty
+  /// state, which quotes the controller's own text back instead.
   String _query = '';
   bool _isIndexing = true;
   Timer? _publishTimer;
@@ -93,7 +97,7 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
     _controller.addListener(() {
-      setState(() => _query = _controller.text.trim().toLowerCase());
+      setState(() => _query = foldForMatching(_controller.text.trim()));
     });
     _loadAndIndex();
   }
@@ -172,10 +176,25 @@ class _SearchPageState extends State<SearchPage> {
   /// Why this screenshot should appear for the current query, or null if it
   /// shouldn't. Returning the reason rather than a bool is what lets a
   /// visual match explain itself on screen.
+  ///
+  /// **Both sides are folded, and this used to lower-case only.**
+  /// [foldForMatching] was written for exactly this — its own doc names the
+  /// two places that claimed to be diacritic-insensitive and were not — and
+  /// the largest search surface in the app was not one of its callers. Six of
+  /// the seven shipped languages write accents, so "cafe" missed a receipt
+  /// reading *Café* and "strasse" missed an address reading *Straße*: not an
+  /// edge case on those phones, but the ordinary way somebody types on a
+  /// keyboard where an accent costs two presses.
+  ///
+  /// The recognised text is folded on every keystroke rather than once at
+  /// index time on purpose. It is a `contains` over a few hundred cached
+  /// strings behind a text field, and a second copy of the library's text kept
+  /// only for matching is a cache that can disagree with the one the viewer
+  /// shows.
   _Match? _match(ScreenshotEntity screenshot) {
-    final bool matchedText = (_ocrByAssetId[screenshot.id] ?? '')
-        .toLowerCase()
-        .contains(_query);
+    final bool matchedText = foldForMatching(
+      _ocrByAssetId[screenshot.id] ?? '',
+    ).contains(_query);
 
     final List<String> matchedLabels = VisualVocabulary.matchingLabels(
       _labelsByAssetId[screenshot.id] ?? const [],
@@ -321,7 +340,11 @@ class _SearchPageState extends State<SearchPage> {
           return EmptyState(
             icon: Icons.image_search_rounded,
             title: context.l10n.searchNoneTitle,
-            message: context.l10n.searchNoneBody(_query),
+            // What they typed, not what was matched. [_query] is folded for
+            // comparison — accents stripped, ß opened out to ss — and quoting
+            // that back would answer a search for *Café* with "nothing for
+            // cafe", which reads as the app having mistyped their word.
+            message: context.l10n.searchNoneBody(_controller.text.trim()),
           );
         }
 
