@@ -48,6 +48,17 @@ class AppMessage {
 
   static const AppMessage loadScreenshots = AppMessage._(_loadScreenshots);
   static const AppMessage loadFolders = AppMessage._(_loadFolders);
+
+  // -------------------------------------------------------- folder writes
+  //
+  // Separate from [loadFolders] because they are drawn differently and have
+  // to be: a failed *read* leaves nothing on screen, so it takes over the
+  // page. A failed *write* happens behind a grid that is still perfectly
+  // good, and replacing that grid with an error panel would lose every folder
+  // the user has over one that could not be made.
+
+  static const AppMessage saveFolder = AppMessage._(_saveFolder);
+  static const AppMessage deleteFolder = AppMessage._(_deleteFolder);
   static const AppMessage scanDuplicates = AppMessage._(_scanDuplicates);
   static const AppMessage deleteSelected = AppMessage._(_deleteSelected);
   static const AppMessage onboarding = AppMessage._(_onboarding);
@@ -58,7 +69,6 @@ class AppMessage {
   static const AppMessage signInInterrupted = AppMessage._(_signInInterrupted);
   static const AppMessage network = AppMessage._(_network);
   static const AppMessage generic = AppMessage._(_generic);
-
 
   // ------------------------------------------------------------ subscription
 
@@ -107,6 +117,8 @@ class AppMessage {
 
 String _loadScreenshots(AppLocalizations l) => l.errorLoadScreenshots;
 String _loadFolders(AppLocalizations l) => l.errorLoadFolders;
+String _saveFolder(AppLocalizations l) => l.errorSaveFolder;
+String _deleteFolder(AppLocalizations l) => l.errorDeleteFolder;
 String _scanDuplicates(AppLocalizations l) => l.errorScanDuplicates;
 String _deleteSelected(AppLocalizations l) => l.errorDeleteSelected;
 String _onboarding(AppLocalizations l) => l.errorOnboarding;

@@ -83,7 +83,14 @@ class AppDatabase {
   Future<Database> openAt(String path) {
     return openDatabase(
       path,
-      version: 18,
+      // **Still 20, with 19 and 20 doing nothing.**
+      //
+      // Both steps belonged to a source-app feature that has been removed. The
+      // number does not go back down: databases already at 20 exist on real
+      // phones, and sqflite treats a lower number as a downgrade and throws.
+      // What the two versions left behind — an unused column and an empty
+      // table — is inert, and SQLite cannot drop a column anyway.
+      version: 20,
       onCreate: (db, version) => _createTables(db),
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
@@ -224,6 +231,9 @@ class AppDatabase {
           // the app down on launch.
           await _addFolderIconKey(db);
         }
+        // 19 and 20 are deliberately absent: both belonged to a source-app
+        // feature that has been removed. See the note on `version` above for
+        // why the number still stops at 20.
       },
       onConfigure: (db) async => db.execute('PRAGMA foreign_keys = ON'),
     );

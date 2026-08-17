@@ -122,6 +122,21 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   /// Which end of the library the grid starts from.
   final LibrarySort sort;
 
+  /// Whether the user asked for selection mode themselves and has not picked
+  /// anything yet.
+  ///
+  /// The third way into the mode, and the reason the flag has to exist at all:
+  /// selection used to begin with a long-press, which picks a tile in the same
+  /// motion, so "in the mode" and "has something selected" could never
+  /// disagree. Entering from the header's Select button separates them — the
+  /// grid is waiting for a first tap, exactly as it is under a guided intent.
+  ///
+  /// Only ever true *before* the first pick. Everything that empties the
+  /// selection puts it back to false, because an emptied selection is the end
+  /// of the job rather than the start of another one — see
+  /// `_onClearSelection`.
+  final bool isSelecting;
+
   ScreenshotsLoadedState({
     required this.screenshots,
     this.selectedIds = const {},
@@ -132,6 +147,7 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     this.traitsReady = false,
     this.isScanning = false,
     this.sort = LibrarySort.newest,
+    this.isSelecting = false,
   });
 
   /// **Selection mode is no longer the same thing as "something is
@@ -143,7 +159,13 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   /// describe a selection somebody else started: Home tapping "Merge" has to
   /// leave the Library *waiting* for a choice, and with nothing picked yet
   /// there was no way to say so.
-  bool get isSelectionMode => selectedIds.isNotEmpty || intent.isGuided;
+  ///
+  /// [isSelecting] is that same gap reached from the other direction — the
+  /// user's own request for the mode, before they have picked anything. The
+  /// long-press that used to make this getter trivially true now opens the
+  /// per-screenshot sheet instead, so all three terms are load-bearing.
+  bool get isSelectionMode =>
+      isSelecting || selectedIds.isNotEmpty || intent.isGuided;
 
   /// Whether the guiding prompt still has something to ask for.
   ///
@@ -155,6 +177,36 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     LibraryIntent.protect => selectedIds.length != 1,
   };
 
+  /// The library narrowed by [filter] alone, before [lens] touches it.
+  ///
+  /// Shared rather than rewritten at each call site: the grid, the per-trait
+  /// counts and the question of *which* narrowing emptied the screen all need
+  /// exactly this list, and three copies of one `switch` is how three answers
+  /// drift apart. Kept lazy — every caller either counts it or narrows it
+  /// further, and none of them wants an intermediate list built first.
+  Iterable<ScreenshotEntity> get statusSlice => switch (filter) {
+    LibraryFilter.all => screenshots,
+    LibraryFilter.unsorted => screenshots.where((s) => s.isUnsorted),
+    LibraryFilter.favorites => screenshots.where((s) => s.isFavorite),
+  };
+
+  /// Whether [lens] is the reason the grid is empty.
+  ///
+  /// **An empty screen has to blame the narrowing that actually caused it.**
+  /// Status and content are independent axes, so an empty grid has two possible
+  /// culprits — and the lens was being blamed for both merely because it was
+  /// on. Picking Favourites with none favourited, while a lens happened to be
+  /// active, produced "No screenshots with Links" over a library whose real
+  /// answer was "you have not favourited anything", and offered a *Show all*
+  /// that cleared the lens and left the screen just as empty. A recovery that
+  /// recovers nothing is worse than no recovery, because it spends the one tap
+  /// the user had.
+  ///
+  /// Asked as "would dropping the lens put something back", which is the same
+  /// question the button is about to answer — so the button can only appear
+  /// when pressing it genuinely refills the grid.
+  bool get isEmptyBecauseOfLens => lens != null && statusSlice.isNotEmpty;
+
   /// What the grid actually draws. [screenshots] stays the whole library so
   /// the filter pills can keep showing every count while one of them is on —
   /// a filter that hid its own alternatives' totals would be a dead end.
@@ -163,11 +215,7 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   /// — set intersection commutes — but it keeps the cheap test first for a
   /// library where most screenshots have no cached text.
   List<ScreenshotEntity> get visibleScreenshots {
-    final Iterable<ScreenshotEntity> byStatus = switch (filter) {
-      LibraryFilter.all => screenshots,
-      LibraryFilter.unsorted => screenshots.where((s) => s.isUnsorted),
-      LibraryFilter.favorites => screenshots.where((s) => s.isFavorite),
-    };
+    final Iterable<ScreenshotEntity> byStatus = statusSlice;
     final ContentTrait? active = lens;
     final List<ScreenshotEntity> narrowed = active == null
         ? byStatus.toList()
@@ -220,14 +268,8 @@ class ScreenshotsLoadedState extends ScreenshotsState {
   /// together: with "Unsorted" lit, a Links pill reading 40 while the grid can
   /// only ever show the 3 unsorted ones is a number that answers no question
   /// the user asked.
-  int traitCount(ContentTrait trait) {
-    final Iterable<ScreenshotEntity> byStatus = switch (filter) {
-      LibraryFilter.all => screenshots,
-      LibraryFilter.unsorted => screenshots.where((s) => s.isUnsorted),
-      LibraryFilter.favorites => screenshots.where((s) => s.isFavorite),
-    };
-    return byStatus.where((s) => hasTrait(s.id, trait)).length;
-  }
+  int traitCount(ContentTrait trait) =>
+      statusSlice.where((s) => hasTrait(s.id, trait)).length;
 
   /// Everything still waiting under [intent], oldest first.
   ///
@@ -301,6 +343,7 @@ class ScreenshotsLoadedState extends ScreenshotsState {
     bool? traitsReady,
     bool? isScanning,
     LibrarySort? sort,
+    bool? isSelecting,
   }) {
     return ScreenshotsLoadedState(
       screenshots: screenshots ?? this.screenshots,
@@ -315,6 +358,7 @@ class ScreenshotsLoadedState extends ScreenshotsState {
       traitsReady: traitsReady ?? this.traitsReady,
       isScanning: isScanning ?? this.isScanning,
       sort: sort ?? this.sort,
+      isSelecting: isSelecting ?? this.isSelecting,
     );
   }
 }

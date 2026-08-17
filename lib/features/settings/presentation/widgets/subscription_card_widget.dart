@@ -9,11 +9,14 @@ import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_shapes.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
+import 'package:shoto/core/widgets/app_snack_bar.dart';
 import 'package:shoto/core/widgets/glass_layer.dart';
 import 'package:shoto/features/subscription/domain/entities/premium_feature.dart';
+import 'package:shoto/features/subscription/domain/entities/subscription_status.dart';
 import 'package:shoto/features/subscription/domain/use_cases/restore_purchases_use_case.dart';
 import 'package:shoto/features/settings/presentation/widgets/settings_tiles.dart';
 import 'package:shoto/features/subscription/presentation/pages/paywall_page.dart';
+import 'package:shoto/features/subscription/presentation/pages/whats_included_page.dart';
 
 /// The one card at the top of Settings that says where this account stands.
 ///
@@ -43,6 +46,17 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
     await sl<ProStatus>().refresh();
   }
 
+  /// Where the membership card goes.
+  ///
+  /// The same refresh on the way back as [_openPaywall], for the same reason:
+  /// [WhatsIncludedPage] can reach the paywall from its own bottom bar, so the
+  /// standing this card is drawing may have changed while it was off screen.
+  Future<void> _openWhatsIncluded() async {
+    await openWhatsIncludedPage(context);
+    if (!mounted) return;
+    await sl<ProStatus>().refresh();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -57,7 +71,10 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
         if (pro.status == null) return const SizedBox.shrink();
 
         final Widget card = pro.isPro
-            ? _MembershipCard(expiresOn: pro.status?.expirationDate)
+            ? _MembershipCard(
+                expiresOn: pro.status?.expirationDate,
+                onTap: _openWhatsIncluded,
+              )
             : _UpgradeCard(onTap: _openPaywall);
 
         // **The one transition in this file, and it plays once in a
@@ -123,8 +140,12 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
 @visibleForTesting
 List<Widget> get debugSubscriptionCardStates => <Widget>[
   _UpgradeCard(onTap: () {}),
-  _MembershipCard(expiresOn: DateTime(2026, 9, 12), debugAnimate: false),
-  const _MembershipCard(debugAnimate: false),
+  _MembershipCard(
+    expiresOn: DateTime(2026, 9, 12),
+    onTap: () {},
+    debugAnimate: false,
+  ),
+  _MembershipCard(onTap: () {}, debugAnimate: false),
 ];
 
 /// The free-tier card, which doubles as the pitch.
@@ -294,9 +315,7 @@ class _FeatureLine extends StatelessWidget {
           Expanded(
             child: Text(
               feature.title(context),
-              style: context.text.bodySmall.copyWith(
-                color: colors.textPrimary,
-              ),
+              style: context.text.bodySmall.copyWith(color: colors.textPrimary),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -330,10 +349,7 @@ class _ArrowChip extends StatelessWidget {
       width: 34.w,
       height: 34.w,
       alignment: Alignment.center,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: colors.primary,
-      ),
+      decoration: BoxDecoration(shape: BoxShape.circle, color: colors.primary),
       child: Icon(
         Icons.arrow_forward_rounded,
         color: colors.onMarker,
@@ -400,6 +416,21 @@ class _MembershipCard extends StatefulWidget {
   /// restyled. A date is not a restatement.
   final DateTime? expiresOn;
 
+  /// Opens [WhatsIncludedPage].
+  ///
+  /// **The card was inert before this**, which was the last thing left over
+  /// from it having been a receipt: it is the largest object on the screen, it
+  /// draws every premium glyph the app has, and a finger landing on it did
+  /// nothing at all. The pitch above it has always been a door; a subscriber
+  /// pressing the same slot in the same place had no reason to expect a
+  /// different kind of object.
+  ///
+  /// It leads to the list of what you hold rather than to the paywall, which
+  /// is the only destination that makes sense on this side of the purchase —
+  /// and it is the long-form version of the row of glyphs the card is already
+  /// showing, so the tap expands what the finger was pointing at.
+  final VoidCallback onTap;
+
   /// Off in goldens only, where the card is drawn at its **finished** state
   /// rather than from a controller nothing is pumping.
   ///
@@ -410,7 +441,11 @@ class _MembershipCard extends StatefulWidget {
   /// show is worse than no picture.
   final bool debugAnimate;
 
-  const _MembershipCard({this.expiresOn, this.debugAnimate = true});
+  const _MembershipCard({
+    required this.onTap,
+    this.expiresOn,
+    this.debugAnimate = true,
+  });
 
   @override
   State<_MembershipCard> createState() => _MembershipCardState();
@@ -458,93 +493,142 @@ class _MembershipCardState extends State<_MembershipCard>
     final DateTime? expiresOn = widget.expiresOn;
     final BorderRadius shape = BorderRadius.circular(AppRadius.lg);
 
-    // The same lit top edge the pitch above it has, and the same one the
-    // unsorted card on Home is raised by — at the default strength, because
-    // this one sits on an ordinary surface rather than on the accent. Both
-    // cards in this slot are objects in the same room; only one of them being
-    // lit is what would make the quiet one read as flat rather than as calm.
-    return GlassRim(
-      borderRadius: shape,
-      falloff: 34,
-      child: Container(
-        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: shape,
-          border: Border.all(color: colors.border),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                // **The same mark as the pitch, filled instead of tinted.**
-                //
-                // It was a check, and a check was the wrong word. A tick means
-                // *done* — a task closed, a form accepted — and a subscription
-                // is not a completed errand, it is something you hold. The
-                // glyph read like a confirmation toast that had wandered onto
-                // a card.
-                //
-                // So both cards now carry the identical premium mark in the
-                // identical place, and **the fill is the entire difference**:
-                // a wash of the accent while it is something on offer, solid
-                // accent once it is yours. Nothing else on either card changes
-                // shape, which is what makes the pair read as one object in
-                // two conditions rather than as an advert and a receipt — and
-                // it means the meaning is carried by the one property a person
-                // can read without knowing any iconography at all.
-                //
-                // The solid object also stays unique per card and simply
-                // moves: on the pitch it is the arrow at the trailing edge —
-                // go and do this — and here it is the mark at the leading
-                // edge, because there is nothing left to do.
-                Container(
-                  width: 36.w,
-                  height: 36.w,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: colors.primary,
+    // **No outline, and that is the whole redesign of this card.**
+    //
+    // It had `Border.all(colors.border)` — an even hairline all the way round,
+    // which is the one thing `GlassRim` was written to avoid drawing: a rim of
+    // uniform brightness reads as an *outline*, a shape somebody traced, rather
+    // than as an object with a thickness for light to catch on. Every ordinary
+    // row in Settings has that hairline because every ordinary row is a
+    // container. This is the one card on the screen that is a *standing*, and
+    // it was separating itself from the canvas the same way a list divider
+    // does.
+    //
+    // What replaces it is stronger and quieter at once: **the card separates by
+    // colour instead of by a line.** An opaque blend of the accent into the
+    // surface — not a translucent veil, which over near-black reads as haze
+    // (`home_page.dart` has that argument twice) — so it stays a solid object
+    // that simply happens to be made of the accent's material. Nothing on the
+    // screen except this card is tinted, so it is unmistakable at a glance
+    // without being loud, and it costs no extra height, no shadow and no second
+    // vocabulary.
+    //
+    // The pitch card above keeps its hairline and its plain surface. That is
+    // the *point*: the two are one object in two conditions, and the condition
+    // this one is in is that it belongs to you.
+    final Color fill = Color.alphaBlend(
+      // Dark mode needs more of the accent before a tint registers at all
+      // against a near-black surface; on paper the same accent is a dark
+      // pigment and lands much faster.
+      colors.primary.withValues(alpha: colors.isDark ? 0.16 : 0.09),
+      colors.surface,
+    );
+
+    return PressableScale(
+      // The pitch's own figure. Both cards are one object in two conditions,
+      // and that has to hold for how they answer a finger as much as for how
+      // they are drawn.
+      scale: 0.98,
+      onTap: widget.onTap,
+      child: GlassRim(
+        borderRadius: shape,
+        falloff: 34,
+        // **The rim carries the accent now**, where every other rim in the app
+        // is white. It is the same top-lit hairline dying out 34px down — light
+        // falling on the card's top edge — but on a tinted surface a white edge
+        // reads as a different material laid over it. Tinted, the edge belongs
+        // to the object, and it is the only "border" this card has: bright
+        // where light would land, absent everywhere else.
+        color: colors.primary.withValues(alpha: colors.isDark ? 0.5 : 0.55),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+          decoration: BoxDecoration(color: fill, borderRadius: shape),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  // **The same mark as the pitch, filled instead of tinted.**
+                  //
+                  // It was a check, and a check was the wrong word. A tick means
+                  // *done* — a task closed, a form accepted — and a subscription
+                  // is not a completed errand, it is something you hold. The
+                  // glyph read like a confirmation toast that had wandered onto
+                  // a card.
+                  //
+                  // So both cards now carry the identical premium mark in the
+                  // identical place, and **the fill is the entire difference**:
+                  // a wash of the accent while it is something on offer, solid
+                  // accent once it is yours. Nothing else on either card changes
+                  // shape, which is what makes the pair read as one object in
+                  // two conditions rather than as an advert and a receipt — and
+                  // it means the meaning is carried by the one property a person
+                  // can read without knowing any iconography at all.
+                  //
+                  // The solid object also stays unique per card and simply
+                  // moves: on the pitch it is the arrow at the trailing edge —
+                  // go and do this — and here it is the mark at the leading
+                  // edge, because there is nothing left to buy. This card opens
+                  // something too now, but what it opens is a page to read, so
+                  // the trailing edge gets the chevron every other row in
+                  // Settings uses for exactly that and not a second filled disc.
+                  Container(
+                    width: 36.w,
+                    height: 36.w,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: colors.primary,
+                    ),
+                    child: Icon(
+                      Icons.workspace_premium_rounded,
+                      size: 20.sp,
+                      color: colors.onMarker,
+                    ),
                   ),
-                  child: Icon(
-                    Icons.workspace_premium_rounded,
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(
+                          context.l10n.subPremiumTitle,
+                          style: context.text.titleSmall.copyWith(
+                            color: colors.textPrimary,
+                          ),
+                        ),
+                        SizedBox(height: 2.h),
+                        Text(
+                          expiresOn == null
+                              ? context.l10n.subPremiumBody
+                              : context.l10n.subPremiumRenews(
+                                  _formatRenewal(context, expiresOn),
+                                ),
+                          style: context.text.bodySmall.copyWith(
+                            color: colors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                  // Accent rather than the rows' grey. On a tinted card a
+                  // disabled-grey glyph is the one dead thing on it — and this
+                  // chevron is not a row's chevron any more, it is the last
+                  // mark on an object made of the accent.
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    color: colors.primary.withValues(alpha: 0.65),
                     size: 20.sp,
-                    color: colors.onMarker,
                   ),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        context.l10n.subPremiumTitle,
-                        style: context.text.titleSmall.copyWith(
-                          color: colors.textPrimary,
-                        ),
-                      ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        expiresOn == null
-                            ? context.l10n.subPremiumBody
-                            : context.l10n.subPremiumRenews(
-                                _formatRenewal(context, expiresOn),
-                              ),
-                        style: context.text.bodySmall.copyWith(
-                          color: colors.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16.h),
-            _LitFeatureRow(cascade: _controller, tint: colors.primary),
-          ],
+                ],
+              ),
+              SizedBox(height: 16.h),
+              _LitFeatureRow(cascade: _controller, tint: colors.primary),
+            ],
+          ),
         ),
       ),
     );
@@ -656,23 +740,27 @@ class _Glyph extends StatelessWidget {
           child: Transform.scale(scale: 0.9 + 0.1 * t, child: child),
         );
       },
-      // **A lit tile, not a button.**
+      // **The figure and the ground swapped, because the card behind it did.**
       //
-      // At 12% on a surface this close in value, the fill was barely a shade
-      // off the card behind it and the row read as five *disabled* controls —
-      // the exact opposite of what it is there to say. The tint carries a
-      // hairline of the same accent now, which is what gives each tile an
-      // edge to be seen by, and 18% of fill behind a full-strength glyph is
-      // enough to read as lit in both modes without any tile out-weighing the
-      // solid mark in the header.
+      // These were an 18% wash of the accent with a 22% accent hairline — the
+      // arrangement that worked when the card was plain grey. On a card that is
+      // *itself* made of the accent now, a fainter wash of the same accent is
+      // very nearly the colour it sits on: seven tiles that had to be found
+      // rather than seen, each one wearing another little outline.
+      //
+      // So the tiles are the plain surface instead. The card is the tinted
+      // material and the tiles are wells cut into it, which is a real
+      // relationship rather than two strengths of one colour — and it needs no
+      // border at all, because a change of material already has an edge. The
+      // glyphs stay full-strength accent, so what a person actually reads is
+      // still seven lit marks.
       child: Container(
         width: 34.w,
         height: 34.w,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: tint.withValues(alpha: 0.18),
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.sm),
-          border: Border.all(color: tint.withValues(alpha: 0.22)),
         ),
         child: Icon(feature.icon, size: 17.sp, color: tint),
       ),
@@ -701,10 +789,47 @@ class RestorePurchasesTile extends StatefulWidget {
 class _RestorePurchasesTileState extends State<RestorePurchasesTile> {
   bool _isRestoring = false;
 
+  /// Restores, and then **says what happened**, which is the fix.
+  ///
+  /// The row awaited the use case, threw the answer away and refreshed
+  /// [ProStatus] — so a person who tapped it got a row that greyed out for a
+  /// moment and then nothing at all. There are three outcomes here and the
+  /// screen was drawing none of them: the entitlement came back, the store has
+  /// no purchase on this account, or the call failed. "Nothing visibly
+  /// happened" is the shape of a broken button, and it is the reading somebody
+  /// gets for the *common* case — most taps on this row are by people the
+  /// store has never sold anything to, and that is an answer rather than a
+  /// failure.
+  ///
+  /// The paywall has always distinguished them ([SubscriptionBloc._onRestore]
+  /// emits [AppMessage.noSubscription] against [AppMessage.restore]); this row
+  /// simply never learned to. It uses the store's own reply rather than
+  /// [ProStatus] on purpose: restoring asks what the *store* holds, and the
+  /// developer switch answering on its behalf would tell a tester their
+  /// purchase came back when nothing was purchased.
+  ///
+  /// The `catch` is load-bearing too. There was only a `finally`, so a throwing
+  /// SDK escaped into the void as an unhandled async error — the row cleared
+  /// its spinner and stayed silent, which looks exactly like success.
   Future<void> _restore() async {
     setState(() => _isRestoring = true);
     try {
-      await sl<RestorePurchasesUseCase>()();
+      final SubscriptionStatus status = await sl<RestorePurchasesUseCase>()();
+      if (!mounted) return;
+      showAppSnackBar(
+        context,
+        status.isPremium
+            ? context.l10n.settingsRestoreDone
+            : context.l10n.errorNoSubscription,
+        kind: status.isPremium ? SnackKind.success : SnackKind.neutral,
+      );
+    } catch (_) {
+      if (!mounted) return;
+      showAppSnackBar(
+        context,
+        context.l10n.errorRestore,
+        kind: SnackKind.error,
+      );
     } finally {
       if (mounted) setState(() => _isRestoring = false);
       await sl<ProStatus>().refresh();

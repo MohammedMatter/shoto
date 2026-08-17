@@ -19,8 +19,8 @@ abstract class SubscriptionConstants {
   // real prices are set when creating those products in each store console
   // — changing these constants alone does NOT change what a user is
   // charged.
-  static const String monthlyFallbackPrice = '\$7.00';
-  static const String yearlyFallbackPrice = '\$23.00';
+  static const String monthlyFallbackPrice = '\$4.99';
+  static const String yearlyFallbackPrice = '\$24.99';
 
   /// The same two prices as numbers, so the saving on the yearly card can be
   /// *calculated* rather than asserted.
@@ -31,36 +31,80 @@ abstract class SubscriptionConstants {
   /// user's own currency, and a number typed into the source has no way of
   /// knowing what they say. A percentage that is wrong on a paywall is not a
   /// cosmetic error — it is a claim about money.
-  static const double monthlyFallbackAmount = 7;
-  static const double yearlyFallbackAmount = 23;
+  /// **Down from 7 and 23**, and the ratio is the point as much as the
+  /// numbers.
+  ///
+  /// Seven a month is a professional-tool price, and this competes with things
+  /// the phone does for nothing — a ceiling that high asks somebody to value a
+  /// screenshot organiser above their music subscription. Seven also made the
+  /// pair read as a trick: twelve months at seven is 84 against a 23 year, a
+  /// 73% discount, which is not a saving so much as an admission that the
+  /// monthly price was never meant to be paid. A monthly plan nobody is
+  /// supposed to take is a monthly plan nobody trusts.
+  ///
+  /// Five and twenty-five is the ordinary shape for this category: the year
+  /// costs five months, the discount reads as generous rather than as bait,
+  /// and the monthly is low enough to be a real choice for somebody who wants
+  /// to try Pro for a month before committing.
+  static const double monthlyFallbackAmount = 4.99;
+  static const double yearlyFallbackAmount = 24.99;
 
-  // The free tier is one number, and this is it: distinct screenshots a free
-  // user may bring under organization (favorite and/or file into a folder).
+  // The free tier is two numbers: this one, and [freeFolderLimit] below.
   //
-  // There used to be three separate caps — 50 screenshots, 3 folders, 3
-  // custom intents — in three different currencies. Nobody can hold that in
-  // their head, and two of the three counted things a user has no feel for
-  // the value of: being told you have run out of *folders* is a strange
-  // sentence, and it arrives while you are trying to tidy up, which is the
-  // moment the app was supposed to be helping.
+  // It was three caps — 50 screenshots, 3 folders, 3 custom intents — then
+  // one, and it is two now. The argument for one is written out under the
+  // folder limit along with the reason it was overruled; custom intents stay
+  // uncapped.
   //
-  // One number can be stated on the paywall in one line, understood without
-  // reading it twice, and felt. Folders and intents are unlimited, because
-  // they are the *organizing* — charging for the containers while giving away
-  // the contents had it backwards.
+  // **Fifty.** It was a hundred, then fifteen, and both were wrong in the same
+  // way — they were guesses about when somebody would feel the value, made
+  // from opposite ends.
   //
-  // **Fifteen, down from a hundred.** A hundred was set so that hitting the
-  // ceiling would mean Shoto had genuinely become the place you keep things —
-  // which is a fine sentiment and a poor business: on a normal week of filing
-  // it is a limit most people never reach, so the free tier was the whole
-  // product and the paywall was a rumour. Fifteen is reached in the first
-  // week or two by anybody the app is actually working for, and reached by
-  // *organizing* — which is the moment the value is most obvious and the
-  // upgrade makes the most sense.
+  // A hundred meant most people never met the paywall at all: the free tier
+  // was the whole product and the price was a rumour. Fifteen was reached in
+  // the first week, which sounds ideal and is the trap: **the cap is on
+  // organising**, and organising is the habit this app is trying to build.
+  // Somebody stopped at fifteen has not yet learned that Shoto is where their
+  // screenshots live; they have learned that it stops working. A tool that
+  // interrupts the loop it is teaching does not get a second chance, and it
+  // spends the interruption on the one action that costs nothing to allow.
+  //
+  // Fifty is a month or two of ordinary filing. Long enough for the library to
+  // become the place you look first — which is the only state in which paying
+  // is obvious — and short enough that anybody using the app properly still
+  // arrives. The paid features are what should sell Pro; the ceiling is what
+  // catches the people the features already convinced.
   //
   // Changing this number changes what existing free users see immediately,
   // and deliberately in the safe direction: the gate refuses only *new*
   // items, so somebody already holding forty keeps all forty and is simply
   // over the line. See `LibraryQuota.fraction`, which clamps for exactly this.
-  static const int freeScreenshotLimit = 15;
+  static const int freeScreenshotLimit = 50;
+
+  /// How many folders a free user may have at once.
+  ///
+  /// **This cap was removed once, deliberately, and is back by decision.** The
+  /// note that removed it is worth keeping rather than deleting, because it is
+  /// the case anybody re-reading this line will want to weigh: a folder is not
+  /// a feature somebody enjoys, it is the work of tidying up — the very habit
+  /// the app is trying to build — and charging for the containers while giving
+  /// away the contents had it backwards. "You have run out of folders" is also
+  /// a strange sentence to meet mid-tidy.
+  ///
+  /// What overrules it is that folders are the thing free users actually reach
+  /// for first, and a free tier whose only ceiling is fifty screenshots is one
+  /// most people never meet at all.
+  ///
+  /// **Three, and the starter set is two.** The gap is deliberate: a set the
+  /// exact size of the allowance would mean the first folder somebody names
+  /// *themselves* is the one that meets the paywall — their own idea, priced
+  /// at the moment they have it. Two suggested and one to invent puts the
+  /// price on the fourth instead, which is after they have filed something of
+  /// their own into something of their own. See `defaultFolderSeeds`.
+  ///
+  /// Like the screenshot cap, this refuses only *new* folders. Anybody already
+  /// holding more than three — every install that has been running since
+  /// before this line existed, which is all of them — keeps every one of them.
+  /// See `ensureUnderFolderLimit`.
+  static const int freeFolderLimit = 3;
 }

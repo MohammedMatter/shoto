@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shoto/core/theme/app_tint.dart';
 
 /// Palette: **"Slate"** — achromatic neutrals, a desaturated steel-blue
 /// accent, four semantic hues, every one of them tuned to the same two
@@ -511,8 +512,27 @@ class AppPalette extends ThemeExtension<AppPalette> {
 
   LinearGradient get brandGradient => LinearGradient(colors: [marker, marker]);
 
+  /// Behind a bar that floats over a scrolling list — the paywall's and
+  /// "What is included"'s, which are the only two.
+  ///
+  /// **Opaque by a third of the way down, not at the very bottom**, and that
+  /// stop is the whole point of this token rather than a plain two-colour
+  /// ramp. A straight fade across a 150-logical-pixel bar is only about 60%
+  /// opaque where the bar's *last* line of text sits, so the list underneath
+  /// reads straight through it: on the paywall, "Restore purchases" landed on
+  /// top of "Eight accents for the buttons, switches and selections" with both
+  /// legible at once. Two sentences in the same place is not a soft edge, it
+  /// is a collision — and it was on the one screen in the app that asks for
+  /// money.
+  ///
+  /// So the fade is spent where there is nothing to protect: the empty band
+  /// above the button. Everything from the button down sits on the flat
+  /// background colour, which is what makes the bar readable no matter what
+  /// is scrolled behind it. The top third still softens, so content does not
+  /// end on a hard horizontal line.
   LinearGradient get scrimGradient => LinearGradient(
-    colors: [background.withValues(alpha: 0), background],
+    colors: [background.withValues(alpha: 0), background, background],
+    stops: const [0, 0.35, 1],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
@@ -550,7 +570,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
   /// a border, and every hue is solved to luminance 0.085 (≈7.5:1 on paper).
   static const AppPalette light = AppPalette(
     isDark: false,
-    marker: Color(0xFF345381),
+    marker: Color(0xFF1F5B59),
     alert: Color(0xFF952F23),
     background: canvasLight,
     surface: Color(0xFFFFFFFF),
@@ -560,9 +580,9 @@ class AppPalette extends ThemeExtension<AppPalette> {
     textPrimary: ink,
     textSecondary: graphite,
     textDisabled: Color(0xFF9C9C9C),
-    primaryVariant: Color(0xFF2D476F),
-    secondary: Color(0xFF1F5B59),
-    secondaryVariant: Color(0xFF1A4E4C),
+    primaryVariant: Color(0xFF1A4E4C),
+    secondary: Color(0xFF345381),
+    secondaryVariant: Color(0xFF2D476F),
     success: Color(0xFF245D3C),
     warning: Color(0xFF89670F),
     onPrimary: paper,
@@ -574,7 +594,7 @@ class AppPalette extends ThemeExtension<AppPalette> {
   /// hovering above the page the way the previous teal did at 0.455.
   static const AppPalette dark = AppPalette(
     isDark: true,
-    marker: Color(0xFF869DC1),
+    marker: Color(0xFF4CA9A6),
     alert: Color(0xFFE67F73),
     background: canvasDark,
     surface: Color(0xFF1D1E1F),
@@ -584,9 +604,9 @@ class AppPalette extends ThemeExtension<AppPalette> {
     textPrimary: paper,
     textSecondary: Color(0xFF9E9E9E),
     textDisabled: Color(0xFF727272),
-    primaryVariant: Color(0xFF708BB5),
-    secondary: Color(0xFF4CA9A6),
-    secondaryVariant: Color(0xFF449694),
+    primaryVariant: Color(0xFF449694),
+    secondary: Color(0xFF869DC1),
+    secondaryVariant: Color(0xFF708BB5),
     success: Color(0xFF4EAE77),
     warning: Color(0xFFCB9B21),
     onPrimary: ink,
@@ -594,6 +614,53 @@ class AppPalette extends ThemeExtension<AppPalette> {
 
   static AppPalette of(Brightness brightness) =>
       brightness == Brightness.dark ? dark : light;
+
+  /// The same palette with the accent moved to [tint].
+  ///
+  /// **Only three values change**: [marker], [primaryVariant] and the
+  /// [secondary] pair are left exactly where they are. That is not laziness
+  /// about the remaining tokens, it is the point of the feature — the surfaces
+  /// are achromatic on purpose, the semantic hues *mean* things and a user
+  /// choosing plum has not asked for a plum error state. What they have asked
+  /// for is the colour of a filled button, and that is [marker].
+  ///
+  /// [secondary] stays teal-blue for the same reason it exists: it is the
+  /// move/organise hue, and it has to stay distinguishable from the accent
+  /// rather than track it. A user picking slate would otherwise end up with
+  /// two identical blues meaning different things.
+  ///
+  /// Every tint is solved to the luminance the untinted accent already sits
+  /// at, so [onPrimary] is still the correct foreground on all eight of them
+  /// and nothing downstream has to know this happened. See [AppTint].
+  ///
+  /// ## Why this is cached
+  ///
+  /// The class doc above records that both palettes are `const` so a
+  /// `ThemeData` built in one frame compares equal to the one built in the
+  /// next — an unchanged theme notifies nobody, and the `const` widgets under
+  /// it are left alone. `AppPalette` does not override `==`, so that
+  /// comparison is identity, and returning a freshly built instance here would
+  /// have quietly undone it: every rebuild of `MyApp` would have produced a
+  /// theme that compared unequal to the last one, and every widget in the app
+  /// would have repainted for it.
+  ///
+  /// So there is exactly one instance per (tint, mode) for the life of the
+  /// process, and the default tint returns the `const` originals untouched —
+  /// which is what keeps `identical(AppPalette.light, ...)` true and the
+  /// existing test that asserts it passing.
+  static AppPalette tinted(AppTint tint, {required bool isDark}) {
+    final AppPalette base = isDark ? dark : light;
+    if (tint == AppTint.fallback) return base;
+    return _tinted.putIfAbsent(
+      '${tint.id}:$isDark',
+      () => base.copyWith(
+        marker: tint.accent(isDark: isDark),
+        primaryVariant: tint.variant(isDark: isDark),
+      ),
+    );
+  }
+
+  static final Map<String, AppPalette> _tinted = <String, AppPalette>{};
 
   @override
   AppPalette copyWith({

@@ -25,15 +25,68 @@
       time and never prompts the user.
     -->
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!--
+      Android 13+ only. Everything the app posts is one notification: the
+      offer to keep a screenshot the user has just taken, at the moment they
+      took it (see CaptureWatcher.kt). It is the least interruptive kind
+      Android has — no sound, no banner, no badge — and the feature is off
+      until switched on in Settings, so this is never requested by an app the
+      user has not asked to be spoken to by.
+    -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!--
+      Predictive back: the gesture shows where it is going before it commits.
+
+      Dragging from the edge shrinks the current screen and reveals what is
+      behind it, and letting go early puts it back. Without this flag Android
+      runs the legacy path instead — nothing moves under the finger and the
+      screen simply swaps on release, which gives the one gesture with no undo
+      no way to preview what it is about to do.
+
+      **This is opt-in because it changes a contract, not a look.** The legacy
+      path tells the app back happened *after* the fact; this one asks, before
+      the animation starts, whether the app intends to handle it — so a screen
+      that intercepts back has to answer up front. Both places that do are
+      `PopScope`s that already answer synchronously from state
+      (`screenshots_body.dart`, `quick_save_page.dart`), which is precisely
+      what the new API needs; a screen that decided inside `onPopInvoked`
+      would have had to be restructured first.
+    -->
     <application
         android:label="Shoto"
         android:name="${applicationName}"
+        android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher">
+        <!--
+            **Portrait is declared here, not only in Dart**, and the splash is
+            the whole reason.
+
+            `SystemChrome.setPreferredOrientations` cannot run until the
+            Flutter engine has started, and the window Android paints before
+            that — LaunchTheme, drawn from the manifest — is under no
+            instruction at all. Cold-starting the app while holding the phone
+            sideways gave a landscape splash that snapped upright the moment
+            Dart caught up. This attribute is the only thing that reaches that
+            frame, because it is the only thing the system reads before any of
+            this app's code exists.
+
+            "portrait" and not "userPortrait": the latter lets a phone with
+            auto-rotate on turn 180°, which is a rotation like any other.
+            It matches `DeviceOrientation.portraitUp` in main.dart and
+            `UIInterfaceOrientationPortrait` in Info.plist exactly — one answer
+            in three places rather than three near-answers.
+
+            `configChanges` keeps `orientation|screenSize` for the cases the
+            system can still deliver one (a folding device changing posture,
+            a desktop-mode window resize): the app handles it rather than
+            being recreated.
+        -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""
+            android:screenOrientation="portrait"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
@@ -52,12 +105,123 @@
         </activity>
 
         <!--
+            The alternate launcher icons.
+
+            Android has no "set my icon" API. What it has is one
+            <activity-alias> per icon, each with its own android:icon and a
+            LAUNCHER filter, of which exactly one is ever enabled — see
+            AppIconChannel, which does the enabling and explains why it enables
+            before it disables.
+
+            Every one of these is android:enabled="false". MainActivity above
+            is the default and is a real activity rather than a seventh alias,
+            because a fresh install has to have a launcher entry before any of
+            this app's code has run, and the manifest is the only thing that
+            can promise that.
+
+            targetActivity is MainActivity for all of them: an alias is not a
+            second copy of the app, it is a second name and icon for the same
+            activity, so whichever one is tapped the app starts once.
+
+            android:exported must be true — a component with a LAUNCHER filter
+            is by definition started from outside the app, and Android 12+
+            refuses to install a package where one is not declared.
+
+            The labels are all "Shoto". An icon is a colourway, not a different
+            product, and a home screen where the name changes with the colour
+            would be a different app every time.
+
+            Generated assets: ic_launcher_<id>.xml is the adaptive descriptor
+            and ic_launcher_<id>.png the API 24-25 fallback (minSdk is 24), all
+            written by tool/generate_brand_assets.dart. Adding a variant means
+            adding it to AppIcon.all, re-running that, and adding an alias here
+            and a line in AppIconChannel.components.
+        -->
+        <activity-alias
+            android:name=".IconTeal"
+            android:targetActivity=".MainActivity"
+            android:enabled="false"
+            android:exported="true"
+            android:label="Shoto"
+            android:icon="@mipmap/ic_launcher_teal">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".IconIndigo"
+            android:targetActivity=".MainActivity"
+            android:enabled="false"
+            android:exported="true"
+            android:label="Shoto"
+            android:icon="@mipmap/ic_launcher_indigo">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".IconPlum"
+            android:targetActivity=".MainActivity"
+            android:enabled="false"
+            android:exported="true"
+            android:label="Shoto"
+            android:icon="@mipmap/ic_launcher_plum">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".IconEmber"
+            android:targetActivity=".MainActivity"
+            android:enabled="false"
+            android:exported="true"
+            android:label="Shoto"
+            android:icon="@mipmap/ic_launcher_ember">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".IconMoss"
+            android:targetActivity=".MainActivity"
+            android:enabled="false"
+            android:exported="true"
+            android:label="Shoto"
+            android:icon="@mipmap/ic_launcher_moss">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity-alias>
+
+        <!--
             Sharing an image into Shoto lands here, not in MainActivity.
 
             Its own task (taskAffinity="") and excludeFromRecents are what
             make it behave like a sheet rather than a second copy of the app:
             it appears over whatever the user was doing, saves, and is gone
             without ever leaving a Shoto entry in the recents switcher.
+
+            **This one deliberately carries no android:screenOrientation, and
+            that is not an oversight — declaring it here would crash the app.**
+            Android 8.0 (and only 8.0) throws
+            `IllegalStateException: Only fullscreen opaque activities can
+            request orientation` out of `Activity.onCreate` for any activity
+            that is translucent — which ShareTheme makes this one — and carries
+            a fixed orientation in the manifest. minSdk is 24, so 8.0 is a
+            version this app still ships to, and the failure would be every
+            share on it dying before a frame.
+
+            The lock is applied in ShareActivity.onCreate instead, where it can
+            be wrapped in the guard that version needs. See ShareActivity.kt.
         -->
         <activity
             android:name=".ShareActivity"
@@ -86,6 +250,77 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
+
+        <!--
+            **An activity this app ships but never wrote**, pinned to portrait
+            like the two above.
+
+            `url_launcher` contributes its own in-app browser activity to the
+            merged manifest, and it arrives with no orientation of its own —
+            an opaque, full-screen screen of this app that would turn sideways
+            while every screen around it does not. The merged manifest is the
+            only place it is visible; reading the app's own file would never
+            have found it.
+
+            Nothing reaches it today. Every `launchUrl` in the app either names
+            `LaunchMode.externalApplication` or hands over a non-web scheme, and
+            both leave for another app. But the fallback path exists —
+            `platformDefault` on an http(s) URL asks for a Custom Tab and lands
+            here when the phone has no browser that offers one — so this is one
+            `mode:` argument away from being a live screen, and the day someone
+            writes that argument is not the day to rediscover this.
+
+            The plugin declares no `screenOrientation`, so the merger simply
+            adopts this one; no `tools:replace` is needed and none is claimed.
+
+            Safe to fix this way precisely because it is *opaque* — the
+            Android 8.0 restriction that keeps ShareActivity out of the
+            manifest does not apply.
+        -->
+        <activity
+            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+            android:screenOrientation="portrait"
+            tools:node="merge" />
+
+        <!--
+            The Quick Settings tile. See ShotoTileService.kt for why the app
+            wants one at all.
+
+            `exported` and the BIND_QUICK_SETTINGS_TILE permission are both
+            mandatory and they work together: exported lets System UI bind the
+            service, and the permission means *only* something holding it can
+            — so declaring it public does not make the tile invocable by other
+            apps. Without the permission Android refuses to list the tile.
+
+            No ACTIVE_TILE meta-data: that is for tiles that push their own
+            state up (a VPN saying it connected). This one has no state to
+            report, so the default listening model is the right one.
+        -->
+        <service
+            android:name=".ShotoTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_qs_shoto"
+            android:label="@string/qs_tile_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <!--
+            Watches for newly captured screenshots. See CaptureWatcher.kt for
+            why this is a job rather than a foreground service.
+
+            `exported="false"` because nothing outside the app may start it,
+            and the BIND_JOB_SERVICE permission is what lets the system's own
+            JobScheduler do so — the same shape as the tile above, where
+            exported plus a system-held permission means "the OS may reach
+            this, nobody else may".
+        -->
+        <service
+            android:name=".CaptureWatcher"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <!-- Asks Play services to fetch the OCR model at install time rather
              than on the first scan, which is what makes an unbundled model

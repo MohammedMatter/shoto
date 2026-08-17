@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/localization/l10n.dart';
+import 'package:shoto/core/services/app_preferences.dart';
+import 'package:shoto/core/services/capture_alerts.dart';
 import 'package:shoto/core/services/library_quota.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/widgets/app_bottom_nav_bar.dart';
@@ -87,6 +89,15 @@ class _MainShellPageState extends State<MainShellPage>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // **Re-armed on every launch, because Android drops it silently.** The
+    // watcher behind "offer new screenshots" is a content-trigger job, and
+    // those cannot be persisted across a reboot (Android forbids combining
+    // the two) and are cancelled outright by a force-stop or a battery
+    // optimiser. None of that reaches the app as an event — the only moment
+    // Shoto can notice is the next time it runs. Cheap: rescheduling an
+    // already-scheduled job replaces it, and it does nothing at all unless
+    // the user asked for the feature.
+    unawaited(CaptureAlerts.rearm(wanted: sl<AppPreferences>().captureAlerts));
   }
 
   /// Offers the starter folders here rather than on the Folders page itself.
@@ -175,9 +186,42 @@ class _MainShellPageState extends State<MainShellPage>
     unawaited(sl<LibraryQuota>().refresh());
   }
 
+  /// True while any scrollable on the visible page is moving, including the
+  /// fling after the finger has left the glass. Read by [AppBottomNavBar],
+  /// which stops blurring for exactly as long as it is true.
+  final ValueNotifier<bool> _scrolling = ValueNotifier<bool>(false);
+
+  /// How many scrollables are in motion, rather than a bare flag.
+  ///
+  /// A page can have more than one — a vertical list with a horizontal row of
+  /// chips inside it — and their starts and ends interleave. A flag set by the
+  /// first end notification to arrive would clear while the other was still
+  /// running, which is the bug where the bar starts blurring again halfway
+  /// through a fling.
+  int _active = 0;
+
+  bool _onScroll(ScrollNotification notification) {
+    if (notification is ScrollStartNotification) {
+      _active++;
+    } else if (notification is ScrollEndNotification) {
+      // Floored: notifications can arrive from a scrollable that started
+      // before this listener was in the tree, and a negative count would take
+      // a real scroll to bring back to zero.
+      _active = _active > 0 ? _active - 1 : 0;
+    } else {
+      return false;
+    }
+
+    _scrolling.value = _active > 0;
+    // Never absorbed — anything else listening further up is entitled to see
+    // these, and this listener only observes.
+    return false;
+  }
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _scrolling.dispose();
     _foldersBloc.close();
     _screenshotsBloc.close();
     super.dispose();
@@ -197,17 +241,37 @@ class _MainShellPageState extends State<MainShellPage>
           // the Folders counts and the Library's scroll position both depend
           // on) without all four being built before the app has drawn its
           // first frame. See LazyIndexedStack.
-          body: LazyIndexedStack(
-            index: _currentIndex,
-            children: [
-              HomePage(
-                onOpenLibrary: _openLibrary,
-                onOpenLibraryForIntent: _openLibraryForIntent,
-              ),
-              const LibraryPage(),
-              const FoldersPage(),
-              const SettingsPage(),
-            ],
+          body: NotificationListener<ScrollNotification>(
+            // **Whether anything under here is moving**, for the bar below.
+            //
+            // A `BackdropFilter` re-filters whatever is behind it on every
+            // frame in which those pixels change, so the bar is free while a
+            // page sits still and is the most expensive object on screen the
+            // moment one scrolls. Measured on the test phone in a profile
+            // build, a few seconds of scrolling Settings produced **125 frames
+            // over budget, the worst at 62ms of raster**, against 1 with the
+            // bar's blur switched off — with Dart build time at 0.4ms
+            // throughout, so all of it was paint. The phone runs Impeller on
+            // OpenGLES (its Vulkan context fails and the engine falls back),
+            // where a backdrop filter costs a full copy of the region behind
+            // it.
+            //
+            // Listened for here rather than in the bar because the bar is not
+            // an ancestor of anything that scrolls — the four pages are, and
+            // notifications only travel up.
+            onNotification: _onScroll,
+            child: LazyIndexedStack(
+              index: _currentIndex,
+              children: [
+                HomePage(
+                  onOpenLibrary: _openLibrary,
+                  onOpenLibraryForIntent: _openLibraryForIntent,
+                ),
+                const LibraryPage(),
+                const FoldersPage(),
+                const SettingsPage(),
+              ],
+            ),
           ),
           bottomNavigationBar: ListenableBuilder(
             listenable: sl<ThemeController>(),
@@ -215,6 +279,7 @@ class _MainShellPageState extends State<MainShellPage>
               currentIndex: _currentIndex,
               items: _items(context),
               onTap: _onTabSelected,
+              scrolling: _scrolling,
             ),
           ),
         ),

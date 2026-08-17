@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_manager_image_provider/photo_manager_image_provider.dart';
 import 'package:shoto/core/localization/l10n.dart';
+import 'package:shoto/core/routes/photo_viewer_route.dart';
 import 'package:shoto/core/services/haptics.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
@@ -14,6 +15,7 @@ import 'package:shoto/core/widgets/animated_id_grid.dart';
 import 'package:shoto/core/widgets/empty_state.dart';
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
+import 'package:shoto/features/screenshots/presentation/pages/screenshot_detail_page.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/intent_full_picker_sheet.dart';
@@ -74,44 +76,74 @@ class IntentPage extends StatelessWidget {
                     ),
                     message: context.l10n.intentEmptyBody,
                   )
-                : Column(
-                    children: <Widget>[
-                      // **The falling number, drawn.**
-                      //
-                      // The finished count used to be a caption under the app
-                      // bar title — three words in the smallest type on the
-                      // screen, stating the one thing this page exists to
-                      // produce. Every other number in Shoto only goes up;
-                      // this is the only place a number comes *down*, and a
-                      // page built around that moment should show the progress
-                      // rather than mention it.
-                      //
-                      // Only once something has been finished. Before that the
-                      // bar would be an empty track reading zero, which frames
-                      // the screen as a backlog you are behind on instead of a
-                      // list you are about to clear.
-                      if (done > 0)
-                        _Progress(waiting: waiting.length, done: done),
-                      Expanded(
-                        child: AnimatedIdGrid<ScreenshotEntity>(
-                          items: waiting,
-                          idOf: (ScreenshotEntity item) => item.id,
+                : AnimatedIdGrid<ScreenshotEntity>(
+                    items: waiting,
+                    idOf: (ScreenshotEntity item) => item.id,
+                    padding: EdgeInsetsDirectional.fromSTEB(
+                      20.w,
+                      4.h,
+                      20.w,
+                      24.h,
+                    ),
+                    // **Inside the scroll, not stacked above it.**
+                    //
+                    // The progress block used to sit in a `Column` over the
+                    // list, which charged the top sixth of the phone for it on
+                    // every frame no matter how far down you had scrolled. It
+                    // is a header: it belongs to the top of the content, and it
+                    // should leave when the top of the content does. This is
+                    // the case `leadingSlivers` exists for, and its own doc
+                    // argues it better than this comment can.
+                    leadingSlivers: <Widget>[
+                      SliverToBoxAdapter(
+                        child: _Progress(
+                          waiting: waiting.length,
+                          done: done,
+                          intent: intent,
+                        ),
+                      ),
+                    ],
+                    // **A bottom edge for a list that is short.**
+                    //
+                    // One card on a tall phone was one card and then two
+                    // thirds of black, which reads as content that failed to
+                    // load rather than as a list that has ended.
+                    trailingSlivers: <Widget>[
+                      SliverToBoxAdapter(
+                        child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(
                             20.w,
-                            4.h,
+                            8.h,
                             20.w,
                             120.h,
                           ),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                // **One column, deliberately.** A grid turns
-                                // this into another gallery to browse; a list
-                                // turns each row into one thing to decide
-                                // about, which is what the screen is for.
-                                crossAxisCount: 1,
-                                mainAxisSpacing: 12.h,
-                                mainAxisExtent: 96.h,
-                              ),
+                          child: Text(
+                            context.l10n.intentListEnd(waiting.length),
+                            textAlign: TextAlign.center,
+                            style: context.text.caption.copyWith(
+                              color: context.colors.textDisabled,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      // **One column, deliberately.** A grid turns this into
+                      // another gallery to browse; a list turns each row into
+                      // one thing to decide about, which is what the screen is
+                      // for.
+                      crossAxisCount: 1,
+                      mainAxisSpacing: 16.h,
+                      // **Big enough for the picture to be the point.** Two
+                      // earlier versions put a 96pt thumbnail on the leading
+                      // edge with the text and buttons beside it — the shape of
+                      // a settings row, applied to a screen whose entire
+                      // content is pictures. It could be tidied but never made
+                      // good: a strip that small cannot be recognised, so every
+                      // row leaned on a date to identify a thing the eye should
+                      // have known instantly.
+                      mainAxisExtent: 252.h,
+                    ),
                           itemBuilder: (context, item, index, animation) {
                             return FadeTransition(
                               opacity: animation,
@@ -119,8 +151,8 @@ class IntentPage extends StatelessWidget {
                                 sizeFactor: animation,
                                 child: _WaitingRow(
                                   screenshot: item,
-                                  intentLabel: intent.label(context),
                                   onChange: () => _changeIntent(context, item),
+                                  onOpen: () => _open(context, waiting, index),
                                   onDone: () {
                                     // Fires before the row leaves, so the
                                     // feedback and the movement are one event
@@ -135,9 +167,6 @@ class IntentPage extends StatelessWidget {
                               ),
                             );
                           },
-                        ),
-                      ),
-                    ],
                   )),
           ),
         );
@@ -146,59 +175,126 @@ class IntentPage extends StatelessWidget {
   }
 }
 
-/// How far down the list has come, as a line and a bar.
+/// How far down the list has come — as one segment per screenshot.
 ///
-/// **The bar measures the whole job, not what is left.** `done / (done +
-/// waiting)` climbs toward full as items are ticked off, so the movement is in
-/// the direction of the accomplishment. A bar of what remains would drain
-/// instead, and turn finishing something into watching a meter empty.
+/// **A continuous track was the wrong instrument for this measurement.** The
+/// numbers here are small: three things to reply to, five to compare. A 4pt
+/// hairline stretched across the screen to express "one of two" is a bar that
+/// can only ever be empty, half, or full, and it spent the full width of the
+/// page saying so. It was also the single most generic component in the app —
+/// the shape every progress bar everywhere has.
 ///
-/// Sage rather than the accent, because this is the completion hue everywhere
-/// else in the app and this is the one screen entirely about completing.
+/// Segments say the true thing instead: **this list has five items in it, and
+/// two of them are behind you.** The count is legible without reading the
+/// number, each tick fills exactly one segment, and the reward for finishing
+/// something is a discrete block landing rather than a sliver of width.
+///
+/// Past [_maxSegments] it becomes a track again, because forty segments on a
+/// phone are forty two-pixel slivers — a texture, not a count. The threshold
+/// is where a segment stops being wide enough to read as an object.
 class _Progress extends StatelessWidget {
   final int waiting;
   final int done;
+  final IntentRef intent;
 
-  const _Progress({required this.waiting, required this.done});
+  const _Progress({
+    required this.waiting,
+    required this.done,
+    required this.intent,
+  });
+
+  static const int _maxSegments = 12;
 
   @override
   Widget build(BuildContext context) {
     final AppPalette colors = context.colors;
     final int total = waiting + done;
-    final double fraction = total == 0 ? 0 : (done / total).clamp(0.0, 1.0);
 
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(20.w, 2.h, 20.w, 14.h),
+      padding: EdgeInsetsDirectional.fromSTEB(20.w, 6.h, 20.w, 18.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(
-            context.l10n.intentDoneCount(done),
-            style: context.text.bodySmall.copyWith(color: colors.success),
-          ),
-          SizedBox(height: 7.h),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadius.pill),
-            child: Stack(
-              children: <Widget>[
-                Container(height: 4.h, color: colors.surfaceVariant),
-                // Animated, because this bar only ever moves as a direct
-                // result of the user tapping Done — the one place in the app
-                // where a progress change is something they just caused, and
-                // so the one place watching it move is the reward rather than
-                // a distraction.
-                AnimatedFractionallySizedBox(
-                  duration: AppMotion.reduced(context)
-                      ? Duration.zero
-                      : AppMotion.sheet,
-                  curve: AppMotion.standard,
-                  widthFactor: fraction,
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Container(height: 4.h, color: colors.success),
+          Row(
+            children: <Widget>[
+              // The verb's own glyph, in the one tint the feature allows
+              // itself. `IntentVisuals` is deliberate that colour here marks
+              // *waiting versus done* and never which verb this is — so the
+              // icon carries the identity and the palette carries the state.
+              Icon(intent.icon, size: 16.sp, color: colors.secondary),
+              SizedBox(width: 8.w),
+              Text(
+                context.l10n.intentProgress(done, total),
+                style: context.text.bodySmall.copyWith(
+                  // Sage only once there is something to be pleased about.
+                  // Sage at zero would colour a line whose content is "you
+                  // have not started".
+                  color: done > 0 ? colors.success : colors.textSecondary,
+                  fontFeatures: const <FontFeature>[
+                    FontFeature.tabularFigures(),
+                  ],
                 ),
-              ],
+              ),
+            ],
+          ),
+          SizedBox(height: 10.h),
+          SizedBox(
+            height: 6.h,
+            child: total <= _maxSegments
+                ? _segments(context, total)
+                : _track(context, total),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _segments(BuildContext context, int total) {
+    final AppPalette colors = context.colors;
+
+    return Row(
+      children: <Widget>[
+        for (int i = 0; i < total; i++) ...<Widget>[
+          if (i > 0) SizedBox(width: 5.w),
+          Expanded(
+            // Animated because a segment only ever changes as the direct
+            // result of the user tapping Done — the one progress change in
+            // Shoto they just caused, and so the one worth watching land.
+            child: AnimatedContainer(
+              duration: AppMotion.reduced(context)
+                  ? Duration.zero
+                  : AppMotion.normal,
+              curve: AppMotion.standard,
+              decoration: BoxDecoration(
+                color: i < done ? colors.success : colors.surfaceVariant,
+                borderRadius: BorderRadius.circular(AppRadius.pill),
+              ),
             ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// The old continuous bar, kept for lists too long to segment.
+  Widget _track(BuildContext context, int total) {
+    final AppPalette colors = context.colors;
+    final double fraction = total == 0 ? 0 : (done / total).clamp(0.0, 1.0);
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppRadius.pill),
+      child: Stack(
+        children: <Widget>[
+          Positioned.fill(child: ColoredBox(color: colors.surfaceVariant)),
+          AnimatedFractionallySizedBox(
+            duration: AppMotion.reduced(context)
+                ? Duration.zero
+                : AppMotion.sheet,
+            curve: AppMotion.standard,
+            widthFactor: fraction,
+            alignment: AlignmentDirectional.centerStart,
+            child: ColoredBox(color: colors.success),
           ),
         ],
       ),
@@ -210,9 +306,6 @@ class _WaitingRow extends StatelessWidget {
   final ScreenshotEntity screenshot;
   final VoidCallback onDone;
 
-  /// The verb this row is filed under, for the line under the age.
-  final String intentLabel;
-
   /// Re-answers the question for this one.
   ///
   /// The row used to offer exactly one verdict — finished — which is only half
@@ -222,120 +315,183 @@ class _WaitingRow extends StatelessWidget {
   /// screen was to claim you had done something you had not.
   final VoidCallback onChange;
 
+  /// Opens the picture full-screen.
+  ///
+  /// **Added the moment the picture became the card.** While the thumbnail was
+  /// a 96pt chip it was plausible that tapping it meant "act on this item";
+  /// once it fills the card, tapping it can only mean one thing to anybody
+  /// holding a phone — show me the picture. Leaving that tap wired to a verb
+  /// picker made the largest, most obviously tappable thing on the screen do
+  /// the one thing nobody would predict.
+  final VoidCallback onOpen;
+
   const _WaitingRow({
     required this.screenshot,
     required this.onDone,
     required this.onChange,
-    required this.intentLabel,
+    required this.onOpen,
   });
 
   @override
   Widget build(BuildContext context) {
-    return PressableScale(scale: 0.98, onTap: onChange, child: _body(context));
+    // **No whole-card tap any more.** The card used to be one big button that
+    // opened the verb picker, which is how the picker ended up owning a
+    // gesture the picture had a much better claim to. Each region now says
+    // what it does: the photograph opens the photograph, and the two controls
+    // in the bar are controls.
+    return _body(context);
   }
 
   Widget _body(BuildContext context) {
+    final AppPalette colors = context.colors;
+    final DateTime taken = screenshot.asset.createDateTime;
+    final bool stale = DateTime.now().difference(taken).inDays >= 30;
+
     return Container(
       decoration: BoxDecoration(
-        color: context.colors.surface,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: context.colors.border),
+        color: colors.surface,
+        borderRadius: BorderRadius.circular(20.r),
       ),
+      // **No border.** A hairline stroke around a dark card on a near-black
+      // page reads as a seam rather than an edge — it was the only thing
+      // separating card from background, and it did it badly. The surface is
+      // a step lighter than the page and the picture supplies the contrast,
+      // which is what actually makes the card sit *on* something.
       clipBehavior: Clip.antiAlias,
-      child: Row(
-        children: [
-          // Fixed-size thumbnail rather than a full-bleed image: these rows
-          // are read as a list, and a picture that changes height with its
-          // subject makes the list impossible to scan.
-          SizedBox(
-            width: 96.h,
-            height: 96.h,
-            child: Image(
-              image: AssetEntityImageProvider(
-                screenshot.asset,
-                isOriginal: false,
-                thumbnailSize: const ThumbnailSize.square(300),
-              ),
-              fit: BoxFit.cover,
-              gaplessPlayback: true,
-            ),
-          ),
-          SizedBox(width: 14.w),
-          // **The row had one line of grey text in it.**
+      child: Column(
+        children: <Widget>[
+          // **The screenshot, at the size a screenshot deserves.**
           //
-          // A 108px-tall row whose entire content was "3 weeks ago" at caption
-          // weight, floating in the middle of a large gap — most of the row was
-          // empty, and the one thing written in it was the quietest type on the
-          // screen. The age is not a footnote here: "have I been sitting on
-          // this" is the question the row exists to answer, so it is the line
-          // that gets read first.
+          // Full width, cropped from the top. A phone capture is 9:19.5 and
+          // its identity lives in the first third — status bar, app header,
+          // sender, title, opening line. Cropping to a wide band from the top
+          // keeps exactly that and throws away the part that is usually a
+          // scroll of body text.
+          //
+          // `Expanded` rather than a fixed height so the picture takes
+          // whatever the card has left after the bar below. The grid sets the
+          // card's height in one place; nothing here has to agree with it.
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  _When.of(context, screenshot.asset.createDateTime),
-                  style: context.text.titleSmall,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+            child: PressableScale(
+              scale: 0.99,
+              onTap: onOpen,
+              child: SizedBox(
+              width: double.infinity,
+              child: Image(
+                image: AssetEntityImageProvider(
+                  screenshot.asset,
+                  isOriginal: false,
+                  // Landscape, matching the box it lands in. A square source
+                  // would be a second crop on top of the one below.
+                  thumbnailSize: const ThumbnailSize(600, 380),
                 ),
-                SizedBox(height: 2.h),
-                // What tapping the row does, said rather than discovered. The
-                // row's tap opens the intent picker — a destination nobody
-                // guesses from a photograph and a date, which left the whole
-                // row reading as inert.
-                Text(
-                  intentLabel,
-                  style: context.text.caption.copyWith(
-                    color: context.colors.textSecondary,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+                fit: BoxFit.cover,
+                // **Just below the very top, to clear the status bar.**
+                //
+                // `topCenter` was honest and wrong: the first 4% of a phone
+                // screenshot is the clock, the signal bars and the battery —
+                // the one strip guaranteed to be identical in every capture,
+                // and therefore the one strip that identifies none of them. It
+                // was taking a fifth of the visible crop.
+                //
+                // The number is arithmetic, not taste. `cover` on a 9:19.5
+                // source in a ~1.63:1 box shows 28% of the source's height, so
+                // the alignment range from -1 to +1 spans the other 72%.
+                // Skipping a status bar of ~4.2% is 0.117 of that range:
+                // -1 + 0.117 ≈ -0.88.
+                //
+                // A heuristic, and safe as one: it is a fixed 4% shift, so a
+                // picture with no status bar loses 4% off the top rather than
+                // anything that matters.
+                alignment: const Alignment(0, -0.88),
+                gaplessPlayback: true,
+              ),
+              ),
             ),
           ),
-          SizedBox(width: 10.w),
-          Padding(
-            padding: EdgeInsetsDirectional.only(end: 12.w),
-            child: PressableScale(
-              scale: 0.9,
-              onTap: onDone,
-              // **A word, not a bare tick.**
-              //
-              // This is the one control on the screen that finishes something,
-              // and it sat beside a row whose own tap did something completely
-              // different — so the only thing distinguishing "done" from
-              // "change what this is" was that one of them was a circle. A
-              // labelled button removes the guess, and it fills the space the
-              // empty row had going spare.
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
-                decoration: BoxDecoration(
-                  // Sage, the palette's completion colour — the one hue in the
-                  // app that already means *finished*.
-                  color: context.colors.success.withValues(alpha: 0.16),
-                  borderRadius: BorderRadius.circular(AppRadius.pill),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Icon(
-                      Icons.check_rounded,
-                      color: context.colors.success,
-                      size: 17.sp,
-                    ),
-                    SizedBox(width: 6.w),
-                    Text(
-                      context.l10n.commonDone,
-                      style: context.text.button.copyWith(
-                        color: context.colors.success,
+
+          // **One bar, three jobs, in reading order.**
+          //
+          // How long it has been waiting, the way out, and the way to finish.
+          // These used to be spread across the row with the escape hatch
+          // hidden inside the row's own tap — so the screen showed a single
+          // visible verdict, and the honest second answer ("filed wrong", "I
+          // am never doing this") could only be found by accident.
+          SizedBox(
+            height: 56.h,
+            child: Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(16.w, 0, 10.w, 0),
+              child: Row(
+                children: <Widget>[
+                  Flexible(
+                    child: Text(
+                      _When.of(context, taken),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.text.titleSmall.copyWith(
+                        // Past a month it says so in the palette as well as in
+                        // the words — the only tint on the card that is not
+                        // the photograph, spent on the one fact that should
+                        // change what you do next.
+                        color: stale ? colors.warning : colors.textPrimary,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  const Spacer(),
+                  // A control, not a caption. It looked like one before —
+                  // grey text sitting in a row of data — while the thing that
+                  // actually performed it was the whole card.
+                  PressableScale(
+                    scale: 0.94,
+                    onTap: onChange,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 8.h,
+                      ),
+                      child: Text(
+                        context.l10n.intentChange,
+                        style: context.text.button.copyWith(
+                          color: colors.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 6.w),
+                  PressableScale(
+                    scale: 0.94,
+                    onTap: onDone,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 14.w,
+                        vertical: 8.h,
+                      ),
+                      decoration: BoxDecoration(
+                        // Sage, the palette's completion colour — the one hue
+                        // in the app that already means *finished*.
+                        color: colors.success.withValues(alpha: 0.16),
+                        borderRadius: BorderRadius.circular(AppRadius.pill),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Icon(
+                            Icons.check_rounded,
+                            color: colors.success,
+                            size: 16.sp,
+                          ),
+                          SizedBox(width: 6.w),
+                          Text(
+                            context.l10n.commonDone,
+                            style: context.text.button.copyWith(
+                              color: colors.success,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -343,6 +499,24 @@ class _WaitingRow extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Opens the picture full-screen, on the same viewer the rest of the app uses.
+///
+/// The whole waiting list is handed over rather than the single item, so the
+/// viewer's swipe moves between the things still waiting under this verb —
+/// which is the set the person is working through. Handing it one screenshot
+/// would make this the one place in Shoto where the viewer cannot be swiped.
+void _open(BuildContext context, List<ScreenshotEntity> waiting, int index) {
+  final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
+  Navigator.of(context).push(
+    PhotoViewerRoute(
+      builder: (_) => BlocProvider.value(
+        value: bloc,
+        child: ScreenshotDetailPage(screenshots: waiting, initialIndex: index),
+      ),
+    ),
+  );
 }
 
 /// Opens the full picker for one row and writes whatever comes back.

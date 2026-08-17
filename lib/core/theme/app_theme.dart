@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shoto/core/localization/app_locales.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
+import 'package:shoto/core/theme/app_tint.dart';
 
 /// Builds the two [ThemeData] objects handed to `MaterialApp.router`.
 ///
@@ -21,11 +22,14 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 abstract class AppTheme {
   AppTheme._();
 
-  static ThemeData light(AppLanguage language) =>
-      _build(AppPalette.light, language);
+  /// [tint] defaults to the app's own accent, so every existing call site —
+  /// and every test that pumps `AppTheme.light(AppLanguage.english)` — keeps
+  /// building exactly the theme it built before. See [AppTint].
+  static ThemeData light(AppLanguage language, {AppTint? tint}) =>
+      _build(AppPalette.tinted(tint ?? AppTint.fallback, isDark: false), language);
 
-  static ThemeData dark(AppLanguage language) =>
-      _build(AppPalette.dark, language);
+  static ThemeData dark(AppLanguage language, {AppTint? tint}) =>
+      _build(AppPalette.tinted(tint ?? AppTint.fallback, isDark: true), language);
 
   static ThemeData _build(AppPalette palette, AppLanguage language) {
     final AppTypography text = AppTypography(

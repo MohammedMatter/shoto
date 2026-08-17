@@ -16,6 +16,12 @@ class AppLocalizationsNl extends AppLocalizations {
       'Technische details sturen als er iets misgaat';
 
   @override
+  String get settingsOnboarding => 'Introductie opnieuw bekijken';
+
+  @override
+  String get settingsOnboardingHint => 'Speel de openingsreeks nog eens';
+
+  @override
   String get settingsSignOut => 'Uitloggen';
 
   @override
@@ -25,8 +31,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get authWelcome => 'Welkom bij Shoto';
 
   @override
-  String get authSubtitle =>
-      'Inloggen houdt je abonnement bij je als je van telefoon wisselt. Je screenshots blijven hoe dan ook op dit toestel — een account neemt ze nooit mee.';
+  String get authWhy =>
+      'Niet alles wat je bewaart hoort op dezelfde plank. Shoto geeft de screenshots die er echt toe doen een eigen plek.';
 
   @override
   String get authGoogle => 'Doorgaan met Google';
@@ -144,6 +150,122 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get settingsTriageHint =>
       'Laat zien wat je vastlegt; houdt uit zichzelf niets';
+
+  @override
+  String get settingsCaptureAlerts => 'Meteen melden';
+
+  @override
+  String get settingsCaptureAlertsHint =>
+      'Een rustige melding meteen na het maken';
+
+  @override
+  String get settingsCaptureAlertsMuted =>
+      'Meldingen voor Shoto staan uit — zet ze aan in de instellingen van je telefoon';
+
+  @override
+  String get settingsCaptureAlertsStopped =>
+      'Android heeft de controles gestopt. Open Shoto één keer om ze te hervatten';
+
+  @override
+  String get settingsCaptureAlertsWaiting =>
+      'Aan het kijken. Nog niets gemaakt';
+
+  @override
+  String settingsCaptureAlertsLastRun(String when) {
+    return 'Laatst gecontroleerd $when';
+  }
+
+  @override
+  String timeAgoMinutes(int count) {
+    return '$count min geleden';
+  }
+
+  @override
+  String timeAgoHours(int count) {
+    return '$count u geleden';
+  }
+
+  @override
+  String timeAgoDays(int count) {
+    return '$count d geleden';
+  }
+
+  @override
+  String get settingsQuickTile => 'Snelle-instellingentegel';
+
+  @override
+  String get settingsQuickTileHint =>
+      'Bewaar je laatste schermafbeelding zonder het deelmenu te openen';
+
+  @override
+  String get settingsQuickTileAdded => 'Toegevoegd aan snelle instellingen';
+
+  @override
+  String get settingsQuickTileManual =>
+      'Voeg hem handmatig toe: open de snelle instellingen, tik op bewerken en sleep de Shoto-tegel erin.';
+
+  @override
+  String get settingsQuickTileSheetTitle => 'Twee vegen, vanuit elke app';
+
+  @override
+  String get settingsQuickTileSheetBody =>
+      'Shoto kan in de Snelle instellingen van je telefoon staan, naast de zaklamp. Eén tik archiveert de screenshot die je net maakte — geen app openen, geen deelmenu doorzoeken.';
+
+  @override
+  String get settingsQuickTileStepPull =>
+      'Veeg omlaag vanaf de bovenkant van elk scherm';
+
+  @override
+  String get settingsQuickTileStepTap =>
+      'Tik op de Shoto-tegel — je laatste screenshot is opgeborgen';
+
+  @override
+  String get settingsQuickTileStepStays =>
+      'Hij blijft op dezelfde plek, anders dan het deelmenu';
+
+  @override
+  String get settingsQuickTileAdd => 'Tegel toevoegen';
+
+  @override
+  String get settingsQuickTileNote =>
+      'Leest alleen de screenshot die je net maakte. Er verlaat niets je telefoon.';
+
+  @override
+  String get folderIconsBasics => 'Basis';
+
+  @override
+  String get folderIconsWork => 'Werk';
+
+  @override
+  String get folderIconsMoney => 'Geld';
+
+  @override
+  String get folderIconsTravel => 'Reizen';
+
+  @override
+  String get folderIconsHome => 'Huis & gezondheid';
+
+  @override
+  String get folderIconsMedia => 'Media';
+
+  @override
+  String get folderIconsPeople => 'Mensen';
+
+  @override
+  String get folderIconsSymbols => 'Symbolen';
+
+  @override
+  String get folderIconsSocial => 'Sociaal';
+
+  @override
+  String get folderIconsApps => 'Apps';
+
+  @override
+  String get quickTileOfferTitle => 'Bewaren zonder deelmenu';
+
+  @override
+  String get quickTileOfferBody =>
+      'Voeg een snelkoppeling toe voor je laatste schermafbeelding';
 
   @override
   String get triageNothingNew => 'Niets nieuws om te bekijken';
@@ -347,6 +469,12 @@ class AppLocalizationsNl extends AppLocalizations {
   String get librarySelectAll => 'Alles selecteren';
 
   @override
+  String get librarySelect => 'Selecteren';
+
+  @override
+  String get librarySelectPrompt => 'Selecteer opnamen';
+
+  @override
   String get libraryActionMerge => 'Samenvoegen';
 
   @override
@@ -417,6 +545,113 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get settingsGridDensity => 'Rasterdichtheid';
+
+  @override
+  String get settingsAppearanceHint => 'Thema, accentkleur en rastergrootte';
+
+  @override
+  String get appearanceTint => 'Accentkleur';
+
+  @override
+  String get appearanceTintHint =>
+      'Knoppen, schakelaars en alles wat geselecteerd is.';
+
+  @override
+  String get appearancePreview => 'Voorbeeld';
+
+  @override
+  String get tintTeal => 'Petrol';
+
+  @override
+  String get tintSlate => 'Leisteen';
+
+  @override
+  String get tintIndigo => 'Indigo';
+
+  @override
+  String get tintPlum => 'Pruim';
+
+  @override
+  String get tintRose => 'Roze';
+
+  @override
+  String get tintEmber => 'Gloed';
+
+  @override
+  String get tintAmber => 'Amber';
+
+  @override
+  String get tintMoss => 'Mos';
+
+  @override
+  String get tintGarnet => 'Granaat';
+
+  @override
+  String get tintBrass => 'Messing';
+
+  @override
+  String get tintFern => 'Varen';
+
+  @override
+  String get tintJade => 'Jade';
+
+  @override
+  String get tintOlive => 'Olijf';
+
+  @override
+  String get tintCyan => 'Cyaan';
+
+  @override
+  String get tintDenim => 'Denim';
+
+  @override
+  String get tintViolet => 'Violet';
+
+  @override
+  String get tintSky => 'Hemel';
+
+  @override
+  String get tintOrchid => 'Orchidee';
+
+  @override
+  String get tintFuchsia => 'Fuchsia';
+
+  @override
+  String get tintClay => 'Klei';
+
+  @override
+  String get tintGraphite => 'Grafiet';
+
+  @override
+  String get appearanceMoreColors => 'Meer kleuren';
+
+  @override
+  String get appearanceSelectTint => 'Accentkleur kiezen';
+
+  @override
+  String get appearanceFolders => 'Mapkaarten';
+
+  @override
+  String get appearanceFolderCount => 'Aantal screenshots';
+
+  @override
+  String get appearanceFolderDate => 'Aanmaakdatum';
+
+  @override
+  String get appearanceFolderSize => 'Kaarten per rij';
+
+  @override
+  String get appearanceLibrary => 'Bibliotheekraster';
+
+  @override
+  String get appIcon => 'App-pictogram';
+
+  @override
+  String get appIconDefault => 'Origineel';
+
+  @override
+  String get appIconHint =>
+      'Hierdoor sluit Shoto even terwijl Android het pictogram vervangt.';
 
   @override
   String get settingsLanguage => 'Taal';
@@ -670,6 +905,20 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get quickSaveFailedBody => 'Probeer hem opnieuw te delen.';
+
+  @override
+  String get quickSaveNoCaptureTitle => 'Nog geen schermafbeelding';
+
+  @override
+  String get quickSaveNoCaptureBody =>
+      'Maak een schermafbeelding en tik daarna opnieuw op de tegel.';
+
+  @override
+  String get quickSaveNoAccessTitle => 'Shoto ziet je schermafbeeldingen niet';
+
+  @override
+  String get quickSaveNoAccessBody =>
+      'Open Shoto, geef toegang tot je foto’s en probeer het opnieuw.';
 
   @override
   String quickSaveSkipped(int count) {
@@ -929,6 +1178,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsRestoreHint => 'Al betaald? Haal je abonnement terug.';
 
   @override
+  String get settingsRestoreDone => 'Je abonnement is terug.';
+
+  @override
   String get paywallLegal =>
       'Verlengt automatisch tot je opzegt. Opzeggen kan altijd via je account-instellingen in de App Store of Google Play. Door verder te gaan ga je akkoord met onze Servicevoorwaarden en het Privacybeleid.';
 
@@ -1016,6 +1268,13 @@ class AppLocalizationsNl extends AppLocalizations {
       'Open een link, schrijf naar een adres, kopieer een verificatiecode of een IBAN — rechtstreeks uit de afbeelding, zonder iets over te typen.';
 
   @override
+  String get featTraits => 'Filteren op wat erin staat';
+
+  @override
+  String get featTraitsBody =>
+      'Toont alleen de screenshots met een link, een telefoonnummer, een code, een datum of een kaartnummer erin — herkend aan de woorden in het beeld.';
+
+  @override
   String get featDuplicates => 'Dubbele vinden';
 
   @override
@@ -1033,8 +1292,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get featUnlimited => 'Onbeperkt screenshots';
 
   @override
-  String featUnlimitedBody(Object count) {
-    return 'De gratis versie ordent $count screenshots. Pro haalt het getal weg.';
+  String featUnlimitedBody(Object count, Object folders) {
+    return 'De gratis versie ordent $count screenshots en bewaart $folders mappen. Pro haalt beide getallen weg.';
   }
 
   @override
@@ -1074,6 +1333,47 @@ class AppLocalizationsNl extends AppLocalizations {
       'Werkt op de screenshots die je al hebt, niet alleen op nieuwe.';
 
   @override
+  String get featTraitsHow =>
+      'Filteren is gratis op alles wat Shoto al gelezen heeft: zoeken, acties en Safe share laten elk herkende tekst achter, en elk filter komt daaruit voort. Wat je betaalt is de rest van de bibliotheek in één keer lezen, zodat een filter ook de screenshots ziet die nog geen andere functie geopend heeft.';
+
+  @override
+  String get featTraitsPoint1 =>
+      'Vijf filters: kaartnummers en IBANs, links, telefoonnummers en e-mailadressen, verificatiecodes, en data waarop je ergens verwacht wordt.';
+
+  @override
+  String get featTraitsPoint2 =>
+      'Kaartnummers en IBANs zijn met een controlegetal bewezen. De rest wordt uit het beeld gelezen en meldt daarom liever te weinig dan te veel.';
+
+  @override
+  String get featTraitsPoint3 =>
+      'De bibliotheek zegt altijd hoeveel screenshots nooit gelezen zijn, zodat een leeg resultaat nooit voor een afwezigheid doorgaat. Het lezen gebeurt op de telefoon, er wordt niets geüpload.';
+
+  @override
+  String get featTint => 'Kies je accentkleur';
+
+  @override
+  String featTintBody(int count) {
+    return '$count accentkleuren voor knoppen, schakelaars en selecties, elk afgestemd om leesbaar te blijven in licht en donker.';
+  }
+
+  @override
+  String get featTintHow =>
+      'De meeste apps geven je een rij rauwe kleuren en laten het contrast maar gebeuren — daarom komt een geel accent meestal met witte tekst die niemand kan lezen. Shoto bewaart je keuze als een positie op de kleurencirkel in plaats van als een vaste kleur en berekent daaruit de precieze tint voor de lichte en de donkere modus. Wat je ook kiest, het draagt tekst net zo goed als de eigen kleur van de app.';
+
+  @override
+  String featTintPoint1(int count) {
+    return '$count accenten, van petrol en mos via amber en gloed tot pruim, indigo en leisteen.';
+  }
+
+  @override
+  String get featTintPoint2 =>
+      'Elk wordt twee keer berekend, één keer voor licht en één keer voor donker, tegen hetzelfde contrastdoel — geen accent gloeit op een donker scherm of verdwijnt op een licht scherm.';
+
+  @override
+  String get featTintPoint3 =>
+      'Rood voor verwijderen, groen voor klaar en amber voor waarschuwingen veranderen nooit, zodat een kleur die iets betekent nooit versiering wordt.';
+
+  @override
   String get featStitchHow =>
       'Een scrollopname moet op telefoons die het kunnen gestart worden terwijl je nog op de pagina bent. Shoto werkt daarna: kies twee of meer opnamen die al in je bibliotheek staan — ook die iemand je stuurde — en het vindt waar ze overlappen en voegt ze tot één hoge afbeelding.';
 
@@ -1107,11 +1407,12 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get featUnlimitedHow =>
-      'De gratis versie is een echte, bruikbare app: bewaren, mappen, favorieten en volledige zoekfunctie, zonder account en zonder uploads. Er is precies één plafond — hoeveel screenshots het ordent — en Pro haalt dat weg. Alles wat je al geordend hebt blijft precies waar het staat.';
+      'De gratis versie is een echte, bruikbare app: bewaren, mappen, favorieten en volledige zoekfunctie, zonder account en zonder uploads. Er zijn twee plafonds — hoeveel screenshots het ordent en hoeveel mappen het bewaart — en Pro haalt ze allebei weg. Alles wat je al geordend hebt blijft precies waar het staat.';
 
   @override
-  String get featUnlimitedPoint1 =>
-      'Mappen zijn onbeperkt in de gratis versie, en dat was altijd de bedoeling.';
+  String featUnlimitedPoint1(Object count) {
+    return 'De gratis versie bewaart $count mappen, precies de mappen waarmee Shoto je laat beginnen. Pro haalt ook dat getal weg.';
+  }
 
   @override
   String get featUnlimitedPoint2 =>
@@ -1418,6 +1719,12 @@ class AppLocalizationsNl extends AppLocalizations {
   String get errorLoadFolders => 'Je mappen konden niet worden geladen.';
 
   @override
+  String get errorSaveFolder => 'Deze map kon niet worden opgeslagen.';
+
+  @override
+  String get errorDeleteFolder => 'Deze map kon niet worden verwijderd.';
+
+  @override
   String get errorScanDuplicates => 'Er kon niet op dubbele worden gescand.';
 
   @override
@@ -1555,11 +1862,68 @@ class AppLocalizationsNl extends AppLocalizations {
   String get onbNext => 'Volgende';
 
   @override
-  String get onbInsideTitle => 'Wat zit er in je screenshots?';
+  String get onbWelcomeBody =>
+      'Een thuis voor de screenshots die het waard zijn. Opgeborgen, doorzoekbaar en veilig te delen.';
 
   @override
-  String get onbInsideBody =>
-      'Instapkaarten, verificatiecodes, een foto van je ID. Dingen die je nooit zou posten.';
+  String get onbSaveTitle => 'Bewaar hem op het moment dat je hem maakt';
+
+  @override
+  String get onbSaveBody =>
+      'Tik op Delen in elke app en kies Shoto. Alleen zo komt er iets binnen.';
+
+  @override
+  String get onbChipAnyApp => 'Elke app';
+
+  @override
+  String get onbChipOneTap => 'Eén tik';
+
+  @override
+  String get onbChipToFolder => 'Meteen in een map';
+
+  @override
+  String get onbFileTitle => 'Een bibliotheek, geen filmrol';
+
+  @override
+  String get onbFileBody =>
+      'Alles wat je stuurt komt opgeborgen binnen en blijft precies waar je het zette.';
+
+  @override
+  String get onbChipFolders => 'Mappen';
+
+  @override
+  String get onbChipFavourites => 'Favorieten';
+
+  @override
+  String get onbChipDuplicates => 'Duplicaten zoeken';
+
+  @override
+  String get onbFindTitle => 'Vind de woorden in een afbeelding';
+
+  @override
+  String get onbFindBody =>
+      'Shoto leest je screenshots, dus één woord dat je nog weet is genoeg.';
+
+  @override
+  String get onbChipInsideText => 'Tekst in afbeeldingen';
+
+  @override
+  String get onbChipOffline => 'Werkt offline';
+
+  @override
+  String get onbChipCards => 'Kaartnummers';
+
+  @override
+  String get onbChipCodes => 'Codes en ID\'s';
+
+  @override
+  String get onbChipPreview => 'Je ziet elke afdekking';
+
+  @override
+  String get onbChipGallery => 'Galerij gaat nooit open';
+
+  @override
+  String get onbChipOnDevice => 'Blijft op je telefoon';
 
   @override
   String get onbSendTitle => 'Stuur ze toch';
@@ -2002,7 +2366,18 @@ class AppLocalizationsNl extends AppLocalizations {
   String get intentDoneToast => 'Afgevinkt';
 
   @override
-  String get intentChange => 'Wijzig waar dit voor is';
+  String intentListEnd(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Dat zijn ze alle $count',
+      one: 'Dat is de enige',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get intentChange => 'Wijzigen';
 
   @override
   String get intentClear => 'Nergens voor';
@@ -2015,6 +2390,11 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String get intentEmptyBody =>
       'Screenshots die je markeert blijven hier tot je ze afvinkt.';
+
+  @override
+  String intentProgress(int done, int total) {
+    return '$done van $total klaar';
+  }
 
   @override
   String intentDoneCount(int count) {
@@ -2053,4 +2433,20 @@ class AppLocalizationsNl extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get copyTextSelect => 'Tekst selecteren';
+
+  @override
+  String get copyTextSelectAll => 'Alles selecteren';
+
+  @override
+  String get copyTextHint => 'Houd tekst ingedrukt om die te kopiëren';
+
+  @override
+  String get copyTextPrompt => 'Sleep om te selecteren';
+
+  @override
+  String get copyTextNone =>
+      'Shoto vindt geen leesbare tekst in deze schermafbeelding';
 }

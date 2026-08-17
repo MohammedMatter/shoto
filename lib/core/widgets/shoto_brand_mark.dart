@@ -212,6 +212,29 @@ class ShotoBrandMarkPainter extends CustomPainter {
   /// Where the centre of the mark sits. Defaults to the centre of the canvas.
   final Offset? centre;
 
+  /// The slab's colour. [AppBrand.ink] unless a caller says otherwise.
+  ///
+  /// **The only parameter here that changes what the mark *is*, and it exists
+  /// for exactly one caller.** `app_brand.dart` states that the mark's values
+  /// are fixed rather than mode-aware, on the grounds that "a brand mark that
+  /// changes with the system theme is not one mark, it is two, and neither of
+  /// them is the one on the store listing". That argument is about the mark
+  /// the app draws for itself, and it still holds — nothing in `lib/` passes
+  /// this.
+  ///
+  /// What passes it is `tool/generate_brand_assets.dart`, building the
+  /// alternate launcher icons. Those are a different case on the same
+  /// reasoning: an alternate icon is not the app changing its mind about its
+  /// mark, it is a set of *fixed* marks the user picks one of, and the one on
+  /// the store listing is still the default. The geometry — the tray, the
+  /// cards, the clipped corner — never changes, which is what keeps six icons
+  /// recognisably one product rather than six logos.
+  ///
+  /// Only the slab moves. The cards stay paper on every variant, which is also
+  /// what makes them legible: every colour offered is solved to the same
+  /// luminance the default ink is judged against.
+  final Color slab;
+
   const ShotoBrandMarkPainter({
     required this.markExtent,
     this.progress = 1,
@@ -221,6 +244,7 @@ class ShotoBrandMarkPainter extends CustomPainter {
     this.cards = true,
     this.monochrome = false,
     this.centre,
+    this.slab = AppBrand.ink,
   });
 
   @override
@@ -240,13 +264,17 @@ class ShotoBrandMarkPainter extends CustomPainter {
     }
 
     if (backdrop) {
-      const Rect slab = Rect.fromLTWH(0, 0, 100, 100);
+      // Named `bounds` rather than `slab`, which is what it was called until
+      // the slab's *colour* became a parameter of the same name — a local Rect
+      // shadowing a Color field is the kind of collision the analyser catches
+      // only because the two types differ.
+      const Rect bounds = Rect.fromLTWH(0, 0, 100, 100);
       canvas.drawRRect(
         RRect.fromRectAndRadius(
-          slab,
+          bounds,
           Radius.circular((backdropCornerRadius ?? _backdropRadius) * 100),
         ),
-        Paint()..color = AppBrand.ink,
+        Paint()..color = slab,
       );
 
       canvas.translate(
@@ -457,7 +485,8 @@ class ShotoBrandMarkPainter extends CustomPainter {
       old.backdropCornerRadius != backdropCornerRadius ||
       old.cards != cards ||
       old.monochrome != monochrome ||
-      old.centre != centre;
+      old.centre != centre ||
+      old.slab != slab;
 }
 
 /// The brand mark at rest, sized to [size].
@@ -466,6 +495,14 @@ class ShotoBrandMarkPainter extends CustomPainter {
 /// cards to fly in through space this widget does not own drives
 /// [ShotoBrandMarkPainter] directly.
 class ShotoBrandMark extends StatelessWidget {
+  /// The slab's corner radius as a fraction of the mark's width.
+  ///
+  /// Exposed so anything drawing *around* the mark can be concentric with it.
+  /// The onboarding's share sheet puts a selection ring on it, and a ring with
+  /// a radius picked off the radius scale is a rounder shape around a squarer
+  /// one — visible at 38px as a ring that does not fit its icon.
+  static const double cornerRatio = _backdropRadius;
+
   final double size;
 
   /// Off gives the cards on transparency, for placing on a surface that is

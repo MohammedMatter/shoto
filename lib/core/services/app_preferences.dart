@@ -17,6 +17,9 @@ class AppPreferences extends ChangeNotifier {
   static const String _triageSinceKey = 'pref_triage_since';
   static const String _triageSnoozedKey = 'pref_triage_snoozed';
   static const String _photoAccessAskedKey = 'pref_photo_access_asked';
+  static const String _copyTextHintedKey = 'pref_copy_text_hinted';
+  static const String _tileOfferedKey = 'pref_tile_offered';
+  static const String _captureAlertsKey = 'pref_capture_alerts';
 
   /// **Off until asked for.** Haptics were on by default, which meant every
   /// install began by adding a physical sensation to every press without the
@@ -34,6 +37,9 @@ class AppPreferences extends ChangeNotifier {
   int _triageSince = 0;
   int _triageSnoozedAt = 0;
   bool _photoAccessAsked = false;
+  bool _copyTextHinted = false;
+  bool _tileOffered = false;
+  bool _captureAlerts = false;
 
   /// Whether taps give physical feedback. Off is a genuine accessibility
   /// preference, and some people simply find it noisy.
@@ -103,6 +109,67 @@ class AppPreferences extends ChangeNotifier {
   /// question having been put is not the same as the answer to it.
   bool get photoAccessAsked => _photoAccessAsked;
 
+  /// Whether the viewer has already said, once, that the words in a screenshot
+  /// can be pressed and held.
+  ///
+  /// A fact rather than a setting, like [hasSeenOnboarding] — and it is
+  /// recorded when the hint is *shown*, not when it is understood, because
+  /// there is no way to know the second and showing it twice is how a hint
+  /// turns into nagging.
+  bool get hasSeenCopyTextHint => _copyTextHinted;
+
+  /// Whether the Quick Settings shortcut has already been offered, once.
+  ///
+  /// **Recorded when the offer is made, not when it is accepted**, and the
+  /// difference is the whole point. Android caps how many times an app may
+  /// ask it to place a tile and stops showing the dialog at all once somebody
+  /// has turned it down a few times — so a second offer is not merely
+  /// nagging, it burns one of a small number of chances on a person who has
+  /// already said no. Declining is an answer.
+  ///
+  /// Same shape of fact as [hasSeenCopyTextHint] and [photoAccessAsked]: a
+  /// record that a question was put, which is not the same as its answer. The
+  /// answer lives in the user's own Quick Settings panel, and Android will not
+  /// tell an app what is in it.
+  bool get tileOffered => _tileOffered;
+
+  /// Whether the user has asked to be offered each new screenshot as it is
+  /// taken.
+  ///
+  /// **This is the request, not the reality.** Whether an offer can actually
+  /// appear depends on a scheduled job Android may have dropped and on a
+  /// notification permission it may have revoked — see `CaptureAlerts.status`,
+  /// which Settings renders beside this switch. Folding the two into one
+  /// boolean would produce a control that turns itself off for reasons the
+  /// user never chose, which is the worse of the two confusions.
+  ///
+  /// Off by default. A notification after every screenshot is a hundred
+  /// interruptions a week for somebody who has not asked for any.
+  bool get captureAlerts => _captureAlerts;
+
+  Future<void> setCaptureAlerts(bool value) async {
+    _captureAlerts = value;
+    notifyListeners();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_captureAlertsKey, value);
+  }
+
+  Future<void> markTileOffered() async {
+    if (_tileOffered) return;
+    _tileOffered = true;
+    notifyListeners();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_tileOfferedKey, true);
+  }
+
+  Future<void> markCopyTextHintSeen() async {
+    if (_copyTextHinted) return;
+    _copyTextHinted = true;
+    notifyListeners();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_copyTextHintedKey, true);
+  }
+
   Future<void> markPhotoAccessAsked() async {
     if (_photoAccessAsked) return;
     _photoAccessAsked = true;
@@ -127,6 +194,9 @@ class AppPreferences extends ChangeNotifier {
     _triageAsked = prefs.getBool(_triageAskedKey) ?? false;
     _triageSnoozedAt = prefs.getInt(_triageSnoozedKey) ?? 0;
     _photoAccessAsked = prefs.getBool(_photoAccessAskedKey) ?? false;
+    _copyTextHinted = prefs.getBool(_copyTextHintedKey) ?? false;
+    _tileOffered = prefs.getBool(_tileOfferedKey) ?? false;
+    _captureAlerts = prefs.getBool(_captureAlertsKey) ?? false;
     // Defaults to *now* rather than to zero. A user switching this on today is
     // asking what they have captured since; handing them every screenshot they
     // have ever taken is the gallery-mirror this app deliberately is not.

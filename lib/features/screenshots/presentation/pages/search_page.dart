@@ -21,6 +21,7 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.da
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/pages/screenshot_detail_page.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/screenshot_actions.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_thumbnail.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/library_unavailable.dart';
 
@@ -362,7 +363,21 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 ),
               ),
-              onLongPress: () {},
+              // The same gesture as the grid this search was opened from.
+              //
+              // It was an empty closure, which was defensible while a
+              // long-press meant "start selecting" — there is no selection
+              // mode here, so there was nothing for it to do. It stopped being
+              // defensible when the gesture became "this screenshot's own
+              // actions" everywhere else: a result you have just hunted down
+              // is the *most* likely thing to want to file or share, and dying
+              // silently on the one screen where you found it is how a person
+              // stops trying the gesture at all.
+              //
+              // The list rebuilds from `state.screenshots` inside a
+              // `BlocBuilder`, so a move or a delete taken from here drops out
+              // of the results underneath without search having to know.
+              onLongPress: () => showScreenshotQuickActionsSheet(context, item),
             );
 
             // A text match needs no explanation — the word is in the picture.

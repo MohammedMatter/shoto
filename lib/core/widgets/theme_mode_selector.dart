@@ -9,20 +9,6 @@ class ThemeModeSelector extends StatelessWidget {
   final ThemeMode value;
   final ValueChanged<ThemeMode> onChanged;
 
-  /// Whether the dark option is locked behind Pro.
-  ///
-  /// **Only [ThemeMode.dark] is ever gated, never [ThemeMode.system].** That
-  /// distinction is the whole reason this is a per-option flag rather than a
-  /// flag on the control: a phone in system dark mode has to keep rendering
-  /// the app dark, or a free user's app would fight their device every evening
-  /// and look broken rather than look locked. What is paid for is *choosing*
-  /// dark regardless of the phone — the preference, not the appearance.
-  ///
-  /// Drawn rather than hidden. A control that silently loses an option teaches
-  /// nothing; one that shows a lock says both that the option exists and how
-  /// to get it, which is the only version of a gate that ever sells anything.
-  final bool lockDark;
-
   /// Icons only, sized to its own content instead of filling the row.
   ///
   /// The same option [GridDensitySelector] already carries, and it arrived here
@@ -43,7 +29,6 @@ class ThemeModeSelector extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.compact = false,
-    this.lockDark = false,
   });
 
   /// Built from a context rather than held as a const list — the labels are
@@ -77,7 +62,6 @@ class ThemeModeSelector extends StatelessWidget {
         children: _options(context).map((option) {
           final (mode, icon, label) = option;
           final bool isSelected = mode == value;
-          final bool locked = lockDark && mode == ThemeMode.dark;
 
           final Widget segment = PressableScale(
             scale: 0.95,
@@ -101,67 +85,19 @@ class ThemeModeSelector extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // **The moon stays, and the lock rides its corner.**
+                  // **Three plain glyphs, and no badge on any of them.**
                   //
-                  // The padlock replaced the glyph for one build, on the logic
-                  // that two symbols cannot share an 18px target. That solved
-                  // the crowding and lost the message: a row of sun, auto and
-                  // *padlock* says "something here is locked" without ever
-                  // saying **what** — and somebody who has never seen the
-                  // control cannot want a feature they cannot identify. The
-                  // whole point of drawing a gate instead of hiding the option
-                  // is to advertise the option.
-                  //
-                  // So the option keeps its own face, dimmed to say it is out
-                  // of reach, and a small accent lock sits on the corner to say
-                  // why. A badge over a glyph is exactly how both platforms
-                  // mark a locked app icon, which is why it needs no legend.
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      // **Not dimmed.** A locked option was drawn at
-                      // `textDisabled` for one build, which is the colour this
-                      // app uses for controls that do nothing — and it made the
-                      // moon the faintest thing in the row, so the option being
-                      // *sold* was the one hardest to see. The badge already
-                      // says it is not yours; the glyph's job is to make you
-                      // want it, and it cannot do that whispering.
-                      Icon(
-                        icon,
-                        size: 18.sp,
-                        color: isSelected
-                            ? context.colors.primary
-                            : context.colors.textSecondary,
-                      ),
-                      if (locked)
-                        PositionedDirectional(
-                          end: -5.w,
-                          bottom: -4.h,
-                          child: Container(
-                            width: 12.w,
-                            height: 12.w,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: context.colors.primary,
-                              // A ring in the track's own colour, so the badge
-                              // reads as sitting *on* the moon rather than
-                              // merging into it where the two overlap.
-                              border: Border.all(
-                                color: isSelected
-                                    ? context.colors.surface
-                                    : context.colors.surfaceVariant,
-                                width: 1.5,
-                              ),
-                            ),
-                            child: Icon(
-                              Icons.lock_rounded,
-                              size: 7.5.sp,
-                              color: context.colors.onPrimary,
-                            ),
-                          ),
-                        ),
-                    ],
+                  // The moon used to wear a small accent padlock, because
+                  // pinning the app dark was a paid preference. It is not any
+                  // more, and the `Stack` that positioned that badge went with
+                  // it — a stack with one child is a stack waiting to be
+                  // mistaken for a layout that matters.
+                  Icon(
+                    icon,
+                    size: 18.sp,
+                    color: isSelected
+                        ? context.colors.primary
+                        : context.colors.textSecondary,
                   ),
                   if (!compact) ...[
                     SizedBox(height: 4.h),

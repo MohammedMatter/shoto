@@ -3,9 +3,33 @@ import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/features/folders/domain/entities/folder_seed.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_colors.dart';
 
-/// The seven folders every install starts with.
+/// The two folders every install starts with.
 ///
-/// **Why seven, and why these seven.**
+/// **Two, against a free tier of three, and the gap is the point.** It was
+/// seven, chosen when folders were uncapped. Three — one per free slot — was
+/// the obvious answer once [SubscriptionConstants.freeFolderLimit] came back,
+/// and it was wrong in a way that only shows up from the user's side: a
+/// starter set the exact size of the allowance means the first folder somebody
+/// names *themselves* is the one that meets the paywall. Their own idea, the
+/// moment they have it, priced. Shoto suggested the other two; charging for
+/// the first one that was actually theirs is the worst possible place to put
+/// a price.
+///
+/// So the set leaves a slot. Two folders to recognise, one to invent, and the
+/// paywall arrives on the fourth — after somebody has filed something of their
+/// own into something of their own, which is the only state in which paying
+/// for more of them makes any sense.
+///
+/// **These two.** Of the seven, these are the two anybody recognises: a recipe
+/// from a story and the thing the assistant said. Workouts was the third and
+/// came out here — it is a real category and a narrower one, and a starter
+/// folder that stays empty for somebody who does not train spends a slot on
+/// nothing. Trips, medications, money and music are all things people keep
+/// screenshots of in bursts, and a folder that is empty eleven months of the
+/// year is a poor use of a slot that was never free to begin with.
+///
+/// **Why seven, and why those seven** — the reasoning that chose the original
+/// set, kept because it is what the three left standing were chosen from.
 ///
 /// The Folders tab used to open on an empty state: a glyph, two sentences and
 /// a button that asked the user to invent a filing system from nothing. That
@@ -33,40 +57,18 @@ import 'package:shoto/features/folders/presentation/widgets/folder_colors.dart';
 ///
 /// The names are resolved here, against the device's language, and become
 /// plain text in the database from that point on. See [FolderSeed].
+/// Each keeps the colour and the glyph it had in the set of seven: somebody
+/// upgrading meets the same three folders they would have met before, in the
+/// same colours, rather than a set that looks reshuffled.
 List<FolderSeed> defaultFolderSeeds(BuildContext context) => <FolderSeed>[
-  FolderSeed(
-    name: context.l10n.folderDefaultTrips,
-    color: 0xFF5B8DEF, // blue
-    iconKey: 'map',
-  ),
-  FolderSeed(
-    name: context.l10n.folderDefaultRecipes,
-    color: 0xFFF5883C, // orange
-    iconKey: 'food',
-  ),
-  FolderSeed(
-    name: context.l10n.folderDefaultMedications,
-    color: 0xFFFF8A65, // coral
-    iconKey: 'pill',
-  ),
   FolderSeed(
     name: context.l10n.folderDefaultAiNotes,
     color: 0xFF8B7BF0, // violet
     iconKey: 'sparkle',
   ),
   FolderSeed(
-    name: context.l10n.folderDefaultMoney,
-    color: 0xFFFFC857, // amber
-    iconKey: 'money',
-  ),
-  FolderSeed(
-    name: context.l10n.folderDefaultWorkouts,
-    color: 0xFF33E0C2, // teal
-    iconKey: 'fitness',
-  ),
-  FolderSeed(
-    name: context.l10n.folderDefaultMusic,
-    color: 0xFFEF5DA8, // pink
-    iconKey: 'music',
+    name: context.l10n.folderDefaultRecipes,
+    color: 0xFFF5883C, // orange
+    iconKey: 'food',
   ),
 ];

@@ -77,6 +77,28 @@ class _FolderEditorContentState extends State<_FolderEditorContent> {
   late final TextEditingController _controller = TextEditingController(
     text: widget.existing?.name ?? '',
   );
+
+  /// Held so the field can put the keyboard *away* — never to call it up.
+  ///
+  /// **Nothing on this sheet focuses the field, and that is the fix for the
+  /// bug that made most of the sheet invisible.** Creating a folder used to
+  /// request focus a beat after the panel landed, which raised the keyboard
+  /// over a sheet whose whole purpose is below it. Measured on a 393×873
+  /// phone: the header alone — preview card, field, swatches, lock row — is
+  /// about 444dp, and the keyboard leaves 416dp above the Create button. The
+  /// glyph grid was not merely cut off; its slivers never reached the viewport
+  /// and were never built. Somebody making their first folder could not tell
+  /// there were pictures to choose from at all unless they happened to put the
+  /// keyboard away.
+  ///
+  /// The argument against it was already written down here, and applied to
+  /// the *editing* case only: raising the keyboard over the icon grid hides
+  /// the reason most people came. It is just as true of a folder being made —
+  /// the name is one of four choices on this sheet, and it is the only one of
+  /// the four the user can still reach with a single tap.
+  ///
+  /// With the keyboard down, the sheet opens on all four at once: the preview,
+  /// the name, the eight colours, the lock and the glyphs.
   final FocusNode _focusNode = FocusNode();
 
   /// The typed name, published to the preview **without a `setState`**.
@@ -110,28 +132,10 @@ class _FolderEditorContentState extends State<_FolderEditorContent> {
 
   bool get _isEditing => widget.existing != null;
 
-  /// How long the keyboard waits before coming up.
-  ///
-  /// **`autofocus: true` was costing this sheet its entrance**, and it costs
-  /// more now than it did when the sheet was four rows tall: the keyboard
-  /// rises on the same frames the panel slides, so the phone animates a tall
-  /// surface, re-blurs everything behind it and resizes the whole layout at
-  /// once. Matched to the sheet's own entrance so the keyboard starts as the
-  /// panel lands. The same call, and the same number, as the intent editor.
-  static const Duration _focusDelay = AppMotion.normal;
-
   @override
   void initState() {
     super.initState();
     _loadLockKind();
-    // Only when making a folder. Opening the editor on one that exists is
-    // usually about the glyph or the colour, and raising the keyboard over the
-    // icon grid would hide the reason most people came.
-    if (!_isEditing) {
-      Future<void>.delayed(_focusDelay, () {
-        if (mounted) _focusNode.requestFocus();
-      });
-    }
   }
 
   Future<void> _loadLockKind() async {
@@ -191,8 +195,13 @@ class _FolderEditorContentState extends State<_FolderEditorContent> {
             // remaining space makes the whole sheet resize itself every time
             // the keyboard moves, and a surface that changes size while you
             // type is the least comfortable thing an editor can do.
+            // 0.92 rather than 0.88. The four points are 35dp, and they are
+            // spent on the one thing this sheet is short of: they are what
+            // puts the *second* glyph section's tiles across the bottom edge
+            // rather than its heading alone. What they cost is a sliver of the
+            // page behind, which nobody is reading.
             constraints: BoxConstraints(
-              maxHeight: MediaQuery.sizeOf(context).height * 0.88,
+              maxHeight: MediaQuery.sizeOf(context).height * 0.92,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -246,49 +255,74 @@ class _FolderEditorContentState extends State<_FolderEditorContent> {
                         ScrollViewKeyboardDismissBehavior.onDrag,
                     slivers: <Widget>[
                       SliverToBoxAdapter(child: _header(context)),
-                      SliverPadding(
-                        padding: EdgeInsets.fromLTRB(24.w, 14.h, 24.w, 4.h),
-                        sliver: SliverGrid.builder(
-                          // Sized by extent rather than by a column count, so
-                          // the tiles keep their size and the *number* of
-                          // columns changes with the phone — a count would
-                          // stretch them into rectangles on a wide screen.
-                          gridDelegate:
-                              SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 62.w,
-                                mainAxisSpacing: 10.h,
-                                crossAxisSpacing: 10.w,
-                              ),
-                          itemCount: FolderIcons.keys.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final String key = FolderIcons.keys[index];
-                            return _IconChoice(
-                              iconKey: key,
-                              isSelected: key == _iconKey,
-                              onTap: () {
-                                if (key == _iconKey) return;
-                                // Light, not the confirm weight: picking a
-                                // glyph is browsing, and the decision is the
-                                // button below. A firm buzz on every glyph
-                                // would turn looking through ninety-eight of
-                                // them into being nudged ninety-eight times.
-                                Haptics.tap();
-                                setState(() => _iconKey = key);
-                              },
-                            );
-                          },
-                        ),
-                      ),
+                      // **A heading and a grid per group, rather than one grid
+                      // of ninety-eight.**
+                      //
+                      // Still slivers, and still lazy: a `SliverGrid` per
+                      // section builds only the tiles on screen, so the ten
+                      // sections together cost what the single grid did. What
+                      // changes is that the scroll now has landmarks — and
+                      // the section people arrive looking for, the apps a
+                      // screenshot came from, announces itself instead of
+                      // being eighty tiles down an unlabelled run.
+                      for (final FolderIconGroup group in FolderIcons.groups)
+                        ..._iconSection(context, group),
                     ],
                   ),
                 ),
+                // **The lock is pinned down here, out of the scroll.**
+                //
+                // It used to sit between the swatches and the glyphs, inside
+                // the scrolling region, and it was costing the picker the one
+                // thing the picker needed: 64dp of the space directly under
+                // the fold. With it there, the first glyph section opened with
+                // a single row of tiles sitting flush against the Create
+                // button — which reads as the bottom of the sheet, not as a
+                // grid that continues. Nobody scrolls past what looks
+                // finished, so most people never learned there were pictures
+                // to choose from.
+                //
+                // Moving it here buys the grid that row and a half, and the
+                // lock loses nothing by it: a decision that cannot be undone
+                // by looking now sits beside the button that commits it, and
+                // never scrolls away.
+                if (!_isEditing)
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(24.w, 12.h, 24.w, 0),
+                    child: _PrivateRow(
+                      isPrivate: _isPrivate,
+                      label: _privateLabel,
+                      onChanged: (bool value) =>
+                          setState(() => _isPrivate = value),
+                    ),
+                  ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(24.w, 12.h, 24.w, 20.h),
-                  child: PrimaryButton(
-                    label: _isEditing
-                        ? context.l10n.commonSave
-                        : context.l10n.foldersCreate,
-                    onPressed: _save,
+                  // **Off until the folder has a name, and lit by the
+                  // keystroke that gives it one.**
+                  //
+                  // The refusal was already here — `_save` returns without
+                  // doing anything on an empty name — and it was invisible:
+                  // the button looked exactly as it does when it works, so
+                  // pressing it did nothing and said nothing about why. A
+                  // control that will not act should say so before it is
+                  // pressed, not after.
+                  //
+                  // Listening to [_name] rather than reading it, so this stays
+                  // out of the rule the notifier exists for: a keystroke
+                  // rebuilds this button and the preview card, and nothing
+                  // else on the sheet.
+                  child: ValueListenableBuilder<String>(
+                    valueListenable: _name,
+                    builder: (BuildContext context, String name, Widget? _) =>
+                        PrimaryButton(
+                          label: _isEditing
+                              ? context.l10n.commonSave
+                              : context.l10n.foldersCreate,
+                          // Already trimmed on its way in, so a field holding
+                          // nothing but spaces leaves the button off.
+                          onPressed: name.isEmpty ? null : _save,
+                        ),
                   ),
                 ),
               ],
@@ -299,61 +333,95 @@ class _FolderEditorContentState extends State<_FolderEditorContent> {
     );
   }
 
-  /// The preview, the name, the colours and the lock — everything that scrolls
-  /// away above the glyphs.
+  /// The preview, the name and the colours — everything that scrolls away
+  /// above the glyphs.
+  ///
+  /// Three things now, where there were four: the lock moved to the pinned
+  /// strip at the foot of the sheet, so that what sits between the swatches
+  /// and the first row of glyphs is a section heading and nothing else.
+
+  /// One labelled run of glyphs: the heading, then its grid.
+  ///
+  /// Returns two slivers rather than wrapping them in one, because a heading
+  /// inside the grid's own sliver would have to be a grid cell — and a cell is
+  /// 62dp wide, which is not a place a word fits.
+  List<Widget> _iconSection(BuildContext context, FolderIconGroup group) {
+    return <Widget>[
+      SliverToBoxAdapter(
+        child: Padding(
+          // Generous above, tight below: the heading belongs to the grid under
+          // it, and equal gaps would leave it floating between two sections
+          // belonging to neither. 12 rather than 18 above — still twice what
+          // is below it, and the six points go to the row of tiles that has to
+          // reach across the bottom edge of the sheet.
+          padding: EdgeInsetsDirectional.fromSTEB(24.w, 12.h, 24.w, 8.h),
+          child: Text(group.label(context), style: context.text.sectionLabel),
+        ),
+      ),
+      SliverPadding(
+        padding: EdgeInsetsDirectional.fromSTEB(24.w, 0, 24.w, 4.h),
+        sliver: SliverGrid.builder(
+          // Sized by extent rather than by a column count, so the tiles keep
+          // their size and the *number* of columns changes with the phone — a
+          // count would stretch them into rectangles on a wide screen.
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 62.w,
+            mainAxisSpacing: 10.h,
+            crossAxisSpacing: 10.w,
+          ),
+          itemCount: group.keys.length,
+          itemBuilder: (BuildContext context, int index) {
+            final String key = group.keys[index];
+            return _IconChoice(
+              iconKey: key,
+              isSelected: key == _iconKey,
+              onTap: () {
+                if (key == _iconKey) return;
+                // Light, not the confirm weight: picking a glyph is browsing,
+                // and the decision is the button below. A firm buzz on every
+                // glyph would turn looking through ninety-eight of them into
+                // being nudged ninety-eight times.
+                Haptics.tap();
+                setState(() => _iconKey = key);
+              },
+            );
+          },
+        ),
+      ),
+    ];
+  }
+
   Widget _header(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        _Preview(
-          name: _name,
-          color: _color,
-          iconKey: _iconKey,
-          isPrivate: _isPrivate,
-          screenshotCount: widget.existing?.screenshotCount ?? 0,
-        ),
-        SizedBox(height: 16.h),
+        // **The card and the field share a line.**
+        //
+        // Stacked, they were 227dp of the 456dp the sheet has between its
+        // title and its buttons — half the surface spent before the glyph
+        // picker got to start. Side by side they are 152dp, and the 75dp that
+        // buys goes where it was missing: the grid, which is the only thing on
+        // this sheet that cannot show what it is in one row.
+        //
+        // The card keeps its size. It is a hair larger than a real grid tile
+        // and that is the point of it — shrinking it to make room would have
+        // solved the same problem by breaking the reason the preview exists.
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.w),
-          child: TextField(
-            controller: _controller,
-            focusNode: _focusNode,
-            maxLength: kMaxFolderNameLength,
-            textCapitalization: TextCapitalization.sentences,
-            textInputAction: TextInputAction.done,
-            style: context.text.bodyLarge,
-            // Updates the preview on every keystroke, deliberately without an
-            // animation on the text — see [_Preview] — and deliberately
-            // without a `setState`, see [_name].
-            onChanged: (String value) => _name.value = value.trim(),
-            // Puts the keyboard away rather than saving. The name is the
-            // *first* of three choices on this sheet, so finishing it is not
-            // finishing the sheet — and a "done" key that created the folder
-            // would mean the glyph and the colour were only ever reachable by
-            // people who did not press it.
-            onSubmitted: (_) => _focusNode.unfocus(),
-            decoration: InputDecoration(
-              hintText: context.l10n.foldersNameHint,
-              hintStyle: context.text.bodyLarge.copyWith(
-                color: context.colors.textDisabled,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              _Preview(
+                name: _name,
+                color: _color,
+                iconKey: _iconKey,
+                isPrivate: _isPrivate,
+                screenshotCount: widget.existing?.screenshotCount ?? 0,
               ),
-              // Suppressed for the reason the intent editor gives: the limit
-              // exists for the card's sake, not as a budget the user is meant
-              // to be spending down, and a live count under a two-word field
-              // reads as a warning.
-              counterText: '',
-              filled: true,
-              fillColor: context.colors.surfaceVariant,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14.r),
-                borderSide: BorderSide.none,
-              ),
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 16.w,
-                vertical: 14.h,
-              ),
-            ),
+              SizedBox(width: 16.w),
+              Expanded(child: _nameField(context)),
+            ],
           ),
         ),
         SizedBox(height: 14.h),
@@ -361,18 +429,46 @@ class _FolderEditorContentState extends State<_FolderEditorContent> {
           selected: _color,
           onSelected: (int value) => setState(() => _color = value),
         ),
-        if (!_isEditing) ...<Widget>[
-          SizedBox(height: 14.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.w),
-            child: _PrivateRow(
-              isPrivate: _isPrivate,
-              label: _privateLabel,
-              onChanged: (bool value) => setState(() => _isPrivate = value),
-            ),
-          ),
-        ],
       ],
+    );
+  }
+
+  Widget _nameField(BuildContext context) {
+    return TextField(
+      controller: _controller,
+      focusNode: _focusNode,
+      maxLength: kMaxFolderNameLength,
+      textCapitalization: TextCapitalization.sentences,
+      textInputAction: TextInputAction.done,
+      style: context.text.bodyLarge,
+      // Updates the preview on every keystroke, deliberately without an
+      // animation on the text — see [_Preview] — and deliberately
+      // without a `setState`, see [_name].
+      onChanged: (String value) => _name.value = value.trim(),
+      // Puts the keyboard away rather than saving. The name is the
+      // *first* of three choices on this sheet, so finishing it is not
+      // finishing the sheet — and a "done" key that created the folder
+      // would mean the glyph and the colour were only ever reachable by
+      // people who did not press it.
+      onSubmitted: (_) => _focusNode.unfocus(),
+      decoration: InputDecoration(
+        hintText: context.l10n.foldersNameHint,
+        hintStyle: context.text.bodyLarge.copyWith(
+          color: context.colors.textDisabled,
+        ),
+        // Suppressed for the reason the intent editor gives: the limit
+        // exists for the card's sake, not as a budget the user is meant
+        // to be spending down, and a live count under a two-word field
+        // reads as a warning.
+        counterText: '',
+        filled: true,
+        fillColor: context.colors.surfaceVariant,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14.r),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      ),
     );
   }
 }
@@ -413,45 +509,44 @@ class _Preview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      // The card is two `CustomPaint`s and a gradient sitting on top of a
-      // near-full-screen backdrop blur. Its own layer, so a name being typed
-      // repaints the card and not the frosted panel behind it.
-      child: RepaintBoundary(
-        child: SizedBox(
-          // Wider than a grid tile, and in the grid's own proportion. The card
-          // has to be readable here — this is the only place it is ever looked
-          // *at* rather than scanned past.
-          width: 116.w,
-          height: 116.w / 0.76,
-          child: AnimatedSwitcher(
-            duration: AppMotion.duration(context, AppMotion.press),
-            switchInCurve: AppMotion.standard,
-            switchOutCurve: AppMotion.standard,
-            // Crossfades the card whenever the colour or the glyph changes, and
-            // never when only the name does — the key is what decides that,
-            // and the name is below it rather than in it. A keystroke rebuilds
-            // inside this builder without ever handing the switcher a new
-            // child, so there is nothing for it to cross-fade.
-            child: ValueListenableBuilder<String>(
-              key: ValueKey<String>('$color-$iconKey-$isPrivate'),
-              valueListenable: name,
-              builder: (BuildContext context, String value, Widget? child) =>
-                  FolderCard(
-                    folder: FolderEntity(
-                      id: -1,
-                      name: value.isEmpty
-                          ? context.l10n.foldersNameLabel
-                          : value,
-                      color: color,
-                      createdAt: DateTime(2026),
-                      screenshotCount: screenshotCount,
-                      isPrivate: isPrivate,
-                      iconKey: iconKey,
-                    ),
-                    onTap: () {},
+    // No `Center` any more: the card shares a line with the name field, and
+    // the row it sits in is what places it.
+    //
+    // The card is two `CustomPaint`s and a gradient sitting on top of a
+    // near-full-screen backdrop blur. Its own layer, so a name being typed
+    // repaints the card and not the frosted panel behind it.
+    return RepaintBoundary(
+      child: SizedBox(
+        // Wider than a grid tile, and in the grid's own proportion. The card
+        // has to be readable here — this is the only place it is ever looked
+        // *at* rather than scanned past.
+        width: 116.w,
+        height: 116.w / 0.76,
+        child: AnimatedSwitcher(
+          duration: AppMotion.duration(context, AppMotion.press),
+          switchInCurve: AppMotion.standard,
+          switchOutCurve: AppMotion.standard,
+          // Crossfades the card whenever the colour or the glyph changes, and
+          // never when only the name does — the key is what decides that,
+          // and the name is below it rather than in it. A keystroke rebuilds
+          // inside this builder without ever handing the switcher a new
+          // child, so there is nothing for it to cross-fade.
+          child: ValueListenableBuilder<String>(
+            key: ValueKey<String>('$color-$iconKey-$isPrivate'),
+            valueListenable: name,
+            builder: (BuildContext context, String value, Widget? child) =>
+                FolderCard(
+                  folder: FolderEntity(
+                    id: -1,
+                    name: value.isEmpty ? context.l10n.foldersNameLabel : value,
+                    color: color,
+                    createdAt: DateTime(2026),
+                    screenshotCount: screenshotCount,
+                    isPrivate: isPrivate,
+                    iconKey: iconKey,
                   ),
-            ),
+                  onTap: () {},
+                ),
           ),
         ),
       ),

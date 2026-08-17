@@ -48,21 +48,58 @@ class _LibraryIntakeRowState extends State<LibraryIntakeRow>
     with WidgetsBindingObserver {
   int _waiting = 0;
 
+  /// Whether the feature was switched on last time anything asked.
+  ///
+  /// Held rather than read fresh each time because [AppPreferences] notifies
+  /// on *every* preference — haptics, the theme, ask-before-deleting — and
+  /// this row must not spend a gallery query on any of them.
+  bool _offering = sl<AppPreferences>().triageEnabled;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     PhotoManager.addChangeCallback(_onGalleryChanged);
     PhotoManager.startChangeNotify();
+    sl<AppPreferences>().addListener(_onPreferencesChanged);
     _count();
   }
 
   @override
   void dispose() {
+    sl<AppPreferences>().removeListener(_onPreferencesChanged);
     PhotoManager.removeChangeCallback(_onGalleryChanged);
     PhotoManager.stopChangeNotify();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  /// **Because switching the feature on is not a gallery change either.**
+  ///
+  /// The two listeners below cover captures arriving; neither covers the
+  /// answer to [GetNewCapturesUseCase] changing for a reason that has nothing
+  /// to do with the gallery. `triageEnabled` is exactly that reason: the use
+  /// case returns an empty list while the preference is off, so every count
+  /// taken before the switch was thrown reads nought no matter how many
+  /// screenshots are waiting.
+  ///
+  /// The Library is kept alive in the shell's stack for the whole session, so
+  /// nothing rebuilt this row on the way back from Settings and nothing
+  /// re-counted. Turning "Offer new screenshots" on and returning to the
+  /// Library showed no row at all — with three captures waiting — until the
+  /// app happened to be backgrounded and resumed. Observed on device: the row
+  /// appeared only after a trip to the home screen and back.
+  ///
+  /// That is the same failure the two comments below describe, arriving
+  /// through a fourth door, and it is the worst-placed one of the four: it
+  /// greets the user in the first ten seconds of turning the feature on.
+  void _onPreferencesChanged() {
+    final bool offering = sl<AppPreferences>().triageEnabled;
+    if (offering == _offering) return;
+    _offering = offering;
+    // Switched off counts too — the row has to come down as promptly as it
+    // goes up, and `_count` reads nought for a disabled feature by itself.
+    _count();
   }
 
   /// **Because taking a screenshot does not background the app.**

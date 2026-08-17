@@ -55,22 +55,44 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!--
+	  The companion to the portrait-only ~ipad list below, and it is required
+	  rather than a preference: an iPad app that takes part in multitasking
+	  must support all four orientations, so trimming that list without this
+	  fails App Store validation with "All interface orientations must be
+	  supported unless the app requires full screen." Slide Over and Split
+	  View go with it, which is the honest consequence of an app that only
+	  ever draws one way up.
+	-->
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<!--
+	  Portrait, and portrait is the whole list.
+
+	  iOS reads this before any Dart runs, so it — not
+	  SystemChrome.setPreferredOrientations — is what governs the launch
+	  storyboard and the first frames of a cold start. Leaving the landscape
+	  entries in while Dart asked for portrait meant the two disagreed for
+	  exactly as long as the engine took to boot, which is the window a
+	  rotation flash lives in.
+
+	  The ~ipad key is a separate list, not an addition to the one above, and
+	  it is the one that is easy to miss: with only the iPhone key trimmed, an
+	  iPad goes on rotating freely no matter what the app asks for. Both are
+	  trimmed to the same single value, and PortraitUpsideDown is gone from it
+	  — turning the app 180° is a rotation like any other.
+	-->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 </dict>
 </plist>

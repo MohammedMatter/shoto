@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -32,6 +33,7 @@ Future<void> loadTestFonts() async {
   //
   // Whatever brings a non-Latin language back adds its face to both places.
   await _loadIconFont();
+  await _loadBrandIconFont();
 }
 
 Future<void> _loadFamily(String family, List<String> fileNames) async {
@@ -55,6 +57,64 @@ Future<void> _loadIconFont() async {
   final FontLoader loader = FontLoader('MaterialIcons')
     ..addFont(Future.value(file.readAsBytesSync().buffer.asByteData()));
   await loader.load();
+}
+
+/// Font Awesome's **brands** face, which is the one carrying the Google mark on
+/// the sign-in button.
+///
+/// Worth the trouble of finding, because that button is the single most
+/// brand-sensitive control in the app and without this it photographs as a
+/// hollow box — which looks exactly like a deliberately outlined icon and is
+/// therefore the worst kind of missing glyph: one you review and approve.
+///
+/// Registered under `packages/font_awesome_flutter/FontAwesomeBrands` rather
+/// than the bare family name. `FaIcon` builds its [IconData] with
+/// `fontPackage: 'font_awesome_flutter'`, and Flutter resolves that to the
+/// prefixed name before it ever reaches the font manager; a loader registered
+/// under the short name is never consulted.
+Future<void> _loadBrandIconFont() async {
+  final Directory? root = _packageRoot('font_awesome_flutter');
+  if (root == null) return;
+
+  // Matched by shape rather than named, so a major version of the package —
+  // which renames the file, `Font-Awesome-6-…` to `Font-Awesome-7-…` — does not
+  // silently take the glyph away again.
+  final Directory fonts = Directory('${root.path}/lib/fonts');
+  if (!fonts.existsSync()) return;
+
+  for (final FileSystemEntity entity in fonts.listSync()) {
+    if (entity is! File || !entity.path.contains('Brands')) continue;
+
+    final FontLoader loader = FontLoader(
+      'packages/font_awesome_flutter/FontAwesomeBrands',
+    )..addFont(Future.value(entity.readAsBytesSync().buffer.asByteData()));
+    await loader.load();
+    return;
+  }
+}
+
+/// Where a package's own files live on this machine, from the resolution the
+/// tool has already done — the pub cache path contains a version number, so
+/// hardcoding it would break on every upgrade.
+Directory? _packageRoot(String package) {
+  final File config = File('.dart_tool/package_config.json');
+  if (!config.existsSync()) return null;
+
+  final Map<String, dynamic> json =
+      jsonDecode(config.readAsStringSync()) as Map<String, dynamic>;
+
+  for (final dynamic entry in json['packages'] as List<dynamic>) {
+    final Map<String, dynamic> entryMap = entry as Map<String, dynamic>;
+    if (entryMap['name'] != package) continue;
+
+    // Hosted packages record an absolute `file://` URI; a path or workspace
+    // dependency records one relative to `.dart_tool/`.
+    final Uri uri = Uri.parse(entryMap['rootUri'] as String);
+    return Directory.fromUri(
+      uri.hasScheme ? uri : Uri.directory('.dart_tool').resolveUri(uri),
+    );
+  }
+  return null;
 }
 
 /// The icon font ships inside the Flutter SDK, whose location differs per

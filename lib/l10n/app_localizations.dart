@@ -120,6 +120,18 @@ abstract class AppLocalizations {
   /// **'Send technical details when something goes wrong'**
   String get settingsCrashReportsHint;
 
+  /// No description provided for @settingsOnboarding.
+  ///
+  /// In en, this message translates to:
+  /// **'Replay the introduction'**
+  String get settingsOnboarding;
+
+  /// No description provided for @settingsOnboardingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch the opening sequence again'**
+  String get settingsOnboardingHint;
+
   /// No description provided for @settingsSignOut.
   ///
   /// In en, this message translates to:
@@ -138,11 +150,11 @@ abstract class AppLocalizations {
   /// **'Welcome to Shoto'**
   String get authWelcome;
 
-  /// No description provided for @authSubtitle.
+  /// No description provided for @authWhy.
   ///
   /// In en, this message translates to:
-  /// **'Signing in keeps your subscription with you when you change phone. Your screenshots stay on this device either way — an account never carries them.'**
-  String get authSubtitle;
+  /// **'Not everything you save deserves the same shelf. Shoto gives the screenshots you actually care about a place of their own.'**
+  String get authWhy;
 
   /// No description provided for @authGoogle.
   ///
@@ -293,6 +305,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Shows what you capture; keeps nothing on its own'**
   String get settingsTriageHint;
+
+  /// No description provided for @settingsCaptureAlerts.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify me right away'**
+  String get settingsCaptureAlerts;
+
+  /// No description provided for @settingsCaptureAlertsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A quiet notification right after you take one'**
+  String get settingsCaptureAlertsHint;
+
+  /// No description provided for @settingsCaptureAlertsMuted.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are off for Shoto — turn them on in your phone\'s settings'**
+  String get settingsCaptureAlertsMuted;
+
+  /// No description provided for @settingsCaptureAlertsStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Android stopped the checks. Open Shoto once to start them again'**
+  String get settingsCaptureAlertsStopped;
+
+  /// No description provided for @settingsCaptureAlertsWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Watching. Nothing captured yet'**
+  String get settingsCaptureAlertsWaiting;
+
+  /// No description provided for @settingsCaptureAlertsLastRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Last checked {when}'**
+  String settingsCaptureAlertsLastRun(String when);
+
+  /// No description provided for @timeAgoMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min ago'**
+  String timeAgoMinutes(int count);
+
+  /// No description provided for @timeAgoHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} h ago'**
+  String timeAgoHours(int count);
+
+  /// No description provided for @timeAgoDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} d ago'**
+  String timeAgoDays(int count);
+
+  /// No description provided for @settingsQuickTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Settings tile'**
+  String get settingsQuickTile;
+
+  /// No description provided for @settingsQuickTileHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Save your last screenshot without opening the share sheet'**
+  String get settingsQuickTileHint;
+
+  /// No description provided for @settingsQuickTileAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added to Quick Settings'**
+  String get settingsQuickTileAdded;
+
+  /// No description provided for @settingsQuickTileManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Add it by hand: pull down Quick Settings, tap edit, then drag the Shoto tile in.'**
+  String get settingsQuickTileManual;
+
+  /// No description provided for @settingsQuickTileSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Two swipes, from any app'**
+  String get settingsQuickTileSheetTitle;
+
+  /// No description provided for @settingsQuickTileSheetBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Shoto can sit in your phone\'s Quick Settings, beside the torch. One tap files the screenshot you just took — no app to open, no share sheet to scroll.'**
+  String get settingsQuickTileSheetBody;
+
+  /// No description provided for @settingsQuickTileStepPull.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe down from the top of any screen'**
+  String get settingsQuickTileStepPull;
+
+  /// No description provided for @settingsQuickTileStepTap.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the Shoto tile — your last screenshot is filed'**
+  String get settingsQuickTileStepTap;
+
+  /// No description provided for @settingsQuickTileStepStays.
+  ///
+  /// In en, this message translates to:
+  /// **'It stays in the same square, unlike the share sheet'**
+  String get settingsQuickTileStepStays;
+
+  /// No description provided for @settingsQuickTileAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the tile'**
+  String get settingsQuickTileAdd;
+
+  /// No description provided for @settingsQuickTileNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Reads only the screenshot you just took. Nothing leaves your phone.'**
+  String get settingsQuickTileNote;
+
+  /// No description provided for @folderIconsBasics.
+  ///
+  /// In en, this message translates to:
+  /// **'Basics'**
+  String get folderIconsBasics;
+
+  /// No description provided for @folderIconsWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Work'**
+  String get folderIconsWork;
+
+  /// No description provided for @folderIconsMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get folderIconsMoney;
+
+  /// No description provided for @folderIconsTravel.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel'**
+  String get folderIconsTravel;
+
+  /// No description provided for @folderIconsHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home & health'**
+  String get folderIconsHome;
+
+  /// No description provided for @folderIconsMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Media'**
+  String get folderIconsMedia;
+
+  /// No description provided for @folderIconsPeople.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get folderIconsPeople;
+
+  /// No description provided for @folderIconsSymbols.
+  ///
+  /// In en, this message translates to:
+  /// **'Symbols'**
+  String get folderIconsSymbols;
+
+  /// No description provided for @folderIconsSocial.
+  ///
+  /// In en, this message translates to:
+  /// **'Social'**
+  String get folderIconsSocial;
+
+  /// No description provided for @folderIconsApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps'**
+  String get folderIconsApps;
+
+  /// No description provided for @quickTileOfferTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save without the share sheet'**
+  String get quickTileOfferTitle;
+
+  /// No description provided for @quickTileOfferBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a Quick Settings shortcut for your last screenshot'**
+  String get quickTileOfferBody;
 
   /// No description provided for @triageNothingNew.
   ///
@@ -666,6 +870,18 @@ abstract class AppLocalizations {
   /// **'Select all'**
   String get librarySelectAll;
 
+  /// No description provided for @librarySelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get librarySelect;
+
+  /// No description provided for @librarySelectPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Select screenshots'**
+  String get librarySelectPrompt;
+
   /// No description provided for @libraryActionMerge.
   ///
   /// In en, this message translates to:
@@ -785,6 +1001,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Grid density'**
   String get settingsGridDensity;
+
+  /// No description provided for @settingsAppearanceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme, accent colour and grid size'**
+  String get settingsAppearanceHint;
+
+  /// No description provided for @appearanceTint.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent colour'**
+  String get appearanceTint;
+
+  /// No description provided for @appearanceTintHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Buttons, switches and anything selected.'**
+  String get appearanceTintHint;
+
+  /// No description provided for @appearancePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get appearancePreview;
+
+  /// No description provided for @tintTeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Teal'**
+  String get tintTeal;
+
+  /// No description provided for @tintSlate.
+  ///
+  /// In en, this message translates to:
+  /// **'Slate'**
+  String get tintSlate;
+
+  /// No description provided for @tintIndigo.
+  ///
+  /// In en, this message translates to:
+  /// **'Indigo'**
+  String get tintIndigo;
+
+  /// No description provided for @tintPlum.
+  ///
+  /// In en, this message translates to:
+  /// **'Plum'**
+  String get tintPlum;
+
+  /// No description provided for @tintRose.
+  ///
+  /// In en, this message translates to:
+  /// **'Rose'**
+  String get tintRose;
+
+  /// No description provided for @tintEmber.
+  ///
+  /// In en, this message translates to:
+  /// **'Ember'**
+  String get tintEmber;
+
+  /// No description provided for @tintAmber.
+  ///
+  /// In en, this message translates to:
+  /// **'Amber'**
+  String get tintAmber;
+
+  /// No description provided for @tintMoss.
+  ///
+  /// In en, this message translates to:
+  /// **'Moss'**
+  String get tintMoss;
+
+  /// No description provided for @tintGarnet.
+  ///
+  /// In en, this message translates to:
+  /// **'Garnet'**
+  String get tintGarnet;
+
+  /// No description provided for @tintBrass.
+  ///
+  /// In en, this message translates to:
+  /// **'Brass'**
+  String get tintBrass;
+
+  /// No description provided for @tintFern.
+  ///
+  /// In en, this message translates to:
+  /// **'Fern'**
+  String get tintFern;
+
+  /// No description provided for @tintJade.
+  ///
+  /// In en, this message translates to:
+  /// **'Jade'**
+  String get tintJade;
+
+  /// No description provided for @tintOlive.
+  ///
+  /// In en, this message translates to:
+  /// **'Olive'**
+  String get tintOlive;
+
+  /// No description provided for @tintCyan.
+  ///
+  /// In en, this message translates to:
+  /// **'Cyan'**
+  String get tintCyan;
+
+  /// No description provided for @tintDenim.
+  ///
+  /// In en, this message translates to:
+  /// **'Denim'**
+  String get tintDenim;
+
+  /// No description provided for @tintViolet.
+  ///
+  /// In en, this message translates to:
+  /// **'Violet'**
+  String get tintViolet;
+
+  /// No description provided for @tintSky.
+  ///
+  /// In en, this message translates to:
+  /// **'Sky'**
+  String get tintSky;
+
+  /// No description provided for @tintOrchid.
+  ///
+  /// In en, this message translates to:
+  /// **'Orchid'**
+  String get tintOrchid;
+
+  /// No description provided for @tintFuchsia.
+  ///
+  /// In en, this message translates to:
+  /// **'Fuchsia'**
+  String get tintFuchsia;
+
+  /// No description provided for @tintClay.
+  ///
+  /// In en, this message translates to:
+  /// **'Clay'**
+  String get tintClay;
+
+  /// No description provided for @tintGraphite.
+  ///
+  /// In en, this message translates to:
+  /// **'Graphite'**
+  String get tintGraphite;
+
+  /// No description provided for @appearanceMoreColors.
+  ///
+  /// In en, this message translates to:
+  /// **'More colours'**
+  String get appearanceMoreColors;
+
+  /// No description provided for @appearanceSelectTint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select accent colour'**
+  String get appearanceSelectTint;
+
+  /// No description provided for @appearanceFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder cards'**
+  String get appearanceFolders;
+
+  /// No description provided for @appearanceFolderCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Screenshot count'**
+  String get appearanceFolderCount;
+
+  /// No description provided for @appearanceFolderDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date created'**
+  String get appearanceFolderDate;
+
+  /// No description provided for @appearanceFolderSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Cards per row'**
+  String get appearanceFolderSize;
+
+  /// No description provided for @appearanceLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Library grid'**
+  String get appearanceLibrary;
+
+  /// No description provided for @appIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'App icon'**
+  String get appIcon;
+
+  /// No description provided for @appIconDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Original'**
+  String get appIconDefault;
+
+  /// No description provided for @appIconHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Changing this closes Shoto for a moment while Android swaps the icon.'**
+  String get appIconHint;
 
   /// No description provided for @settingsLanguage.
   ///
@@ -1242,6 +1668,30 @@ abstract class AppLocalizations {
   /// **'Try sharing it again.'**
   String get quickSaveFailedBody;
 
+  /// No description provided for @quickSaveNoCaptureTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No screenshot yet'**
+  String get quickSaveNoCaptureTitle;
+
+  /// No description provided for @quickSaveNoCaptureBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a screenshot, then tap the tile again.'**
+  String get quickSaveNoCaptureBody;
+
+  /// No description provided for @quickSaveNoAccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shoto can\'t see your screenshots'**
+  String get quickSaveNoAccessTitle;
+
+  /// No description provided for @quickSaveNoAccessBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Shoto and allow photo access, then try the tile again.'**
+  String get quickSaveNoAccessBody;
+
   /// No description provided for @quickSaveSkipped.
   ///
   /// In en, this message translates to:
@@ -1680,6 +2130,12 @@ abstract class AppLocalizations {
   /// **'Already paid? Bring your subscription back.'**
   String get settingsRestoreHint;
 
+  /// No description provided for @settingsRestoreDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Your subscription is back.'**
+  String get settingsRestoreDone;
+
   /// No description provided for @paywallLegal.
   ///
   /// In en, this message translates to:
@@ -1818,6 +2274,18 @@ abstract class AppLocalizations {
   /// **'Open a link, write to an address, copy a verification code or an IBAN — straight from the picture, without retyping anything.'**
   String get featActionsBody;
 
+  /// No description provided for @featTraits.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by what\'s inside'**
+  String get featTraits;
+
+  /// No description provided for @featTraitsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Show only the screenshots with a link, a phone number, a code, a date or a card number in them — matched on the words inside the picture.'**
+  String get featTraitsBody;
+
   /// No description provided for @featDuplicates.
   ///
   /// In en, this message translates to:
@@ -1851,8 +2319,8 @@ abstract class AppLocalizations {
   /// No description provided for @featUnlimitedBody.
   ///
   /// In en, this message translates to:
-  /// **'The free tier organizes {count} screenshots. Pro takes the number away.'**
-  String featUnlimitedBody(Object count);
+  /// **'The free tier organizes {count} screenshots and keeps {folders} folders. Pro takes both numbers away.'**
+  String featUnlimitedBody(Object count, Object folders);
 
   /// No description provided for @featUnlimitedBodyPro.
   ///
@@ -1908,6 +2376,66 @@ abstract class AppLocalizations {
   /// **'Works on the screenshots you already have, not only on new ones.'**
   String get featActionsPoint3;
 
+  /// No description provided for @featTraitsHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Filtering is free on whatever Shoto has already read: search, smart actions and Safe share each leave recognised text behind, and every filter is derived from that. Paying is what reads the rest of the library in one pass, so a filter can also see the screenshots no other feature has opened yet.'**
+  String get featTraitsHow;
+
+  /// No description provided for @featTraitsPoint1.
+  ///
+  /// In en, this message translates to:
+  /// **'Five filters — card numbers and IBANs, links, phone numbers and email addresses, verification codes, and dates you are expected to turn up for.'**
+  String get featTraitsPoint1;
+
+  /// No description provided for @featTraitsPoint2.
+  ///
+  /// In en, this message translates to:
+  /// **'Card numbers and IBANs are proven by checksum. The rest are read from the picture, so they under-report rather than over-claim.'**
+  String get featTraitsPoint2;
+
+  /// No description provided for @featTraitsPoint3.
+  ///
+  /// In en, this message translates to:
+  /// **'The library always says how many screenshots have never been read, so an empty result is never passed off as an absence. Reading happens on the phone; nothing is uploaded.'**
+  String get featTraitsPoint3;
+
+  /// No description provided for @featTint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your accent'**
+  String get featTint;
+
+  /// No description provided for @featTintBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} accents for the buttons, switches and selections — each one tuned to stay readable in both light and dark.'**
+  String featTintBody(int count);
+
+  /// No description provided for @featTintHow.
+  ///
+  /// In en, this message translates to:
+  /// **'Most apps hand you a row of raw colours and let the contrast fall where it may, which is why a yellow accent usually arrives carrying white text nobody can read. Shoto stores your choice as a position on the colour wheel rather than as a fixed colour, then works out the exact shade for light mode and for dark mode — so whichever you pick carries text at the same strength the app\'s own colour does.'**
+  String get featTintHow;
+
+  /// No description provided for @featTintPoint1.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} accents, from teal and moss through amber and ember to plum, indigo and slate.'**
+  String featTintPoint1(int count);
+
+  /// No description provided for @featTintPoint2.
+  ///
+  /// In en, this message translates to:
+  /// **'Each one is worked out twice, once for light mode and once for dark, against the same contrast target — so no accent glows on a dark screen or disappears on a pale one.'**
+  String get featTintPoint2;
+
+  /// No description provided for @featTintPoint3.
+  ///
+  /// In en, this message translates to:
+  /// **'Red for delete, green for done and amber for warnings never change, so a colour that means something never becomes decoration.'**
+  String get featTintPoint3;
+
   /// No description provided for @featStitchHow.
   ///
   /// In en, this message translates to:
@@ -1959,14 +2487,14 @@ abstract class AppLocalizations {
   /// No description provided for @featUnlimitedHow.
   ///
   /// In en, this message translates to:
-  /// **'The free tier is a real, usable app: saving, folders, favourites and full search, with no account and nothing uploaded. It has exactly one ceiling — how many screenshots it organizes — and Pro removes it. Everything you already organized stays exactly where it is.'**
+  /// **'The free tier is a real, usable app: saving, folders, favourites and full search, with no account and nothing uploaded. It has two ceilings — how many screenshots it organizes, and how many folders it keeps — and Pro removes both. Everything you already organized stays exactly where it is.'**
   String get featUnlimitedHow;
 
   /// No description provided for @featUnlimitedPoint1.
   ///
   /// In en, this message translates to:
-  /// **'Folders are unlimited on the free tier, and always were meant to be.'**
-  String get featUnlimitedPoint1;
+  /// **'The free tier keeps {count} folders, which is exactly the starter set Shoto gives you. Pro takes that number away too.'**
+  String featUnlimitedPoint1(Object count);
 
   /// No description provided for @featUnlimitedPoint2.
   ///
@@ -2442,6 +2970,18 @@ abstract class AppLocalizations {
   /// **'Could not load your folders.'**
   String get errorLoadFolders;
 
+  /// No description provided for @errorSaveFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save that folder.'**
+  String get errorSaveFolder;
+
+  /// No description provided for @errorDeleteFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete that folder.'**
+  String get errorDeleteFolder;
+
   /// No description provided for @errorScanDuplicates.
   ///
   /// In en, this message translates to:
@@ -2670,17 +3210,125 @@ abstract class AppLocalizations {
   /// **'Next'**
   String get onbNext;
 
-  /// No description provided for @onbInsideTitle.
+  /// No description provided for @onbWelcomeBody.
   ///
   /// In en, this message translates to:
-  /// **'What is in your screenshots?'**
-  String get onbInsideTitle;
+  /// **'A home for the screenshots worth keeping. Filed, searchable, and safe to send.'**
+  String get onbWelcomeBody;
 
-  /// No description provided for @onbInsideBody.
+  /// No description provided for @onbSaveTitle.
   ///
   /// In en, this message translates to:
-  /// **'Boarding passes, verification codes, a photo of your ID. Things you would never post.'**
-  String get onbInsideBody;
+  /// **'Save it the second you take it'**
+  String get onbSaveTitle;
+
+  /// No description provided for @onbSaveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap share in any app and pick Shoto. That is the only way anything gets in.'**
+  String get onbSaveBody;
+
+  /// No description provided for @onbChipAnyApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Any app'**
+  String get onbChipAnyApp;
+
+  /// No description provided for @onbChipOneTap.
+  ///
+  /// In en, this message translates to:
+  /// **'One tap'**
+  String get onbChipOneTap;
+
+  /// No description provided for @onbChipToFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Straight to a folder'**
+  String get onbChipToFolder;
+
+  /// No description provided for @onbFileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A library, not a camera roll'**
+  String get onbFileTitle;
+
+  /// No description provided for @onbFileBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything you send lands filed, and stays exactly where you put it.'**
+  String get onbFileBody;
+
+  /// No description provided for @onbChipFolders.
+  ///
+  /// In en, this message translates to:
+  /// **'Folders'**
+  String get onbChipFolders;
+
+  /// No description provided for @onbChipFavourites.
+  ///
+  /// In en, this message translates to:
+  /// **'Favourites'**
+  String get onbChipFavourites;
+
+  /// No description provided for @onbChipDuplicates.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate finder'**
+  String get onbChipDuplicates;
+
+  /// No description provided for @onbFindTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find the words inside a picture'**
+  String get onbFindTitle;
+
+  /// No description provided for @onbFindBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Shoto reads your screenshots, so one word you remember is enough.'**
+  String get onbFindBody;
+
+  /// No description provided for @onbChipInsideText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text in images'**
+  String get onbChipInsideText;
+
+  /// No description provided for @onbChipOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Works offline'**
+  String get onbChipOffline;
+
+  /// No description provided for @onbChipCards.
+  ///
+  /// In en, this message translates to:
+  /// **'Card numbers'**
+  String get onbChipCards;
+
+  /// No description provided for @onbChipCodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Codes and IDs'**
+  String get onbChipCodes;
+
+  /// No description provided for @onbChipPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'You see every cover'**
+  String get onbChipPreview;
+
+  /// No description provided for @onbChipGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery never opened'**
+  String get onbChipGallery;
+
+  /// No description provided for @onbChipOnDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Stays on your phone'**
+  String get onbChipOnDevice;
 
   /// No description provided for @onbSendTitle.
   ///
@@ -3342,10 +3990,16 @@ abstract class AppLocalizations {
   /// **'Ticked off'**
   String get intentDoneToast;
 
+  /// No description provided for @intentListEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{That is the only one waiting} other{That is all {count} of them}}'**
+  String intentListEnd(int count);
+
   /// No description provided for @intentChange.
   ///
   /// In en, this message translates to:
-  /// **'Change what this is for'**
+  /// **'Change'**
   String get intentChange;
 
   /// No description provided for @intentClear.
@@ -3365,6 +4019,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Screenshots you mark land here until you tick them off.'**
   String get intentEmptyBody;
+
+  /// No description provided for @intentProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} done'**
+  String intentProgress(int done, int total);
 
   /// No description provided for @intentDoneCount.
   ///
@@ -3389,6 +4049,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 month ago} other{{count} months ago}}'**
   String dateMonthsAgo(int count);
+
+  /// No description provided for @copyTextSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Select text'**
+  String get copyTextSelect;
+
+  /// No description provided for @copyTextSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get copyTextSelectAll;
+
+  /// No description provided for @copyTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Press and hold any text to copy it'**
+  String get copyTextHint;
+
+  /// No description provided for @copyTextPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to select'**
+  String get copyTextPrompt;
+
+  /// No description provided for @copyTextNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No text Shoto can read in this screenshot'**
+  String get copyTextNone;
 }
 
 class _AppLocalizationsDelegate

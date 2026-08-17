@@ -1,7 +1,7 @@
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_intent.dart';
-import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/localization/app_message.dart';
+import 'package:shoto/core/services/app_preferences.dart';
 import 'package:shoto/core/utils/content_traits.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/extract_and_cache_text_use_case.dart';
 import 'package:shoto/features/screenshots/domain/use_cases/get_cached_ocr_text_use_case.dart';
@@ -138,6 +138,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     on<MoveScreenshotToFolderEvent>(_onMoveScreenshot);
     on<ToggleSelectItemEvent>(_onToggleSelectItem);
     on<ClearSelectionEvent>(_onClearSelection);
+    on<EnterSelectionModeEvent>(_onEnterSelectionMode);
     on<StartGuidedSelectionEvent>(_onStartGuidedSelection);
     on<SelectAllEvent>(_onSelectAll);
     on<SetLibraryFilterEvent>(_onSetLibraryFilter);
@@ -338,6 +339,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     await _loadAndEmit(emit);
   }
 
+
   Future<void> _loadAndEmit(Emitter<ScreenshotsState> emit) async {
     try {
       final screenshots = _folderId == null
@@ -452,14 +454,20 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
       // selection is cleared regardless. The user answered the question they
       // were asked; leaving them in selection mode reads as the tap having
       // been lost.
-      emit(current.copyWith(selectedIds: {}));
+      emit(current.copyWith(selectedIds: {}, isSelecting: false));
       return;
     }
 
     final updated = current.screenshots
         .where((s) => !deleted.contains(s.id))
         .toList();
-    emit(current.copyWith(screenshots: updated, selectedIds: {}));
+    emit(
+      current.copyWith(
+        screenshots: updated,
+        selectedIds: {},
+        isSelecting: false,
+      ),
+    );
   }
 
   Future<void> _onDeleteScreenshot(
@@ -521,7 +529,13 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
         })
         .where((s) => _folderId == null || s.folderId == _folderId)
         .toList();
-    emit(current.copyWith(screenshots: updated, selectedIds: {}));
+    emit(
+      current.copyWith(
+        screenshots: updated,
+        selectedIds: {},
+        isSelecting: false,
+      ),
+    );
   }
 
   void _onToggleSelectItem(
@@ -564,18 +578,42 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     emit(current.copyWith(selectedIds: selected));
   }
 
-  /// Leaving selection mode drops the guiding intent with it.
+  /// Leaving selection mode drops the guiding intent — and the user's own
+  /// request for the mode — with it.
   ///
-  /// Otherwise `isSelectionMode` would still be true — the intent alone keeps
-  /// it on — and cancelling would leave the Library in a mode with nothing
-  /// selected and no way out.
+  /// Otherwise `isSelectionMode` would still be true, since either of those
+  /// alone keeps it on, and cancelling would leave the Library in a mode with
+  /// nothing selected and no way out. Every one of the three terms behind that
+  /// getter has to be put down here, which is why they are all named
+  /// explicitly rather than left to default.
   void _onClearSelection(
     ClearSelectionEvent event,
     Emitter<ScreenshotsState> emit,
   ) {
     final ScreenshotsState current = state;
     if (current is! ScreenshotsLoadedState) return;
-    emit(current.copyWith(selectedIds: {}, intent: LibraryIntent.none));
+    emit(
+      current.copyWith(
+        selectedIds: {},
+        intent: LibraryIntent.none,
+        isSelecting: false,
+      ),
+    );
+  }
+
+  /// Selection mode the user opened themselves, waiting on a first tap.
+  ///
+  /// Deliberately does **not** touch the filter, unlike the guided version
+  /// below: this is started from the header of the grid being looked at, so
+  /// the narrowing on screen is the narrowing that was asked for. Resetting it
+  /// would throw away the very slice somebody had just lined up to act on.
+  void _onEnterSelectionMode(
+    EnterSelectionModeEvent event,
+    Emitter<ScreenshotsState> emit,
+  ) {
+    final ScreenshotsState current = state;
+    if (current is! ScreenshotsLoadedState) return;
+    emit(current.copyWith(isSelecting: true));
   }
 
   /// Selection mode, opened on somebody else's behalf and with nothing picked.
@@ -595,6 +633,10 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
         selectedIds: {},
         intent: event.intent,
         filter: LibraryFilter.all,
+        // A guided selection is owned by the intent that asked for it, so the
+        // user's own request for the mode is handed over rather than left
+        // standing underneath it.
+        isSelecting: false,
       ),
     );
   }
@@ -618,7 +660,13 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
     // Selection is cleared with the filter, because most of what was selected
     // is about to stop being on screen — and a delete button reporting six
     // when four of them are no longer visible is the worst kind of accurate.
-    emit(current.copyWith(filter: event.filter, selectedIds: {}));
+    emit(
+      current.copyWith(
+        filter: event.filter,
+        selectedIds: {},
+        isSelecting: false,
+      ),
+    );
   }
 
   /// **Selection survives a sort**, unlike the filter and the lens.
@@ -650,6 +698,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
         lens: event.lens,
         clearLens: event.lens == null,
         selectedIds: {},
+        isSelecting: false,
       ),
     );
   }
@@ -719,6 +768,7 @@ class ScreenshotsBloc extends Bloc<ScreenshotsEvent, ScreenshotsState> {
             )
             .toList(),
         selectedIds: <String>{},
+        isSelecting: false,
       ),
     );
   }

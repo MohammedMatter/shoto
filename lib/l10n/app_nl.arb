@@ -2,10 +2,12 @@
   "@@locale": "nl",
   "settingsCrashReports": "Crashrapporten",
   "settingsCrashReportsHint": "Technische details sturen als er iets misgaat",
+  "settingsOnboarding": "Introductie opnieuw bekijken",
+  "settingsOnboardingHint": "Speel de openingsreeks nog eens",
   "settingsSignOut": "Uitloggen",
   "settingsSignOutTitle": "Uitloggen?",
   "authWelcome": "Welkom bij Shoto",
-  "authSubtitle": "Inloggen houdt je abonnement bij je als je van telefoon wisselt. Je screenshots blijven hoe dan ook op dit toestel — een account neemt ze nooit mee.",
+  "authWhy": "Niet alles wat je bewaart hoort op dezelfde plank. Shoto geeft de screenshots die er echt toe doen een eigen plek.",
   "authGoogle": "Doorgaan met Google",
   "authApple": "Doorgaan met Apple",
   "authLegal": "Door verder te gaan ga je akkoord met onze Servicevoorwaarden en het Privacybeleid.",
@@ -72,6 +74,58 @@
   "triageInviteDismiss": "Nee, bedankt",
   "settingsTriage": "Nieuwe screenshots aanbieden",
   "settingsTriageHint": "Laat zien wat je vastlegt; houdt uit zichzelf niets",
+  "settingsCaptureAlerts": "Meteen melden",
+  "settingsCaptureAlertsHint": "Een rustige melding meteen na het maken",
+  "settingsCaptureAlertsMuted": "Meldingen voor Shoto staan uit — zet ze aan in de instellingen van je telefoon",
+  "settingsCaptureAlertsStopped": "Android heeft de controles gestopt. Open Shoto één keer om ze te hervatten",
+  "settingsCaptureAlertsWaiting": "Aan het kijken. Nog niets gemaakt",
+  "settingsCaptureAlertsLastRun": "Laatst gecontroleerd {when}",
+  "@settingsCaptureAlertsLastRun": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "timeAgoMinutes": "{count} min geleden",
+  "@timeAgoMinutes": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "timeAgoHours": "{count} u geleden",
+  "@timeAgoHours": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "timeAgoDays": "{count} d geleden",
+  "@timeAgoDays": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "settingsQuickTile": "Snelle-instellingentegel",
+  "settingsQuickTileHint": "Bewaar je laatste schermafbeelding zonder het deelmenu te openen",
+  "settingsQuickTileAdded": "Toegevoegd aan snelle instellingen",
+  "settingsQuickTileManual": "Voeg hem handmatig toe: open de snelle instellingen, tik op bewerken en sleep de Shoto-tegel erin.",
+  "settingsQuickTileSheetTitle": "Twee vegen, vanuit elke app",
+  "settingsQuickTileSheetBody": "Shoto kan in de Snelle instellingen van je telefoon staan, naast de zaklamp. Eén tik archiveert de screenshot die je net maakte — geen app openen, geen deelmenu doorzoeken.",
+  "settingsQuickTileStepPull": "Veeg omlaag vanaf de bovenkant van elk scherm",
+  "settingsQuickTileStepTap": "Tik op de Shoto-tegel — je laatste screenshot is opgeborgen",
+  "settingsQuickTileStepStays": "Hij blijft op dezelfde plek, anders dan het deelmenu",
+  "settingsQuickTileAdd": "Tegel toevoegen",
+  "settingsQuickTileNote": "Leest alleen de screenshot die je net maakte. Er verlaat niets je telefoon.",
+  "folderIconsBasics": "Basis",
+  "folderIconsWork": "Werk",
+  "folderIconsMoney": "Geld",
+  "folderIconsTravel": "Reizen",
+  "folderIconsHome": "Huis & gezondheid",
+  "folderIconsMedia": "Media",
+  "folderIconsPeople": "Mensen",
+  "folderIconsSymbols": "Symbolen",
+  "folderIconsSocial": "Sociaal",
+  "folderIconsApps": "Apps",
+  "quickTileOfferTitle": "Bewaren zonder deelmenu",
+  "quickTileOfferBody": "Voeg een snelkoppeling toe voor je laatste schermafbeelding",
   "triageNothingNew": "Niets nieuws om te bekijken",
   "commonCancel": "Annuleren",
   "commonDelete": "Verwijderen",
@@ -165,6 +219,8 @@
     }
   },
   "librarySelectAll": "Alles selecteren",
+  "librarySelect": "Selecteren",
+  "librarySelectPrompt": "Selecteer opnamen",
   "libraryActionMerge": "Samenvoegen",
   "libraryActionMove": "Verplaatsen",
   "libraryActionDelete": "Verwijderen",
@@ -192,6 +248,41 @@
   "settingsThemeLight": "Licht",
   "settingsThemeDark": "Donker",
   "settingsGridDensity": "Rasterdichtheid",
+  "settingsAppearanceHint": "Thema, accentkleur en rastergrootte",
+  "appearanceTint": "Accentkleur",
+  "appearanceTintHint": "Knoppen, schakelaars en alles wat geselecteerd is.",
+  "appearancePreview": "Voorbeeld",
+  "tintTeal": "Petrol",
+  "tintSlate": "Leisteen",
+  "tintIndigo": "Indigo",
+  "tintPlum": "Pruim",
+  "tintRose": "Roze",
+  "tintEmber": "Gloed",
+  "tintAmber": "Amber",
+  "tintMoss": "Mos",
+  "tintGarnet": "Granaat",
+  "tintBrass": "Messing",
+  "tintFern": "Varen",
+  "tintJade": "Jade",
+  "tintOlive": "Olijf",
+  "tintCyan": "Cyaan",
+  "tintDenim": "Denim",
+  "tintViolet": "Violet",
+  "tintSky": "Hemel",
+  "tintOrchid": "Orchidee",
+  "tintFuchsia": "Fuchsia",
+  "tintClay": "Klei",
+  "tintGraphite": "Grafiet",
+  "appearanceMoreColors": "Meer kleuren",
+  "appearanceSelectTint": "Accentkleur kiezen",
+  "appearanceFolders": "Mapkaarten",
+  "appearanceFolderCount": "Aantal screenshots",
+  "appearanceFolderDate": "Aanmaakdatum",
+  "appearanceFolderSize": "Kaarten per rij",
+  "appearanceLibrary": "Bibliotheekraster",
+  "appIcon": "App-pictogram",
+  "appIconDefault": "Origineel",
+  "appIconHint": "Hierdoor sluit Shoto even terwijl Android het pictogram vervangt.",
   "settingsLanguage": "Taal",
   "settingsLanguageSystem": "Zoals mijn telefoon",
   "settingsLanguageSystemHint": "Toont nu {language}",
@@ -324,6 +415,10 @@
   },
   "quickSaveFailedTitle": "Kon die afbeelding niet lezen",
   "quickSaveFailedBody": "Probeer hem opnieuw te delen.",
+  "quickSaveNoCaptureTitle": "Nog geen schermafbeelding",
+  "quickSaveNoCaptureBody": "Maak een schermafbeelding en tik daarna opnieuw op de tegel.",
+  "quickSaveNoAccessTitle": "Shoto ziet je schermafbeeldingen niet",
+  "quickSaveNoAccessBody": "Open Shoto, geef toegang tot je foto’s en probeer het opnieuw.",
   "quickSaveSkipped": "Alleen de eerste {count} zijn overgenomen",
   "@quickSaveSkipped": {
     "placeholders": {
@@ -490,6 +585,7 @@
   "paywallUnavailable": "Nog niet beschikbaar",
   "paywallRestore": "Aankopen herstellen",
   "settingsRestoreHint": "Al betaald? Haal je abonnement terug.",
+  "settingsRestoreDone": "Je abonnement is terug.",
   "paywallLegal": "Verlengt automatisch tot je opzegt. Opzeggen kan altijd via je account-instellingen in de App Store of Google Play. Door verder te gaan ga je akkoord met onze Servicevoorwaarden en het Privacybeleid.",
   "subPremiumBadge": "PRO",
   "subPremiumTitle": "Shoto Pro",
@@ -513,12 +609,14 @@
   "featSafeShareBody": "Vindt kaartnummers, adressen, namen en contactgegevens en dekt elk ervan af met een dicht blok. De tekst eromheen blijft staan, dus het beeld blijft leesbaar — en de verstuurde kopie heeft geen laag die je eraf kunt halen.",
   "featActions": "Maak van screenshots acties",
   "featActionsBody": "Open een link, schrijf naar een adres, kopieer een verificatiecode of een IBAN — rechtstreeks uit de afbeelding, zonder iets over te typen.",
+  "featTraits": "Filteren op wat erin staat",
+  "featTraitsBody": "Toont alleen de screenshots met een link, een telefoonnummer, een code, een datum of een kaartnummer erin — herkend aan de woorden in het beeld.",
   "featDuplicates": "Dubbele vinden",
   "featDuplicatesBody": "Spot bijna identieke opnamen die je dubbel bewaarde en ruimt ze op — altijd eerst met een controle.",
   "featStitch": "Lange screenshots samenvoegen",
   "featStitchBody": "Zet een scrollopname weer in elkaar tot één hoge afbeelding, met de overlap automatisch gevonden en weggehaald.",
   "featUnlimited": "Onbeperkt screenshots",
-  "featUnlimitedBody": "De gratis versie ordent {count} screenshots. Pro haalt het getal weg.",
+  "featUnlimitedBody": "De gratis versie ordent {count} screenshots en bewaart {folders} mappen. Pro haalt beide getallen weg.",
   "featUnlimitedBodyPro": "Je bibliotheek heeft geen plafond — bewaar zo veel je wilt.",
   "featSafeShareHow": "Vinden wat privé is in een screenshot is gratis en onbeperkt. Je betaalt om die vondsten om te zetten in een schone kopie: elk gegeven dat je aangevinkt laat, wordt afgedekt in de geëxporteerde afbeelding, en die is plat — geen laag om ongedaan te maken.",
   "featSafeSharePoint1": "Kaartnummers worden met Luhn gecontroleerd en IBANs met modulo 97: die twee zijn bewezen in plaats van geraden, precies bij het gegeven dat het zwaarst weegt.",
@@ -528,6 +626,30 @@
   "featActionsPoint1": "Links, e-mailadressen, IBANs, verificatiecodes, data en pakketnummers worden voor je gevonden.",
   "featActionsPoint2": "Eén tik om te openen of te kopiëren — geen tekens meer van een plaatje aflezen.",
   "featActionsPoint3": "Werkt op de screenshots die je al hebt, niet alleen op nieuwe.",
+  "featTraitsHow": "Filteren is gratis op alles wat Shoto al gelezen heeft: zoeken, acties en Safe share laten elk herkende tekst achter, en elk filter komt daaruit voort. Wat je betaalt is de rest van de bibliotheek in één keer lezen, zodat een filter ook de screenshots ziet die nog geen andere functie geopend heeft.",
+  "featTraitsPoint1": "Vijf filters: kaartnummers en IBANs, links, telefoonnummers en e-mailadressen, verificatiecodes, en data waarop je ergens verwacht wordt.",
+  "featTraitsPoint2": "Kaartnummers en IBANs zijn met een controlegetal bewezen. De rest wordt uit het beeld gelezen en meldt daarom liever te weinig dan te veel.",
+  "featTraitsPoint3": "De bibliotheek zegt altijd hoeveel screenshots nooit gelezen zijn, zodat een leeg resultaat nooit voor een afwezigheid doorgaat. Het lezen gebeurt op de telefoon, er wordt niets geüpload.",
+  "featTint": "Kies je accentkleur",
+  "featTintBody": "{count} accentkleuren voor knoppen, schakelaars en selecties, elk afgestemd om leesbaar te blijven in licht en donker.",
+  "@featTintBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "featTintHow": "De meeste apps geven je een rij rauwe kleuren en laten het contrast maar gebeuren — daarom komt een geel accent meestal met witte tekst die niemand kan lezen. Shoto bewaart je keuze als een positie op de kleurencirkel in plaats van als een vaste kleur en berekent daaruit de precieze tint voor de lichte en de donkere modus. Wat je ook kiest, het draagt tekst net zo goed als de eigen kleur van de app.",
+  "featTintPoint1": "{count} accenten, van petrol en mos via amber en gloed tot pruim, indigo en leisteen.",
+  "@featTintPoint1": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "featTintPoint2": "Elk wordt twee keer berekend, één keer voor licht en één keer voor donker, tegen hetzelfde contrastdoel — geen accent gloeit op een donker scherm of verdwijnt op een licht scherm.",
+  "featTintPoint3": "Rood voor verwijderen, groen voor klaar en amber voor waarschuwingen veranderen nooit, zodat een kleur die iets betekent nooit versiering wordt.",
   "featStitchHow": "Een scrollopname moet op telefoons die het kunnen gestart worden terwijl je nog op de pagina bent. Shoto werkt daarna: kies twee of meer opnamen die al in je bibliotheek staan — ook die iemand je stuurde — en het vindt waar ze overlappen en voegt ze tot één hoge afbeelding.",
   "featStitchPoint1": "De herhaalde strook tussen twee opnamen wordt automatisch gevonden en weggehaald.",
   "featStitchPoint2": "Je ziet de naad voordat er iets bewaard wordt — automatisch herkennen is goed, maar nooit zeker.",
@@ -536,8 +658,8 @@
   "featDuplicatesPoint1": "Groepeert wat er hetzelfde uitziet en stelt de kopie voor die het waard is te houden.",
   "featDuplicatesPoint2": "Laat zien hoeveel ruimte elke groep vrijmaakt voordat je iets beslist.",
   "featDuplicatesPoint3": "Er wordt niets verwijderd tot je de groep hebt bekeken en bevestigd.",
-  "featUnlimitedHow": "De gratis versie is een echte, bruikbare app: bewaren, mappen, favorieten en volledige zoekfunctie, zonder account en zonder uploads. Er is precies één plafond — hoeveel screenshots het ordent — en Pro haalt dat weg. Alles wat je al geordend hebt blijft precies waar het staat.",
-  "featUnlimitedPoint1": "Mappen zijn onbeperkt in de gratis versie, en dat was altijd de bedoeling.",
+  "featUnlimitedHow": "De gratis versie is een echte, bruikbare app: bewaren, mappen, favorieten en volledige zoekfunctie, zonder account en zonder uploads. Er zijn twee plafonds — hoeveel screenshots het ordent en hoeveel mappen het bewaart — en Pro haalt ze allebei weg. Alles wat je al geordend hebt blijft precies waar het staat.",
+  "featUnlimitedPoint1": "De gratis versie bewaart {count} mappen, precies de mappen waarmee Shoto je laat beginnen. Pro haalt ook dat getal weg.",
   "featUnlimitedPoint2": "Benoemen waar een screenshot voor is, is ook gratis en onbeperkt.",
   "featUnlimitedPoint3": "Tegen het plafond aanlopen betekent dat Shoto je bewaarplek is geworden. Er wordt daarbij niets verwijderd.",
   "includedSubtitle": "Elke Pro-functie, uitgelegd.",
@@ -728,6 +850,8 @@
   },
   "errorLoadScreenshots": "Je screenshots konden niet worden geladen.",
   "errorLoadFolders": "Je mappen konden niet worden geladen.",
+  "errorSaveFolder": "Deze map kon niet worden opgeslagen.",
+  "errorDeleteFolder": "Deze map kon niet worden verwijderd.",
   "errorScanDuplicates": "Er kon niet op dubbele worden gescand.",
   "errorDeleteSelected": "De geselecteerde screenshots konden niet worden verwijderd.",
   "errorStitchFailed": "Deze screenshots konden niet worden samengevoegd.",
@@ -780,8 +904,26 @@
   "sensitiveNumber": "Nummer",
   "onbSkip": "Overslaan",
   "onbNext": "Volgende",
-  "onbInsideTitle": "Wat zit er in je screenshots?",
-  "onbInsideBody": "Instapkaarten, verificatiecodes, een foto van je ID. Dingen die je nooit zou posten.",
+  "onbWelcomeBody": "Een thuis voor de screenshots die het waard zijn. Opgeborgen, doorzoekbaar en veilig te delen.",
+  "onbSaveTitle": "Bewaar hem op het moment dat je hem maakt",
+  "onbSaveBody": "Tik op Delen in elke app en kies Shoto. Alleen zo komt er iets binnen.",
+  "onbChipAnyApp": "Elke app",
+  "onbChipOneTap": "Eén tik",
+  "onbChipToFolder": "Meteen in een map",
+  "onbFileTitle": "Een bibliotheek, geen filmrol",
+  "onbFileBody": "Alles wat je stuurt komt opgeborgen binnen en blijft precies waar je het zette.",
+  "onbChipFolders": "Mappen",
+  "onbChipFavourites": "Favorieten",
+  "onbChipDuplicates": "Duplicaten zoeken",
+  "onbFindTitle": "Vind de woorden in een afbeelding",
+  "onbFindBody": "Shoto leest je screenshots, dus één woord dat je nog weet is genoeg.",
+  "onbChipInsideText": "Tekst in afbeeldingen",
+  "onbChipOffline": "Werkt offline",
+  "onbChipCards": "Kaartnummers",
+  "onbChipCodes": "Codes en ID's",
+  "onbChipPreview": "Je ziet elke afdekking",
+  "onbChipGallery": "Galerij gaat nooit open",
+  "onbChipOnDevice": "Blijft op je telefoon",
   "onbSendTitle": "Stuur ze toch",
   "onbSendBody": "Shoto dekt het privégedeelte eerst af en laat je elke afdekking zien voordat hij weggaat.",
   "onbYoursTitle": "Niets beweegt zonder jou",
@@ -984,7 +1126,8 @@
   "intentMarkDone": "Afgerond",
   "intentUndo": "Terugzetten",
   "intentDoneToast": "Afgevinkt",
-  "intentChange": "Wijzig waar dit voor is",
+  "intentListEnd": "{count, plural, =1{Dat is de enige} other{Dat zijn ze alle {count}}}",
+  "intentChange": "Wijzigen",
   "intentClear": "Nergens voor",
   "intentEmptyOne": "Hier is niets te {verb}",
   "@intentEmptyOne": {
@@ -995,6 +1138,7 @@
     }
   },
   "intentEmptyBody": "Screenshots die je markeert blijven hier tot je ze afvinkt.",
+  "intentProgress": "{done} van {total} klaar",
   "intentDoneCount": "{count} afgerond",
   "@intentDoneCount": {
     "placeholders": {
@@ -1026,5 +1170,10 @@
         "type": "int"
       }
     }
-  }
+  },
+  "copyTextSelect": "Tekst selecteren",
+  "copyTextSelectAll": "Alles selecteren",
+  "copyTextHint": "Houd tekst ingedrukt om die te kopiëren",
+  "copyTextPrompt": "Sleep om te selecteren",
+  "copyTextNone": "Shoto vindt geen leesbare tekst in deze schermafbeelding"
 }

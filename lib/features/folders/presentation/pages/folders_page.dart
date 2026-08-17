@@ -9,8 +9,11 @@ import 'package:shoto/core/routes/fade_slide_page_route.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
+import 'package:shoto/core/theme/folder_appearance_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
+import 'package:shoto/core/utils/text_folding.dart';
 import 'package:shoto/core/widgets/animated_id_grid.dart';
+import 'package:shoto/core/widgets/app_snack_bar.dart';
 import 'package:shoto/core/widgets/empty_state.dart';
 import 'package:shoto/core/widgets/header_icon_button.dart';
 import 'package:shoto/core/widgets/primary_button.dart';
@@ -23,6 +26,7 @@ import 'package:shoto/features/folders/presentation/pages/folder_detail_page.dar
 import 'package:shoto/features/folders/presentation/widgets/folder_actions_sheet.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_card.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_editor_sheet.dart';
+import 'package:shoto/features/folders/presentation/widgets/folder_limit_gate.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_search_field.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_sort_sheet.dart';
 
@@ -65,7 +69,15 @@ class _FoldersPageState extends State<FoldersPage> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: sl<ThemeController>(),
+      // The appearance controller joins the theme here rather than wrapping
+      // the grid on its own: both of them repaint this whole page, and the
+      // cards read the switches directly rather than being handed them, so a
+      // listener further down would leave the column count stale until
+      // something else happened to rebuild.
+      listenable: Listenable.merge(<Listenable>[
+        sl<ThemeController>(),
+        sl<FolderAppearanceController>(),
+      ]),
       builder: (context, child) => Scaffold(
         backgroundColor: context.colors.background,
         body: SafeArea(
@@ -95,7 +107,27 @@ class _FoldersPageState extends State<FoldersPage> {
                 ),
                 SizedBox(height: 14.h),
                 Expanded(
-                  child: BlocBuilder<FoldersBloc, FoldersState>(
+                  child: BlocConsumer<FoldersBloc, FoldersState>(
+                    // **A failed write is said once, over the grid it failed
+                    // behind.**
+                    //
+                    // Creating, renaming and deleting all leave the page
+                    // showing folders that are still perfectly correct, so
+                    // there is nothing for the error *state* to replace — see
+                    // [FoldersLoadedState.failure]. A passing message is the
+                    // whole of what is owed here, and `showAppSnackBar`
+                    // already refuses to say the same sentence twice.
+                    listenWhen: (FoldersState _, FoldersState current) =>
+                        current is FoldersLoadedState &&
+                        current.failure != null,
+                    listener: (BuildContext context, FoldersState state) =>
+                        showAppSnackBar(
+                          context,
+                          (state as FoldersLoadedState).failure!.resolve(
+                            context,
+                          ),
+                          kind: SnackKind.error,
+                        ),
                     builder: (context, state) {
                       // Exhaustive, no `default` — see
                       // `docs/decisions/screen-states.md`.
@@ -168,16 +200,21 @@ class _FoldersPageState extends State<FoldersPage> {
     );
   }
 
-  /// No cap, and no paywall.
+  /// Capped, and the cap is a paywall.
   ///
-  /// Making a fourth folder used to open the paywall. A folder is not a
-  /// feature somebody enjoys — it is the work of tidying up, which is the
-  /// thing Shoto asked them to do in the first place. Charging for it
-  /// interrupted the one behaviour the app most needs to encourage, and it
-  /// was the second of three different free-tier currencies to keep track
-  /// of. The volume cap on screenshots is the whole free tier now.
+  /// This is the second time round for that sentence: making a fourth folder
+  /// used to open the paywall, then for a while it did not, and now it does
+  /// again. `SubscriptionConstants.freeFolderLimit` carries the argument on
+  /// both sides.
+  ///
+  /// Asked **before** the sheet opens, so nobody names, colours and draws a
+  /// folder only to be told they may not have it. See
+  /// [ensureUnderFolderLimit].
   Future<void> _createFolder(BuildContext context) async {
     final FoldersBloc bloc = context.read<FoldersBloc>();
+
+    if (!await ensureUnderFolderLimit(context)) return;
+    if (!context.mounted) return;
 
     showFolderEditorSheet(
       context,
@@ -218,17 +255,21 @@ class _FoldersBody extends StatelessWidget {
     required this.onQueryChanged,
   });
 
-  /// Case- and diacritic-insensitive enough for a folder list.
+  /// Case- and diacritic-insensitive, which it only claimed to be before.
   ///
-  /// `toLowerCase` on both sides rather than a `RegExp`: the query is typed a
+  /// This ran on `toLowerCase()`, and lower-casing does not touch an accent —
+  /// so a folder called "Café" could not be found by typing "cafe", on the six
+  /// of seven shipped languages where that is the ordinary way to type. See
+  /// [foldForMatching], which the grid's A–Z order now runs on as well.
+  ///
+  /// Still a substring test rather than a `RegExp`: the query is typed a
   /// character at a time, so this runs on every keystroke over every folder,
-  /// and building a pattern per keystroke to do a substring test is work for
-  /// nothing.
+  /// and building a pattern per keystroke would be work for nothing.
   List<FolderEntity> get _matches {
-    final String needle = query.trim().toLowerCase();
+    final String needle = foldForMatching(query.trim());
     if (needle.isEmpty) return folders;
     return folders
-        .where((FolderEntity f) => f.name.toLowerCase().contains(needle))
+        .where((FolderEntity f) => foldForMatching(f.name).contains(needle))
         .toList();
   }
 
@@ -306,17 +347,25 @@ class _FoldersGrid extends StatelessWidget {
       idOf: (FolderEntity folder) => folder.id,
       padding: EdgeInsets.only(bottom: 130.h),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        // **Three, where the cover grid had two.**
+        // **Three by default, where the cover grid had two.**
         //
         // A photograph needs the width — a screenshot at a third of the screen
         // is unreadable. A drawn folder does not: it is a shape, a colour and
         // a glyph, all three of which survive being small, and at three across
         // the whole of a starter set is on screen at once without scrolling.
-        crossAxisCount: 3,
+        //
+        // Now a preference, because "survives being small" is a claim about a
+        // reader rather than about a card: three is right for a starter set
+        // and cramped for somebody with thirty folders and long names, and
+        // two is the difference between a name that fits and one that
+        // ellipsises. See [FolderAppearanceController].
+        crossAxisCount: sl<FolderAppearanceController>().columns,
         mainAxisSpacing: 18.h,
         crossAxisSpacing: 12.w,
         // Taller than wide: the plate is roughly square and the pocket hangs
-        // below it.
+        // below it. Left fixed across all three densities on purpose — the
+        // pocket holds up to three lines of text whose height does not scale
+        // with the card, so a ratio tuned for two columns starves it at four.
         childAspectRatio: 0.76,
       ),
       itemBuilder:
@@ -344,6 +393,11 @@ class _FoldersGrid extends StatelessWidget {
                   since: since,
                   child: FolderCard(
                     folder: folder,
+                    // The grid is the one place that has the user's choice —
+                    // see [FolderCard.showCount] for why it is handed down
+                    // rather than read at the leaf.
+                    showCount: sl<FolderAppearanceController>().showCount,
+                    showCreated: sl<FolderAppearanceController>().showCreated,
                     onTap: () => Navigator.of(context).push(
                       FadeSlidePageRoute(
                         // The pushed route sits outside this page's subtree, so

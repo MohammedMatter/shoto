@@ -20,9 +20,12 @@ import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 import 'package:shoto/features/folders/domain/use_cases/create_folder_use_case.dart';
 import 'package:shoto/features/folders/domain/use_cases/get_folders_use_case.dart';
+import 'package:shoto/features/folders/presentation/widgets/folder_limit_gate.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_colors.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_name_limit.dart';
+import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/domain/repositories/screenshot_repository.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/screenshot_limit_gate.dart';
 
 /// The sheet that rises when an image is shared into Shoto.
 ///
@@ -112,6 +115,23 @@ class _QuickSavePageState extends State<QuickSavePage>
   /// How many images Android handed over beyond what the sheet accepts, so
   /// the user is told rather than quietly given fewer than they picked.
   int _skipped = 0;
+
+  /// Where this sheet was opened from, which only ever matters when nothing
+  /// arrived.
+  ///
+  /// **An empty hand has three different causes and three different next
+  /// steps**, and offering the wrong one is worse than offering none:
+  ///
+  /// * a **share** that comes back empty is an image that could not be read,
+  ///   and sharing it again is the fix;
+  /// * a **tile** press with nothing to show means the phone holds no
+  ///   screenshot — telling that person to re-share a picture they never took
+  ///   sends them hunting for a share sheet that was never involved;
+  /// * a tile press **without photo access** looks identical from here and is
+  ///   a dead end: Android revokes permissions from apps left unused for a few
+  ///   months, so "take a screenshot and tap again" becomes a loop they cannot
+  ///   leave, because what is missing was never a screenshot.
+  String _source = 'share';
 
   List<FolderEntity> _folders = const [];
   FolderEntity? _selected;
@@ -231,8 +251,16 @@ class _QuickSavePageState extends State<QuickSavePage>
           .invokeMethod<Map<Object?, Object?>>('getSharedImages');
       final List<Object?> raw =
           (shared?['images'] as List<Object?>?) ?? const [];
+      // Read before the early return below, since the empty case is the one
+      // place it matters.
+      final String source = (shared?['source'] as String?) ?? 'share';
       if (raw.isEmpty) {
-        if (mounted) setState(() => _stage = _Stage.failed);
+        if (mounted) {
+          setState(() {
+            _source = source;
+            _stage = _Stage.failed;
+          });
+        }
         return;
       }
 
@@ -261,7 +289,12 @@ class _QuickSavePageState extends State<QuickSavePage>
       }
 
       if (images.isEmpty) {
-        if (mounted) setState(() => _stage = _Stage.failed);
+        if (mounted) {
+          setState(() {
+            _source = source;
+            _stage = _Stage.failed;
+          });
+        }
         return;
       }
 
@@ -321,6 +354,64 @@ class _QuickSavePageState extends State<QuickSavePage>
   /// with findings to read and treatments to choose, and none of that fits in
   /// a panel sized for one question. The activity's window is translucent, so
   /// the opaque page simply becomes what is on screen.
+  /// Whether filing this share would stay inside the free tier's cap — and if
+  /// not, whether the user came back from the paywall having paid.
+  ///
+  /// **Counts what would newly come *under management*, not what is being
+  /// saved.** The cap is on screenshots Shoto is looking after, which means a
+  /// row in `screenshot_meta` with a folder or a star. Three things arrive at
+  /// this sheet and only two of them add to that number:
+  ///
+  /// * an image not in the library yet — imported and filed, so it counts;
+  /// * one already in the library but unsorted — filing it is what brings it
+  ///   under management, so it counts;
+  /// * one already filed somewhere — moving it between folders changes nothing
+  ///   about how many Shoto looks after, so it must not count, or re-filing
+  ///   your own screenshots would walk you into a paywall.
+  ///
+  /// The third case is why this asks the repository rather than counting the
+  /// list. Guessing high here is not the safe direction: it charges people for
+  /// work they already paid for.
+  Future<bool> _withinFreeLimit() async {
+    setState(() => _stage = _Stage.preparing);
+
+    // Same reasoning as [_protect]: the subscription stack is not up in this
+    // process, and `ensureUnderScreenshotLimit` reads it. Without this a
+    // subscriber would be shown a paywall for a limit they do not have — the
+    // exact failure premium_bootstrap.dart was written about.
+    await ensurePremiumServicesReady();
+    if (!mounted || _closing) return false;
+
+    final ScreenshotRepository repository = sl<ScreenshotRepository>();
+    int newlyManaged = _images.where((i) => !i.isAlreadyInLibrary).length;
+
+    final List<String> existing = _images
+        .map((_SharedImage image) => image.existingAssetId)
+        .nonNulls
+        .toList();
+    if (existing.isNotEmpty) {
+      final List<ScreenshotEntity> known = await repository.getScreenshotsByIds(
+        existing,
+      );
+      newlyManaged += known
+          .where((ScreenshotEntity s) => !s.isFavorite && s.folderId == null)
+          .length;
+    }
+
+    if (!mounted || _closing) return false;
+    final bool allowed = await ensureUnderScreenshotLimit(
+      context,
+      additionalNewItems: newlyManaged,
+    );
+    if (!mounted || _closing) return false;
+
+    // Back to the form either way. Refused, it is what the user returns to;
+    // allowed, [_save] moves straight on to `saving` and this frame is never
+    // seen.
+    setState(() => _stage = _Stage.ready);
+    return allowed;
+  }
+
   Future<void> _protect() async {
     setState(() => _stage = _Stage.preparing);
 
@@ -424,6 +515,28 @@ class _QuickSavePageState extends State<QuickSavePage>
     // reads as the panel being yanked rather than withdrawing.
     final Duration exit = AppMotion.duration(context, AppMotion.sheet);
 
+    // **The free tier's one cap, checked on the path that had never checked
+    // it.**
+    //
+    // `ensureUnderScreenshotLimit` guarded five entry points — the detail
+    // page, the quick-actions sheet, the selection toolbar, the old share
+    // listener — and not this one. That would be a small omission except that
+    // session 14 made *this* the primary way screenshots enter the library:
+    // every other door files something that is already inside. So the one
+    // unguarded door was the front one, and a free account could walk past
+    // fifty without ever meeting the limit it was under.
+    //
+    // Checked on the tap rather than when the sheet opens — the same trade
+    // covering makes (see [_protect]): most shares are under the cap and must
+    // not pay a store round trip to discover it.
+    //
+    // **Below the two lines above, not before them.** They read `context`
+    // synchronously precisely so that nothing awaits ahead of them, and
+    // putting this first quietly turned both into reads across an async gap —
+    // which the analyzer caught and which would, one day, have been the crash
+    // their comment was written to prevent.
+    if (!await _withinFreeLimit()) return;
+
     setState(() => _stage = _Stage.saving);
     try {
       final ScreenshotRepository repository = sl<ScreenshotRepository>();
@@ -513,6 +626,15 @@ class _QuickSavePageState extends State<QuickSavePage>
   Future<void> _createFolder() async {
     final String name = _nameController.text.trim();
     if (name.isEmpty) return;
+
+    // The free tier's folder cap, checked here as well as on the Folders tab
+    // — this is the *other* place a folder can be made, and a limit with two
+    // entry points and one guard is not a limit. See [ensureUnderFolderLimit];
+    // it counts for itself rather than trusting [_folders], which was read
+    // when this sheet opened and belongs to a share activity that may have
+    // been sitting behind the app for a while.
+    if (!await ensureUnderFolderLimit(context)) return;
+    if (!mounted) return;
 
     final FolderEntity created = await sl<CreateFolderUseCase>()(
       name,
@@ -670,14 +792,41 @@ class _QuickSavePageState extends State<QuickSavePage>
       case _Stage.preparing:
         return _spinner(const ValueKey('preparing'));
 
+      // Nothing arrived — but *why* differs by where the sheet was opened
+      // from, and so does the only useful next step. See [_fromTile]. The
+      // tile's version is not an error either: a phone with no screenshot on
+      // it is a phone working correctly, so it takes the neutral glyph and the
+      // app's own accent rather than the alarm red kept for things that broke.
       case _Stage.failed:
-        return _Status(
-          key: const ValueKey('failed'),
-          icon: Icons.error_outline_rounded,
-          tint: context.colors.error,
-          title: context.l10n.quickSaveFailedTitle,
-          subtitle: context.l10n.quickSaveFailedBody,
-        );
+        return switch (_source) {
+          // Not an error, so not the alarm colour: a phone with no screenshot
+          // on it is a phone working correctly.
+          'tile' => _Status(
+            key: const ValueKey('no-capture'),
+            icon: Icons.photo_camera_back_outlined,
+            tint: context.colors.primary,
+            title: context.l10n.quickSaveNoCaptureTitle,
+            subtitle: context.l10n.quickSaveNoCaptureBody,
+          ),
+          // This one *is* something the user has to go and fix, and the fix
+          // is not on this sheet — the full app is where access can be asked
+          // for again, so the sentence points there rather than at a button
+          // that cannot exist here.
+          'tile-no-access' => _Status(
+            key: const ValueKey('no-access'),
+            icon: Icons.no_photography_outlined,
+            tint: context.colors.warning,
+            title: context.l10n.quickSaveNoAccessTitle,
+            subtitle: context.l10n.quickSaveNoAccessBody,
+          ),
+          _ => _Status(
+            key: const ValueKey('failed'),
+            icon: Icons.error_outline_rounded,
+            tint: context.colors.error,
+            title: context.l10n.quickSaveFailedTitle,
+            subtitle: context.l10n.quickSaveFailedBody,
+          ),
+        };
 
       case _Stage.saved:
         return _Status(
@@ -1169,7 +1318,6 @@ class _QuickSavePageState extends State<QuickSavePage>
                   ),
           ),
         ),
-
       ],
     );
   }

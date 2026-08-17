@@ -209,6 +209,45 @@ void main() {
     expect(find.byIcon(Icons.inbox_rounded), findsOneWidget);
   });
 
+  /// **Switching the feature on in Settings has to reach the row that lives
+  /// on it**, without the app being backgrounded first.
+  ///
+  /// Found on a device: decline the invite, turn "Offer new screenshots" on in
+  /// Settings, come back to the Library, and the row said nothing with three
+  /// captures waiting. The Library is kept alive in the shell's stack, so
+  /// changing tabs neither remounts the row nor resumes the app — and those
+  /// were the only two things that made it count. It appeared after a trip to
+  /// the home screen and back, which is not a thing anybody does on purpose.
+  testWidgets('turning the feature on in Settings shows the row at once', (
+    WidgetTester tester,
+  ) async {
+    await pumpRow(tester, waiting: 11, answered: false);
+    await tester.tap(find.text('No thanks'));
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.inbox_rounded), findsNothing);
+
+    // What the Settings switch does, and nothing else — no remount, no
+    // lifecycle event, no gallery change.
+    await preferences.setTriageEnabled(true);
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.inbox_rounded), findsOneWidget);
+  });
+
+  testWidgets('switching it off again takes the row down', (
+    WidgetTester tester,
+  ) async {
+    await pumpRow(tester, waiting: 11);
+    expect(find.byIcon(Icons.inbox_rounded), findsOneWidget);
+
+    await preferences.setTriageEnabled(false);
+    await tester.pumpAndSettle();
+
+    // As promptly as it went up. A row that outlives the preference is an
+    // inbox for a feature the user has just turned off.
+    expect(find.byIcon(Icons.inbox_rounded), findsNothing);
+  });
+
   testWidgets('library inbox row — dark', (WidgetTester tester) async {
     tester.view.physicalSize = const Size(1080, 400);
     tester.view.devicePixelRatio = 3;

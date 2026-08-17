@@ -16,6 +16,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Enviar detalhes técnicos quando algo dá errado';
 
   @override
+  String get settingsOnboarding => 'Ver a introdução outra vez';
+
+  @override
+  String get settingsOnboardingHint =>
+      'Reproduz de novo a sequência de abertura';
+
+  @override
   String get settingsSignOut => 'Sair';
 
   @override
@@ -25,8 +32,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get authWelcome => 'Boas-vindas ao Shoto';
 
   @override
-  String get authSubtitle =>
-      'Entrar mantém a sua assinatura com você quando trocar de telefone. As suas capturas ficam neste aparelho de qualquer forma — uma conta nunca as leva.';
+  String get authWhy =>
+      'Nem tudo o que você guarda merece a mesma prateleira. O Shoto dá às capturas que realmente importam um lugar só delas.';
 
   @override
   String get authGoogle => 'Continuar com o Google';
@@ -144,6 +151,122 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get settingsTriageHint =>
       'Mostra o que você captura; sozinho não guarda nada';
+
+  @override
+  String get settingsCaptureAlerts => 'Avisar na hora';
+
+  @override
+  String get settingsCaptureAlertsHint =>
+      'Uma notificação discreta logo depois de você fazer uma';
+
+  @override
+  String get settingsCaptureAlertsMuted =>
+      'As notificações do Shoto estão desativadas — ative-as nas configurações do telefone';
+
+  @override
+  String get settingsCaptureAlertsStopped =>
+      'O Android parou as verificações. Abra o Shoto uma vez para retomá-las';
+
+  @override
+  String get settingsCaptureAlertsWaiting =>
+      'Observando. Nenhuma captura ainda';
+
+  @override
+  String settingsCaptureAlertsLastRun(String when) {
+    return 'Última verificação $when';
+  }
+
+  @override
+  String timeAgoMinutes(int count) {
+    return 'há $count min';
+  }
+
+  @override
+  String timeAgoHours(int count) {
+    return 'há $count h';
+  }
+
+  @override
+  String timeAgoDays(int count) {
+    return 'há $count d';
+  }
+
+  @override
+  String get settingsQuickTile => 'Bloco de configurações rápidas';
+
+  @override
+  String get settingsQuickTileHint =>
+      'Salve sua última captura sem abrir o menu de compartilhamento';
+
+  @override
+  String get settingsQuickTileAdded => 'Adicionado às configurações rápidas';
+
+  @override
+  String get settingsQuickTileManual =>
+      'Adicione manualmente: abra as configurações rápidas, toque em editar e arraste o bloco do Shoto.';
+
+  @override
+  String get settingsQuickTileSheetTitle =>
+      'Dois gestos, a partir de qualquer app';
+
+  @override
+  String get settingsQuickTileSheetBody =>
+      'O Shoto pode ficar nas Definições rápidas do telemóvel, ao lado da lanterna. Um toque arquiva a captura que acabaste de fazer — sem abrir a app, sem percorrer o menu de partilha.';
+
+  @override
+  String get settingsQuickTileStepPull =>
+      'Desliza de cima para baixo em qualquer ecrã';
+
+  @override
+  String get settingsQuickTileStepTap =>
+      'Toca no mosaico do Shoto — a tua última captura fica arquivada';
+
+  @override
+  String get settingsQuickTileStepStays =>
+      'Fica sempre no mesmo lugar, ao contrário do menu de partilha';
+
+  @override
+  String get settingsQuickTileAdd => 'Adicionar o mosaico';
+
+  @override
+  String get settingsQuickTileNote =>
+      'Lê apenas a captura que acabaste de fazer. Nada sai do teu telemóvel.';
+
+  @override
+  String get folderIconsBasics => 'Básicos';
+
+  @override
+  String get folderIconsWork => 'Trabalho';
+
+  @override
+  String get folderIconsMoney => 'Dinheiro';
+
+  @override
+  String get folderIconsTravel => 'Viagem';
+
+  @override
+  String get folderIconsHome => 'Casa e saúde';
+
+  @override
+  String get folderIconsMedia => 'Mídia';
+
+  @override
+  String get folderIconsPeople => 'Pessoas';
+
+  @override
+  String get folderIconsSymbols => 'Símbolos';
+
+  @override
+  String get folderIconsSocial => 'Redes sociais';
+
+  @override
+  String get folderIconsApps => 'Apps';
+
+  @override
+  String get quickTileOfferTitle => 'Salve sem o menu de compartilhamento';
+
+  @override
+  String get quickTileOfferBody => 'Adicione um atalho para sua última captura';
 
   @override
   String get triageNothingNew => 'Nada de novo para rever';
@@ -345,6 +468,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get librarySelectAll => 'Selecionar tudo';
 
   @override
+  String get librarySelect => 'Selecionar';
+
+  @override
+  String get librarySelectPrompt => 'Selecione capturas';
+
+  @override
   String get libraryActionMerge => 'Juntar';
 
   @override
@@ -415,6 +544,114 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settingsGridDensity => 'Densidade da grade';
+
+  @override
+  String get settingsAppearanceHint =>
+      'Tema, cor de destaque e tamanho da grade';
+
+  @override
+  String get appearanceTint => 'Cor de destaque';
+
+  @override
+  String get appearanceTintHint =>
+      'Botões, interruptores e tudo o que estiver selecionado.';
+
+  @override
+  String get appearancePreview => 'Pré-visualização';
+
+  @override
+  String get tintTeal => 'Verde-azulado';
+
+  @override
+  String get tintSlate => 'Ardósia';
+
+  @override
+  String get tintIndigo => 'Índigo';
+
+  @override
+  String get tintPlum => 'Ameixa';
+
+  @override
+  String get tintRose => 'Rosa';
+
+  @override
+  String get tintEmber => 'Brasa';
+
+  @override
+  String get tintAmber => 'Âmbar';
+
+  @override
+  String get tintMoss => 'Musgo';
+
+  @override
+  String get tintGarnet => 'Granada';
+
+  @override
+  String get tintBrass => 'Latão';
+
+  @override
+  String get tintFern => 'Feto';
+
+  @override
+  String get tintJade => 'Jade';
+
+  @override
+  String get tintOlive => 'Oliva';
+
+  @override
+  String get tintCyan => 'Ciano';
+
+  @override
+  String get tintDenim => 'Denim';
+
+  @override
+  String get tintViolet => 'Violeta';
+
+  @override
+  String get tintSky => 'Céu';
+
+  @override
+  String get tintOrchid => 'Orquídea';
+
+  @override
+  String get tintFuchsia => 'Fúcsia';
+
+  @override
+  String get tintClay => 'Argila';
+
+  @override
+  String get tintGraphite => 'Grafite';
+
+  @override
+  String get appearanceMoreColors => 'Mais cores';
+
+  @override
+  String get appearanceSelectTint => 'Escolher a cor de destaque';
+
+  @override
+  String get appearanceFolders => 'Cartões de pasta';
+
+  @override
+  String get appearanceFolderCount => 'Número de capturas';
+
+  @override
+  String get appearanceFolderDate => 'Data de criação';
+
+  @override
+  String get appearanceFolderSize => 'Cartões por linha';
+
+  @override
+  String get appearanceLibrary => 'Grelha da biblioteca';
+
+  @override
+  String get appIcon => 'Ícone da app';
+
+  @override
+  String get appIconDefault => 'Original';
+
+  @override
+  String get appIconHint =>
+      'Ao mudar, o Shoto fecha por um instante enquanto o Android troca o ícone.';
 
   @override
   String get settingsLanguage => 'Idioma';
@@ -666,6 +903,20 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get quickSaveFailedBody => 'Tente compartilhar de novo.';
+
+  @override
+  String get quickSaveNoCaptureTitle => 'Ainda não há captura';
+
+  @override
+  String get quickSaveNoCaptureBody =>
+      'Faça uma captura e toque no bloco novamente.';
+
+  @override
+  String get quickSaveNoAccessTitle => 'O Shoto não vê suas capturas';
+
+  @override
+  String get quickSaveNoAccessBody =>
+      'Abra o Shoto, permita o acesso às fotos e tente de novo.';
 
   @override
   String quickSaveSkipped(int count) {
@@ -924,6 +1175,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settingsRestoreHint => 'Já pagou? Recupere a sua subscrição.';
 
   @override
+  String get settingsRestoreDone => 'A sua subscrição voltou.';
+
+  @override
   String get paywallLegal =>
       'Renova automaticamente até você cancelar. Cancele quando quiser nos ajustes da sua conta na App Store ou no Google Play. Ao continuar você concorda com os nossos Termos de Serviço e a Política de Privacidade.';
 
@@ -1011,6 +1265,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Abra um link, escreva para um endereço, copie um código de verificação ou um IBAN — direto da imagem, sem redigitar nada.';
 
   @override
+  String get featTraits => 'Filtrar pelo que tem dentro';
+
+  @override
+  String get featTraitsBody =>
+      'Mostra só as capturas que têm dentro um link, um telefone, um código, uma data ou um número de cartão — reconhecido nas palavras da imagem.';
+
+  @override
   String get featDuplicates => 'Encontrar duplicadas';
 
   @override
@@ -1028,8 +1289,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get featUnlimited => 'Capturas ilimitadas';
 
   @override
-  String featUnlimitedBody(Object count) {
-    return 'A versão grátis organiza $count capturas. O Pro tira o número.';
+  String featUnlimitedBody(Object count, Object folders) {
+    return 'A versão grátis organiza $count capturas e mantém $folders pastas. O Pro tira os dois números.';
   }
 
   @override
@@ -1069,6 +1330,47 @@ class AppLocalizationsPt extends AppLocalizations {
       'Funciona nas capturas que você já tem, não só nas novas.';
 
   @override
+  String get featTraitsHow =>
+      'Filtrar é grátis em tudo que o Shoto já leu: a busca, as ações e o Safe share deixam texto reconhecido, e cada filtro vem daí. O que se paga é ler o resto da biblioteca de uma vez, para que um filtro veja também as capturas que nenhuma outra função abriu ainda.';
+
+  @override
+  String get featTraitsPoint1 =>
+      'Cinco filtros: números de cartão e IBANs, links, telefones e e-mails, códigos de verificação, e datas em que esperam você.';
+
+  @override
+  String get featTraitsPoint2 =>
+      'Números de cartão e IBANs são provados por checksum. O resto é lido da imagem, então conta a menos em vez de afirmar demais.';
+
+  @override
+  String get featTraitsPoint3 =>
+      'A biblioteca sempre diz quantas capturas nunca foram lidas, para que um resultado vazio não passe por ausência. A leitura acontece no telefone; nada é enviado.';
+
+  @override
+  String get featTint => 'Escolha a sua cor de destaque';
+
+  @override
+  String featTintBody(int count) {
+    return '$count cores de destaque para botões, interruptores e seleções, cada uma calibrada para continuar legível no claro e no escuro.';
+  }
+
+  @override
+  String get featTintHow =>
+      'A maioria das apps dá-lhe uma fila de cores em bruto e deixa o contraste ao acaso — por isso um destaque amarelo costuma chegar com texto branco que ninguém consegue ler. O Shoto guarda a sua escolha como uma posição na roda das cores em vez de uma cor fixa e calcula o tom exato para o modo claro e para o escuro, por isso qualquer uma que escolha sustenta o texto com a mesma força que a cor da própria app.';
+
+  @override
+  String featTintPoint1(int count) {
+    return '$count destaques, do verde-azulado e do musgo ao âmbar e à brasa, até à ameixa, ao índigo e à ardósia.';
+  }
+
+  @override
+  String get featTintPoint2 =>
+      'Cada uma é calculada duas vezes, uma para o modo claro e outra para o escuro, com o mesmo alvo de contraste — nenhuma cor brilha num ecrã escuro nem desaparece num claro.';
+
+  @override
+  String get featTintPoint3 =>
+      'O vermelho de eliminar, o verde de concluído e o âmbar dos avisos nunca mudam, para que uma cor que significa algo nunca se torne decoração.';
+
+  @override
   String get featStitchHow =>
       'A captura com rolagem, nos telefones que têm, precisa começar enquanto você ainda está na página. O Shoto trabalha depois: escolha duas ou mais capturas já na sua biblioteca — inclusive as que alguém te mandou — e ele acha onde elas se sobrepõem e junta tudo numa imagem alta.';
 
@@ -1102,11 +1404,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get featUnlimitedHow =>
-      'A versão grátis é um app de verdade e utilizável: salvar, pastas, favoritas e busca completa, sem conta e sem enviar nada. Ela tem exatamente um teto — quantas capturas organiza — e o Pro tira. Tudo o que você já organizou fica exatamente onde está.';
+      'A versão grátis é um app de verdade e utilizável: salvar, pastas, favoritas e busca completa, sem conta e sem enviar nada. Ela tem dois tetos — quantas capturas organiza e quantas pastas mantém — e o Pro tira os dois. Tudo o que você já organizou fica exatamente onde está.';
 
   @override
-  String get featUnlimitedPoint1 =>
-      'As pastas são ilimitadas na versão grátis, e sempre foi para ser assim.';
+  String featUnlimitedPoint1(Object count) {
+    return 'A versão grátis mantém $count pastas, exatamente as que o Shoto te dá no começo. O Pro também tira esse número.';
+  }
 
   @override
   String get featUnlimitedPoint2 =>
@@ -1412,6 +1715,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get errorLoadFolders => 'Não deu para carregar as suas pastas.';
 
   @override
+  String get errorSaveFolder => 'Não deu para salvar essa pasta.';
+
+  @override
+  String get errorDeleteFolder => 'Não deu para excluir essa pasta.';
+
+  @override
   String get errorScanDuplicates => 'Não deu para procurar duplicadas.';
 
   @override
@@ -1544,11 +1853,68 @@ class AppLocalizationsPt extends AppLocalizations {
   String get onbNext => 'Avançar';
 
   @override
-  String get onbInsideTitle => 'O que está nas tuas capturas?';
+  String get onbWelcomeBody =>
+      'Uma casa para as capturas que vale a pena guardar. Arquivadas, pesquisáveis e seguras de enviar.';
 
   @override
-  String get onbInsideBody =>
-      'Cartões de embarque, códigos de verificação, uma foto do teu documento. Coisas que nunca publicarias.';
+  String get onbSaveTitle => 'Guarda-a no segundo em que a tiras';
+
+  @override
+  String get onbSaveBody =>
+      'Toca em Partilhar em qualquer app e escolhe o Shoto. É a única forma de entrar alguma coisa.';
+
+  @override
+  String get onbChipAnyApp => 'Qualquer app';
+
+  @override
+  String get onbChipOneTap => 'Um toque';
+
+  @override
+  String get onbChipToFolder => 'Direto para uma pasta';
+
+  @override
+  String get onbFileTitle => 'Uma biblioteca, não um rolo de câmara';
+
+  @override
+  String get onbFileBody =>
+      'Tudo o que envias chega arquivado e fica exatamente onde o puseste.';
+
+  @override
+  String get onbChipFolders => 'Pastas';
+
+  @override
+  String get onbChipFavourites => 'Favoritos';
+
+  @override
+  String get onbChipDuplicates => 'Detetor de duplicados';
+
+  @override
+  String get onbFindTitle => 'Encontra as palavras dentro de uma imagem';
+
+  @override
+  String get onbFindBody =>
+      'O Shoto lê as tuas capturas, por isso basta uma palavra de que te lembres.';
+
+  @override
+  String get onbChipInsideText => 'Texto em imagens';
+
+  @override
+  String get onbChipOffline => 'Funciona offline';
+
+  @override
+  String get onbChipCards => 'Números de cartão';
+
+  @override
+  String get onbChipCodes => 'Códigos e documentos';
+
+  @override
+  String get onbChipPreview => 'Vês cada cobertura';
+
+  @override
+  String get onbChipGallery => 'A galeria nunca é aberta';
+
+  @override
+  String get onbChipOnDevice => 'Fica no teu telemóvel';
 
   @override
   String get onbSendTitle => 'Envia-as na mesma';
@@ -1991,7 +2357,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get intentDoneToast => 'Riscado da lista';
 
   @override
-  String get intentChange => 'Mudar para que isto serve';
+  String intentListEnd(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'São todas as $count',
+      one: 'Essa é a única',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get intentChange => 'Alterar';
 
   @override
   String get intentClear => 'Não é para nada';
@@ -2004,6 +2381,11 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get intentEmptyBody =>
       'As capturas que você marca ficam aqui até você riscar da lista.';
+
+  @override
+  String intentProgress(int done, int total) {
+    return '$done de $total feitas';
+  }
 
   @override
   String intentDoneCount(int count) {
@@ -2042,4 +2424,19 @@ class AppLocalizationsPt extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get copyTextSelect => 'Selecionar texto';
+
+  @override
+  String get copyTextSelectAll => 'Selecionar tudo';
+
+  @override
+  String get copyTextHint => 'Toque e segure qualquer texto para copiá-lo';
+
+  @override
+  String get copyTextPrompt => 'Arraste para selecionar';
+
+  @override
+  String get copyTextNone => 'O Shoto não encontra texto legível nesta captura';
 }

@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shoto/core/di/dependency_injection.dart';
 import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/localization/app_message.dart';
+import 'package:shoto/core/theme/folder_appearance_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/features/duplicates/presentation/bloc/duplicates_bloc.dart';
 import 'package:shoto/features/duplicates/presentation/bloc/duplicates_state.dart';
@@ -140,6 +141,14 @@ void main() {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     if (!sl.isRegistered<ThemeController>()) {
       sl.registerLazySingleton<ThemeController>(() => ThemeController());
+    }
+    // The folders page reads its column count and its two card switches off
+    // this, at its defaults here — three across, count on, date off, which is
+    // what a fresh install draws.
+    if (!sl.isRegistered<FolderAppearanceController>()) {
+      sl.registerLazySingleton<FolderAppearanceController>(
+        () => FolderAppearanceController(),
+      );
     }
     if (!sl.isRegistered<FunnelLog>()) {
       sl.registerLazySingleton<FunnelLog>(() => FunnelLog());

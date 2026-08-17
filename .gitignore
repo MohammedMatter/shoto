@@ -46,3 +46,9 @@ app.*.map.json
 
 # Diff artefacts written by a failing golden comparison.
 /test/failures/
+
+# Copies of a real device's app data, pulled by tool/backup_device_db.ps1
+# before an install that would wipe it. These are somebody's actual library —
+# their folders, their recognised text, the ids of their screenshots — and a
+# backup taken for safety must not become a copy published in a repository.
+/.device-backups/

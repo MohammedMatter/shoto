@@ -10,11 +10,13 @@ import 'package:shoto/core/widgets/header_icon_button.dart';
 import 'package:shoto/core/widgets/primary_button.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
+import 'package:shoto/features/folders/presentation/bloc/folders_event.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_actions_sheet.dart';
 import 'package:shoto/features/folders/presentation/widgets/folder_mark.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/browsing_only.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshots_body.dart';
 
 class FolderDetailPage extends StatefulWidget {
@@ -33,6 +35,15 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
   /// from this page updates the header immediately instead of showing the
   /// stale name until you navigate away and back.
   late FolderEntity _folder = widget.folder;
+
+  /// The grid this page was opened from.
+  ///
+  /// Captured rather than looked up where it is used, because the listener
+  /// below fires from inside a `BlocProvider` that owns a *different* bloc of
+  /// its own — reading `FoldersBloc` from that context works, but reading it
+  /// once here says plainly that this is the grid's bloc, handed over by the
+  /// page that pushed this route, and not something this page created.
+  late final FoldersBloc _foldersBloc = context.read<FoldersBloc>();
 
   /// Only used to pick the glyph on the Unlock button, so the fingerprint
   /// default is safe: it is what the button showed unconditionally before,
@@ -93,29 +104,57 @@ class _FolderDetailPageState extends State<FolderDetailPage> {
     return BlocProvider(
       create: (_) =>
           sl<ScreenshotsBloc>()..add(LoadScreenshotsEvent(folderId: folder.id)),
-      child: Scaffold(
-        backgroundColor: context.colors.background,
-        body: ScreenshotsBody(
-          emptyTitle: context.l10n.folderEmptyTitle,
-          emptyMessage: context.l10n.folderEmptyMessage,
-          showFavoritesFilter: false,
-          // Its own namespace even though this is its own route:
-          // the library grid below it is showing the same
-          // screenshots, and relying on route boundaries to keep two
-          // identical tags apart is a trap for whoever changes how
-          // this screen is presented later.
-          heroPrefix: 'folder',
-          // **The header goes inside the scroll view.**
-          //
-          // It was a `Column`: a fixed strip above a grid, on screen at every
-          // scroll position for the whole length of the folder. That is the
-          // exact arrangement `ScreenshotsBody.leadingSlivers` was added to
-          // replace — its own doc says a header passed here "collapses with
-          // the list instead of standing on top of it forever" — and this page
-          // was the one caller still doing it the old way.
-          leadingSlivers: <Widget>[
-            _FolderHeader(folder: folder, onMore: _showActions),
-          ],
+      // **The number on the tile behind this page has to follow what happens
+      // on it.**
+      //
+      // `ScreenshotsBloc` is registered as a *factory*, so this page runs its
+      // own instance: moving screenshots out of this folder, or deleting them,
+      // is invisible to the shell's bloc and to the folders grid underneath.
+      // The grid reloads when the Folders tab is selected and when the app
+      // resumes, and neither of those happens on the way back from here — so
+      // the folder you had just emptied went on saying "24 screenshots" until
+      // something unrelated happened to refresh it.
+      //
+      // Watched by count rather than fired on the way out: the grid behind is
+      // already correct by the time the pop begins, so nothing re-numbers
+      // itself mid-animation, and a visit that only browsed — or that
+      // favourited something, which changes no count — costs nothing.
+      //
+      // Length is the whole test, and it is enough: moving a screenshot to
+      // another folder takes it out of *this* list too (the bloc re-filters on
+      // its own folder id), and the reload re-counts every folder rather than
+      // this one, so the folder it landed in is right as well.
+      child: BlocListener<ScreenshotsBloc, ScreenshotsState>(
+        listenWhen: (ScreenshotsState previous, ScreenshotsState current) =>
+            previous is ScreenshotsLoadedState &&
+            current is ScreenshotsLoadedState &&
+            previous.screenshots.length != current.screenshots.length,
+        listener: (BuildContext context, ScreenshotsState state) =>
+            _foldersBloc.add(LoadFoldersEvent()),
+        child: Scaffold(
+          backgroundColor: context.colors.background,
+          body: ScreenshotsBody(
+            emptyTitle: context.l10n.folderEmptyTitle,
+            emptyMessage: context.l10n.folderEmptyMessage,
+            showFavoritesFilter: false,
+            // Its own namespace even though this is its own route:
+            // the library grid below it is showing the same
+            // screenshots, and relying on route boundaries to keep two
+            // identical tags apart is a trap for whoever changes how
+            // this screen is presented later.
+            heroPrefix: 'folder',
+            // **The header goes inside the scroll view.**
+            //
+            // It was a `Column`: a fixed strip above a grid, on screen at every
+            // scroll position for the whole length of the folder. That is the
+            // exact arrangement `ScreenshotsBody.leadingSlivers` was added to
+            // replace — its own doc says a header passed here "collapses with
+            // the list instead of standing on top of it forever" — and this page
+            // was the one caller still doing it the old way.
+            leadingSlivers: <Widget>[
+              _FolderHeader(folder: folder, onMore: _showActions),
+            ],
+          ),
         ),
       ),
     );
@@ -196,6 +235,13 @@ class _FolderHeader extends StatelessWidget {
 
   static double get _expandedHeight => 118.h;
 
+  /// Whether there is anything in this folder to pick.
+  ///
+  /// An empty folder still draws its header, and a Select button over an
+  /// empty state opens a mode that cannot be satisfied.
+  static bool _hasItems(ScreenshotsState state) =>
+      state is ScreenshotsLoadedState && state.visibleScreenshots.isNotEmpty;
+
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
@@ -267,10 +313,17 @@ class _FolderHeader extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Row(
                     children: <Widget>[
+                      // **`maybePop`, not `pop`.** `ScreenshotsBody` puts a
+                      // `PopScope` around the grid so the system back gesture
+                      // leaves selection mode before it leaves the screen —
+                      // and only `maybePop` consults it. With a bare `pop`
+                      // this button would close the folder out from under a
+                      // live selection while the gesture two inches below it
+                      // did something else entirely.
                       HeaderIconButton(
                         icon: Icons.arrow_back_rounded,
                         tooltip: context.l10n.commonBack,
-                        onTap: () => Navigator.of(context).pop(),
+                        onTap: () => Navigator.of(context).maybePop(),
                       ),
                       SizedBox(width: 12.w),
                       Expanded(
@@ -283,10 +336,58 @@ class _FolderHeader extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 12.w),
-                      HeaderIconButton(
-                        icon: Icons.more_horiz_rounded,
-                        tooltip: context.l10n.foldersOptions,
-                        onTap: onMore,
+                      // Rename, lock, delete — none of them a thing to offer
+                      // somebody halfway through picking screenshots *inside*
+                      // this folder, and one of them would take the folder
+                      // out from under them. The header itself stays put; only
+                      // this goes. See [BrowsingOnly].
+                      //
+                      // Select stands down with them for the plainer reason
+                      // that it is the door into the mode you are already in.
+                      BrowsingOnly(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            // The same button in the same corner as the
+                            // Library's, because a folder is a grid of
+                            // screenshots too and the long-press that used to
+                            // start a selection here now opens one
+                            // screenshot's own actions instead. Two grids that
+                            // answered the same gesture differently would be
+                            // the worse half of this change.
+                            BlocBuilder<ScreenshotsBloc, ScreenshotsState>(
+                              buildWhen:
+                                  (
+                                    ScreenshotsState previous,
+                                    ScreenshotsState current,
+                                  ) => _hasItems(previous) != _hasItems(current),
+                              builder:
+                                  (
+                                    BuildContext context,
+                                    ScreenshotsState state,
+                                  ) => !_hasItems(state)
+                                  ? const SizedBox.shrink()
+                                  : Padding(
+                                      padding: EdgeInsetsDirectional.only(
+                                        end: 8.w,
+                                      ),
+                                      child: HeaderIconButton(
+                                        icon: Icons.checklist_rounded,
+                                        tooltip: context.l10n.librarySelect,
+                                        onTap: () =>
+                                            context.read<ScreenshotsBloc>().add(
+                                              EnterSelectionModeEvent(),
+                                            ),
+                                      ),
+                                    ),
+                            ),
+                            HeaderIconButton(
+                              icon: Icons.more_horiz_rounded,
+                              tooltip: context.l10n.foldersOptions,
+                              onTap: onMore,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

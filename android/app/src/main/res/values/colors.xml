@@ -12,4 +12,20 @@
          here whenever a canvas moves; the mismatch is silent everywhere except
          on a real device at launch. -->
     <color name="splash_background">#F4F4F4</color>
+
+    <!-- The same two values again, without the -night qualifier doing the
+         choosing.
+
+         `splash_background` above answers "what is the system set to", which is
+         the only question the starting window can ask: Android resolves it
+         before this app's process exists, so it cannot know the app has been
+         pinned to a mode of its own. These two answer "what did the user pick
+         inside Shoto", which is what MainActivity paints the activity window
+         with — and the activity window is what covers all but the first moment
+         of a cold start.
+
+         Keep all three in step. They are the same two colours written twice:
+         AppPalette.light.background and AppPalette.dark.background. -->
+    <color name="splash_background_light">#F4F4F4</color>
+    <color name="splash_background_dark">#111213</color>
 </resources>

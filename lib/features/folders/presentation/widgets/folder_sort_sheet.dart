@@ -9,11 +9,22 @@ import 'package:shoto/features/folders/presentation/bloc/folder_sort.dart';
 
 /// Picking the order the folder grid is shown in.
 ///
-/// Built to the same shape as `showLibrarySortSheet`, and the reasoning
-/// recorded there applies unchanged: named rows with a tick against the
-/// current one, rather than a glyph in the header that flips between two
-/// states and tells you neither which axis it is about nor which way it is
-/// currently pointing.
+/// **Named rows with a tick, never an arrow in the header** — and that shape
+/// is inherited rather than invented here. The Library wore the arrow first,
+/// and it did not work on two counts: nothing said the glyph was about *order*
+/// rather than filtering or downloading, and nothing said which order was
+/// currently on, because a downward arrow is equally believable as "newest at
+/// the top" and as "tap to go oldest". The tooltip meant to cover that needs a
+/// long-press on Android, so in practice it did not exist.
+///
+/// Two named rows with a tick against the current one answer both questions
+/// before the user commits to anything, which a toggle by definition cannot.
+///
+/// The reasoning used to live in `library_sort_sheet.dart` and is written out
+/// here because that file is gone: the Library's ordering moved into the
+/// "Order" section of [showLibraryViewSheet], which follows the same rule, and
+/// the sheet it left behind sat unreferenced for long enough that an audit had
+/// to find it. This is now the only copy.
 Future<void> showFolderSortSheet(
   BuildContext context, {
   required FolderSort current,

@@ -2,10 +2,12 @@
   "@@locale": "de",
   "settingsCrashReports": "Absturzberichte",
   "settingsCrashReportsHint": "Technische Details senden, wenn etwas schiefgeht",
+  "settingsOnboarding": "Einführung erneut ansehen",
+  "settingsOnboardingHint": "Die Eröffnung noch einmal abspielen",
   "settingsSignOut": "Abmelden",
   "settingsSignOutTitle": "Abmelden?",
   "authWelcome": "Willkommen bei Shoto",
-  "authSubtitle": "Mit einer Anmeldung bleibt dein Abo dir erhalten, wenn du das Handy wechselst. Deine Screenshots bleiben so oder so auf diesem Gerät – ein Konto nimmt sie nie mit.",
+  "authWhy": "Nicht alles, was du speicherst, gehört ins selbe Regal. Shoto gibt den Screenshots, die dir wirklich wichtig sind, einen eigenen Platz.",
   "authGoogle": "Weiter mit Google",
   "authApple": "Weiter mit Apple",
   "authLegal": "Wenn du fortfährst, stimmst du unseren Nutzungsbedingungen und der Datenschutzerklärung zu.",
@@ -72,6 +74,58 @@
   "triageInviteDismiss": "Nein danke",
   "settingsTriage": "Neue Screenshots anbieten",
   "settingsTriageHint": "Zeigt, was du aufnimmst; behält von allein nichts",
+  "settingsCaptureAlerts": "Sofort benachrichtigen",
+  "settingsCaptureAlertsHint": "Eine leise Benachrichtigung direkt nach der Aufnahme",
+  "settingsCaptureAlertsMuted": "Benachrichtigungen für Shoto sind aus — schalte sie in den Telefoneinstellungen ein",
+  "settingsCaptureAlertsStopped": "Android hat die Prüfungen gestoppt. Öffne Shoto einmal, um sie neu zu starten",
+  "settingsCaptureAlertsWaiting": "Beobachtet. Noch nichts aufgenommen",
+  "settingsCaptureAlertsLastRun": "Zuletzt geprüft {when}",
+  "@settingsCaptureAlertsLastRun": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "timeAgoMinutes": "vor {count} Min.",
+  "@timeAgoMinutes": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "timeAgoHours": "vor {count} Std.",
+  "@timeAgoHours": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "timeAgoDays": "vor {count} T.",
+  "@timeAgoDays": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "settingsQuickTile": "Schnelleinstellungen-Kachel",
+  "settingsQuickTileHint": "Deinen letzten Screenshot sichern, ohne das Teilen-Menü zu öffnen",
+  "settingsQuickTileAdded": "Zu den Schnelleinstellungen hinzugefügt",
+  "settingsQuickTileManual": "Von Hand hinzufügen: Schnelleinstellungen aufziehen, auf Bearbeiten tippen und die Shoto-Kachel hineinziehen.",
+  "settingsQuickTileSheetTitle": "Zwei Wischer, aus jeder App",
+  "settingsQuickTileSheetBody": "Shoto kann in deinen Schnelleinstellungen liegen, neben der Taschenlampe. Ein Tippen legt den gerade aufgenommenen Screenshot ab — keine App öffnen, kein Teilen-Menü durchsuchen.",
+  "settingsQuickTileStepPull": "Von oben nach unten wischen, auf jedem Bildschirm",
+  "settingsQuickTileStepTap": "Auf die Shoto-Kachel tippen — dein letzter Screenshot ist abgelegt",
+  "settingsQuickTileStepStays": "Sie bleibt am selben Platz, anders als das Teilen-Menü",
+  "settingsQuickTileAdd": "Kachel hinzufügen",
+  "settingsQuickTileNote": "Liest nur den gerade aufgenommenen Screenshot. Nichts verlässt dein Handy.",
+  "folderIconsBasics": "Grundlagen",
+  "folderIconsWork": "Arbeit",
+  "folderIconsMoney": "Geld",
+  "folderIconsTravel": "Reisen",
+  "folderIconsHome": "Zuhause & Gesundheit",
+  "folderIconsMedia": "Medien",
+  "folderIconsPeople": "Menschen",
+  "folderIconsSymbols": "Symbole",
+  "folderIconsSocial": "Soziales",
+  "folderIconsApps": "Apps",
+  "quickTileOfferTitle": "Sichern ohne Teilen-Menü",
+  "quickTileOfferBody": "Eine Schnelleinstellungen-Kachel für deinen letzten Screenshot",
   "triageNothingNew": "Nichts Neues zum Ansehen",
   "commonCancel": "Abbrechen",
   "commonDelete": "Löschen",
@@ -165,6 +219,8 @@
     }
   },
   "librarySelectAll": "Alle auswählen",
+  "librarySelect": "Auswählen",
+  "librarySelectPrompt": "Aufnahmen auswählen",
   "libraryActionMerge": "Verbinden",
   "libraryActionMove": "Verschieben",
   "libraryActionDelete": "Löschen",
@@ -192,6 +248,41 @@
   "settingsThemeLight": "Hell",
   "settingsThemeDark": "Dunkel",
   "settingsGridDensity": "Rasterdichte",
+  "settingsAppearanceHint": "Design, Akzentfarbe und Rastergröße",
+  "appearanceTint": "Akzentfarbe",
+  "appearanceTintHint": "Schaltflächen, Schalter und alles Ausgewählte.",
+  "appearancePreview": "Vorschau",
+  "tintTeal": "Petrol",
+  "tintSlate": "Schiefer",
+  "tintIndigo": "Indigo",
+  "tintPlum": "Pflaume",
+  "tintRose": "Rosé",
+  "tintEmber": "Glut",
+  "tintAmber": "Bernstein",
+  "tintMoss": "Moos",
+  "tintGarnet": "Granat",
+  "tintBrass": "Messing",
+  "tintFern": "Farn",
+  "tintJade": "Jade",
+  "tintOlive": "Oliv",
+  "tintCyan": "Cyan",
+  "tintDenim": "Denim",
+  "tintViolet": "Violett",
+  "tintSky": "Himmel",
+  "tintOrchid": "Orchidee",
+  "tintFuchsia": "Fuchsia",
+  "tintClay": "Ton",
+  "tintGraphite": "Graphit",
+  "appearanceMoreColors": "Weitere Farben",
+  "appearanceSelectTint": "Akzentfarbe wählen",
+  "appearanceFolders": "Ordnerkarten",
+  "appearanceFolderCount": "Anzahl der Aufnahmen",
+  "appearanceFolderDate": "Erstellungsdatum",
+  "appearanceFolderSize": "Karten pro Zeile",
+  "appearanceLibrary": "Mediathek-Raster",
+  "appIcon": "App-Symbol",
+  "appIconDefault": "Original",
+  "appIconHint": "Beim Wechsel schließt sich Shoto kurz, während Android das Symbol tauscht.",
   "settingsLanguage": "Sprache",
   "settingsLanguageSystem": "Wie mein Handy",
   "settingsLanguageSystemHint": "Zeigt gerade {language}",
@@ -324,6 +415,10 @@
   },
   "quickSaveFailedTitle": "Bild konnte nicht gelesen werden",
   "quickSaveFailedBody": "Versuche, es noch einmal zu teilen.",
+  "quickSaveNoCaptureTitle": "Noch kein Screenshot",
+  "quickSaveNoCaptureBody": "Mach einen Screenshot und tippe dann erneut auf die Kachel.",
+  "quickSaveNoAccessTitle": "Shoto sieht deine Screenshots nicht",
+  "quickSaveNoAccessBody": "Öffne Shoto, erlaube den Fotozugriff und versuche es dann erneut.",
   "quickSaveSkipped": "Nur die ersten {count} wurden übernommen",
   "@quickSaveSkipped": {
     "placeholders": {
@@ -490,6 +585,7 @@
   "paywallUnavailable": "Noch nicht verfügbar",
   "paywallRestore": "Käufe wiederherstellen",
   "settingsRestoreHint": "Schon bezahlt? Hol dein Abo zurück.",
+  "settingsRestoreDone": "Dein Abo ist zurück.",
   "paywallLegal": "Verlängert sich automatisch bis zur Kündigung. Jederzeit in den Kontoeinstellungen im App Store oder bei Google Play kündbar. Mit dem Fortfahren stimmst du unseren Nutzungsbedingungen und der Datenschutzerklärung zu.",
   "subPremiumBadge": "PRO",
   "subPremiumTitle": "Shoto Pro",
@@ -513,12 +609,14 @@
   "featSafeShareBody": "Findet Kartennummern, Adressen, Namen und Kontaktdaten und deckt jedes davon mit einem massiven Balken ab. Der Text drumherum bleibt, das Bild bleibt lesbar – und die gesendete Kopie hat keine Ebene, die sich entfernen lässt.",
   "featActions": "Screenshots zu Aktionen machen",
   "featActionsBody": "Einen Link öffnen, an eine Adresse schreiben, einen Bestätigungscode oder eine IBAN kopieren – direkt aus dem Bild, ohne etwas abzutippen.",
+  "featTraits": "Nach dem Inhalt filtern",
+  "featTraitsBody": "Zeigt nur die Screenshots, in denen ein Link, eine Telefonnummer, ein Code, ein Datum oder eine Kartennummer steht – erkannt an den Wörtern im Bild.",
   "featDuplicates": "Duplikate finden",
   "featDuplicatesBody": "Erkennt fast identische Aufnahmen, die du doppelt behalten hast, und räumt sie weg – immer erst mit einer Durchsicht.",
   "featStitch": "Lange Screenshots verbinden",
   "featStitchBody": "Fügt eine Scroll-Aufnahme wieder zu einem hohen Bild zusammen, mit automatisch gefundener und entfernter Überlappung.",
   "featUnlimited": "Unbegrenzte Screenshots",
-  "featUnlimitedBody": "Die Gratisstufe ordnet {count} Screenshots. Pro nimmt die Zahl weg.",
+  "featUnlimitedBody": "Die Gratisstufe ordnet {count} Screenshots und hält {folders} Ordner. Pro nimmt beide Zahlen weg.",
   "featUnlimitedBodyPro": "Deine Bibliothek hat keine Obergrenze — behalte, so viel du willst.",
   "featSafeShareHow": "Zu finden, was in einem Screenshot privat ist, ist gratis und unbegrenzt. Bezahlt wird dafür, aus diesen Funden eine saubere Kopie zu machen: jede ausgewählte Angabe wird im Export abgedeckt, und der Export ist flach – keine Ebene, die sich rückgängig machen lässt.",
   "featSafeSharePoint1": "Kartennummern werden per Luhn und IBANs per Modulo 97 geprüft – diese beiden werden also bewiesen statt geraten, genau bei der Angabe, die am schwersten wiegt.",
@@ -528,6 +626,30 @@
   "featActionsPoint1": "Links, E-Mail-Adressen, IBANs, Bestätigungscodes, Termine und Paketnummern werden für dich gefunden.",
   "featActionsPoint2": "Ein Tippen zum Öffnen oder Kopieren – kein Zeichen mehr vom Bild ablesen.",
   "featActionsPoint3": "Funktioniert mit den Screenshots, die du schon hast, nicht nur mit neuen.",
+  "featTraitsHow": "Das Filtern ist kostenlos bei allem, was Shoto schon gelesen hat: Suche, Aktionen und Safe Share hinterlassen jeweils erkannten Text, und jeder Filter wird daraus abgeleitet. Bezahlt wird das Lesen der restlichen Mediathek in einem Durchgang – damit ein Filter auch die Screenshots sieht, die noch keine andere Funktion geöffnet hat.",
+  "featTraitsPoint1": "Fünf Filter – Kartennummern und IBANs, Links, Telefonnummern und E-Mail-Adressen, Bestätigungscodes und Termine, zu denen du erscheinen sollst.",
+  "featTraitsPoint2": "Kartennummern und IBANs sind durch eine Prüfsumme belegt. Der Rest wird aus dem Bild gelesen und meldet deshalb lieber zu wenig als zu viel.",
+  "featTraitsPoint3": "Die Mediathek sagt immer, wie viele Screenshots nie gelesen wurden – ein leeres Ergebnis wird nie als Abwesenheit ausgegeben. Gelesen wird auf dem Gerät, hochgeladen wird nichts.",
+  "featTint": "Wähle deine Akzentfarbe",
+  "featTintBody": "{count} Akzentfarben für Schaltflächen, Schalter und Auswahl — jede so abgestimmt, dass sie hell wie dunkel lesbar bleibt.",
+  "@featTintBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "featTintHow": "Die meisten Apps geben dir eine Reihe roher Farben und überlassen den Kontrast dem Zufall — deshalb kommt ein gelber Akzent meist mit weißem Text, den niemand lesen kann. Shoto speichert deine Wahl als Position auf dem Farbkreis statt als feste Farbe und berechnet daraus den genauen Ton für den hellen und für den dunklen Modus. Was du auch wählst, es trägt Text genauso gut wie die eigene Farbe der App.",
+  "featTintPoint1": "{count} Akzente, von Petrol und Moos über Bernstein und Glut bis Pflaume, Indigo und Schiefer.",
+  "@featTintPoint1": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "featTintPoint2": "Jede wird zweimal berechnet, einmal für hell und einmal für dunkel, gegen dasselbe Kontrastziel — so leuchtet kein Akzent auf dunklem Bildschirm und verschwindet keiner auf hellem.",
+  "featTintPoint3": "Rot fürs Löschen, Grün für Erledigt und Bernstein für Warnungen ändern sich nie — eine Farbe, die etwas bedeutet, wird nie zur Dekoration.",
   "featStitchHow": "Eine Scroll-Aufnahme muss auf Handys, die sie können, gestartet werden, solange du noch auf der Seite bist. Shoto arbeitet danach: Wähle zwei oder mehr Aufnahmen aus deiner Mediathek – auch solche, die dir jemand geschickt hat – und es findet die Überlappung und fügt sie zu einem hohen Bild.",
   "featStitchPoint1": "Der wiederholte Streifen zwischen zwei Aufnahmen wird automatisch gefunden und entfernt.",
   "featStitchPoint2": "Du siehst die Naht, bevor etwas gesichert wird – automatische Erkennung ist gut, aber nie sicher.",
@@ -536,8 +658,8 @@
   "featDuplicatesPoint1": "Gruppiert, was gleich aussieht, und schlägt die Kopie zum Behalten vor.",
   "featDuplicatesPoint2": "Zeigt, wie viel Platz jede Gruppe freimacht, bevor du irgendetwas entscheidest.",
   "featDuplicatesPoint3": "Es wird nichts gelöscht, bevor du die Gruppe durchgesehen und bestätigt hast.",
-  "featUnlimitedHow": "Die Gratisstufe ist eine echte, brauchbare App: Sichern, Ordner, Favoriten und volle Suche, ohne Konto und ohne Upload. Sie hat genau eine Grenze – wie viele Screenshots sie ordnet – und Pro hebt sie auf. Alles, was du schon geordnet hast, bleibt genau dort.",
-  "featUnlimitedPoint1": "Ordner sind in der Gratisstufe unbegrenzt und waren immer so gedacht.",
+  "featUnlimitedHow": "Die Gratisstufe ist eine echte, brauchbare App: Sichern, Ordner, Favoriten und volle Suche, ohne Konto und ohne Upload. Sie hat zwei Grenzen – wie viele Screenshots sie ordnet und wie viele Ordner sie hält – und Pro hebt beide auf. Alles, was du schon geordnet hast, bleibt genau dort.",
+  "featUnlimitedPoint1": "Die Gratisstufe hält {count} Ordner – genau die Starter-Ordner, die Shoto dir gibt. Pro nimmt auch diese Zahl weg.",
   "featUnlimitedPoint2": "Zu benennen, wofür ein Screenshot ist, ist ebenfalls gratis und unbegrenzt.",
   "featUnlimitedPoint3": "An die Grenze zu stoßen heißt, dass Shoto dein Aufbewahrungsort geworden ist. Dabei wird nichts gelöscht.",
   "includedSubtitle": "Jede Pro-Funktion, erklärt.",
@@ -728,6 +850,8 @@
   },
   "errorLoadScreenshots": "Deine Screenshots konnten nicht geladen werden.",
   "errorLoadFolders": "Deine Ordner konnten nicht geladen werden.",
+  "errorSaveFolder": "Der Ordner konnte nicht gespeichert werden.",
+  "errorDeleteFolder": "Der Ordner konnte nicht gelöscht werden.",
   "errorScanDuplicates": "Es konnte nicht nach Duplikaten gesucht werden.",
   "errorDeleteSelected": "Die ausgewählten Screenshots konnten nicht gelöscht werden.",
   "errorStitchFailed": "Diese Screenshots konnten nicht verbunden werden.",
@@ -780,8 +904,26 @@
   "sensitiveNumber": "Nummer",
   "onbSkip": "Überspringen",
   "onbNext": "Weiter",
-  "onbInsideTitle": "Was steckt in deinen Screenshots?",
-  "onbInsideBody": "Bordkarten, Bestätigungscodes, ein Foto deines Ausweises. Dinge, die du nie posten würdest.",
+  "onbWelcomeBody": "Ein Zuhause für die Screenshots, die es wert sind. Abgelegt, durchsuchbar und sicher zu teilen.",
+  "onbSaveTitle": "Sichern, sobald du ihn machst",
+  "onbSaveBody": "In jeder App auf Teilen tippen und Shoto wählen. Nur so kommt überhaupt etwas herein.",
+  "onbChipAnyApp": "Jede App",
+  "onbChipOneTap": "Ein Tippen",
+  "onbChipToFolder": "Direkt in einen Ordner",
+  "onbFileTitle": "Eine Bibliothek, keine Galerie",
+  "onbFileBody": "Alles, was du sendest, kommt abgelegt an und bleibt genau dort.",
+  "onbChipFolders": "Ordner",
+  "onbChipFavourites": "Favoriten",
+  "onbChipDuplicates": "Duplikatfinder",
+  "onbFindTitle": "Finde die Wörter im Bild",
+  "onbFindBody": "Shoto liest deine Screenshots — ein Wort, an das du dich erinnerst, reicht.",
+  "onbChipInsideText": "Text in Bildern",
+  "onbChipOffline": "Funktioniert offline",
+  "onbChipCards": "Kartennummern",
+  "onbChipCodes": "Codes und Ausweise",
+  "onbChipPreview": "Du siehst jede Abdeckung",
+  "onbChipGallery": "Galerie bleibt zu",
+  "onbChipOnDevice": "Bleibt auf deinem Handy",
   "onbSendTitle": "Verschick sie trotzdem",
   "onbSendBody": "Shoto verdeckt das Private zuerst und zeigt dir jede Abdeckung, bevor sie rausgeht.",
   "onbYoursTitle": "Nichts bewegt sich ohne dich",
@@ -984,7 +1126,8 @@
   "intentMarkDone": "Erledigt",
   "intentUndo": "Zurücklegen",
   "intentDoneToast": "Abgehakt",
-  "intentChange": "Ändern, wofür das ist",
+  "intentListEnd": "{count, plural, =1{Das ist die einzige} other{Das sind alle {count}}}",
+  "intentChange": "Ändern",
   "intentClear": "Für nichts Bestimmtes",
   "intentEmptyOne": "Hier gibt es nichts zu {verb}",
   "@intentEmptyOne": {
@@ -995,6 +1138,7 @@
     }
   },
   "intentEmptyBody": "Screenshots, die du markierst, landen hier, bis du sie abhakst.",
+  "intentProgress": "{done} von {total} erledigt",
   "intentDoneCount": "{count} erledigt",
   "@intentDoneCount": {
     "placeholders": {
@@ -1026,5 +1170,10 @@
         "type": "int"
       }
     }
-  }
+  },
+  "copyTextSelect": "Text auswählen",
+  "copyTextSelectAll": "Alles auswählen",
+  "copyTextHint": "Halte einen Text gedrückt, um ihn zu kopieren",
+  "copyTextPrompt": "Zum Auswählen ziehen",
+  "copyTextNone": "In dieser Aufnahme findet Shoto keinen lesbaren Text"
 }

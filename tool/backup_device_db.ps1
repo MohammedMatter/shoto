@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
   Pulls SHOTO's on-device database and preferences off an Android device
   before anything is installed over the app.

@@ -1,4 +1,5 @@
 import 'package:shoto/core/localization/app_message.dart';
+import 'package:shoto/core/utils/text_folding.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shoto/features/folders/domain/entities/folder_entity.dart';
 import 'package:shoto/features/folders/domain/use_cases/create_folder_use_case.dart';
@@ -54,50 +55,77 @@ class FoldersBloc extends Bloc<FoldersEvent, FoldersState> {
   /// the very first load, where there is genuinely nothing to show yet.
   Future<void> _onLoad(
     LoadFoldersEvent event,
-    Emitter<FoldersState> emit,
-  ) async {
+    Emitter<FoldersState> emit, {
+
+    /// Set only by the write handlers below, which reload through here after
+    /// something failed. See [FoldersLoadedState.failure].
+    AppMessage? failure,
+  }) async {
     if (state is! FoldersLoadedState) emit(FoldersLoadingState());
     try {
       final folders = await getFoldersUseCase();
-      emit(FoldersLoadedState(_sorted(folders), sort: _sort));
+      emit(FoldersLoadedState(_sorted(folders), sort: _sort, failure: failure));
     } catch (error) {
       emit(FoldersErrorState(AppMessage.loadFolders));
     }
   }
 
-  Future<void> _onCreate(
-    CreateFolderEvent event,
+  /// **Every write is caught, and none of them used to be.**
+  ///
+  /// The read above has always surfaced its failures; the three writes below
+  /// had no `catch` at all, so a write that threw escaped to the bloc's error
+  /// channel and the page was left exactly as it was. What the user saw was
+  /// the folder they had just named, coloured and given a glyph simply not
+  /// appearing — with no message, and nothing to retry.
+  ///
+  /// The answer is not the error *state*: that blanks the grid, and the grid
+  /// is still correct. Instead the reload happens either way — so the screen
+  /// tells the truth about what actually exists — and the message rides along
+  /// on the loaded state for the page to say out loud once.
+  Future<void> _write(
     Emitter<FoldersState> emit,
+    AppMessage onFailure,
+    Future<void> Function() write,
   ) async {
-    await createFolderUseCase(
-      event.name,
-      event.color,
-      isPrivate: event.isPrivate,
-      iconKey: event.iconKey,
-    );
-    await _onLoad(LoadFoldersEvent(), emit);
+    AppMessage? failure;
+    try {
+      await write();
+    } catch (error) {
+      failure = onFailure;
+    }
+    await _onLoad(LoadFoldersEvent(), emit, failure: failure);
   }
 
-  Future<void> _onUpdate(
-    UpdateFolderEvent event,
-    Emitter<FoldersState> emit,
-  ) async {
-    await updateFolderUseCase(
-      event.folderId,
-      name: event.name,
-      color: event.color,
-      iconKey: event.iconKey,
-    );
-    await _onLoad(LoadFoldersEvent(), emit);
-  }
+  Future<void> _onCreate(CreateFolderEvent event, Emitter<FoldersState> emit) =>
+      _write(
+        emit,
+        AppMessage.saveFolder,
+        () => createFolderUseCase(
+          event.name,
+          event.color,
+          isPrivate: event.isPrivate,
+          iconKey: event.iconKey,
+        ),
+      );
 
-  Future<void> _onDelete(
-    DeleteFolderEvent event,
-    Emitter<FoldersState> emit,
-  ) async {
-    await deleteFolderUseCase(event.folderId);
-    await _onLoad(LoadFoldersEvent(), emit);
-  }
+  Future<void> _onUpdate(UpdateFolderEvent event, Emitter<FoldersState> emit) =>
+      _write(
+        emit,
+        AppMessage.saveFolder,
+        () => updateFolderUseCase(
+          event.folderId,
+          name: event.name,
+          color: event.color,
+          iconKey: event.iconKey,
+        ),
+      );
+
+  Future<void> _onDelete(DeleteFolderEvent event, Emitter<FoldersState> emit) =>
+      _write(
+        emit,
+        AppMessage.deleteFolder,
+        () => deleteFolderUseCase(event.folderId),
+      );
 
   /// Re-orders what is already loaded rather than going back to the database.
   ///
@@ -136,18 +164,35 @@ class FoldersBloc extends Bloc<FoldersEvent, FoldersState> {
   ///
   /// Two of the three orders cannot be expressed in the folders query at all:
   /// the screenshot count is assembled in Dart from a second `GROUP BY`, and
-  /// name order has to be case-insensitive in a way SQLite's `COLLATE NOCASE`
-  /// only manages for ASCII — which would put "École" after "Zoo" on a French
-  /// phone.
+  /// name order has to fold case *and* accents in a way SQLite's
+  /// `COLLATE NOCASE` only manages for ASCII — which would put "École" after
+  /// "Zoo" on a French phone.
+  ///
+  /// **That claim used to be false here too.** This sorted on
+  /// `toLowerCase().compareTo(…)`, which orders by UTF-16 code unit and puts
+  /// É (U+00C9) past every unaccented letter — so the one thing being done in
+  /// Dart to avoid a bad collation reproduced it exactly. See
+  /// [foldForMatching], which is now what both this and the grid's search run
+  /// on.
   List<FolderEntity> _sorted(List<FolderEntity> folders) {
     final List<FolderEntity> sorted = List<FolderEntity>.of(folders);
     switch (_sort) {
       case FolderSort.recent:
         sorted.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       case FolderSort.name:
-        sorted.sort(
-          (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-        );
+        // Folded once per folder rather than once per comparison: `sort` calls
+        // the comparator O(n log n) times, and every call would otherwise
+        // build two new strings.
+        final Map<int, String> keys = <int, String>{
+          for (final FolderEntity folder in folders)
+            folder.id: foldForMatching(folder.name),
+        };
+        sorted.sort((a, b) {
+          final int byName = keys[a.id]!.compareTo(keys[b.id]!);
+          // "Café" and "Cafe" fold to one string, and `List.sort` is not
+          // stable — without a tie-break the two swap places between rebuilds.
+          return byName != 0 ? byName : b.createdAt.compareTo(a.createdAt);
+        });
       case FolderSort.fullest:
         sorted.sort((a, b) {
           final int byCount = b.screenshotCount.compareTo(a.screenshotCount);

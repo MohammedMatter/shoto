@@ -1,43 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/theme/app_colors.dart';
+import 'package:shoto/core/theme/app_shapes.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
+import 'package:shoto/features/settings/presentation/widgets/settings_tiles.dart';
 
-/// A titled section of Settings: a heading, and its rows on the page itself.
+/// A titled section of Settings: a heading, and its rows on one surface.
 ///
-/// **Three shapes, in order, and the middle one is why this is here.**
+/// **The grouping is the whole design of this page now**, because the rows
+/// themselves have been stripped back to a glyph and a label — see
+/// [SettingsGlyph] for the coloured version that was tried and taken out. With
+/// nothing marking a row, everything that tells you where you are has to come
+/// from the two things above it: the heading, and the space over the heading.
 ///
-/// It began as a flat run of individually-bordered tiles with equal gaps
-/// between all of them, which read as a list of unrelated buttons: with every
-/// row drawing its own outline, "Haptic feedback" looked exactly as separate
-/// from "Ask before deleting" as it did from "Sign out". The fix was to give
-/// each group one card and put hairlines between its rows — grouping said with
-/// a container, which is what a settings screen looked like on both platforms
-/// at the time.
+/// So both were made to carry it properly:
 ///
-/// **That container is now the problem it was hired to solve.** Six filled,
-/// bordered slabs stacked down a dark page make Settings the most boxed screen
-/// in an app that has spent this year removing boxes everywhere else — the
-/// folder grid, the sheets, and Home's tool list, which had four icon plates
-/// and three dividers taken out of it for exactly this reason. A page of
-/// containers reads as *chrome*, and chrome is the thing that dates fastest.
+/// * **32dp above a heading, 10 below.** The space above a heading belongs to
+///   the heading; the space below belongs to nothing, and every pixel of it
+///   weakens the join between a title and the card it titles. The ratio was
+///   26/8 and it was too tight to separate anything at a glance — this is the
+///   same ratio, further apart, which is the cheapest way to make a long page
+///   read as six things instead of seventeen.
+/// * **Sentence case, not small caps.** `app_text_styles.dart` is explicit
+///   about this: "All-caps everywhere is a tell: it is what a layout reaches
+///   for when the hierarchy is not doing the work" — and it is right. `overline`
+///   set the headings at 10.5sp with letter-spacing, which is the smallest and
+///   hardest-to-read text on a screen whose *only* signposts they are.
+///   [AppTypography.sectionLabel] is 12sp, sentence case, and is what Home
+///   already uses for exactly this job.
 ///
-/// So the grouping is now done by the two things that were always doing the
-/// real work anyway: **a heading, and the space above it.** 26dp of air over a
-/// small caps label separates two groups more clearly than a border ever did,
-/// because it is the same signal a book uses. The hairlines stay *inside* a
-/// group, where they say "these rows are one list" — which is a different
-/// claim from "this list is an object", and the only one worth making.
+/// ## Why the card came back
 ///
-/// Nothing was lost in the trade. The rows are still aligned, still grouped,
-/// still tappable; what went is six rectangles, six borders and the sense that
-/// the settings are stored in filing cabinets.
+/// It was here, then it was taken out, and now it is back — so the reasoning is
+/// worth stating once rather than being re-litigated. The removal was recorded
+/// as: six filled, **bordered** slabs stacked down a dark page read as chrome,
+/// and grouping is better said with a heading and the space above it.
+///
+/// Half of that held. The heading and its air *are* doing the grouping, and
+/// that half is now doing more of it than ever. What the removal also took away
+/// was any edge at all: the rows stopped being on anything, and on the light
+/// canvas the page became a sheet of `#F4F4F4` with text on it and one white
+/// subscription card floating at the top. It did not read as restraint. It read
+/// as unfinished.
+///
+/// **The border was the chrome, not the surface.** `app_colors.dart` sets the
+/// light canvas a full step below white specifically so "a white card is raised
+/// by eleven values instead of five and stops needing its border to be visible
+/// at all" — a borderless card is the shape that decision was taken *for*, and
+/// it had never been tried here. It is also what the Appearance page has been
+/// doing all along, one tap from this one, so the two screens finally agree.
 class SettingsGroup extends StatelessWidget {
   final String title;
 
   /// An optional line under the heading, for a group whose purpose is not
   /// obvious from its rows alone.
   final String? caption;
+
+  /// **One child per group, not one per row.**
+  ///
+  /// A hairline is drawn between every entry in this list, which makes it a
+  /// list of *rows* rather than a slot for arbitrary content: a group that
+  /// passed a picker, a spacer and a caption separately would get rules
+  /// through the middle of its own paragraph. Anything that is not a row goes
+  /// in as a single `Column`.
   final List<Widget> children;
 
   const SettingsGroup({
@@ -50,37 +75,45 @@ class SettingsGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      // The space *above* a heading belongs to the heading; the space below it
-      // belongs to nothing, and every pixel of it weakens the join between a
-      // title and the card it titles. 26 above and 10 below was already the
-      // right shape — 8 below tightens it to the same ratio the rest of the
-      // app uses, which is what stops each heading floating alone in the
-      // middle of a gap.
-      padding: EdgeInsets.only(top: 26.h),
+      padding: EdgeInsets.only(top: 32.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Padding(
-            padding: EdgeInsetsDirectional.only(bottom: 8.h),
+            // Indented to the card's own margin, so the heading starts in the
+            // same column as the glyphs below it instead of hanging out to the
+            // side of them.
+            padding: EdgeInsetsDirectional.fromSTEB(16.w, 0, 16.w, 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title.toUpperCase(), style: context.text.overline),
-                if (caption != null) ...[
-                  SizedBox(height: 4.h),
+              children: <Widget>[
+                Text(title, style: context.text.sectionLabel.asMedium),
+                if (caption != null) ...<Widget>[
+                  SizedBox(height: 3.h),
                   Text(caption!, style: context.text.caption),
                 ],
               ],
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              for (int i = 0; i < children.length; i++) ...[
-                if (i > 0) const SettingsDivider(),
-                children[i],
+          Container(
+            decoration: BoxDecoration(
+              color: context.colors.surface,
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
+            // **Not optional.** A pressed row paints a full-bleed wash over
+            // itself (see `PressFeedback.highlight`), so without clipping, the
+            // first and last rows of every group would square off the corners
+            // of the card they are inside for as long as a finger is down.
+            clipBehavior: Clip.antiAlias,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                for (int i = 0; i < children.length; i++) ...<Widget>[
+                  if (i > 0) const SettingsDivider(),
+                  children[i],
+                ],
               ],
-            ],
+            ),
           ),
         ],
       ),
@@ -89,21 +122,19 @@ class SettingsGroup extends StatelessWidget {
 }
 
 /// The hairline between two rows, inset so it starts where the text does —
-/// a full-width rule cuts the icons off from their own labels.
+/// a full-width rule cuts the glyphs off from their own labels.
 ///
-/// **34, down from 50.** The rows used to carry 15dp of their own horizontal
-/// padding because they lived inside a card that needed an inner margin; with
-/// the card gone they sit on the page gutter instead, so the text starts 16dp
-/// earlier and the rule has to follow it. A hairline that stops short of where
-/// the labels begin is worse than no hairline: it draws attention to a column
-/// that is not there.
+/// The inset is [SettingsGlyph.textInset] rather than a number typed here,
+/// which is the only way it stays correct: it has already been wrong twice, at
+/// 50 and then at 34, each time because a row's padding changed and the rule
+/// was left behind pointing at a column that was no longer there.
 class SettingsDivider extends StatelessWidget {
   const SettingsDivider({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsDirectional.only(start: 34.w),
+      padding: EdgeInsetsDirectional.only(start: SettingsGlyph.textInset),
       child: Divider(height: 1, thickness: 1, color: context.colors.border),
     );
   }

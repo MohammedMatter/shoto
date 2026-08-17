@@ -41,7 +41,10 @@ import 'package:shoto/features/backup/domain/use_cases/preview_backup_use_case.d
 import 'package:shoto/features/backup/domain/use_cases/restore_backup_use_case.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
 import 'package:shoto/core/localization/locale_controller.dart';
+import 'package:shoto/core/theme/app_icon_controller.dart';
+import 'package:shoto/core/theme/folder_appearance_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
+import 'package:shoto/core/theme/tint_controller.dart';
 import 'package:shoto/features/folders/data/data_sources/folders_local_data_source.dart';
 import 'package:shoto/features/folders/data/repositories_impl/folders_repository_impl.dart';
 import 'package:shoto/features/folders/domain/repositories/folders_repository.dart';
@@ -125,8 +128,11 @@ void setupServiceLocator() {
 
   sl.registerLazySingleton(() => AppDatabase(sl()));
   sl.registerLazySingleton(() => ThemeController());
+  sl.registerLazySingleton(() => TintController());
   sl.registerLazySingleton(() => LocaleController());
   sl.registerLazySingleton(() => GridDensityController());
+  sl.registerLazySingleton(() => FolderAppearanceController());
+  sl.registerLazySingleton(() => AppIconController());
   sl.registerLazySingleton(() => CacheService());
   sl.registerLazySingleton(() => AppPreferences());
   sl.registerLazySingleton(() => DevAccess());

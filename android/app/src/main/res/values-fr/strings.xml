@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Strings Android itself renders, outside any Flutter surface.
+
+    The Quick Settings tile's label and the capture notification are both drawn
+    by the system, sometimes before Shoto's process exists — so they cannot come
+    from the ARB files like every other string in the app, and they follow the
+    **device** language rather than the in-app language picker. That is correct
+    for a system surface.
+
+    `qs_tile_label` is deliberately identical to `quickSaveTitleOne`, the title
+    of the sheet the tile opens. Two names for one action is how a user ends up
+    unsure whether they are the same thing.
+-->
+<resources>
+    <string name="qs_tile_label">Enregistrer dans Shoto</string>
+    <string name="capture_notice_title">Garder cette capture ?</string>
+    <string name="capture_notice_body">Touchez pour la classer dans Shoto</string>
+    <string name="capture_channel_name">Nouvelles captures</string>
+    <string name="capture_channel_description">Propose de classer une capture dès que vous la prenez</string>
+</resources>

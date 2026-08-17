@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_shapes.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
+import 'package:shoto/core/widgets/glass_layer.dart';
 
 /// What, if anything, this card is demonstrating.
 enum ShotMark {
@@ -43,33 +44,102 @@ class ShotCard extends StatelessWidget {
 
   final ShotMark mark;
 
-  const ShotCard({super.key, required this.seed, this.mark = ShotMark.none});
+  /// **How much light this card is catching**, 0 to 1.
+  ///
+  /// The onboarding used to light its scene with a big tinted radial gradient
+  /// painted *behind* the pile — see the note deleted from `stage_canvas.dart`
+  /// for the full argument against it. What replaces it is this: the light is
+  /// on the cards, and each one catches an amount of it that means something.
+  ///
+  /// Two things feed it, and both are read off the pose rather than authored:
+  /// how far forward the card is standing (its scale), and how gathered the
+  /// whole pile currently is. So a card near the front of a filed stack is the
+  /// brightest thing on the screen and a card at the back of a scattered heap
+  /// is the dimmest — which is the sequence's own argument, from chaos to
+  /// focus, told by the objects it is about instead of by a cloud behind them.
+  final double lit;
+
+  const ShotCard({
+    super.key,
+    required this.seed,
+    this.mark = ShotMark.none,
+    this.lit = 0,
+  });
 
   /// The card's own size. Poses scale it; nothing else measures it.
   static Size get size => Size(78.w, 128.w);
 
   @override
   Widget build(BuildContext context) {
+    final AppPalette colors = context.colors;
+    final double t = lit.clamp(0.0, 1.0);
+    final BorderRadius radius = BorderRadius.circular(AppRadius.sm);
+
+    // **One idea, two tokens, because the two modes have different room.**
+    //
+    // Lighting a card means separating it further from the canvas behind it.
+    // In dark mode there is somewhere brighter to go — the palette's own
+    // elevation ramp runs `surface` to `surfaceElevated` upward — so a lit card
+    // literally rises up it. In light mode a card is already `#FFFFFF` and the
+    // ramp runs the other way (`surfaceElevated` is *darker*, it is for chips
+    // sitting on a surface), so pushing along it would dim the card at the
+    // exact moment it is meant to come forward. There the separation is carried
+    // by the edge instead.
+    //
+    // That is the same move `app_colors.dart` makes throughout: hold the
+    // *effect* constant across the modes, not the number.
+    final bool isDark = colors.isDark;
+    final Color surface = isDark
+        ? Color.lerp(colors.surface, colors.surfaceElevated, t * 0.55)!
+        : colors.surface;
+    final Color border = isDark
+        ? colors.border
+        : Color.lerp(colors.border, colors.textSecondary, t * 0.30)!;
+
     final Widget body = Container(
       width: size.width,
       height: size.height,
       padding: EdgeInsets.all(7.w),
       decoration: BoxDecoration(
-        color: context.colors.surface,
-        borderRadius: mark == ShotMark.filed
-            ? null
-            : BorderRadius.circular(AppRadius.sm),
-        border: Border.all(color: context.colors.border),
+        color: surface,
+        borderRadius: mark == ShotMark.filed ? null : radius,
+        border: Border.all(color: border),
       ),
       child: _Contents(seed: seed, mark: mark),
     );
 
+    // **A lit top edge, which is this app's one sanctioned way to build
+    // depth.** `app_colors.dart` deleted every shadow in the codebase and said
+    // why: on near-black a soft dark shape does not read as depth, it reads as
+    // a smudge — "the one place light *is* used to build depth is glass: a
+    // frosted panel gets a lit top edge instead of a shadow underneath, which
+    // is depth by what the surface reflects rather than by what it blocks."
+    //
+    // A pile of cards catching light along their top edges is that sentence
+    // drawn. Dark mode only: the rim is white, and white on a `#FFFFFF` card is
+    // nothing at all — in light mode the border above is already carrying it.
+    final Widget lit_ = isDark
+        ? GlassRim(
+            borderRadius: radius,
+            // Roughly a third of the card, so the light stays an *edge*. Run
+            // further down and it stops being a rim and becomes a gradient
+            // fill, which is the blob this replaced wearing a smaller hat.
+            falloff: size.height * 0.34,
+            color: Colors.white.withValues(alpha: 0.04 + t * 0.15),
+            child: body,
+          )
+        : body;
+
     // The clipped corner is the app's one signature shape and means exactly
     // one thing: Shoto is holding this. So it appears at the moment the card
     // is filed, and never before.
+    //
+    // Applied *outside* the rim on purpose: the clip then takes the corner off
+    // the lit edge too, so a filed card's highlight stops where the card does
+    // rather than tracing a corner that is no longer there.
     return mark == ShotMark.filed
-        ? ClippedCorner(cut: 14.w, radius: AppRadius.sm, child: body)
-        : body;
+        ? ClippedCorner(cut: 14.w, radius: AppRadius.sm, child: lit_)
+        : lit_;
   }
 }
 

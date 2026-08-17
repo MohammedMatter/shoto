@@ -22,14 +22,57 @@ import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_scroll_behavior.dart';
 import 'package:shoto/core/theme/app_theme.dart';
 import 'package:shoto/core/theme/grid_density_controller.dart';
+import 'package:shoto/core/theme/app_tint.dart';
+import 'package:shoto/core/theme/app_icon_controller.dart';
+import 'package:shoto/core/theme/folder_appearance_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
+import 'package:shoto/core/theme/tint_controller.dart';
 import 'package:shoto/features/quick_save/presentation/pages/quick_save_page.dart';
 import 'package:shoto/features/subscription/domain/repositories/subscription_repository.dart';
 import 'firebase_options.dart';
 
+/// The only orientation Shoto is ever drawn in, asked for as early as Dart
+/// can ask.
+///
+/// **This is the Flutter layer of a three-layer lock, and on its own it is
+/// not enough.** Nothing here runs until the engine has started, so the
+/// window Android paints before that — and the whole of an iOS cold start —
+/// is governed by `android:screenOrientation` in AndroidManifest.xml and
+/// `UISupportedInterfaceOrientations` in Info.plist instead. All three say
+/// `portraitUp` and nothing else; `portraitDown` is absent from all three,
+/// because turning the app 180° is a rotation like any other.
+///
+/// **The result is awaited by [main], and that is the point of it being a
+/// future at all.** This used to be a bare statement, and a bare statement is
+/// a request rather than a lock: `setPreferredOrientations` posts a message to
+/// the platform thread and returns immediately, so the first Flutter frame
+/// could go up before Android had been told anything. Cold-start the app while
+/// holding the phone sideways and you got a landscape frame that snapped
+/// upright a moment later — a rotation flash at the one moment nobody is
+/// looking away.
+///
+/// **A lock that could not be applied must never be a launch that did not
+/// happen**, which is what the `catchError` is for. The failure it guards is
+/// real and specific: Android 8.0 — and only 8.0 — refuses a fixed orientation
+/// on a translucent activity, which the share sheet is. `ShareActivity`
+/// swallows that natively so the call reports success, and this is the second
+/// line of defence, because an error raised here lands before `runApp` and its
+/// symptom is a black screen rather than a rotated one.
+///
+/// Public, and called by nothing but [main] — `test/orientation_lock_test.dart`
+/// asserts what it sends, which a private closure inside `main` could not be
+/// asked.
+Future<void> lockOrientation() => SystemChrome.setPreferredOrientations(
+  const [DeviceOrientation.portraitUp],
+).catchError((Object _) {});
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  // Started here and awaited below rather than on a line of its own, so it
+  // overlaps the preference loads instead of queueing in front of them — see
+  // [lockOrientation] for why it is awaited at all.
+  final Future<void> orientationLocked = lockOrientation();
 
   // Sharing an image into Shoto starts a different Android activity, which
   // asks Flutter to begin on "/share". Branching here rather than inside the
@@ -68,9 +111,16 @@ void main() async {
     // decides where the image is filed, the language and theme decide how it
     // is drawn, and haptics fire on the first tap.
     await Future.wait([
+      orientationLocked,
       sl<LocalIdentity>().load(),
       sl<LocaleController>().load(),
       sl<ThemeController>().load(),
+      // Alongside the theme mode and for the same reason: the sheet is drawn
+      // in the app's own colours, and one that opened teal over an app the
+      // user had made plum would read as a different product's UI — the exact
+      // complaint that made this sheet follow the in-app theme rather than the
+      // system's. One more read of an already-warm SharedPreferences.
+      sl<TintController>().load(),
       sl<AppPreferences>().load(),
       // The share sheet is the *primary* way screenshots enter the library,
       // so leaving it out here would mean the activation step was only ever
@@ -103,10 +153,17 @@ void main() async {
 
   await Future.wait([
     firebaseReady,
+    orientationLocked,
     sl<LocalIdentity>().load(),
     sl<LocaleController>().load(),
     sl<ThemeController>().load(),
+    sl<TintController>().load(),
     sl<GridDensityController>().load(),
+    sl<FolderAppearanceController>().load(),
+    // Reads the stored id, then asks the package manager what is really on
+    // the launcher — see AppIconController, the one preference whose truth
+    // lives outside this app.
+    sl<AppIconController>().load(),
     sl<AppPreferences>().load(),
     // Before the subscription repository is asked anything — every premium
     // gate reads its answer from there, and it consults this.
@@ -158,28 +215,6 @@ void main() async {
   runApp(const MyApp());
 }
 
-/// The theme actually applied, which is not always the one that was chosen.
-///
-/// **Dark is a paid preference; darkness is not.** [ThemeMode.system] stays
-/// free forever, so a free user whose phone is in dark mode still gets a dark
-/// Shoto — anything else would have the app fighting the device every evening
-/// and reading as broken rather than as locked. What Pro buys is pinning the
-/// app dark *regardless* of the phone.
-///
-/// Resolved here rather than written back to storage, and that distinction
-/// matters in both directions: somebody who chose dark before it was paid for
-/// keeps their choice on record and gets it back the instant they subscribe,
-/// and nobody's saved setting is silently rewritten by an app update.
-///
-/// The share sheet deliberately does not do this. It never loads
-/// [ProStatus] — see the fast path in `main` — so it would read every user as
-/// free and drop a subscriber's dark app back to their phone's setting for the
-/// two seconds the sheet is up.
-ThemeMode _effectiveThemeMode(ThemeMode chosen) =>
-    chosen == ThemeMode.dark && !sl<ProStatus>().isPro
-    ? ThemeMode.system
-    : chosen;
-
 /// The whole app when launched from another app's share sheet.
 class QuickSaveApp extends StatelessWidget {
   const QuickSaveApp({super.key});
@@ -197,6 +232,15 @@ class QuickSaveApp extends StatelessWidget {
         // light app whenever the two disagreed, which reads as a different
         // app's UI rather than Shoto's.
         final ThemeMode themeMode = sl<ThemeController>().themeMode;
+        // **Applied without consulting [ProStatus], on purpose.**
+        //
+        // This sheet deliberately never brings the subscription stack up — the
+        // comment on the loads above explains why — so it cannot ask whether
+        // the user still subscribes. It does not need to: the gate is on
+        // *changing* the accent, not on having one. Someone who picked plum
+        // and later lapsed keeps a plum app, which is the ordinary way a
+        // subscription ends. See [TintController.isCustom].
+        final AppTint tint = sl<TintController>().tint;
 
         return MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -204,8 +248,8 @@ class QuickSaveApp extends StatelessWidget {
           locale: sl<LocaleController>().locale,
           supportedLocales: AppLanguage.supportedLocales,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
-          theme: AppTheme.light(language),
-          darkTheme: AppTheme.dark(language),
+          theme: AppTheme.light(language, tint: tint),
+          darkTheme: AppTheme.dark(language, tint: tint),
           themeMode: themeMode,
           themeAnimationDuration: Duration.zero,
           home: const QuickSavePage(),
@@ -231,15 +275,30 @@ class MyApp extends StatelessWidget {
           // one change.
           listenable: Listenable.merge([
             sl<ThemeController>(),
+            // The accent repaints the whole app exactly like the mode does, so
+            // it belongs in the same merged listener rather than in a builder
+            // of its own — see the note above about rebuilding twice for one
+            // change.
+            sl<TintController>(),
             sl<LocaleController>(),
-            // Subscribing or lapsing changes which theme applies without the
-            // stored preference moving — see [_effectiveThemeMode].
+            // Kept after dark mode stopped being a paid preference: the PRO
+            // tags on the paid rows are read off this in more than one place
+            // without a listener of their own, and they have to come down the
+            // moment a subscription lands.
             sl<ProStatus>(),
           ]),
           builder: (context, _) {
-            final ThemeMode themeMode = _effectiveThemeMode(
-              sl<ThemeController>().themeMode,
-            );
+            // **The mode the user chose, applied as chosen.**
+            //
+            // This used to be filtered through an `_effectiveThemeMode` that
+            // downgraded an explicit dark choice to [ThemeMode.system] for
+            // anybody without a subscription. The result was a control that
+            // looked set to dark while the app rendered light, a share sheet
+            // that disagreed with the app it was covering — the sheet never
+            // loads [ProStatus], so it read every user as free — and a
+            // preference the app quietly declined to honour. Charging for a
+            // colour scheme was never worth any of that.
+            final ThemeMode themeMode = sl<ThemeController>().themeMode;
             final LocaleController locales = sl<LocaleController>();
 
             final AppLanguage language = locales.effectiveLanguage;
@@ -253,7 +312,16 @@ class MyApp extends StatelessWidget {
               ThemeMode.dark => Brightness.dark,
               ThemeMode.system => MediaQuery.platformBrightnessOf(context),
             };
-            final AppPalette palette = AppPalette.of(resolvedBrightness);
+            final AppTint tint = sl<TintController>().tint;
+            // Tinted like the themes below, because the system navigation bar
+            // is painted from `palette.background` — which no tint touches —
+            // but reading the untinted palette here would be a second source
+            // of truth waiting to disagree with the first the day a tint does
+            // reach a surface.
+            final AppPalette palette = AppPalette.tinted(
+              tint,
+              isDark: resolvedBrightness == Brightness.dark,
+            );
 
             final bool isDark = palette.isDark;
             final SystemUiOverlayStyle systemBars = SystemUiOverlayStyle(
@@ -292,8 +360,8 @@ class MyApp extends StatelessWidget {
                 locale: locales.locale,
                 supportedLocales: AppLanguage.supportedLocales,
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
-                theme: AppTheme.light(language),
-                darkTheme: AppTheme.dark(language),
+                theme: AppTheme.light(language, tint: tint),
+                darkTheme: AppTheme.dark(language, tint: tint),
                 themeMode: themeMode,
                 // The single most important line for how switching themes
                 // *feels*. Material cross-fades ThemeData over 200ms by

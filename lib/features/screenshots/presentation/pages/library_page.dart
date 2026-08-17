@@ -17,7 +17,9 @@ import 'package:shoto/features/screenshots/presentation/pages/search_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/import_screenshots_action.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/library_intake_row.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/library_quota_band.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/browsing_only.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/library_view_sheet.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/quick_tile_offer.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshots_body.dart';
 
 /// The full grid of every screenshot.
@@ -28,6 +30,7 @@ import 'package:shoto/features/screenshots/presentation/widgets/screenshots_body
 /// *is* the app.
 class LibraryPage extends StatelessWidget {
   const LibraryPage({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +106,12 @@ class LibraryPage extends StatelessWidget {
             // part of the library to show, and this is about something that is
             // not in the library yet.
             const SliverToBoxAdapter(child: LibraryIntakeRow()),
+            // The other thing that is not in the library yet — a faster way to
+            // put it there. Beneath the intake row because that one is about
+            // screenshots actually waiting, and this is about the next one.
+            // Drawn once in an install's lifetime and nothing at all after
+            // that; see [QuickTileOffer].
+            const SliverToBoxAdapter(child: QuickTileOffer()),
           ],
         ),
       ),
@@ -110,7 +119,7 @@ class LibraryPage extends StatelessWidget {
   }
 }
 
-/// Import, view options and search — the three controls that belong to the
+/// Import, select, view options and search — the controls that belong to the
 /// library as a whole rather than to any screenshot in it.
 ///
 /// The count that used to sit under the title is gone. "3 screenshots" was
@@ -118,11 +127,18 @@ class LibraryPage extends StatelessWidget {
 /// within a hundred pixels, in the tightest part of the screen. The chip wins
 /// that argument — it carries the count *and* is the control that changes it,
 /// while the subtitle was a label with nothing to do.
+///
+/// All three stand down while a selection is on — see [BrowsingOnly], which
+/// is also what the folder header wraps its own options in.
 class _LibraryActions extends StatelessWidget {
   const _LibraryActions();
 
   @override
   Widget build(BuildContext context) {
+    return BrowsingOnly(child: _actions(context));
+  }
+
+  Widget _actions(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -160,6 +176,30 @@ class _LibraryActions extends StatelessWidget {
             return Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // **The affordance the long-press never had.**
+                //
+                // Bulk actions used to be reachable only by long-pressing a
+                // thumbnail, which nothing on the screen said, and per-item
+                // actions by a 17dp "⋯" disc drawn on the picture, which
+                // nothing could hit. The gesture took over the second job —
+                // that is what a photo grid's long-press means everywhere —
+                // and this button is the first one's missing sign.
+                //
+                // Beside the view options rather than in them: that sheet is
+                // about how the library is being *looked at*, and this starts
+                // a job on it.
+                //
+                // Absent while there is nothing to pick — an empty grid under
+                // a toolbar asking which screenshots to act on is a mode with
+                // no way to satisfy it.
+                if (state.visibleScreenshots.isNotEmpty) ...[
+                  HeaderIconButton(
+                    icon: Icons.checklist_rounded,
+                    tooltip: context.l10n.librarySelect,
+                    onTap: () => bloc.add(EnterSelectionModeEvent()),
+                  ),
+                  SizedBox(width: 8.w),
+                ],
                 HeaderIconButton(
                   icon: Icons.tune_rounded,
                   tooltip: context.l10n.librarySortLabel,

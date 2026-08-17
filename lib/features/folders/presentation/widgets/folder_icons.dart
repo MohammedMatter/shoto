@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shoto/core/localization/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// The glyphs a folder can be given.
@@ -23,9 +24,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 abstract final class FolderIcons {
   /// **Grouped by subject, in reading order, and never reordered.**
   ///
-  /// The grid carries no group headings — adjacency is doing the sorting, and
-  /// labelling it would add eight translations and a row of chrome to
-  /// something the eye already solved. Same call as the intent picker.
+  /// The grid used to carry no headings, on the argument that adjacency was
+  /// doing the sorting and a label would add translations and chrome to
+  /// something the eye had already solved. Ninety-eight tiles is where that
+  /// stops being true: adjacency tells you two glyphs are related, it does not
+  /// tell you *where to start looking*, and the one group people arrive
+  /// wanting — the apps a screenshot came from — was at the very bottom of an
+  /// unlabelled scroll. The headings are in [groups] now; this map stays the
+  /// catalog.
   ///
   /// **Keys are permanent.** Each one is written into a `folders.icon_key`
   /// cell, so a key may be added and its position moved, but the glyph a key
@@ -182,12 +188,119 @@ abstract final class FolderIcons {
   /// Every key the picker offers, subjects first and apps last.
   static List<String> get keys => <String>[...byKey.keys, ...brandsByKey.keys];
 
+  /// The catalog as the picker draws it: labelled sections, in order.
+  ///
+  /// **The grouping was always there — as comments.** Every key in the two
+  /// maps above already sat in a run of related glyphs, and the runs were
+  /// maintained by hand and enforced by nothing. Making them data does two
+  /// things at once: the picker can print the heading, and
+  /// `folder_icons_test.dart` can assert that the sections and the catalog
+  /// still agree, so a key added to a map and forgotten here fails a test
+  /// instead of quietly vanishing from the only screen that offers it.
+  ///
+  /// **The brands are split in two on purpose.** They were one block called
+  /// "the apps", and thirteen of the eighteen are places people talk to each
+  /// other — which is the group somebody naming a folder "Instagram" is
+  /// actually looking for. Burying it with Amazon and GitHub made the most
+  /// wanted section the hardest to see.
+  ///
+  /// **Social sits second, directly under the basics, and that is a
+  /// deliberate break from the order the maps are written in.** The rest of
+  /// the list runs in its original reading order so that muscle memory keeps
+  /// working — but this app exists because screenshots come *from* somewhere,
+  /// and the single most common way anybody names a pile of them is by the app
+  /// they came out of. Ranking is what a section list is for: the group people
+  /// reach for most should not be eighth.
+  static List<FolderIconGroup> get groups => <FolderIconGroup>[
+    FolderIconGroup(
+      label: (BuildContext c) => c.l10n.folderIconsBasics,
+      keys: const <String>[
+        'folder', 'star', 'heart', 'bookmark',
+        'flag', 'idea', 'sparkle', 'magic',
+      ],
+    ),
+    FolderIconGroup(
+      label: (BuildContext c) => c.l10n.folderIconsSocial,
+      keys: const <String>[
+        'whatsapp', 'instagram', 'telegram', 'x', 'facebook',
+        'youtube', 'tiktok', 'snapchat', 'linkedin', 'reddit',
+        'pinterest', 'discord', 'twitch',
+      ],
+    ),
+    FolderIconGroup(
+      label: (BuildContext c) => c.l10n.folderIconsWork,
+      keys: const <String>[
+        'doc', 'note', 'book', 'school', 'work',
+        'brain', 'code', 'link', 'ruler', 'scissors',
+      ],
+    ),
+    FolderIconGroup(
+      label: (BuildContext c) => c.l10n.folderIconsMoney,
+      keys: const <String>[
+        'money', 'card', 'wallet', 'receipt', 'bank',
+        'cart', 'bag', 'tag', 'store', 'chart',
+      ],
+    ),
+    FolderIconGroup(
+      label: (BuildContext c) => c.l10n.folderIconsTravel,
+      keys: const <String>[
+        'map', 'place', 'flight', 'car', 'train',
+        'bike', 'hotel', 'beach', 'building', 'luggage',
+      ],
+    ),
+    FolderIconGroup(
+      label: (BuildContext c) => c.l10n.folderIconsHome,
+      keys: const <String>[
+        'health', 'pill', 'fitness', 'run', 'food', 'coffee',
+        'home', 'bed', 'pet', 'plant', 'tree', 'leaf',
+      ],
+    ),
+    FolderIconGroup(
+      label: (BuildContext c) => c.l10n.folderIconsMedia,
+      keys: const <String>[
+        'music', 'headphones', 'play', 'film', 'ticket',
+        'mic', 'theatre', 'game', 'camera', 'screen',
+      ],
+    ),
+    FolderIconGroup(
+      label: (BuildContext c) => c.l10n.folderIconsPeople,
+      keys: const <String>[
+        'person', 'people', 'chat', 'mail', 'call',
+        'gift', 'cake', 'calendar', 'clock', 'bell',
+      ],
+    ),
+    FolderIconGroup(
+      label: (BuildContext c) => c.l10n.folderIconsSymbols,
+      keys: const <String>[
+        'trophy', 'medal', 'fire', 'bolt', 'megaphone',
+        'cloud', 'moon', 'sun', 'snow', 'key',
+      ],
+    ),
+    FolderIconGroup(
+      label: (BuildContext c) => c.l10n.folderIconsApps,
+      keys: const <String>['spotify', 'github', 'apple', 'google', 'amazon'],
+    ),
+  ];
+
   static IconData resolve(String? key) =>
       key == null ? fallback : byKey[key] ?? fallback;
 
   /// The brand mark for [key], or null when the key is an ordinary glyph.
   static FaIconData? brand(String? key) =>
       key == null ? null : brandsByKey[key];
+}
+
+/// One labelled run of glyphs in the picker.
+///
+/// The label is a function of context rather than a string, for the reason
+/// every translated label in this app is: an ARB lookup needs the widget tree,
+/// and a `const` list of resolved strings would freeze the picker into
+/// whatever language the app started in. Same shape as `PremiumFeature.title`.
+class FolderIconGroup {
+  final String Function(BuildContext) label;
+  final List<String> keys;
+
+  const FolderIconGroup({required this.label, required this.keys});
 }
 
 /// A folder's glyph, whichever of the two fonts it came out of.

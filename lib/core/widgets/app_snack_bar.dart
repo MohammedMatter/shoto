@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shoto/core/theme/app_colors.dart';
+import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 
 /// The one way this app shows a passing message.
@@ -26,6 +27,9 @@ void showAppSnackBar(
   BuildContext context,
   String message, {
   SnackKind kind = SnackKind.neutral,
+  String? actionLabel,
+  VoidCallback? onAction,
+  Duration duration = const Duration(seconds: 3),
 }) {
   if (_visibleMessage == message) return;
 
@@ -62,6 +66,33 @@ void showAppSnackBar(
                   ),
                 ),
               ),
+              // **An answer, not a link.**
+              //
+              // Every other snack bar in Shoto reports something that already
+              // happened and needs no reply. This one is used to *ask* — "file
+              // WhatsApp here from now on?" — and a question with no visible
+              // way to say yes is not a question. Dismissing it still means no,
+              // which is why the offer never repeats itself for that app.
+              if (actionLabel != null && onAction != null) ...<Widget>[
+                SizedBox(width: 10.w),
+                PressableScale(
+                  scale: 0.94,
+                  onTap: () {
+                    messenger.hideCurrentSnackBar();
+                    onAction();
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.w,
+                      vertical: 4.h,
+                    ),
+                    child: Text(
+                      actionLabel,
+                      style: context.text.button.copyWith(color: tint),
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
           backgroundColor: context.colors.surface,
@@ -75,7 +106,7 @@ void showAppSnackBar(
             borderRadius: BorderRadius.circular(16.r),
             side: BorderSide(color: context.colors.border),
           ),
-          duration: const Duration(seconds: 3),
+          duration: duration,
         ),
       );
 

@@ -56,6 +56,14 @@ class ToggleSelectItemEvent extends ScreenshotsEvent {
 
 class ClearSelectionEvent extends ScreenshotsEvent {}
 
+/// Turns selection mode on because the user asked for it, with nothing picked.
+///
+/// Sent by the Select button in the Library and folder headers. That button is
+/// how the mode is entered now that a long-press on a thumbnail opens that
+/// screenshot's own actions instead — a gesture with no affordance was the
+/// only door to bulk actions, and the button is the affordance.
+class EnterSelectionModeEvent extends ScreenshotsEvent {}
+
 /// Turns selection mode on **before anything is selected**, on behalf of a
 /// screen that cannot do the picking itself.
 ///

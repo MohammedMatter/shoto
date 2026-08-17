@@ -257,6 +257,16 @@ class AnimatedIdGrid<T> extends StatelessWidget {
   /// setting — a box and a sliver cannot share a scroll.
   final List<Widget> leadingSlivers;
 
+  /// Slivers placed below the grid, inside the same scroll view.
+  ///
+  /// The mirror of [leadingSlivers] and there for the smaller of the two jobs:
+  /// giving a short list a bottom edge. A list of two tiles on a tall phone is
+  /// two tiles and then a screenful of nothing, which reads as content that
+  /// failed to load rather than as a list that has ended — and no amount of
+  /// styling on the tiles fixes it, because the problem is the absence below
+  /// them. A closing line costs one row and answers it.
+  final List<Widget> trailingSlivers;
+
   const AnimatedIdGrid({
     super.key,
     required this.items,
@@ -266,6 +276,7 @@ class AnimatedIdGrid<T> extends StatelessWidget {
     this.padding = EdgeInsets.zero,
     this.cacheExtent,
     this.leadingSlivers = const <Widget>[],
+    this.trailingSlivers = const <Widget>[],
   });
 
   @override
@@ -285,6 +296,7 @@ class AnimatedIdGrid<T> extends StatelessWidget {
           gridDelegate: gridDelegate,
           padding: padding,
         ),
+        ...trailingSlivers,
       ],
     );
   }

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// `show DateFormat`, not a bare import: `package:intl` exports its own
+// `TextDirection`, which shadows the one from `dart:ui` that the plate painter
+// takes — the whole file stopped compiling on `TextDirection.rtl` the moment
+// this line was added.
+import 'package:intl/intl.dart' show DateFormat;
 import 'package:shoto/core/localization/l10n.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
@@ -80,11 +85,32 @@ class FolderCard extends StatelessWidget {
   /// delete the thing currently being named.
   final VoidCallback? onMoreTap;
 
+  /// What the pocket prints under the name.
+  ///
+  /// **Passed in rather than read from [FolderAppearanceController] here**,
+  /// and the first attempt did read it here — which is how this comment came
+  /// to exist. A leaf widget that reaches into the service locator cannot be
+  /// built without the app's wiring around it: adding that one line broke the
+  /// editor sheet's preview, both of its golden tests and the detail page's,
+  /// none of which have any interest in a global preference. The grid is the
+  /// one place that *has* the user's choice, so the grid is the one place that
+  /// reads it.
+  ///
+  /// The defaults are what the card drew before either switch existed, so
+  /// every other call site — the editor preview above all, which is a folder
+  /// that does not exist yet and has no date worth printing — keeps working
+  /// without knowing anything changed.
+  final bool showCount;
+
+  final bool showCreated;
+
   const FolderCard({
     super.key,
     required this.folder,
     required this.onTap,
     this.onMoreTap,
+    this.showCount = true,
+    this.showCreated = false,
   });
 
   /// How much of the tile's height the card-stock plate takes.
@@ -172,7 +198,12 @@ class FolderCard extends StatelessWidget {
                 bottom: 0,
                 start: 0,
                 end: width * (1 - _pocketWidth),
-                child: _Pocket(folder: folder, color: color),
+                child: _Pocket(
+                  folder: folder,
+                  color: color,
+                  showCount: showCount,
+                  showCreated: showCreated,
+                ),
               ),
             ],
           );
@@ -314,8 +345,44 @@ class _PlatePainter extends CustomPainter {
 class _Pocket extends StatelessWidget {
   final FolderEntity folder;
   final Color color;
+  final bool showCount;
+  final bool showCreated;
 
-  const _Pocket({required this.folder, required this.color});
+  const _Pocket({
+    required this.folder,
+    required this.color,
+    required this.showCount,
+    required this.showCreated,
+  });
+
+  /// One style for both optional lines.
+  ///
+  /// Not a lighter *colour*: on eight different hues there is no single grey
+  /// that stays subordinate without going illegible on one of them.
+  /// Transparency of the foreground already chosen for this swatch keeps the
+  /// relationship right on all eight.
+  TextStyle _subtitle(BuildContext context, Color foreground) =>
+      context.text.caption.copyWith(
+        color: foreground.withValues(alpha: 0.78),
+        fontSize: 10.5.sp,
+        height: 1.2,
+      );
+
+  /// Falls back to the unlocalised format rather than throwing.
+  ///
+  /// The same guard the subscription card documents: `DateFormat` raises for a
+  /// locale whose data has not been loaded, and a folder grid is not a screen
+  /// to lose over a date.
+  String _created(BuildContext context) {
+    final DateTime date = folder.createdAt;
+    try {
+      return DateFormat.yMMMd(
+        Localizations.localeOf(context).toLanguageTag(),
+      ).format(date);
+    } on Exception {
+      return DateFormat.yMMMd().format(date);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -340,21 +407,36 @@ class _Pocket extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          SizedBox(height: 2.h),
-          Text(
-            context.l10n.countScreenshots(folder.screenshotCount),
-            style: context.text.caption.copyWith(
-              // Not a lighter *colour*: on eight different hues there is no
-              // single grey that stays subordinate without going illegible on
-              // one of them. Transparency of the foreground already chosen for
-              // this swatch keeps the relationship right on all eight.
-              color: foreground.withValues(alpha: 0.78),
-              fontSize: 10.5.sp,
-              height: 1.2,
+          // **Both lines are optional now, and the name is not.**
+          //
+          // A folder with neither switched on is a coloured plate and a name,
+          // which is a legitimate thing to want — the grid is mostly scanned
+          // by colour and glyph — and it is the reason these are two switches
+          // rather than one "details" toggle: the count answers "is there
+          // anything in here" and the date answers "how long has this been
+          // sitting", and almost nobody wants both.
+          if (showCount) ...<Widget>[
+            SizedBox(height: 2.h),
+            Text(
+              context.l10n.countScreenshots(folder.screenshotCount),
+              style: _subtitle(context, foreground),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
+          ],
+          if (showCreated) ...<Widget>[
+            SizedBox(height: 2.h),
+            Text(
+              // Localised through the same `DateFormat.yMMMd` the subscription
+              // card uses, and short-form rather than long: this sits in a
+              // pocket about a third of a phone wide, where "12 September
+              // 2026" cannot fit in any language.
+              _created(context),
+              style: _subtitle(context, foreground),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         ],
       ),
     );

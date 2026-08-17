@@ -106,6 +106,8 @@ void main() {
     final List<AppMessage> all = <AppMessage>[
       AppMessage.loadScreenshots,
       AppMessage.loadFolders,
+      AppMessage.saveFolder,
+      AppMessage.deleteFolder,
       AppMessage.scanDuplicates,
       AppMessage.deleteSelected,
       AppMessage.onboarding,
