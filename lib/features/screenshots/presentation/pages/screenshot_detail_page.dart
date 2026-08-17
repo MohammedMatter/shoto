@@ -30,6 +30,7 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.d
 import 'package:shoto/features/screenshots/presentation/widgets/intent_full_picker_sheet.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/intent_visuals.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/photo_chrome.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/reminder_sheet.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_actions.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_limit_gate.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/screenshot_text_layer.dart';
@@ -1189,6 +1190,7 @@ class _ActionBar extends StatelessWidget {
                   label: context.l10n.detailMore,
                   onTap: () => _showMoreSheet(
                     context,
+                    item: item,
                     onMove: onMove,
                     onDelete: onDelete,
                     onSelectText: onSelectText,
@@ -1214,6 +1216,7 @@ class _ActionBar extends StatelessWidget {
 /// red here is not the safeguard, it is the warning that one is coming.
 Future<void> _showMoreSheet(
   BuildContext context, {
+  required ScreenshotEntity item,
   required VoidCallback onMove,
   required VoidCallback onDelete,
   VoidCallback? onSelectText,
@@ -1253,6 +1256,34 @@ Future<void> _showMoreSheet(
                   onSelectText();
                 },
               ),
+            // **The viewer had no way to set one, and this is where deciding
+            // to come back actually happens.** Reminders were reachable only
+            // by long-pressing the tile in the grid — so the moment somebody
+            // is looking at a screenshot and thinks "not now", they had to
+            // leave the picture to say so.
+            ListTile(
+              leading: Icon(
+                item.hasPendingReminder
+                    ? Icons.notifications_active_rounded
+                    : Icons.notifications_none_rounded,
+                color: item.hasPendingReminder
+                    ? context.colors.primary
+                    : context.colors.textPrimary,
+              ),
+              title: Text(
+                context.l10n.reminderTitle,
+                style: context.text.bodyLarge,
+              ),
+              onTap: () {
+                final ScreenshotsBloc bloc = context.read<ScreenshotsBloc>();
+                Navigator.of(sheetContext).pop();
+                showReminderSheet(
+                  context,
+                  item,
+                  onChanged: () => bloc.add(LoadScreenshotsEvent()),
+                );
+              },
+            ),
             ListTile(
               leading: Icon(
                 Icons.folder_open_rounded,

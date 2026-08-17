@@ -582,6 +582,60 @@ abstract class AppLocalizations {
   /// **'You wanted to come back to this screenshot'**
   String get reminderNotificationBody;
 
+  /// No description provided for @remindersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get remindersTitle;
+
+  /// No description provided for @remindersMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Missed'**
+  String get remindersMissed;
+
+  /// No description provided for @remindersUpcoming.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming up'**
+  String get remindersUpcoming;
+
+  /// No description provided for @remindersNoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No reminders'**
+  String get remindersNoneTitle;
+
+  /// No description provided for @remindersNoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open a screenshot’s actions and pick “Remind me about this” to be brought back to it.'**
+  String get remindersNoneBody;
+
+  /// No description provided for @remindersClearOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get remindersClearOne;
+
+  /// No description provided for @remindersCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 reminder} other{{count} reminders}}'**
+  String remindersCount(int count);
+
+  /// No description provided for @remindersMissedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 missed} other{{count} missed}}'**
+  String remindersMissedCount(int count);
+
+  /// No description provided for @remindersNextAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Next {when}'**
+  String remindersNextAt(String when);
+
   /// No description provided for @commonCancel.
   ///
   /// In en, this message translates to:

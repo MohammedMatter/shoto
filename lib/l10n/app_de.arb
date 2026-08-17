@@ -154,6 +154,36 @@
     }
   },
   "reminderNotificationBody": "Du wolltest zu diesem Screenshot zurückkommen",
+  "remindersTitle": "Erinnerungen",
+  "remindersMissed": "Verpasst",
+  "remindersUpcoming": "Demnächst",
+  "remindersNoneTitle": "Keine Erinnerungen",
+  "remindersNoneBody": "Öffne die Aktionen eines Screenshots und wähle „Daran erinnern“, um später darauf zurückzukommen.",
+  "remindersClearOne": "Löschen",
+  "remindersCount": "{count, plural, =1{1 Erinnerung} other{{count} Erinnerungen}}",
+  "@remindersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersMissedCount": "{count, plural, =1{1 verpasst} other{{count} verpasst}}",
+  "@remindersMissedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersNextAt": "Nächste {when}",
+  "@remindersNextAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
   "commonCancel": "Abbrechen",
   "commonDelete": "Löschen",
   "commonRetry": "Erneut versuchen",

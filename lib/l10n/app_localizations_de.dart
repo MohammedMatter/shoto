@@ -317,6 +317,52 @@ class AppLocalizationsDe extends AppLocalizations {
       'Du wolltest zu diesem Screenshot zurückkommen';
 
   @override
+  String get remindersTitle => 'Erinnerungen';
+
+  @override
+  String get remindersMissed => 'Verpasst';
+
+  @override
+  String get remindersUpcoming => 'Demnächst';
+
+  @override
+  String get remindersNoneTitle => 'Keine Erinnerungen';
+
+  @override
+  String get remindersNoneBody =>
+      'Öffne die Aktionen eines Screenshots und wähle „Daran erinnern“, um später darauf zurückzukommen.';
+
+  @override
+  String get remindersClearOne => 'Löschen';
+
+  @override
+  String remindersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Erinnerungen',
+      one: '1 Erinnerung',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersMissedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count verpasst',
+      one: '1 verpasst',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersNextAt(String when) {
+    return 'Nächste $when';
+  }
+
+  @override
   String get commonCancel => 'Abbrechen';
 
   @override

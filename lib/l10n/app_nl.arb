@@ -154,6 +154,36 @@
     }
   },
   "reminderNotificationBody": "Je wilde terugkomen op deze screenshot",
+  "remindersTitle": "Herinneringen",
+  "remindersMissed": "Gemist",
+  "remindersUpcoming": "Binnenkort",
+  "remindersNoneTitle": "Geen herinneringen",
+  "remindersNoneBody": "Open de acties van een screenshot en kies ‘Herinner me hieraan’ om er later op terug te komen.",
+  "remindersClearOne": "Wissen",
+  "remindersCount": "{count, plural, =1{1 herinnering} other{{count} herinneringen}}",
+  "@remindersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersMissedCount": "{count, plural, =1{1 gemist} other{{count} gemist}}",
+  "@remindersMissedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersNextAt": "Volgende {when}",
+  "@remindersNextAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
   "commonCancel": "Annuleren",
   "commonDelete": "Verwijderen",
   "commonRetry": "Opnieuw proberen",

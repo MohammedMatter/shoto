@@ -317,6 +317,52 @@ class AppLocalizationsNl extends AppLocalizations {
       'Je wilde terugkomen op deze screenshot';
 
   @override
+  String get remindersTitle => 'Herinneringen';
+
+  @override
+  String get remindersMissed => 'Gemist';
+
+  @override
+  String get remindersUpcoming => 'Binnenkort';
+
+  @override
+  String get remindersNoneTitle => 'Geen herinneringen';
+
+  @override
+  String get remindersNoneBody =>
+      'Open de acties van een screenshot en kies ‘Herinner me hieraan’ om er later op terug te komen.';
+
+  @override
+  String get remindersClearOne => 'Wissen';
+
+  @override
+  String remindersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count herinneringen',
+      one: '1 herinnering',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersMissedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gemist',
+      one: '1 gemist',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersNextAt(String when) {
+    return 'Volgende $when';
+  }
+
+  @override
   String get commonCancel => 'Annuleren';
 
   @override

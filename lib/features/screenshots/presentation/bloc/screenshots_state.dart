@@ -265,6 +265,28 @@ class ScreenshotsLoadedState extends ScreenshotsState {
 
   late final int favoritesCount = screenshots.where((s) => s.isFavorite).length;
 
+  /// Every screenshot the user asked to be brought back to, soonest first.
+  ///
+  /// **Derived, and deliberately not split into "due" and "missed" here.**
+  /// Which side of the line a reminder falls on depends on the clock, and a
+  /// clock read baked into an immutable state is a fact that quietly stops
+  /// being true while the state is still on screen. The reader splits it —
+  /// see `RemindersPage` — so the answer is as old as the frame rather than as
+  /// old as the last library load.
+  ///
+  /// Includes reminders whose moment has passed. That is the point: a fired
+  /// reminder clears its own notification, and without this the only thing
+  /// that ever asked for the user's attention would vanish leaving nothing
+  /// behind. See the note on `remind_at` in [AppDatabase].
+  late final List<ScreenshotEntity> reminders = () {
+    final List<ScreenshotEntity> withReminder = <ScreenshotEntity>[
+      for (final ScreenshotEntity item in screenshots)
+        if (item.remindAt != null) item,
+    ];
+    withReminder.sort((a, b) => a.remindAt!.compareTo(b.remindAt!));
+    return withReminder;
+  }();
+
   /// Whether any status filter would show a different set than *All*.
   ///
   /// **A control that cannot change what you see is not a control.** A new

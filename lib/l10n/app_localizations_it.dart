@@ -318,6 +318,52 @@ class AppLocalizationsIt extends AppLocalizations {
   String get reminderNotificationBody => 'Volevi tornare su questo screenshot';
 
   @override
+  String get remindersTitle => 'Promemoria';
+
+  @override
+  String get remindersMissed => 'Persi';
+
+  @override
+  String get remindersUpcoming => 'In arrivo';
+
+  @override
+  String get remindersNoneTitle => 'Nessun promemoria';
+
+  @override
+  String get remindersNoneBody =>
+      'Apri le azioni di uno screenshot e scegli «Ricordamelo» per tornarci più tardi.';
+
+  @override
+  String get remindersClearOne => 'Rimuovi';
+
+  @override
+  String remindersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count promemoria',
+      one: '1 promemoria',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersMissedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count persi',
+      one: '1 perso',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersNextAt(String when) {
+    return 'Prossimo $when';
+  }
+
+  @override
   String get commonCancel => 'Annulla';
 
   @override

@@ -26,6 +26,7 @@ import 'package:shoto/features/screenshots/presentation/bloc/screenshots_bloc.da
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_event.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/screenshots_state.dart';
 import 'package:shoto/features/screenshots/presentation/pages/intent_page.dart';
+import 'package:shoto/features/screenshots/presentation/pages/reminders_page.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/import_screenshots_action.dart';
 
 class HomePage extends StatefulWidget {
@@ -186,8 +187,8 @@ class _HomePageState extends State<HomePage>
     // Nothing is known yet — the handler has not run, or the summary read
     // itself failed. Written out rather than left to a wildcard, same rule as
     // the rest of this switch.
-    ScreenshotsInitialState() || ScreenshotsLoadingState() =>
-      const HomeInboxSkeleton(),
+    ScreenshotsInitialState() ||
+    ScreenshotsLoadingState() => const HomeInboxSkeleton(),
 
     // **An empty library still gets the headline, a filled one does not.**
     //
@@ -204,11 +205,23 @@ class _HomePageState extends State<HomePage>
           importScreenshots(context, bloc: context.read<ScreenshotsBloc>()),
     ),
 
-    ScreenshotsLoadedState(:final Map<IntentRef, int> waitingByIntent) =>
+    ScreenshotsLoadedState(
+      :final Map<IntentRef, int> waitingByIntent,
+      :final List<ScreenshotEntity> reminders,
+    ) =>
       HomeInbox(
         unsorted: all.where((s) => s.isUnsorted).toList(),
         waiting: waitingByIntent,
+        reminders: reminders,
         onOpenLibrary: widget.onOpenLibrary,
+        onOpenReminders: () => Navigator.of(context).push(
+          FadeSlidePageRoute(
+            builder: (_) => BlocProvider<ScreenshotsBloc>.value(
+              value: context.read<ScreenshotsBloc>(),
+              child: const RemindersPage(),
+            ),
+          ),
+        ),
         onOpenIntent: (IntentRef intent) => Navigator.of(context).push(
           FadeSlidePageRoute(
             builder: (_) => BlocProvider<ScreenshotsBloc>.value(
@@ -320,10 +333,8 @@ class _HomePageState extends State<HomePage>
                   // The summary answers the first question immediately, so the
                   // page can be laid out correctly from the first frame and
                   // only the *contents* of those sections arrive late.
-                  final LibrarySummary? summary = state
-                          is ScreenshotsLoadingState
-                      ? state.summary
-                      : null;
+                  final LibrarySummary? summary =
+                      state is ScreenshotsLoadingState ? state.summary : null;
                   final bool hasLibrary =
                       all.isNotEmpty || (summary != null && !summary.isEmpty);
 

@@ -154,6 +154,36 @@
     }
   },
   "reminderNotificationBody": "Volevi tornare su questo screenshot",
+  "remindersTitle": "Promemoria",
+  "remindersMissed": "Persi",
+  "remindersUpcoming": "In arrivo",
+  "remindersNoneTitle": "Nessun promemoria",
+  "remindersNoneBody": "Apri le azioni di uno screenshot e scegli «Ricordamelo» per tornarci più tardi.",
+  "remindersClearOne": "Rimuovi",
+  "remindersCount": "{count, plural, =1{1 promemoria} other{{count} promemoria}}",
+  "@remindersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersMissedCount": "{count, plural, =1{1 perso} other{{count} persi}}",
+  "@remindersMissedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersNextAt": "Prossimo {when}",
+  "@remindersNextAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
   "commonCancel": "Annulla",
   "commonDelete": "Elimina",
   "commonRetry": "Riprova",

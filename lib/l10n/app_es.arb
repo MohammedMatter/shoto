@@ -154,6 +154,36 @@
     }
   },
   "reminderNotificationBody": "Querías volver a esta captura",
+  "remindersTitle": "Recordatorios",
+  "remindersMissed": "Perdidos",
+  "remindersUpcoming": "Próximos",
+  "remindersNoneTitle": "Sin recordatorios",
+  "remindersNoneBody": "Abre las acciones de una captura y elige «Recordármelo» para volver a ella más tarde.",
+  "remindersClearOne": "Quitar",
+  "remindersCount": "{count, plural, =1{1 recordatorio} other{{count} recordatorios}}",
+  "@remindersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersMissedCount": "{count, plural, =1{1 perdido} other{{count} perdidos}}",
+  "@remindersMissedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersNextAt": "Siguiente {when}",
+  "@remindersNextAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
   "commonCancel": "Cancelar",
   "commonDelete": "Eliminar",
   "commonRetry": "Reintentar",

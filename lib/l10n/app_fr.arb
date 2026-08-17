@@ -154,6 +154,36 @@
     }
   },
   "reminderNotificationBody": "Vous vouliez revenir à cette capture",
+  "remindersTitle": "Rappels",
+  "remindersMissed": "Manqués",
+  "remindersUpcoming": "À venir",
+  "remindersNoneTitle": "Aucun rappel",
+  "remindersNoneBody": "Ouvre les actions d’une capture et choisis « Me le rappeler » pour y revenir plus tard.",
+  "remindersClearOne": "Effacer",
+  "remindersCount": "{count, plural, =1{1 rappel} other{{count} rappels}}",
+  "@remindersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersMissedCount": "{count, plural, =1{1 manqué} other{{count} manqués}}",
+  "@remindersMissedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersNextAt": "Prochain {when}",
+  "@remindersNextAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
   "commonCancel": "Annuler",
   "commonDelete": "Supprimer",
   "commonRetry": "Réessayer",

@@ -154,6 +154,36 @@
     }
   },
   "reminderNotificationBody": "You wanted to come back to this screenshot",
+  "remindersTitle": "Reminders",
+  "remindersMissed": "Missed",
+  "remindersUpcoming": "Coming up",
+  "remindersNoneTitle": "No reminders",
+  "remindersNoneBody": "Open a screenshot’s actions and pick “Remind me about this” to be brought back to it.",
+  "remindersClearOne": "Clear",
+  "remindersCount": "{count, plural, =1{1 reminder} other{{count} reminders}}",
+  "@remindersCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersMissedCount": "{count, plural, =1{1 missed} other{{count} missed}}",
+  "@remindersMissedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersNextAt": "Next {when}",
+  "@remindersNextAt": {
+    "placeholders": {
+      "when": {
+        "type": "String"
+      }
+    }
+  },
   "commonCancel": "Cancel",
   "commonDelete": "Delete",
   "commonRetry": "Try again",

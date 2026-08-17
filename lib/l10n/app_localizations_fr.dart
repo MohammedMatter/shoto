@@ -317,6 +317,52 @@ class AppLocalizationsFr extends AppLocalizations {
   String get reminderNotificationBody => 'Vous vouliez revenir à cette capture';
 
   @override
+  String get remindersTitle => 'Rappels';
+
+  @override
+  String get remindersMissed => 'Manqués';
+
+  @override
+  String get remindersUpcoming => 'À venir';
+
+  @override
+  String get remindersNoneTitle => 'Aucun rappel';
+
+  @override
+  String get remindersNoneBody =>
+      'Ouvre les actions d’une capture et choisis « Me le rappeler » pour y revenir plus tard.';
+
+  @override
+  String get remindersClearOne => 'Effacer';
+
+  @override
+  String remindersCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rappels',
+      one: '1 rappel',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersMissedCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count manqués',
+      one: '1 manqué',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersNextAt(String when) {
+    return 'Prochain $when';
+  }
+
+  @override
   String get commonCancel => 'Annuler';
 
   @override

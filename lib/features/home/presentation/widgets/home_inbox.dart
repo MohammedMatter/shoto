@@ -66,15 +66,22 @@ class HomeInbox extends StatelessWidget {
   /// is the count.
   final int? unsortedCount;
 
+  /// Reminders the user has set, soonest first, including ones whose moment
+  /// has passed. Empty in a [HomeInbox.preview].
+  final List<ScreenshotEntity> reminders;
+
   final ValueChanged<LibraryFilter> onOpenLibrary;
   final void Function(IntentRef intent) onOpenIntent;
+  final VoidCallback onOpenReminders;
 
   const HomeInbox({
     super.key,
     required this.unsorted,
     required this.waiting,
+    required this.reminders,
     required this.onOpenLibrary,
     required this.onOpenIntent,
+    required this.onOpenReminders,
   }) : unsortedCount = null;
 
   /// The same block, drawn from counts alone while the gallery is still being
@@ -103,17 +110,23 @@ class HomeInbox extends StatelessWidget {
     required this.waiting,
   }) : unsortedCount = count,
        unsorted = const <ScreenshotEntity>[],
+       // Not in the summary: reminders are a join against the library, and
+       // this constructor exists precisely for the frames before that has
+       // landed. Drawing a count here would mean drawing it wrong.
+       reminders = const <ScreenshotEntity>[],
        onOpenLibrary = _ignoreFilter,
-       onOpenIntent = _ignoreIntent;
+       onOpenIntent = _ignoreIntent,
+       onOpenReminders = _ignore;
 
   static void _ignoreFilter(LibraryFilter _) {}
   static void _ignoreIntent(IntentRef _) {}
+  static void _ignore() {}
 
   bool get _isPreview => unsortedCount != null;
 
   int get _unsorted => unsortedCount ?? unsorted.length;
 
-  bool get _isClear => _unsorted == 0 && waiting.isEmpty;
+  bool get _isClear => _unsorted == 0 && waiting.isEmpty && reminders.isEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -136,13 +149,107 @@ class HomeInbox extends StatelessWidget {
                 ? null
                 : () => onOpenLibrary(LibraryFilter.unsorted),
           ),
-        if (hasUnsorted && waiting.isNotEmpty) SizedBox(height: 12.h),
+        // **Above the verbs, because it is the only thing here with a
+        // deadline.** The unsorted card and the intent tags are both work that
+        // will still be waiting tomorrow; a reminder had a moment, and once
+        // that moment passes the notification has already cleared itself. So
+        // it sits where a missed one cannot be scrolled past.
+        if (hasUnsorted && reminders.isNotEmpty) SizedBox(height: 12.h),
+        if (reminders.isNotEmpty)
+          _RemindersRow(reminders: reminders, onTap: onOpenReminders),
+        if ((hasUnsorted || reminders.isNotEmpty) && waiting.isNotEmpty)
+          SizedBox(height: 12.h),
         if (waiting.isNotEmpty)
           _IntentTags(
             waiting: waiting,
             onOpenIntent: _isPreview ? null : onOpenIntent,
           ),
       ],
+    );
+  }
+}
+
+/// `3 reminders · 1 missed`, or `2 reminders · Next Tue, 9:00 AM`.
+///
+/// **A count alone would not have been worth a row.** What makes this useful is
+/// the second half: either the app is telling you something already came and
+/// went — the case the whole reminders feature is here to stop being silent —
+/// or it is telling you when to expect the next one, which is the question
+/// somebody who set it actually has.
+class _RemindersRow extends StatelessWidget {
+  final List<ScreenshotEntity> reminders;
+  final VoidCallback onTap;
+
+  const _RemindersRow({required this.reminders, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final AppPalette colors = context.colors;
+    final DateTime now = DateTime.now();
+    final int missed = reminders
+        .where((ScreenshotEntity s) => !s.remindAt!.isAfter(now))
+        .length;
+    final ScreenshotEntity? next = reminders
+        .where((ScreenshotEntity s) => s.remindAt!.isAfter(now))
+        .firstOrNull;
+
+    // Alert only when something was actually missed. A reminder that is simply
+    // coming up is not a problem, and colouring it like one would spend the
+    // alert colour on the ordinary case — after which it stops meaning alert.
+    final bool alerting = missed > 0;
+    final Color tint = alerting ? colors.error : colors.primary;
+
+    final String detail = alerting
+        ? context.l10n.remindersMissedCount(missed)
+        : context.l10n.remindersNextAt(
+            MaterialLocalizations.of(
+              context,
+            ).formatTimeOfDay(TimeOfDay.fromDateTime(next!.remindAt!)),
+          );
+
+    return PressableScale(
+      feedback: PressFeedback.highlight,
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsetsDirectional.fromSTEB(14.w, 12.h, 12.w, 12.h),
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          border: Border.all(
+            color: alerting ? tint.withValues(alpha: 0.35) : colors.border,
+          ),
+        ),
+        child: Row(
+          children: <Widget>[
+            Icon(
+              alerting
+                  ? Icons.notifications_active_rounded
+                  : Icons.notifications_none_rounded,
+              size: 19.sp,
+              color: tint,
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Text(
+                context.l10n.remindersCount(reminders.length),
+                style: context.text.bodyMedium,
+              ),
+            ),
+            Text(
+              detail,
+              style: context.text.caption.copyWith(
+                color: alerting ? tint : colors.textSecondary,
+              ),
+            ),
+            SizedBox(width: 6.w),
+            Icon(
+              Icons.chevron_right_rounded,
+              size: 18.sp,
+              color: colors.textDisabled,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
