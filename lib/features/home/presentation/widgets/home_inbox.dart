@@ -13,6 +13,7 @@ import 'package:shoto/features/home/presentation/widgets/home_section_title.dart
 import 'package:shoto/features/screenshots/domain/entities/screenshot_entity.dart';
 import 'package:shoto/features/screenshots/presentation/bloc/library_filter.dart';
 import 'package:shoto/features/screenshots/presentation/widgets/intent_visuals.dart';
+import 'package:shoto/features/screenshots/presentation/widgets/reminder_wording.dart';
 
 /// Everything that is waiting on you, in one place and one visual language.
 ///
@@ -169,13 +170,61 @@ class HomeInbox extends StatelessWidget {
   }
 }
 
-/// `3 reminders · 1 missed`, or `2 reminders · Next Tue, 9:00 AM`.
+/// What the user asked to be brought back to, as one line into the list.
 ///
 /// **A count alone would not have been worth a row.** What makes this useful is
 /// the second half: either the app is telling you something already came and
 /// went — the case the whole reminders feature is here to stop being silent —
 /// or it is telling you when to expect the next one, which is the question
 /// somebody who set it actually has.
+///
+/// ## Two lines, because one line did not fit and never had
+///
+/// This was `[bell] headline …… detail [›]` — the headline flexible, the detail
+/// at its natural width — and that arrangement hands the row to whichever string
+/// is longest. `Expanded` is not a claim on space, it is an offer to give space
+/// back: the *fixed* child takes what it wants and the flexible one lives in
+/// what is left. So the headline was the half that broke, and it broke quietly,
+/// by wrapping. On a 360dp phone at the ordinary text size, "12 Erinnerungen"
+/// came out over two lines — German, Spanish, Dutch and Portuguese all did —
+/// and at the 1.3× text size a great many people run, every language did:
+/// "12 lembretes" over **five** lines, one character to a line, where a
+/// sentence belonged.
+///
+/// Nothing about that looked like a bug. There were no overflow stripes,
+/// because wrapping is what a `Row` does *instead* of overflowing, and English
+/// at the default size — the one combination a developer looks at — was the
+/// one that fit.
+///
+/// It was also not a near miss that a longer translation exposed. The row only
+/// ever fit because the moment was printed as a bare clock time; giving the
+/// date the honesty it needed — see [_nextWhen] — is what made the arithmetic
+/// visible, and the arithmetic had never worked. Stacking the two facts is the
+/// fix: each gets the full width, each is capped at one line, and neither can
+/// take the other's. What is left at 1.3× is an ellipsis on the tail of the
+/// second line in the longest languages, which is a clipped word rather than a
+/// broken row.
+///
+/// **Which also gives the missed state its "when" back.** With one line there
+/// was room for one fact, so a missed reminder cost the row its ability to say
+/// what was still coming. That was the right call for a row that could hold one
+/// sentence. This one holds two.
+///
+/// ## The pictures, because a reminder is about a picture
+///
+/// The leading slot held a bell: the same glyph in every state, saying
+/// "reminders" beside a sentence with the word *reminders* in it. A glyph earns
+/// its place by making a row findable in a list of rows, and there is exactly
+/// one of these.
+///
+/// So it holds the screenshots instead — the thing the reminders screen is
+/// built entirely around, and the one fact about a reminder that no count can
+/// carry. Home's leading slot already means "the substance of this": the `33`
+/// on the card above, the tick on [_AllFiled].
+///
+/// The alert does not weaken by losing a red bell. It is carried by the tinted
+/// border, by the headline in the error colour, and above all by the word
+/// *missed* — which the bell never said.
 class _RemindersRow extends StatelessWidget {
   final List<ScreenshotEntity> reminders;
   final VoidCallback onTap;
@@ -199,19 +248,41 @@ class _RemindersRow extends StatelessWidget {
     final bool alerting = missed > 0;
     final Color tint = alerting ? colors.error : colors.primary;
 
-    final String detail = alerting
-        ? context.l10n.remindersMissedCount(missed)
-        : context.l10n.remindersNextAt(
-            MaterialLocalizations.of(
-              context,
-            ).formatTimeOfDay(TimeOfDay.fromDateTime(next!.remindAt!)),
-          );
+    // **The loud half has to be the true half.**
+    //
+    // This read "6 reminders" in body weight with "4 missed" small and grey
+    // at the other end of the row — the neutral total shouted, the fact that
+    // needed somebody whispered, and the reader was left doing arithmetic to
+    // find out how much of the six was a problem. The card directly above
+    // this one gets it right: `33` is enormous because thirty-three unsorted
+    // screenshots is the thing that needs you.
+    //
+    // So when something has been missed, that becomes the sentence and the
+    // total goes: on Home the only question is whether to tap, and the screen
+    // behind this row is where a breakdown belongs. With nothing missed there
+    // is no problem to name, and the row goes back to reporting — how many are
+    // set, and when to expect the next.
+    final String headline = alerting
+        ? context.l10n.remindersMissedTitle(missed)
+        : context.l10n.remindersCount(reminders.length);
+
+    // **Said whenever there is one, missed or not.** The condition is "is
+    // anything still coming", not "is everything fine" — those came apart the
+    // moment the row could hold two lines. With every reminder missed there is
+    // genuinely nothing next, and the row goes back to one line rather than
+    // reserving space for a sentence it has no answer for.
+    // The same sentence the reminders screen's summary says, out of the same
+    // function — see [nextReminderLine], which exists because this was two
+    // copies of it.
+    final String? detail = next == null
+        ? null
+        : nextReminderLine(context, next.remindAt!, now: now);
 
     return PressableScale(
       feedback: PressFeedback.highlight,
       onTap: onTap,
       child: Container(
-        padding: EdgeInsetsDirectional.fromSTEB(14.w, 12.h, 12.w, 12.h),
+        padding: EdgeInsetsDirectional.fromSTEB(12.w, 11.h, 12.w, 11.h),
         decoration: BoxDecoration(
           color: colors.surface,
           borderRadius: BorderRadius.circular(AppRadius.md),
@@ -221,33 +292,150 @@ class _RemindersRow extends StatelessWidget {
         ),
         child: Row(
           children: <Widget>[
-            Icon(
-              alerting
-                  ? Icons.notifications_active_rounded
-                  : Icons.notifications_none_rounded,
-              size: 19.sp,
-              color: tint,
-            ),
+            // Silent to a screen reader: the two lines beside it already name
+            // the row, and a pair of unlabelled images in front of them would
+            // be two stops on the way to the sentence.
+            ExcludeSemantics(child: _ReminderFaces(reminders: reminders)),
             SizedBox(width: 12.w),
             Expanded(
-              child: Text(
-                context.l10n.remindersCount(reminders.length),
-                style: context.text.bodyMedium,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    headline,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.text.bodyMedium.copyWith(
+                      color: alerting ? tint : colors.textPrimary,
+                    ),
+                  ),
+                  if (detail != null) ...<Widget>[
+                    SizedBox(height: 2.h),
+                    Text(
+                      detail,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.text.bodySmall.copyWith(
+                        color: colors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
-            Text(
-              detail,
-              style: context.text.caption.copyWith(
-                color: alerting ? tint : colors.textSecondary,
-              ),
-            ),
-            SizedBox(width: 6.w),
+            SizedBox(width: 8.w),
             Icon(
               Icons.chevron_right_rounded,
               size: 18.sp,
               color: colors.textDisabled,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The screenshots behind the count, as a short overlapping stack.
+///
+/// **Two, and the second one is what makes it a stack.** The number is already
+/// in the sentence beside it; what these are for is the other half of "4 missed
+/// reminders", which is *missed what*. A single picture would read as a claim
+/// that there is one. Beyond two adds nothing — nobody counts a stack, and the
+/// row has a card full of tiles twelve pixels above it.
+///
+/// **Overlapped rather than spaced, which is the point of the shape.** The
+/// unsorted card lays its tiles out in an evenly gapped strip, because that row
+/// answers *how much*: the length of the strip is the message. This one answers
+/// *which*, and an overlap is the ordinary way of saying "a few of these"
+/// without the width implying a quantity. Two idioms for two questions, and
+/// they stay legible stacked one above the other precisely because they do not
+/// look alike.
+///
+/// The order is the list's own — soonest first — so these are the two most
+/// overdue when something has been missed and the two soonest when nothing has:
+/// the pictures the sentence is about, in both states, with no second rule.
+///
+/// A plain rounded corner rather than the [ClippedCorner] signature. These
+/// match the thumbnails on the reminders screen the row opens, and one clipped
+/// corner per screen is what keeps it meaning anything.
+class _ReminderFaces extends StatelessWidget {
+  final List<ScreenshotEntity> reminders;
+
+  const _ReminderFaces({required this.reminders});
+
+  static const int _shown = 2;
+  static const double _size = 38;
+
+  /// How far along the second one sits.
+  ///
+  /// **Well under half of [_size], and that is what makes it a stack.** At a
+  /// step of 23 the two tiles overlapped by a third and read as two rectangles
+  /// that happened to be touching — the same shape as the unsorted card's
+  /// strip, at a different pitch, which is the one thing this must not look
+  /// like. Under a third showing, the one behind is a card underneath rather
+  /// than a neighbour.
+  static const double _step = 14;
+
+  /// The gap punched around the front face so the two read as two.
+  ///
+  /// Taken out of that face's own box rather than drawn as a border, because a
+  /// border would be a line and this needs to be an absence — the same trick a
+  /// stack of avatars uses. It is what stops two screenshots of the same app
+  /// from merging into one smear.
+  ///
+  /// Three, not the one and a half it started at, where the seam read as a
+  /// rendering artefact rather than as a gap on either background.
+  static const double _ring = 3;
+
+  @override
+  Widget build(BuildContext context) {
+    final List<ScreenshotEntity> faces = reminders.take(_shown).toList();
+
+    return SizedBox(
+      width: (_size + _step * (faces.length - 1)).w,
+      height: _size.w,
+      child: Stack(
+        children: <Widget>[
+          // Back to front, so the soonest reminder is the one lying on top.
+          for (int i = faces.length - 1; i >= 0; i--)
+            PositionedDirectional(
+              start: (_step * i).w,
+              // Only the face with something in front of it is cut into. A
+              // lone reminder is a lone thumbnail, at its full width.
+              child: _Face(
+                screenshot: faces[i],
+                ring: i == 0 && faces.length > 1 ? _ring : 0,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// One picture in [_ReminderFaces].
+class _Face extends StatelessWidget {
+  final ScreenshotEntity screenshot;
+
+  /// How much surface-coloured space to punch off its trailing edge. Zero on
+  /// the face at the back, which has nothing in front of it to separate from.
+  final double ring;
+
+  const _Face({required this.screenshot, required this.ring});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: _ReminderFaces._size.w,
+      height: _ReminderFaces._size.w,
+      padding: EdgeInsetsDirectional.only(end: ring.w),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        child: AssetThumbnailImage(
+          asset: screenshot.asset,
+          background: context.colors.surfaceVariant,
         ),
       ),
     );
@@ -541,7 +729,16 @@ class _UnsortedCard extends StatelessWidget {
                           ],
                           if (needsMore && hidden > 0) ...[
                             if (tiles > 0) SizedBox(width: _gap.w),
-                            _More(count: hidden),
+                            // The first of the ones that did not fit — the
+                            // overflow tile is drawn *on* it. Null in a
+                            // preview, where the count is known and the
+                            // pictures are not.
+                            _More(
+                              count: hidden,
+                              behind: isPreview || unsorted.length <= tiles
+                                  ? null
+                                  : unsorted[tiles],
+                            ),
                           ],
                         ],
                       );
@@ -721,24 +918,98 @@ class _PendingTile extends StatelessWidget {
   }
 }
 
+/// How many screenshots did not fit on the strip, drawn over one of them.
+///
+/// **It was an empty box, and an empty box is what a broken thumbnail looks
+/// like.** Same width, same height and the same pale [AppPalette.surfaceVariant]
+/// the tiles show *before their picture arrives* — sitting at the end of a row
+/// of six real screenshots. Nothing about it said "there are more"; it said
+/// "one of these did not load", which is the reading the eye reaches for first
+/// because it is the one it has seen before.
+///
+/// Two things told against it and they pulled the same way:
+///
+/// * **It was the only plain corner in the row.** Every tile beside it carries
+///   the [ClippedCorner], which this app spends on one meaning — *Shoto is
+///   holding this*. A differently shaped box among them reads as a different
+///   *kind* of object, and this is not one: it stands for twenty-seven
+///   screenshots.
+/// * **The number was `caption` in [AppPalette.textSecondary] on
+///   `surfaceVariant`** — small grey on pale grey, the quietest thing in a
+///   card whose whole subject is a pile that will not shrink by itself.
+///
+/// So it becomes what it is describing: the next screenshot, under
+/// [AppPalette.scrimStrong], with the number on top in white. A darkened
+/// picture with a count over it is the one arrangement nobody has to be taught
+/// — every gallery on every phone ends a truncated row this way — and it is
+/// honest here in a way it often is not, because the picture underneath really
+/// is the first of the ones being counted.
+///
+/// `scrimStrong` is the palette's own answer to text over imagery and this is
+/// its first use; it is fixed dark in both modes, so white on top of it reads
+/// against a light screenshot and a dark one alike.
 class _More extends StatelessWidget {
   final int count;
 
-  const _More({required this.count});
+  /// The first screenshot that did not fit, drawn behind the number.
+  ///
+  /// Null in a [HomeInbox.preview], where the count comes out of the local
+  /// tables and the pictures are still being read out of the gallery. There it
+  /// falls back to the placeholder tile — which is the honest thing to draw
+  /// then, and the reason the old version looked wrong everywhere else.
+  final ScreenshotEntity? behind;
+
+  const _More({required this.count, required this.behind});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: _UnsortedCard._tileWidth.w,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: context.colors.surfaceVariant,
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-      ),
-      child: Text(
-        '+$count',
-        style: context.text.caption.copyWith(
-          color: context.colors.textSecondary,
+    final ScreenshotEntity? shot = behind;
+
+    return ClippedCorner(
+      radius: AppRadius.sm,
+      cut: 9.r,
+      child: SizedBox(
+        width: _UnsortedCard._tileWidth.w,
+        height: double.infinity,
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            if (shot == null)
+              ColoredBox(color: context.colors.surfaceVariant)
+            else ...<Widget>[
+              AssetThumbnailImage(
+                asset: shot.asset,
+                background: context.colors.surfaceVariant,
+              ),
+              ColoredBox(color: context.colors.scrimStrong),
+            ],
+            Center(
+              // **Shrinks rather than overflows.** Three digits of overflow is
+              // an ordinary library ("+127"), and at a large text size even two
+              // will not fit a 36-pixel tile. A number that gets slightly
+              // smaller is a number; a number clipped by its own box is a bug.
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 3.w),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  // Silent to a screen reader: the card has already said "33
+                  // unsorted" in its own numeral, and "plus twenty-seven" after
+                  // it is arithmetic nobody asked for.
+                  child: ExcludeSemantics(
+                    child: Text(
+                      '+$count',
+                      maxLines: 1,
+                      style: context.text.bodySmall.asSemiBold.copyWith(
+                        color: shot == null
+                            ? context.colors.textSecondary
+                            : Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

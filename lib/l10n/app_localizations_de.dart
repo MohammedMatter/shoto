@@ -185,6 +185,11 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String remindersInMinutes(int count) {
+    return 'in $count Min.';
+  }
+
+  @override
   String timeAgoDays(int count) {
     return 'vor $count T.';
   }
@@ -306,7 +311,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get reminderUnsupported =>
-      'Erinnerungen gibt es vorerst nur unter Android.';
+      'Erinnerungen sind auf diesem Gerät nicht verfügbar.';
 
   @override
   String reminderSet(String when) {
@@ -332,14 +337,43 @@ class AppLocalizationsDe extends AppLocalizations {
   String get remindersUpcoming => 'Demnächst';
 
   @override
+  String get remindersThisWeek => 'Diese Woche';
+
+  @override
+  String get remindersLater => 'Später';
+
+  @override
+  String get remindersReschedule => 'Zeit ändern';
+
+  @override
+  String remindersRemoved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Erinnerungen entfernt',
+      one: 'Erinnerung entfernt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get remindersClearMissed => 'Alle löschen';
+
+  @override
+  String get commonUndo => 'Rückgängig';
+
+  @override
   String get remindersNoneTitle => 'Keine Erinnerungen';
 
   @override
   String get remindersNoneBody =>
-      'Öffne die Aktionen eines Screenshots und wähle „Daran erinnern“, um später darauf zurückzukommen.';
+      'Screenshots, für die du eine Zeit setzt, warten hier — auch die, deren Moment vorbei ist.';
 
   @override
   String get remindersClearOne => 'Löschen';
+
+  @override
+  String get remindersSwipeHint => 'Erinnerung wischen';
 
   @override
   String remindersCount(int count) {
@@ -359,6 +393,17 @@ class AppLocalizationsDe extends AppLocalizations {
       locale: localeName,
       other: '$count verpasst',
       one: '1 verpasst',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersMissedTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count verpasste Erinnerungen',
+      one: '1 verpasste Erinnerung',
     );
     return '$_temp0';
   }

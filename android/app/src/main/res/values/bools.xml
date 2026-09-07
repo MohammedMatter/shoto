@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Whether the launch field is the light one.
+
+         It decides one thing: `windowLightStatusBar`, the status-bar icons,
+         which are dark on the near-white field and light on the near-black one.
+
+         It decides `android:isLightTheme` too, which is a different question
+         with the same answer: the platform only reads `forceDarkAllowed` on a
+         theme that claims to be light, so the pair has to agree or the opt-out
+         is never consulted. See the note on LaunchTheme in `styles.xml` for
+         what that does and does not buy.
+
+         **A bool rather than a second styles file**, and that is the whole
+         point: see the note in `values-night/colors.xml` about `night`
+         outranking `vNN`. A resource reference is resolved per configuration at
+         runtime, so one unqualified style can be mode-aware without ever
+         forking. -->
+    <bool name="splash_field_is_light">true</bool>
+</resources>

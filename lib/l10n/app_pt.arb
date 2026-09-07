@@ -82,25 +82,41 @@
   "settingsCaptureAlertsLastRun": "Última verificação {when}",
   "@settingsCaptureAlertsLastRun": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "timeAgoMinutes": "há {count} min",
   "@timeAgoMinutes": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoHours": "há {count} h",
   "@timeAgoHours": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersInMinutes": "em {count} min",
+  "@remindersInMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoDays": "há {count} d",
   "@timeAgoDays": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsQuickTile": "Bloco de configurações rápidas",
@@ -138,7 +154,7 @@
   "reminderClear": "Remover lembrete",
   "reminderNotificationTitle": "Shoto",
   "reminderMuted": "As notificações estão desativadas, por isso isto não chegará até si — ative-as nas definições do telemóvel.",
-  "reminderUnsupported": "Por agora, os lembretes só estão disponíveis no Android.",
+  "reminderUnsupported": "Os lembretes não estão disponíveis neste dispositivo.",
   "reminderSet": "Lembrete definido para {when}",
   "@reminderSet": {
     "placeholders": {
@@ -159,9 +175,16 @@
   "remindersTitle": "Lembretes",
   "remindersMissed": "Perdidos",
   "remindersUpcoming": "A seguir",
+  "remindersThisWeek": "Esta semana",
+  "remindersLater": "Mais tarde",
+  "remindersReschedule": "Alterar a hora",
+  "remindersRemoved": "{count, plural, =1{Lembrete removido} other{{count} lembretes removidos}}",
+  "remindersClearMissed": "Limpar todos",
+  "commonUndo": "Desfazer",
   "remindersNoneTitle": "Sem lembretes",
-  "remindersNoneBody": "Abre as ações de uma captura e escolhe «Lembrar-me disto» para voltares a ela mais tarde.",
+  "remindersNoneBody": "As capturas para as quais você define uma hora ficam aqui, mesmo aquelas cujo momento já passou.",
   "remindersClearOne": "Limpar",
+  "remindersSwipeHint": "Deslize um lembrete",
   "remindersCount": "{count, plural, =1{1 lembrete} other{{count} lembretes}}",
   "@remindersCount": {
     "placeholders": {
@@ -171,6 +194,7 @@
     }
   },
   "remindersMissedCount": "{count, plural, =1{1 perdido} other{{count} perdidos}}",
+  "remindersMissedTitle": "{count, plural, =1{1 lembrete perdido} other{{count} lembretes perdidos}}",
   "@remindersMissedCount": {
     "placeholders": {
       "count": {

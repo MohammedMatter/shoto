@@ -82,25 +82,41 @@
   "settingsCaptureAlertsLastRun": "Zuletzt geprüft {when}",
   "@settingsCaptureAlertsLastRun": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "timeAgoMinutes": "vor {count} Min.",
   "@timeAgoMinutes": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoHours": "vor {count} Std.",
   "@timeAgoHours": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersInMinutes": "in {count} Min.",
+  "@remindersInMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoDays": "vor {count} T.",
   "@timeAgoDays": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsQuickTile": "Schnelleinstellungen-Kachel",
@@ -138,7 +154,7 @@
   "reminderClear": "Erinnerung entfernen",
   "reminderNotificationTitle": "Shoto",
   "reminderMuted": "Benachrichtigungen sind aus, also erreicht dich das nicht — schalte sie in den Telefoneinstellungen ein.",
-  "reminderUnsupported": "Erinnerungen gibt es vorerst nur unter Android.",
+  "reminderUnsupported": "Erinnerungen sind auf diesem Gerät nicht verfügbar.",
   "reminderSet": "Erinnerung für {when} gesetzt",
   "@reminderSet": {
     "placeholders": {
@@ -159,9 +175,16 @@
   "remindersTitle": "Erinnerungen",
   "remindersMissed": "Verpasst",
   "remindersUpcoming": "Demnächst",
+  "remindersThisWeek": "Diese Woche",
+  "remindersLater": "Später",
+  "remindersReschedule": "Zeit ändern",
+  "remindersRemoved": "{count, plural, =1{Erinnerung entfernt} other{{count} Erinnerungen entfernt}}",
+  "remindersClearMissed": "Alle löschen",
+  "commonUndo": "Rückgängig",
   "remindersNoneTitle": "Keine Erinnerungen",
-  "remindersNoneBody": "Öffne die Aktionen eines Screenshots und wähle „Daran erinnern“, um später darauf zurückzukommen.",
+  "remindersNoneBody": "Screenshots, für die du eine Zeit setzt, warten hier — auch die, deren Moment vorbei ist.",
   "remindersClearOne": "Löschen",
+  "remindersSwipeHint": "Erinnerung wischen",
   "remindersCount": "{count, plural, =1{1 Erinnerung} other{{count} Erinnerungen}}",
   "@remindersCount": {
     "placeholders": {
@@ -171,6 +194,7 @@
     }
   },
   "remindersMissedCount": "{count, plural, =1{1 verpasst} other{{count} verpasst}}",
+  "remindersMissedTitle": "{count, plural, =1{1 verpasste Erinnerung} other{{count} verpasste Erinnerungen}}",
   "@remindersMissedCount": {
     "placeholders": {
       "count": {

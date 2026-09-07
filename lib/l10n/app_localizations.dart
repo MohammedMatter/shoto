@@ -354,6 +354,12 @@ abstract class AppLocalizations {
   /// **'{count} h ago'**
   String timeAgoHours(int count);
 
+  /// No description provided for @remindersInMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'in {count} min'**
+  String remindersInMinutes(int count);
+
   /// No description provided for @timeAgoDays.
   ///
   /// In en, this message translates to:
@@ -573,7 +579,7 @@ abstract class AppLocalizations {
   /// No description provided for @reminderUnsupported.
   ///
   /// In en, this message translates to:
-  /// **'Reminders are only available on Android for now.'**
+  /// **'Reminders are not available on this device.'**
   String get reminderUnsupported;
 
   /// No description provided for @reminderSet.
@@ -612,6 +618,42 @@ abstract class AppLocalizations {
   /// **'Coming up'**
   String get remindersUpcoming;
 
+  /// No description provided for @remindersThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get remindersThisWeek;
+
+  /// No description provided for @remindersLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get remindersLater;
+
+  /// No description provided for @remindersReschedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Change the time'**
+  String get remindersReschedule;
+
+  /// No description provided for @remindersRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Reminder removed} other{{count} reminders removed}}'**
+  String remindersRemoved(int count);
+
+  /// No description provided for @remindersClearMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get remindersClearMissed;
+
+  /// No description provided for @commonUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get commonUndo;
+
   /// No description provided for @remindersNoneTitle.
   ///
   /// In en, this message translates to:
@@ -621,7 +663,7 @@ abstract class AppLocalizations {
   /// No description provided for @remindersNoneBody.
   ///
   /// In en, this message translates to:
-  /// **'Open a screenshot’s actions and pick “Remind me about this” to be brought back to it.'**
+  /// **'Screenshots you set a time on wait here — even the ones whose moment has passed.'**
   String get remindersNoneBody;
 
   /// No description provided for @remindersClearOne.
@@ -629,6 +671,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear'**
   String get remindersClearOne;
+
+  /// No description provided for @remindersSwipeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe a reminder'**
+  String get remindersSwipeHint;
 
   /// No description provided for @remindersCount.
   ///
@@ -641,6 +689,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 missed} other{{count} missed}}'**
   String remindersMissedCount(int count);
+
+  /// No description provided for @remindersMissedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 missed reminder} other{{count} missed reminders}}'**
+  String remindersMissedTitle(int count);
 
   /// No description provided for @remindersNextAt.
   ///

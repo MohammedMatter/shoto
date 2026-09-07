@@ -8,26 +8,43 @@ import 'package:flutter/services.dart';
 /// evening" means, whether an option is still honest at this hour — lives in
 /// `reminder_times.dart`, where it is pure Dart and can be asked from both
 /// sides of every edge without a device. What is here is only the part that
-/// needs `AlarmManager`, and the platform half of it is documented in
-/// `ReminderScheduler.kt`.
+/// needs the system's own scheduler, and the two halves of that are documented
+/// in `ReminderScheduler.kt` and `RemindersChannel.swift`.
 ///
-/// **Every method no-ops off Android**, rather than throwing. `ios/` has no
-/// equivalent yet — see `docs/decisions/ios.md` — and the failure mode that
-/// matters is the one where a user sets a reminder and nothing says otherwise.
-/// [isSupported] is what the interface asks so the option can be withheld
-/// instead of silently doing nothing.
+/// **Both phone platforms answer this channel, and they answer it very
+/// differently.** Android arms an inexact `AlarmManager` alarm and keeps its
+/// own mirror of what is pending so that a reboot does not lose it; iOS hands a
+/// `UNCalendarNotificationTrigger` to the system and the system remembers it.
+/// None of that reaches this file: the contract is a moment, two translated
+/// strings, and a bool for whether it will be seen.
+///
+/// **Every method no-ops anywhere else** — macOS, tests — rather than
+/// throwing, because the failure mode that matters is the one where a user
+/// sets a reminder and nothing says otherwise. [isSupported] is what the
+/// interface asks so the option can be withheld instead of silently doing
+/// nothing.
 class Reminders {
   static const MethodChannel _channel = MethodChannel('shoto/reminders');
 
   /// Whether reminders can be armed on this platform at all.
-  static bool get isSupported => Platform.isAndroid;
+  ///
+  /// False on macOS and false in tests, which is why the widget tests can only
+  /// ever pin the refusal branch — see `reminder_sheet_test.dart`.
+  static bool get isSupported => Platform.isAndroid || Platform.isIOS;
 
   /// Arms one, replacing any earlier reminder for the same screenshot.
   ///
   /// Returns whether the notification will actually be seen — the alarm is set
-  /// either way, but Android will drop the notification silently if the user
+  /// either way, but both platforms drop the notification silently if the user
   /// has turned Shoto's off, and a reminder nobody will be shown is worth
   /// saying so about at the moment it is set rather than discovering later.
+  ///
+  /// **The answer is exact on iOS and optimistic on Android**, because of when
+  /// each platform is able to ask. iOS waits for the permission prompt and
+  /// reports what was chosen; Android's request is fire-and-forget, so a first
+  /// reminder on Android 13+ reports the state from before the dialog and can
+  /// say "this will not reach you" a second before the user grants it. Worth
+  /// knowing when reading `reminderMuted` on a bug report.
   ///
   /// [title] and [body] are passed in already translated. They are composed
   /// from the ARB files so a reminder speaks the language the app is set to,

@@ -20,6 +20,7 @@ class AppPreferences extends ChangeNotifier {
   static const String _copyTextHintedKey = 'pref_copy_text_hinted';
   static const String _tileOfferedKey = 'pref_tile_offered';
   static const String _captureAlertsKey = 'pref_capture_alerts';
+  static const String _reminderSwipedKey = 'pref_reminder_swiped';
 
   /// **Off until asked for.** Haptics were on by default, which meant every
   /// install began by adding a physical sensation to every press without the
@@ -40,6 +41,7 @@ class AppPreferences extends ChangeNotifier {
   bool _copyTextHinted = false;
   bool _tileOffered = false;
   bool _captureAlerts = false;
+  bool _reminderSwiped = false;
 
   /// Whether taps give physical feedback. Off is a genuine accessibility
   /// preference, and some people simply find it noisy.
@@ -147,6 +149,29 @@ class AppPreferences extends ChangeNotifier {
   /// interruptions a week for somebody who has not asked for any.
   bool get captureAlerts => _captureAlerts;
 
+  /// Whether the user has ever swiped a reminder row, either way.
+  ///
+  /// **Recorded when the gesture is *used*, not when it is shown**, and the
+  /// difference from [hasSeenCopyTextHint] is deliberate. That hint is a
+  /// sentence about a thing you can press: there is no way to know it landed,
+  /// so it is retired after one showing rather than nagged. A swipe leaves
+  /// proof — the person either did it or did not — so the legend on the
+  /// reminders screen can keep offering itself until it is no longer needed,
+  /// and go away for good the moment it is.
+  ///
+  /// One flag for both directions. Somebody who has swiped a row to clear it
+  /// has learnt that rows swipe; which side does what is the small half of
+  /// that, and it is written on the surface the gesture reveals.
+  bool get hasSwipedReminder => _reminderSwiped;
+
+  Future<void> markReminderSwiped() async {
+    if (_reminderSwiped) return;
+    _reminderSwiped = true;
+    notifyListeners();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_reminderSwipedKey, true);
+  }
+
   Future<void> setCaptureAlerts(bool value) async {
     _captureAlerts = value;
     notifyListeners();
@@ -197,6 +222,7 @@ class AppPreferences extends ChangeNotifier {
     _copyTextHinted = prefs.getBool(_copyTextHintedKey) ?? false;
     _tileOffered = prefs.getBool(_tileOfferedKey) ?? false;
     _captureAlerts = prefs.getBool(_captureAlertsKey) ?? false;
+    _reminderSwiped = prefs.getBool(_reminderSwipedKey) ?? false;
     // Defaults to *now* rather than to zero. A user switching this on today is
     // asking what they have captured since; handing them every screenshot they
     // have ever taken is the gallery-mirror this app deliberately is not.

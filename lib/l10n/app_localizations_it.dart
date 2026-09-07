@@ -188,6 +188,11 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String remindersInMinutes(int count) {
+    return 'tra $count min';
+  }
+
+  @override
   String timeAgoDays(int count) {
     return '$count g fa';
   }
@@ -308,7 +313,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get reminderUnsupported =>
-      'Per ora i promemoria sono disponibili solo su Android.';
+      'I promemoria non sono disponibili su questo dispositivo.';
 
   @override
   String reminderSet(String when) {
@@ -333,14 +338,43 @@ class AppLocalizationsIt extends AppLocalizations {
   String get remindersUpcoming => 'In arrivo';
 
   @override
+  String get remindersThisWeek => 'Questa settimana';
+
+  @override
+  String get remindersLater => 'Più avanti';
+
+  @override
+  String get remindersReschedule => 'Cambia l’orario';
+
+  @override
+  String remindersRemoved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count promemoria rimossi',
+      one: 'Promemoria rimosso',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get remindersClearMissed => 'Cancella tutti';
+
+  @override
+  String get commonUndo => 'Annulla';
+
+  @override
   String get remindersNoneTitle => 'Nessun promemoria';
 
   @override
   String get remindersNoneBody =>
-      'Apri le azioni di uno screenshot e scegli «Ricordamelo» per tornarci più tardi.';
+      'Gli screenshot per cui imposti un orario restano qui, anche quelli il cui momento è già passato.';
 
   @override
   String get remindersClearOne => 'Rimuovi';
+
+  @override
+  String get remindersSwipeHint => 'Scorri un promemoria';
 
   @override
   String remindersCount(int count) {
@@ -360,6 +394,17 @@ class AppLocalizationsIt extends AppLocalizations {
       locale: localeName,
       other: '$count persi',
       one: '1 perso',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersMissedTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count promemoria mancati',
+      one: '1 promemoria mancato',
     );
     return '$_temp0';
   }

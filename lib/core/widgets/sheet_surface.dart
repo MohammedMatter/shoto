@@ -31,7 +31,7 @@ import 'package:shoto/core/widgets/glass_layer.dart';
 /// Wrap a sheet's content in this **inside** any outer inset. The rule builder
 /// holds itself sixty pixels off the top of the screen, and glass wrapped
 /// around that padding would frost the gap as well as the sheet.
-class SheetSurface extends StatelessWidget {
+class SheetSurface extends StatefulWidget {
   final Widget child;
 
   /// Overrides the blur strength for the few sheets that are simply too big to
@@ -56,11 +56,48 @@ class SheetSurface extends StatelessWidget {
   static const double cornerRadius = 28;
 
   @override
+  State<SheetSurface> createState() => _SheetSurfaceState();
+}
+
+class _SheetSurfaceState extends State<SheetSurface> {
+  /// **Holds the sheet's contents still while the glass around them changes
+  /// shape**, and it is repairing a bug rather than an optimisation.
+  ///
+  /// [GlassLayer] does not render a `BackdropFilter` at all when the sigma is
+  /// zero — deliberately, because an inert filter still costs a `saveLayer` and
+  /// a full pass over its region. The consequence is that turning the frost on
+  /// or off does not change a *property*, it changes the **shape of the widget
+  /// tree**: `ClipRRect > BackdropFilter > content` becomes
+  /// `ClipRRect > content`. Flutter has no way to know those are the same
+  /// content, so it discards the element beneath and builds a fresh one.
+  ///
+  /// **What that broke.** "Pick a time" opens a second sheet from inside this
+  /// one and waits for an answer:
+  ///
+  /// ```dart
+  /// final DateTime? at = await showReminderTimeSheet(context);
+  /// if (at == null || !context.mounted) return;
+  /// ```
+  ///
+  /// The frost fades out as that second sheet arrives, the tree changes shape
+  /// underneath the sheet still waiting, its `BuildContext` is unmounted, and
+  /// the time the user just chose is dropped on the floor — no error, no
+  /// message, the sheet simply does nothing. Every preset still worked, because
+  /// none of them waits on another route. Reproduced on the device before this
+  /// key existed and fixed by it.
+  ///
+  /// A [GlobalKey] makes the subtree *move* between the two parents instead of
+  /// being rebuilt, so the element — and therefore every context inside it, and
+  /// every `State` — survives the change. It costs one key per sheet.
+  final GlobalKey _contents = GlobalKey();
+
+  @override
   Widget build(BuildContext context) {
     final BorderRadius shape = BorderRadius.vertical(
       top: Radius.circular(SheetSurface.cornerRadius.r),
     );
-    final double target = sigma ?? AppBlur.panel;
+    final double target = widget.sigma ?? AppBlur.panel;
+    final Widget child = KeyedSubtree(key: _contents, child: widget.child);
 
     // **The frost waits until the sheet has stopped moving, and this is the
     // most expensive thing in the app made cheap.**
@@ -88,25 +125,45 @@ class SheetSurface extends StatelessWidget {
     // Listening to the animation that is already ticking adds no frame at all:
     // the last tick of the entrance and the arrival of the blur are the same
     // frame.
-    final Animation<double>? travel = ModalRoute.of(context)?.animation;
-    final bool frosted = target > 0 && (travel?.isCompleted ?? true);
+    final ModalRoute<Object?>? route = ModalRoute.of(context);
+    final Animation<double>? travel = route?.animation;
+    final Animation<double>? covered = route?.secondaryAnimation;
 
-    final Widget panel = _Panel(frosted: frosted, shape: shape, child: child);
-
-    if (travel == null || target <= 0) {
+    if (travel == null || covered == null || target <= 0) {
+      final double frost = target > 0 ? 1 : 0;
       return GlassLayer(
         borderRadius: shape,
-        sigma: frosted ? target : 0,
-        child: panel,
+        sigma: frost > 0 ? target : 0,
+        child: _Panel(frost: frost, shape: shape, child: child),
       );
     }
 
+    // **The second animation is the one that was missing, and it was costing
+    // more than the first.**
+    //
+    // A sheet can open a sheet — "Remind me" offers "Pick a time", the folder
+    // list offers an editor — and until now the panel underneath went on
+    // frosting the whole time it was buried. Measured on the device, spinning
+    // the minute wheel with the reminder sheet parked invisibly beneath the
+    // time sheet: 30–35ms of raster a frame, against 16–18ms with that one
+    // hidden blur switched off. Fifteen milliseconds a frame, every frame, for
+    // a surface with another surface drawn on top of it.
+    //
+    // `secondaryAnimation` is how a route hears about the one covering it, so
+    // the frost now fades out as the cover arrives and is gone by the time it
+    // lands — the same trade as the entrance above, in the other direction.
     return ListenableBuilder(
       listenable: travel,
-      builder: (BuildContext context, Widget? _) => GlassLayer(
-        borderRadius: shape,
-        sigma: travel.isCompleted ? target : 0,
-        child: _Panel(frosted: travel.isCompleted, shape: shape, child: child),
+      builder: (BuildContext context, Widget? _) => ListenableBuilder(
+        listenable: covered,
+        builder: (BuildContext context, Widget? _) {
+          final double frost = travel.isCompleted ? 1 - covered.value : 0;
+          return GlassLayer(
+            borderRadius: shape,
+            sigma: frost > 0 ? target : 0,
+            child: _Panel(frost: frost, shape: shape, child: child),
+          );
+        },
       ),
     );
   }
@@ -124,15 +181,24 @@ class SheetSurface extends StatelessWidget {
 /// So: frosted and translucent, or sharp and nearly solid. Never translucent
 /// and sharp.
 class _Panel extends StatelessWidget {
-  final bool frosted;
+  /// How much of the frosted look this surface is currently wearing: 1 when
+  /// the blur is on and the fill is open, 0 when there is no blur and the fill
+  /// is shut.
+  ///
+  /// **A number rather than the flag it used to be**, because the fill now has
+  /// somewhere to be in between. Switching a sheet from translucent to solid
+  /// in one frame is invisible while the panel is sliding — nobody reads a
+  /// moving surface — but a sheet that has been sitting still while another
+  /// one covers it is being looked at, and a step change there is a flash. So
+  /// the fill closes across the covering sheet's arrival and the blur is
+  /// dropped only at the end of it, by which point the surface is opaque
+  /// enough that there was nothing left to see through.
+  final double frost;
+
   final BorderRadius shape;
   final Widget child;
 
-  const _Panel({
-    required this.frosted,
-    required this.shape,
-    required this.child,
-  });
+  const _Panel({required this.frost, required this.shape, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -147,8 +213,8 @@ class _Panel extends StatelessWidget {
         ? context.colors.surface
         : context.colors.background;
 
-    final double topAlpha = frosted ? (dark ? 0.78 : 0.82) : 0.985;
-    final double bottomAlpha = frosted ? (dark ? 0.86 : 0.9) : 1;
+    final double topAlpha = _lerp(0.985, dark ? 0.78 : 0.82);
+    final double bottomAlpha = _lerp(1, dark ? 0.86 : 0.9);
 
     return GlassRim(
       borderRadius: shape,
@@ -178,4 +244,7 @@ class _Panel extends StatelessWidget {
       ),
     );
   }
+
+  /// [solid] at no frost, [open] at full frost.
+  double _lerp(double solid, double open) => solid + (open - solid) * frost;
 }

@@ -133,6 +133,54 @@ void main() {
     await tester.pumpAndSettle();
   });
 
+  testWidgets('off a scrollable, a press is answered on the next frame', (
+    tester,
+  ) async {
+    // The delay above exists to hide a withdrawal that only a scrollable can
+    // cause. A row on a bottom sheet, a button in a dialog, a tile in a plain
+    // `Column`: nothing can take the gesture away, so there is nothing to hide
+    // and the wait is 55ms of a touched control looking untouched. That is
+    // most of what "sluggish" means for a tap target, and every control in the
+    // app that is not in a list was paying it.
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: PressableScale(
+              scale: 0.9,
+              haptic: false,
+              onTap: () {},
+              child: const SizedBox(
+                key: ValueKey<String>('lone'),
+                height: 70,
+                width: 200,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final Finder lone = find.byKey(const ValueKey<String>('lone'));
+    final Size atRest = tester.getRect(lone).size;
+
+    final TestGesture gesture = await tester.startGesture(
+      tester.getCenter(lone),
+    );
+    // One frame to report the press, then the length of the press animation.
+    await tester.pump();
+    await tester.pump(AppMotion.press);
+
+    expect(
+      tester.getRect(lone).size.width,
+      lessThan(atRest.width),
+      reason: 'a control with nothing to lose the gesture to must not wait',
+    );
+
+    await gesture.up();
+    await tester.pumpAndSettle();
+  });
+
   testWidgets('a highlighted row still reports its tap', (tester) async {
     final List<int> tapped = [];
     await tester.pumpWidget(

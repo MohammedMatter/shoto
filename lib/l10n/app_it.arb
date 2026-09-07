@@ -82,25 +82,41 @@
   "settingsCaptureAlertsLastRun": "Ultimo controllo {when}",
   "@settingsCaptureAlertsLastRun": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "timeAgoMinutes": "{count} min fa",
   "@timeAgoMinutes": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoHours": "{count} h fa",
   "@timeAgoHours": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersInMinutes": "tra {count} min",
+  "@remindersInMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoDays": "{count} g fa",
   "@timeAgoDays": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsQuickTile": "Riquadro impostazioni rapide",
@@ -138,7 +154,7 @@
   "reminderClear": "Rimuovi il promemoria",
   "reminderNotificationTitle": "Shoto",
   "reminderMuted": "Le notifiche sono disattivate, quindi non ti arriverà — attivale nelle impostazioni del telefono.",
-  "reminderUnsupported": "Per ora i promemoria sono disponibili solo su Android.",
+  "reminderUnsupported": "I promemoria non sono disponibili su questo dispositivo.",
   "reminderSet": "Promemoria impostato per {when}",
   "@reminderSet": {
     "placeholders": {
@@ -159,9 +175,16 @@
   "remindersTitle": "Promemoria",
   "remindersMissed": "Persi",
   "remindersUpcoming": "In arrivo",
+  "remindersThisWeek": "Questa settimana",
+  "remindersLater": "Più avanti",
+  "remindersReschedule": "Cambia l’orario",
+  "remindersRemoved": "{count, plural, =1{Promemoria rimosso} other{{count} promemoria rimossi}}",
+  "remindersClearMissed": "Cancella tutti",
+  "commonUndo": "Annulla",
   "remindersNoneTitle": "Nessun promemoria",
-  "remindersNoneBody": "Apri le azioni di uno screenshot e scegli «Ricordamelo» per tornarci più tardi.",
+  "remindersNoneBody": "Gli screenshot per cui imposti un orario restano qui, anche quelli il cui momento è già passato.",
   "remindersClearOne": "Rimuovi",
+  "remindersSwipeHint": "Scorri un promemoria",
   "remindersCount": "{count, plural, =1{1 promemoria} other{{count} promemoria}}",
   "@remindersCount": {
     "placeholders": {
@@ -171,6 +194,7 @@
     }
   },
   "remindersMissedCount": "{count, plural, =1{1 perso} other{{count} persi}}",
+  "remindersMissedTitle": "{count, plural, =1{1 promemoria mancato} other{{count} promemoria mancati}}",
   "@remindersMissedCount": {
     "placeholders": {
       "count": {

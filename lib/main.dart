@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui' show PlatformDispatcher;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,6 +16,7 @@ import 'package:shoto/core/services/crash_reporting.dart';
 import 'package:shoto/core/services/dev_access.dart';
 import 'package:shoto/core/services/funnel_log.dart';
 import 'package:shoto/core/services/local_identity.dart';
+import 'package:shoto/core/services/native_splash.dart';
 import 'package:shoto/core/services/feature_trials.dart';
 import 'package:shoto/core/services/library_quota.dart';
 import 'package:shoto/core/services/pro_status.dart';
@@ -27,6 +29,7 @@ import 'package:shoto/core/theme/app_icon_controller.dart';
 import 'package:shoto/core/theme/folder_appearance_controller.dart';
 import 'package:shoto/core/theme/theme_controller.dart';
 import 'package:shoto/core/theme/tint_controller.dart';
+import 'package:shoto/core/widgets/splash_curtain.dart';
 import 'package:shoto/features/quick_save/presentation/pages/quick_save_page.dart';
 import 'package:shoto/features/subscription/domain/repositories/subscription_repository.dart';
 import 'firebase_options.dart';
@@ -134,6 +137,62 @@ void main() async {
     return;
   }
 
+  // **The launch screen goes up here, before any of the work below starts.**
+  //
+  // This used to be the last line of `main`, after Firebase, a dozen preference
+  // loads, a subscription lookup and two more awaits — which meant Flutter drew
+  // nothing at all for the entire one and a half to three seconds those take.
+  // The native splash had long since exited by then, so what the user actually
+  // watched was a flat coloured field with nothing on it, and then a hard cut
+  // to whichever screen the router had picked.
+  //
+  // Putting `runApp` in front of the bootstrap rather than behind it turns that
+  // dead time into the launch screen it should always have been, and it makes
+  // the choreography **free**: the mark settling and the wordmark arriving both
+  // play inside time the app was going to spend loading anyway. See
+  // [SplashCurtain].
+  //
+  // Nothing below reads anything the bootstrap loads. `ShotoLaunch` shows the
+  // curtain and only builds [MyApp] — which is where `sl<ThemeController>()`
+  // and the router first get asked for anything — once the future it is given
+  // has completed.
+  //
+  // Three things are awaited out here rather than inside the bootstrap, and
+  // each for its own reason.
+  //
+  // The orientation lock, for the reason [lockOrientation] documents: it has to
+  // be applied before there is a frame, not merely before there is a screen.
+  //
+  // The theme mode and the accent, because **the launch screen has to know
+  // which mode the app is going to be in, and Android cannot tell it.** On
+  // Android 12 and up the platform builds its splash window before this
+  // process exists, so it resolves `values-night` against the *system's* mode —
+  // and a user who has pinned light inside Shoto on a phone in dark mode gets a
+  // near-black launch screen in front of a near-white app. Reading these two
+  // here lets [SplashCurtain] carry the field from one to the other while the
+  // mark is settling, instead of the app cutting to a different colour when the
+  // curtain lifts.
+  //
+  // Both are reads of a `SharedPreferences` instance the bootstrap immediately
+  // reuses, and both are idempotent, so loading them twice costs one file read.
+  // Neither delays anything visible: the native splash is held until Flutter's
+  // first frame, so what these push back is the handover, not the picture.
+  await Future.wait(<Future<void>>[
+    orientationLocked,
+    sl<ThemeController>().load(),
+    sl<TintController>().load(),
+  ]);
+
+  runApp(ShotoLaunch(bootstrap: _bootstrap()));
+}
+
+/// Everything that has to be true before [MyApp] can be built, run behind the
+/// launch screen instead of in front of it.
+///
+/// **The ordering inside this is unchanged and still load-bearing** — see the
+/// notes on each step. What changed is only where the work happens relative to
+/// the first frame.
+Future<void> _bootstrap() async {
   // **Firebase must be ready before the router is built**, and that is not a
   // preference — it is a hard ordering constraint. `AppRouter` asks
   // `AuthRepository.currentUser` to decide whether the first screen is the
@@ -153,7 +212,9 @@ void main() async {
 
   await Future.wait([
     firebaseReady,
-    orientationLocked,
+    // No `orientationLocked` here any more: it is awaited before `runApp` now,
+    // because the frame it has to beat is the launch screen's rather than the
+    // app's. See the note there.
     sl<LocalIdentity>().load(),
     sl<LocaleController>().load(),
     sl<ThemeController>().load(),
@@ -211,8 +272,155 @@ void main() async {
   // waiting on it — unlike a Pro badge, a quota bar that arrives a moment late
   // is a bar nobody was looking at yet.
   unawaited(sl<LibraryQuota>().load());
+}
 
-  runApp(const MyApp());
+/// The root of a normal launch: the launch screen, and the app arriving behind
+/// it.
+///
+/// **This exists so that `runApp` can happen before the app is ready to be
+/// built**, which is the whole shape of the fix in [main]. [MyApp] cannot be
+/// constructed until the bootstrap has finished — `AppRouter` asks Firebase who
+/// is signed in while the router is being built — so something has to hold the
+/// screen in the meantime, and that something has to be the launch screen
+/// rather than a blank field.
+///
+/// The two overlap rather than queue. [MyApp] is mounted the moment the
+/// bootstrap completes, **underneath** a curtain that is still opaque, so the
+/// first screen is laid out, rasterised and completely finished before any of
+/// it becomes visible. What the user sees is the field dissolving off a screen
+/// that was already there, which is a different thing from a screen appearing.
+class ShotoLaunch extends StatefulWidget {
+  /// Everything that must be true before [MyApp] can be built.
+  ///
+  /// Taken as an already-started future rather than a callback, so the work is
+  /// underway before this widget is even constructed — there is no reason for
+  /// Firebase to wait on a `build`.
+  final Future<void> bootstrap;
+
+  const ShotoLaunch({super.key, required this.bootstrap});
+
+  @override
+  State<ShotoLaunch> createState() => _ShotoLaunchState();
+}
+
+class _ShotoLaunchState extends State<ShotoLaunch> {
+  bool _ready = false;
+  bool _curtain = true;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_boot());
+  }
+
+  /// **A bootstrap that throws still lifts the curtain**, and that is the one
+  /// rule this method exists to enforce.
+  ///
+  /// Startup is a chain of awaits over Firebase, a store lookup and a dozen
+  /// files. Any of them can fail on a device with no network, a corrupt
+  /// preference file or a clock the certificate chain disagrees with. Before
+  /// this, such a failure threw before `runApp` and the app showed a black
+  /// screen with nothing in the logs a user could report. Now it has a launch
+  /// screen in front of it, and a launch screen that stayed up forever would be
+  /// a strictly worse version of the same bug — indistinguishable from a hang,
+  /// and *caused* by the thing that was supposed to make launching feel better.
+  ///
+  /// So the failure is reported and the app is shown anyway. Whatever is broken
+  /// downstream of it is then broken visibly, which is the most this layer can
+  /// honestly promise.
+  Future<void> _boot() async {
+    try {
+      await widget.bootstrap;
+    } catch (error, stack) {
+      // Not `CrashReporting` directly: the failure may well be *inside* the
+      // step that installs it. `FlutterError.reportError` reaches whatever
+      // handler is attached, and nothing at all when none is, which is the
+      // correct behaviour on a device where the user has not agreed to send
+      // anything.
+      FlutterError.reportError(
+        FlutterErrorDetails(
+          exception: error,
+          stack: stack,
+          library: 'shoto',
+          context: ErrorDescription('while starting up'),
+        ),
+      );
+    }
+
+    if (!mounted) return;
+    setState(() => _ready = true);
+
+    // **After the first frame, and that is not a detail — it is the difference
+    // between this working and silently doing nothing.**
+    //
+    // `setApplicationNightMode` is rejected unless the app is in the
+    // foreground, and it fails by throwing, which [NativeSplash.pinNightMode]
+    // swallows. Called from `main` it worked in debug and never once worked in
+    // release: a JIT build is slow enough that the activity has resumed by the
+    // time `main` runs, an AOT build is not. The symptom was a launch screen
+    // that quietly ignored the app's own light/dark setting on exactly the
+    // builds that ship. Caught by measuring a release cold start against a
+    // debug one, which is the only way it could have been caught.
+    //
+    // Here the activity is certainly resumed: something has been on screen for
+    // a while, and the app behind the curtain is built.
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      NativeSplash.pinNightMode(sl<ThemeController>().themeMode);
+    });
+  }
+
+  /// The background and text colour [MyApp] is about to paint in, for the
+  /// curtain to arrive at rather than cut to. See [SplashCurtain.destination].
+  ///
+  /// **Answerable from the very first frame**, because [main] loads the theme
+  /// mode and the accent before `runApp` for exactly this. Everything else the
+  /// app needs is still loading behind the curtain; these two are the only
+  /// preferences the launch screen itself has an opinion about.
+  ///
+  /// The switch below is the same resolution [MyApp] does, and it is
+  /// deliberately not factored into something shared. There it decides what the
+  /// app *is*; here it predicts it so a transition can be aimed at it. A helper
+  /// spanning both would make it look as though the curtain had a say in the
+  /// app's theme, which it must never have — if the two ever disagree, this is
+  /// the one to change.
+  ({Color field, Color ink}) _destination(BuildContext context) {
+    final bool isDark = switch (sl<ThemeController>().themeMode) {
+      ThemeMode.light => false,
+      ThemeMode.dark => true,
+      ThemeMode.system =>
+        MediaQuery.platformBrightnessOf(context) == Brightness.dark,
+    };
+
+    final AppPalette palette = AppPalette.tinted(
+      sl<TintController>().tint,
+      isDark: isDark,
+    );
+
+    return (field: palette.background, ink: palette.textPrimary);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // A `Directionality` because a bare `Stack` resolves its alignment against
+    // one, and there is no `MaterialApp` above this to supply it — that is the
+    // point of this widget. The app's real text direction is settled inside
+    // [MyApp] by the locale, as it always was.
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          if (_ready) const MyApp(),
+          if (_curtain)
+            SplashCurtain(
+              ready: _ready,
+              destination: _destination(context),
+              onGone: () => setState(() => _curtain = false),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 /// The whole app when launched from another app's share sheet.

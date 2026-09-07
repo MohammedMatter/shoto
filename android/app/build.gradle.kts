@@ -71,6 +71,24 @@ configurations.all {
 }
 
 dependencies {
+    // The launch screen, on every API level from one description.
+    //
+    // Android 12 draws a splash window the app cannot opt out of, and its
+    // attributes exist nowhere below 31 — which is why the launch screen used
+    // to be spelled out in a `values-v31/styles.xml` and an unqualified twin
+    // that had to be kept in agreement by hand. This backports the same four
+    // attributes down to API 21, so `values/styles.xml` is now the whole
+    // description.
+    //
+    // It also supplies the two things the flicker actually needed and the
+    // platform API does not give you for free: `setKeepOnScreenCondition`,
+    // which holds the splash until Flutter's first frame instead of releasing
+    // it the instant the activity can draw, and `setOnExitAnimationListener`,
+    // which hands over the splash's own icon view — measured, in real screen
+    // coordinates — so Dart can draw the same mark in the same place and the
+    // handover has nothing to see. See SplashChannel.kt.
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1")
 
     // local_auth_android pins androidx.biometric 1.1.0, which predates

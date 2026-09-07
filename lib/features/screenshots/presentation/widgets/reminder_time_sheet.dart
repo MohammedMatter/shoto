@@ -8,6 +8,7 @@ import 'package:shoto/core/theme/app_shapes.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
 import 'package:shoto/core/utils/reminder_times.dart';
 import 'package:shoto/core/widgets/primary_button.dart';
+import 'package:shoto/core/widgets/glass_layer.dart';
 import 'package:shoto/core/widgets/sheet_surface.dart';
 import 'package:shoto/core/widgets/wheel_picker.dart';
 
@@ -52,8 +53,31 @@ Future<DateTime?> showReminderTimeSheet(
     // *scrolling* — the whole point is that everything is reachable at once —
     // it simply needs permission to be its own size.
     isScrollControlled: true,
-    builder: (BuildContext sheetContext) =>
-        SheetSurface(child: _ReminderTimeSheet(clock: clock)),
+    // **The two concessions every tall sheet in this app makes**, and this one
+    // had been left out of both — see `showIntentFullPickerSheet`,
+    // `showFolderEditorSheet` and `showCustomIntentEditorSheet`, which take
+    // exactly this pair. A shorter entrance because the panel is carrying most
+    // of a screen, and the entrance is the animation nobody looks away from.
+    enterDuration: AppMotion.normal,
+    builder: (BuildContext sheetContext) => SheetSurface(
+      // **A wheel is the one thing on glass that never stops moving**, and
+      // that is what makes the frost here different in kind from the frost on
+      // a sheet of buttons. A `BackdropFilter` costs nothing while the surface
+      // is still — the layer is retained and no blur runs. Put a drum on it
+      // and every frame of every spin is a fresh blur of most of a screen.
+      //
+      // Measured on the device, spinning the minute wheel with this sheet at
+      // [AppBlur.panel]: 43–79ms of raster a frame against a 16.6ms budget,
+      // with Dart build never over 8ms. The gesture ran at about a third of
+      // the frame rate, on the one control whose whole job is to feel like an
+      // object being turned.
+      //
+      // So it takes [AppBlur.tallSheet] like its siblings: no backdrop, and a
+      // nearly opaque fill instead, which at this size is what the eye was
+      // reading as material anyway.
+      sigma: AppBlur.tallSheet,
+      child: _ReminderTimeSheet(clock: clock),
+    ),
   );
 }
 
@@ -510,8 +534,7 @@ class _DayStrip extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: EdgeInsetsDirectional.symmetric(horizontal: 20.w),
         itemCount: days.length + 1,
-        separatorBuilder: (BuildContext context, int _) =>
-            SizedBox(width: 8.w),
+        separatorBuilder: (BuildContext context, int _) => SizedBox(width: 8.w),
         itemBuilder: (BuildContext context, int index) {
           if (index == days.length) {
             return _CalendarChip(onTap: onCalendar);

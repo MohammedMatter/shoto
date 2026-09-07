@@ -1,10 +1,17 @@
-// Renders the splash animation as a strip of stills, for looking at.
+// Renders the mark's filing animation as a strip of stills, for looking at.
 //
 //     flutter test tool/preview_splash_frames.dart
 //
 // Writes build/splash_frames_{light,dark}.png. Scaffolding, not a test — it
 // exists so the choreography can be checked without installing a debug build
 // over whatever the phone is already carrying.
+//
+// **The launch screen no longer plays this**, despite the file's name. The
+// cards flying in is what the sign-in screen and the Pro welcome do; the
+// launch screen takes the mark whole from the platform's own splash and settles
+// it. See `lib/core/widgets/splash_curtain.dart`. The name is kept because the
+// output path is, and because this is still the only place the filing
+// choreography can be seen frame by frame.
 
 import 'dart:io';
 import 'dart:typed_data';

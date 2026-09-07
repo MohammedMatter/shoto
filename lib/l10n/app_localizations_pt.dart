@@ -187,6 +187,11 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String remindersInMinutes(int count) {
+    return 'em $count min';
+  }
+
+  @override
   String timeAgoDays(int count) {
     return 'há $count d';
   }
@@ -307,7 +312,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get reminderUnsupported =>
-      'Por agora, os lembretes só estão disponíveis no Android.';
+      'Os lembretes não estão disponíveis neste dispositivo.';
 
   @override
   String reminderSet(String when) {
@@ -332,14 +337,43 @@ class AppLocalizationsPt extends AppLocalizations {
   String get remindersUpcoming => 'A seguir';
 
   @override
+  String get remindersThisWeek => 'Esta semana';
+
+  @override
+  String get remindersLater => 'Mais tarde';
+
+  @override
+  String get remindersReschedule => 'Alterar a hora';
+
+  @override
+  String remindersRemoved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count lembretes removidos',
+      one: 'Lembrete removido',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get remindersClearMissed => 'Limpar todos';
+
+  @override
+  String get commonUndo => 'Desfazer';
+
+  @override
   String get remindersNoneTitle => 'Sem lembretes';
 
   @override
   String get remindersNoneBody =>
-      'Abre as ações de uma captura e escolhe «Lembrar-me disto» para voltares a ela mais tarde.';
+      'As capturas para as quais você define uma hora ficam aqui, mesmo aquelas cujo momento já passou.';
 
   @override
   String get remindersClearOne => 'Limpar';
+
+  @override
+  String get remindersSwipeHint => 'Deslize um lembrete';
 
   @override
   String remindersCount(int count) {
@@ -359,6 +393,17 @@ class AppLocalizationsPt extends AppLocalizations {
       locale: localeName,
       other: '$count perdidos',
       one: '1 perdido',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersMissedTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count lembretes perdidos',
+      one: '1 lembrete perdido',
     );
     return '$_temp0';
   }

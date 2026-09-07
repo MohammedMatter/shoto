@@ -51,6 +51,15 @@ have to match.
   than by name, so the iOS path would need its own lookup. Left unwritten
   rather than half-written — see
   `ScreenshotGalleryDataSource._captureAlbumNames`.
+- **Reminders are done on both sides.** `RemindersChannel.swift` answers the
+  same `shoto/reminders` channel `RemindersChannel.kt` does, and Dart's only
+  platform check is `Platform.isAndroid || Platform.isIOS`. It is worth
+  understanding *why this one was cheap*, because it is the exception rather
+  than the shape of the rest: reminders need no App Group, no second binary
+  target and no shared container — the whole platform half is a notification
+  request handed to the system. Anything that has to run **outside the app**
+  is the expensive kind; anything the running app merely asks the OS to
+  remember is the cheap kind.
 - **Nothing else in the app assumes Android**, and the ML Kit dependencies,
   RevenueCat and `photo_manager` all have iOS implementations.
 

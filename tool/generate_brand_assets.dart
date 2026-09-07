@@ -62,10 +62,63 @@ const double _adaptiveCanvas = 108;
 /// icon rather than as a safe one.
 const double _adaptiveMark = 0.70;
 
-/// The mark's size in the native launch window, in dp. The native window
-/// stays up until the first real screen is ready, so unlike the icon sizes
-/// above this one has no Flutter-side counterpart to stay in sync with.
-const double _splashMark = 96;
+// ------------------------------------------------------- the launch window
+//
+// **The splash is no longer the app icon printed large**, which is what it was
+// and what every default Flutter project ships. An icon is a *tile* — it
+// carries its own rounded background — so putting one in the middle of a
+// screen paints a sticker onto a blank wall rather than designing a screen.
+//
+// What is drawn now is the mark with no slab under it, on a full-bleed field of
+// the brand's own ground, with the wordmark beneath it. The colour moved from
+// the logo to the screen, which is the whole change.
+//
+// **The field is the same in light and dark**, which is a deliberate break from
+// what `colors.xml` used to guarantee — see the note there about matching
+// `AppPalette.background` exactly so the handover does not flash. It flashes
+// now, once, from teal to the app's own background at Flutter's first frame.
+// That is the price of a launch screen that is the same brand moment for
+// everybody rather than two different greys.
+
+/// The launch mark's canvas and the safe area inside it, in dp.
+///
+/// Android's own numbers: a splash icon is authored on a 288dp square and
+/// everything drawn has to stay inside the middle 192dp, because the platform
+/// is free to mask, scale or animate the rest. The same pair drives the iOS
+/// launch image, so one drawing serves both and there is nothing to keep in
+/// agreement.
+///
+/// **Nothing native carries the wordmark any more, and that is the point of
+/// this file getting shorter rather than longer.** For a long time the launch
+/// window drew the mark with `SHOTO` set under it, in two rasters — one per
+/// field — with a `FontLoader` in this script to set them, because a window
+/// painted before the app's process exists cannot choose a colour or a font at
+/// runtime. All of that was in service of a picture nobody could animate.
+///
+/// The wordmark is drawn by `SplashCurtain` now, in Flutter, where it can
+/// arrive rather than merely be present. What the platform gets is the mark
+/// alone — which is exactly what the platform's splash slot is specified to
+/// hold — and the two agree because the curtain is handed the icon's measured
+/// rectangle and draws into it. See `lib/core/widgets/splash_curtain.dart`.
+///
+/// **And the mark here has no slab.** The rounded tile was mandatory for as
+/// long as the launch window was the *icon* printed large — an icon carries its
+/// own tile, and dropping one in the middle of a screen decorates a screen
+/// rather than designing one. What kept it after that was the light field: the
+/// front card is `AppBrand.paper`, six levels off `#F4F4F4`, so bare on light
+/// mode it all but disappears.
+///
+/// It is bare anyway, and the reason is that the front card was never what was
+/// carrying the mark. The two teal cards behind it and the ribbon on it hold
+/// the silhouette on a near-white field — the paper card reads as a very quiet
+/// shape between them rather than as a missing one. Checked by rendering it on
+/// `#F4F4F4`, `#FFFFFF`, `#111213` and `#000000` before committing to it, which
+/// is the only way that judgement can honestly be made.
+///
+/// One drawing serves both fields, so there is no `drawable-night` twin of this
+/// and nothing per-mode to keep in step.
+const double _splashIconCanvas = 288;
+const double _splashIconMark = 192;
 
 void main() {
   test('generate brand assets', () async {
@@ -170,25 +223,14 @@ void main() {
 
     // ------------------------------------------- Android, the launch window
     //
-    // The whole mark, at rest, slab included. This used to be the tray with
-    // no cards in it, because a Flutter splash then drew the same empty tray
-    // and filed the cards into it — a handover trick for a screen that no
-    // longer exists (the router decides the first destination before
-    // `runApp`, so nothing is shown between the OS window and the real first
-    // screen). With nothing to hand over to, an incomplete mark is just an
-    // incomplete mark.
-    //
-    // The slab is not optional here even though this is the one place the
-    // mark appears on a known background: that background is `#FAFAFA` in
-    // light mode, and the cards are paper. Without the slab the launch
-    // window would show two grey slivers and a pair of black bars floating on
-    // white.
+    // One drawable, unqualified: the field is `AppBrand.ground` in both modes,
+    // so there is nothing for a `drawable-night` twin to say differently. This
+    // is what `windowSplashScreenAnimatedIcon` is pointed at on every API
+    // level — `androidx.core:core-splashscreen` backports that attribute below
+    // 31, so there is no longer a second launch drawable for old phones and no
+    // `launch_background.xml` at all.
     for (final MapEntry<String, double> d in _densities.entries) {
-      await _png(
-        '$_android/drawable-${d.key}/splash_logo.png',
-        (_splashMark * d.value).round(),
-        (px) => ShotoBrandMarkPainter(markExtent: px),
-      );
+      await _splashIconPng('$_android/drawable-${d.key}/splash_mark.png', d.value);
     }
 
     // ---------------------------------------------------------------- iOS
@@ -223,13 +265,14 @@ void main() {
       );
     }
 
-    // The iOS launch image, matching Android's: the same mark, at the same
-    // 96dp, for the same reason.
+    // The iOS launch image — the same drawing on the same canvas as Android's,
+    // because `LaunchBackground.colorset` is already `AppBrand.ground` and the
+    // curtain that takes over is the same curtain. One artwork, three
+    // rasterisations, no second set of proportions to keep in step.
     for (int scale = 1; scale <= 3; scale++) {
-      await _png(
+      await _splashIconPng(
         '$_iosLaunch/LaunchImage${scale == 1 ? '' : '@${scale}x'}.png',
-        (_splashMark * scale).round(),
-        (px) => ShotoBrandMarkPainter(markExtent: px),
+        scale.toDouble(),
       );
     }
 
@@ -395,3 +438,52 @@ String _adaptiveXml(String id) =>
     <monochrome android:drawable="@mipmap/ic_launcher_monochrome" />
 </adaptive-icon>
 ''';
+
+
+/// The bare mark, centred on the canvas both platforms' launch slots expect.
+///
+/// **Centred on its own ink rather than on its box.** With a slab under it the
+/// two are the same question — the slab is the box — and the mark's deliberate
+/// weight to the left reads as composition inside a frame. Bare on a field
+/// there is no frame, and the same offset reads as a centring mistake. See
+/// [ShotoBrandMarkPainter.restBounds] for why the correction is computed here
+/// instead of typed.
+Future<void> _splashIconPng(String path, double density) async {
+  final int px = (_splashIconCanvas * density).round();
+
+  final ui.PictureRecorder recorder = ui.PictureRecorder();
+  final Canvas canvas = Canvas(
+    recorder,
+    Rect.fromLTWH(0, 0, px.toDouble(), px.toDouble()),
+  );
+  canvas.scale(density);
+
+  // Solved from the safe area's width, which is the binding dimension: the ink
+  // is 75.5 wide against 69.7 tall, so a mark fitted by height would overflow
+  // the 192dp square it has to stay inside.
+  final double extent = ShotoBrandMarkPainter.extentForInkWidth(
+    _splashIconMark,
+  );
+
+  ShotoBrandMarkPainter(
+    markExtent: extent,
+    backdrop: false,
+    centre: ShotoBrandMarkPainter.centreForInk(
+      const Offset(_splashIconCanvas / 2, _splashIconCanvas / 2),
+      extent,
+    ),
+  ).paint(canvas, const Size(_splashIconCanvas, _splashIconCanvas));
+
+  final ui.Image image = await recorder.endRecording().toImage(px, px);
+  final Uint8List bytes = (await image.toByteData(
+    format: ui.ImageByteFormat.png,
+  ))!.buffer.asUint8List();
+  image.dispose();
+
+  final File file = File(path);
+  file.parent.createSync(recursive: true);
+  file.writeAsBytesSync(bytes);
+
+  // ignore: avoid_print
+  print('  ${px}px  $path');
+}

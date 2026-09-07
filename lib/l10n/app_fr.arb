@@ -82,25 +82,41 @@
   "settingsCaptureAlertsLastRun": "Dernière vérification {when}",
   "@settingsCaptureAlertsLastRun": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "timeAgoMinutes": "il y a {count} min",
   "@timeAgoMinutes": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoHours": "il y a {count} h",
   "@timeAgoHours": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersInMinutes": "dans {count} min",
+  "@remindersInMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoDays": "il y a {count} j",
   "@timeAgoDays": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsQuickTile": "Tuile des réglages rapides",
@@ -138,7 +154,7 @@
   "reminderClear": "Supprimer le rappel",
   "reminderNotificationTitle": "Shoto",
   "reminderMuted": "Les notifications sont désactivées, donc ceci ne vous parviendra pas — activez-les dans les réglages du téléphone.",
-  "reminderUnsupported": "Les rappels ne sont disponibles que sur Android pour le moment.",
+  "reminderUnsupported": "Les rappels ne sont pas disponibles sur cet appareil.",
   "reminderSet": "Rappel réglé pour {when}",
   "@reminderSet": {
     "placeholders": {
@@ -159,9 +175,16 @@
   "remindersTitle": "Rappels",
   "remindersMissed": "Manqués",
   "remindersUpcoming": "À venir",
+  "remindersThisWeek": "Cette semaine",
+  "remindersLater": "Plus tard",
+  "remindersReschedule": "Changer l’heure",
+  "remindersRemoved": "{count, plural, =1{Rappel supprimé} other{{count} rappels supprimés}}",
+  "remindersClearMissed": "Tout effacer",
+  "commonUndo": "Annuler",
   "remindersNoneTitle": "Aucun rappel",
-  "remindersNoneBody": "Ouvre les actions d’une capture et choisis « Me le rappeler » pour y revenir plus tard.",
+  "remindersNoneBody": "Les captures pour lesquelles vous fixez une heure attendent ici, même celles dont le moment est passé.",
   "remindersClearOne": "Effacer",
+  "remindersSwipeHint": "Balayez un rappel",
   "remindersCount": "{count, plural, =1{1 rappel} other{{count} rappels}}",
   "@remindersCount": {
     "placeholders": {
@@ -171,6 +194,7 @@
     }
   },
   "remindersMissedCount": "{count, plural, =1{1 manqué} other{{count} manqués}}",
+  "remindersMissedTitle": "{count, plural, =1{1 rappel manqué} other{{count} rappels manqués}}",
   "@remindersMissedCount": {
     "placeholders": {
       "count": {
