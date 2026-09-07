@@ -12,7 +12,10 @@ import 'package:shoto/core/utils/screenshot_intent.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_bloc.dart';
 import 'package:shoto/features/folders/presentation/bloc/folders_state.dart';
 import 'package:shoto/features/home/presentation/pages/home_page.dart';
+import 'package:shoto/core/theme/app_shapes.dart';
+import 'package:shoto/core/widgets/asset_thumbnail_image.dart';
 import 'package:shoto/features/home/presentation/widgets/home_greeting.dart';
+import 'package:shoto/features/home/presentation/widgets/home_inbox.dart';
 import 'package:shoto/features/home/presentation/widgets/home_recent_strip.dart';
 import 'package:shoto/features/home/presentation/widgets/home_tool_list.dart';
 import 'package:shoto/features/screenshots/domain/entities/library_summary.dart';
@@ -391,6 +394,27 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    testWidgets('a four-figure pile does not burst the overflow tile', (
+      tester,
+    ) async {
+      // "+1278" in a thirty-six pixel square, at a raised text size. The
+      // number scales down inside its tile rather than painting over the edge
+      // of it — which is what a fixed style would have done, silently, on any
+      // library big enough.
+      final List<ScreenshotEntity> huge = List<ScreenshotEntity>.generate(
+        1284,
+        (int i) => ScreenshotEntity(
+          asset: FakeGallery.asset(i % 12),
+          isFavorite: false,
+          folderId: null,
+          intent: null,
+        ),
+      );
+      await render(tester, huge, textScale: 1.3);
+      expect(tester.takeException(), isNull);
+      expect(find.textContaining(RegExp(r'^\+\d+$')), findsOneWidget);
+    });
+
     testWidgets('double system text size does not overflow anything', (
       tester,
     ) async {
@@ -455,6 +479,83 @@ void main() {
   ///
   /// So these pump the *sequence*: summary first, then the real list, with the
   /// two agreeing about the library. Nothing structural may move.
+  /// **The tile that says how many did not fit.**
+  ///
+  /// It was an empty box — same size, same shape and the same pale placeholder
+  /// tint the tiles wear *before their picture arrives* — sitting at the end of
+  /// a row of real screenshots. Nothing about it said "there are more"; it said
+  /// "one of these did not load", which is the reading the eye reaches for
+  /// first because it is the one it has seen before.
+  ///
+  /// So it is drawn on the first of the ones that did not fit, under a scrim.
+  group('the overflow tile', () {
+    List<ScreenshotEntity> pile(int n) => List<ScreenshotEntity>.generate(
+      n,
+      (int i) => ScreenshotEntity(
+        asset: FakeGallery.asset(i % 12),
+        isFavorite: false,
+        folderId: null,
+        intent: null,
+      ),
+    );
+
+    testWidgets('is a screenshot, not a hole in the row', (tester) async {
+      await render(tester, pile(33));
+
+      final Finder plusN = find.textContaining(RegExp(r'^\+\d+$'));
+      expect(plusN, findsOneWidget);
+
+      // **The two halves of the change, stated where they can be seen.**
+      //
+      // The number sits inside a `ClippedCorner` — the signature every tile
+      // beside it wears, and the one shape this app spends on a single
+      // meaning. It was the only plain corner in the row.
+      final Finder tile = find
+          .ancestor(of: plusN, matching: find.byType(ClippedCorner))
+          .first;
+      expect(tile, findsOneWidget);
+
+      // And that tile is carrying a screenshot of its own, rather than the
+      // placeholder tint a thumbnail wears while it is still loading.
+      expect(
+        find.descendant(of: tile, matching: find.byType(AssetThumbnailImage)),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('and is a plain placeholder before the pictures arrive', (
+      tester,
+    ) async {
+      // A preview knows the count out of the local tables and has not read the
+      // gallery yet. Drawing a scrimmed picture there would mean drawing one it
+      // does not have — the empty tile is the honest thing to show, and this is
+      // the only state it was ever honest in.
+      tester.view.physicalSize = const Size(1080, 7000);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(
+        ScreenUtilInit(
+          designSize: const Size(360, 690),
+          minTextAdapt: true,
+          builder: (context, _) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            theme: testTheme(Brightness.light),
+            home: const Scaffold(
+              body: HomeInbox.preview(count: 33, waiting: <IntentRef, int>{}),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      expect(find.textContaining(RegExp(r'^\+\d+$')), findsOneWidget);
+      expect(find.byType(AssetThumbnailImage), findsNothing);
+    });
+  });
+
   group('nothing reshuffles when the real read lands', () {
     late _StubScreenshotsBloc bloc;
 

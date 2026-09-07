@@ -82,25 +82,41 @@
   "settingsCaptureAlertsLastRun": "Last checked {when}",
   "@settingsCaptureAlertsLastRun": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "timeAgoMinutes": "{count} min ago",
   "@timeAgoMinutes": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoHours": "{count} h ago",
   "@timeAgoHours": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersInMinutes": "in {count} min",
+  "@remindersInMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoDays": "{count} d ago",
   "@timeAgoDays": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsQuickTile": "Quick Settings tile",
@@ -138,7 +154,7 @@
   "reminderClear": "Remove reminder",
   "reminderNotificationTitle": "Shoto",
   "reminderMuted": "Notifications are off, so this will not reach you — turn them on in your phone settings.",
-  "reminderUnsupported": "Reminders are only available on Android for now.",
+  "reminderUnsupported": "Reminders are not available on this device.",
   "reminderSet": "Reminder set for {when}",
   "@reminderSet": {
     "placeholders": {
@@ -159,9 +175,23 @@
   "remindersTitle": "Reminders",
   "remindersMissed": "Missed",
   "remindersUpcoming": "Coming up",
+  "remindersThisWeek": "This week",
+  "remindersLater": "Later",
+  "remindersReschedule": "Change the time",
+  "remindersRemoved": "{count, plural, =1{Reminder removed} other{{count} reminders removed}}",
+  "@remindersRemoved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersClearMissed": "Clear all",
+  "commonUndo": "Undo",
   "remindersNoneTitle": "No reminders",
-  "remindersNoneBody": "Open a screenshot’s actions and pick “Remind me about this” to be brought back to it.",
+  "remindersNoneBody": "Screenshots you set a time on wait here — even the ones whose moment has passed.",
   "remindersClearOne": "Clear",
+  "remindersSwipeHint": "Swipe a reminder",
   "remindersCount": "{count, plural, =1{1 reminder} other{{count} reminders}}",
   "@remindersCount": {
     "placeholders": {
@@ -171,6 +201,14 @@
     }
   },
   "remindersMissedCount": "{count, plural, =1{1 missed} other{{count} missed}}",
+  "remindersMissedTitle": "{count, plural, =1{1 missed reminder} other{{count} missed reminders}}",
+  "@remindersMissedTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "@remindersMissedCount": {
     "placeholders": {
       "count": {

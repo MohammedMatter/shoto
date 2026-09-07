@@ -82,25 +82,41 @@
   "settingsCaptureAlertsLastRun": "Laatst gecontroleerd {when}",
   "@settingsCaptureAlertsLastRun": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "timeAgoMinutes": "{count} min geleden",
   "@timeAgoMinutes": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoHours": "{count} u geleden",
   "@timeAgoHours": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersInMinutes": "over {count} min",
+  "@remindersInMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoDays": "{count} d geleden",
   "@timeAgoDays": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsQuickTile": "Snelle-instellingentegel",
@@ -138,7 +154,7 @@
   "reminderClear": "Herinnering verwijderen",
   "reminderNotificationTitle": "Shoto",
   "reminderMuted": "Meldingen staan uit, dus dit bereikt je niet — zet ze aan in de instellingen van je telefoon.",
-  "reminderUnsupported": "Herinneringen zijn voorlopig alleen op Android beschikbaar.",
+  "reminderUnsupported": "Herinneringen zijn niet beschikbaar op dit apparaat.",
   "reminderSet": "Herinnering ingesteld voor {when}",
   "@reminderSet": {
     "placeholders": {
@@ -159,9 +175,16 @@
   "remindersTitle": "Herinneringen",
   "remindersMissed": "Gemist",
   "remindersUpcoming": "Binnenkort",
+  "remindersThisWeek": "Deze week",
+  "remindersLater": "Later",
+  "remindersReschedule": "Tijd wijzigen",
+  "remindersRemoved": "{count, plural, =1{Herinnering verwijderd} other{{count} herinneringen verwijderd}}",
+  "remindersClearMissed": "Alles wissen",
+  "commonUndo": "Ongedaan maken",
   "remindersNoneTitle": "Geen herinneringen",
-  "remindersNoneBody": "Open de acties van een screenshot en kies ‘Herinner me hieraan’ om er later op terug te komen.",
+  "remindersNoneBody": "Screenshots waarvoor je een tijd instelt wachten hier — ook die waarvan het moment voorbij is.",
   "remindersClearOne": "Wissen",
+  "remindersSwipeHint": "Veeg over een herinnering",
   "remindersCount": "{count, plural, =1{1 herinnering} other{{count} herinneringen}}",
   "@remindersCount": {
     "placeholders": {
@@ -171,6 +194,7 @@
     }
   },
   "remindersMissedCount": "{count, plural, =1{1 gemist} other{{count} gemist}}",
+  "remindersMissedTitle": "{count, plural, =1{1 gemiste herinnering} other{{count} gemiste herinneringen}}",
   "@remindersMissedCount": {
     "placeholders": {
       "count": {

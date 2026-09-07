@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:shoto/core/theme/app_brand.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 
-/// The Shoto **brand** mark: three screenshots, and the filed one in front.
+/// The Shoto **brand** mark: three screenshots, and a bookmark on the kept one.
 ///
-/// It is the same object `ShotoMark` draws inside the app — a small fan of
-/// cards with the clipped corner on the one Shoto is holding — in the brand's
-/// fixed values rather than the interface's theme-aware ones. There used to be
-/// two different marks here, a blue moulded tray for the launcher and this fan
-/// for the empty states, and no user has ever been shown a reason for the
-/// difference. See `app_brand.dart` for what the tray was and why it went.
+/// `ShotoMark` still draws the older shape inside the app — the same fan, with
+/// a clipped corner where this one has a ribbon — and the two are **knowingly
+/// out of step until somebody decides they should not be**. That is a smaller
+/// problem than it looks: this is the launcher, the store listing and the
+/// launch window; that is a decoration on empty states. See `app_brand.dart`
+/// for what the mark was before this and why it changed.
 ///
 /// ---
 ///
@@ -40,43 +40,51 @@ import 'package:shoto/core/theme/app_motion.dart';
 
 // --------------------------------------------------------------- the cards
 
-const double _cardWidth = 46;
-const double _cardHeight = 62;
-const double _cardRadius = 4;
+/// One card before its own scale. Everything else is a proportion of these.
+///
+/// **4:5, where it was 46:62.** A screenshot is a phone screen and a phone
+/// screen is taller than it is wide — but the stack is read inside a *square*,
+/// and past about 4:5 it stops filling its box and starts reading as three
+/// bookmarks rather than three pictures.
+const double _cardWidth = 48;
+const double _cardHeight = 60;
+
+/// **9.6, where it was 4.** The old radius belonged to a card carrying a
+/// chamfer: a straight cut beside a tight corner reads as a cut, and beside a
+/// soft one reads as a nick, so the two had to be drawn against each other.
+/// With no chamfer left the corner is free to be the radius the rest of the
+/// app puts on a card.
+const double _cardRadius = 9.6;
 
 /// How large each card sits at rest.
 ///
-/// The filed one is largest, and only slightly: this is depth, not emphasis,
-/// and the cut corner is already doing the emphasis.
-const List<double> _cardScale = [0.94, 0.97, 1.06];
-
-/// The cut that makes a card a *filed* card.
-///
-/// The same gesture as [ClippedCorner] in `app_shapes.dart`, at the same
-/// proportion — a straight chamfer off the top trailing corner, never a
-/// rounded one, because the clip and the radius are the same idea and doing
-/// both rounds the cut off into a nothing.
-const double _frontCut = 14;
+/// The front one is a clear step larger rather than a slight one. It used to
+/// be within six points of the others because the cut corner was carrying the
+/// emphasis; the ribbon carries it now, and the ribbon needs a card big enough
+/// to sit on at 40px.
+const List<double> _cardScale = [0.926, 0.972, 1.157];
 
 /// Where each card comes to rest, and how far it is turned there.
 ///
-/// Two loose ones leaning back and to the left, and the filed one square in
+/// Two loose ones leaning back and to the left, and the kept one square in
 /// front of them: the two behind are the screenshots you took, the one in
-/// front is the one Shoto did something with.
+/// front is the one you asked for again.
 ///
-/// **They lean one way rather than fanning both ways, and the cut corner is
-/// the reason.** A symmetric fan puts a card directly behind the chamfer, and
-/// a triangle of paper behind a cut corner does not read as a cut — it reads
-/// as a folded page, which is the icon of every document app there has ever
-/// been. Leaning the stack left clears the top trailing corner so the cut
-/// opens onto the slab, where it says what it is.
+/// **They still lean one way rather than fanning both ways**, though no longer
+/// for the old reason — there is no chamfer to clear. A symmetric fan puts the
+/// stack's mass under the ribbon and pushes the whole mark's weight to the
+/// middle; leaning left opens the ground on that side and leaves the ribbon
+/// the only thing standing on the right.
+///
+/// The centring is baked into these three rather than corrected afterwards by
+/// a pair of offsets, which is what the old geometry did.
 const List<Offset> _cardRest = [
-  Offset(36, 48),
-  Offset(42, 45),
-  Offset(53, 52),
+  Offset(32.22, 55.56),
+  Offset(41.11, 52.78),
+  Offset(53.33, 51.11),
 ];
 
-const List<double> _cardRestTurn = [-10, -5, 0];
+const List<double> _cardRestTurn = [-15, -7.5, 0];
 
 /// Where each card starts before it is filed.
 ///
@@ -115,18 +123,27 @@ const double _cardSpan = 0.70;
 /// entrance into a fade, which is a different and much duller animation.
 const double _cardFadeSpan = 0.25;
 
-/// How far the front card's shadow falls on the two behind it, and how soft.
-const Offset _cardShadowOffset = Offset(0, 1.8);
-const double _cardShadowBlur = 2.4;
+// -------------------------------------------------------------- the ribbon
 
-// ---------------------------------------------------------------- centring
+/// The bookmark, in the front card's own coordinates.
+///
+/// **This is the mark.** Everything above is a stack of pictures, which is a
+/// shape a dozen apps already own; the ribbon is what makes it *this* app's
+/// stack, and it is the only part of the drawing that survives being described
+/// out loud — "the one with the bookmark".
+///
+/// It starts flush with the card's top edge rather than below it, because a
+/// ribbon that begins inside the card is *printed on* it and one that runs off
+/// the edge is *attached to* it. The first is a graphic; the second is an
+/// object you could pull.
+const double _ribbonLeft = 2.9;
+const double _ribbonRight = 18.3;
+const double _ribbonBottom = 10.6;
 
-/// The stack leans left, so its drawn content does not sit in the middle of
-/// the box it is described in. These two put it back. Without them the mark
-/// sits low and left in every frame that contains it, which is the kind of
-/// thing nobody can name but everybody sees.
-const double _contentOffsetX = 6.5;
-const double _contentOffsetY = 0.5;
+/// The V taken out of the bottom. Deep enough to still be a V at 20px, where
+/// a shallow notch closes up into a flat bar and the ribbon turns into a
+/// coloured stripe.
+const double _ribbonNotch = 7.2;
 
 /// How much of the backdrop slab the mark is allowed to occupy.
 ///
@@ -212,7 +229,7 @@ class ShotoBrandMarkPainter extends CustomPainter {
   /// Where the centre of the mark sits. Defaults to the centre of the canvas.
   final Offset? centre;
 
-  /// The slab's colour. [AppBrand.ink] unless a caller says otherwise.
+  /// The slab's colour. [AppBrand.ground] unless a caller says otherwise.
   ///
   /// **The only parameter here that changes what the mark *is*, and it exists
   /// for exactly one caller.** `app_brand.dart` states that the mark's values
@@ -230,9 +247,11 @@ class ShotoBrandMarkPainter extends CustomPainter {
   /// cards, the clipped corner — never changes, which is what keeps six icons
   /// recognisably one product rather than six logos.
   ///
-  /// Only the slab moves. The cards stay paper on every variant, which is also
-  /// what makes them legible: every colour offered is solved to the same
-  /// luminance the default ink is judged against.
+  /// **The slab moves and the two cards behind move with it**, because they
+  /// are solved from it — see [AppBrand.cardTones]. Only the front card and
+  /// the ribbon are fixed, and those two are what a person recognises: the
+  /// light shape and the red mark on it are identical on all six icons, so the
+  /// set reads as one product wearing six colours rather than as six logos.
   final Color slab;
 
   const ShotoBrandMarkPainter({
@@ -244,7 +263,7 @@ class ShotoBrandMarkPainter extends CustomPainter {
     this.cards = true,
     this.monochrome = false,
     this.centre,
-    this.slab = AppBrand.ink,
+    this.slab = AppBrand.ground,
   });
 
   @override
@@ -288,7 +307,6 @@ class ShotoBrandMarkPainter extends CustomPainter {
       // Deliberately *not* clipped to the slab. The cards begin outside it and
       // that is the point of the animation — they are things being put away,
       // not things emerging from inside the container they go into.
-      canvas.translate(_contentOffsetX, _contentOffsetY);
       _paintCards(canvas);
     }
 
@@ -323,11 +341,10 @@ class ShotoBrandMarkPainter extends CustomPainter {
   // ----------------------------------------------------------------- cards
 
   void _paintCards(Canvas canvas) {
-    const List<Color> colours = [
-      AppBrand.paperBack,
-      AppBrand.paperMid,
-      AppBrand.paper,
-    ];
+    // Derived from whatever slab this is being drawn on, so the five paid
+    // variants get their own ramp rather than three teals on a plum ground.
+    final (Color back, Color mid) = AppBrand.cardTones(slab);
+    final List<Color> colours = <Color>[back, mid, AppBrand.paper];
 
     for (int i = 0; i < 3; i++) {
       // Each card is eased on its own clock. Curving the parent instead would
@@ -340,6 +357,19 @@ class ShotoBrandMarkPainter extends CustomPainter {
       final double t = AppMotion.standard.transform(raw);
 
       final bool isFront = i == 2;
+
+      // **The stencil is the front card alone**, and that is a considered
+      // simplification rather than a shortcut. In colour the two behind read
+      // because they are steps of a hue; in monochrome the hue is gone and all
+      // that is left of them is the sliver each one shows past the front card
+      // — three or four units wide, minus a clearance gap on both sides. At
+      // the 48px a themed icon is drawn at those become sub-pixel ribs, and
+      // they do not read as cards, they read as scratches on the icon.
+      //
+      // What survives is the part anybody could name: a card with a bookmark
+      // cut out of it. Dropping the stack costs the stencil a detail; keeping
+      // it cost the stencil its silhouette.
+      if (monochrome && !isFront) continue;
 
       final Offset position = Offset.lerp(
         _cardRest[i] + _cardEntry[i],
@@ -380,99 +410,152 @@ class ShotoBrandMarkPainter extends CustomPainter {
         _cardWidth,
         _cardHeight,
       );
-      final Path shape = isFront ? _filedCardPath(box) : _looseCardPath(box);
+      final Path shape = _cardPath(box);
 
-      // Only the front card casts one, onto the two it overlaps. The other
-      // two have nothing behind them but the slab, where a shadow lands on a
-      // surface far enough away that it reads as grime rather than as depth.
-      if (isFront && !monochrome) {
-        canvas.drawPath(
-          shape.shift(_cardShadowOffset),
-          Paint()
-            ..color = AppBrand.cardShadow
-            ..maskFilter = const MaskFilter.blur(
-              BlurStyle.normal,
-              _cardShadowBlur,
-            ),
-        );
-      }
-
+      // **Nothing casts a shadow any more.** The front card used to blur one
+      // onto the two behind it, and it had to: three cards cut from the same
+      // paper have no other way to say which is in front. They are three steps
+      // of one hue now — see [AppBrand.cardTones] — so the depth is in the
+      // fill, and a blur on top of it would be the same fact stated twice.
+      // It also cost the mark the one thing it now claims to be, which is
+      // flat.
       _fill(canvas, shape, Paint()..color = colours[i]);
-      if (isFront) _paintRules(canvas);
+
+      if (isFront) {
+        // Clipped to the card it sits on, so the ribbon follows the rounded
+        // top corner rather than hanging over it. It is fixed *to* the card
+        // rather than floating in front of it, and at small sizes that is the
+        // difference between an object and a smudge.
+        canvas.save();
+        canvas.clipPath(shape);
+        _paintRibbon(canvas);
+        canvas.restore();
+      }
 
       if (layered) canvas.restore();
       canvas.restore();
     }
   }
 
-  Path _looseCardPath(Rect box) => Path()
+  /// **All three cards are the same shape now**, which is why there is one of
+  /// these where there used to be two.
+  ///
+  /// The front one carried a chamfer off its top trailing corner — the app's
+  /// own gesture for *filed*, and the mark's only idea. It went because at
+  /// launcher sizes it was not read as a cut: a triangle of dark ground behind
+  /// a light card reads as a **folded page**, which is the icon of every
+  /// document app there has ever been, and that is the exact misreading this
+  /// file's own notes warned about while shipping it anyway. The ribbon makes
+  /// the same claim, louder, and cannot be mistaken for a fold.
+  Path _cardPath(Rect box) => Path()
     ..addRRect(RRect.fromRectAndRadius(box, const Radius.circular(_cardRadius)));
 
-  /// The filed card: rounded everywhere except the top trailing corner, which
-  /// is cut straight off. Written out rather than composed from an [RRect]
-  /// because the chamfer is not a corner radius and every attempt to fake it
-  /// with one produces a soft nub instead of a cut.
-  Path _filedCardPath(Rect box) {
-    const double r = _cardRadius;
-    const double c = _frontCut;
-
-    return Path()
-      ..moveTo(box.left + r, box.top)
-      ..lineTo(box.right - c, box.top)
-      ..lineTo(box.right, box.top + c)
-      ..lineTo(box.right, box.bottom - r)
-      ..arcToPoint(
-        Offset(box.right - r, box.bottom),
-        radius: const Radius.circular(r),
-      )
-      ..lineTo(box.left + r, box.bottom)
-      ..arcToPoint(
-        Offset(box.left, box.bottom - r),
-        radius: const Radius.circular(r),
-      )
-      ..lineTo(box.left, box.top + r)
-      ..arcToPoint(
-        Offset(box.left + r, box.top),
-        radius: const Radius.circular(r),
-      )
-      ..close();
-  }
-
-  /// Two short rules on the filed card — the only place in the mark where
-  /// Shoto says what it is holding.
+  /// The bookmark on the front card.
   ///
-  /// A picture was tried here and it is the wrong claim: a photograph says
-  /// *gallery*, which is the app Shoto deliberately is not. Two lines of
-  /// something written say *screenshot*, and they are what makes searching
-  /// inside a picture make sense as an idea before anybody has read a word
-  /// about it. The two cards behind are blank on purpose — three sets of rules
-  /// at 48px is texture, one is a subject.
-  void _paintRules(Canvas canvas) {
-    const double h = 3.4;
-    // Centred on the card rather than sitting in its lower third, where two
-    // short bars read as a caption under a picture that is not there.
-    const List<Rect> rules = [
-      Rect.fromLTWH(-12, -5, 24, h),
-      Rect.fromLTWH(-12, 3, 15, h),
-    ];
+  /// **This replaced two short rules, and that swap is the whole redesign.**
+  /// The rules were there to say *a screenshot with something written in it*.
+  /// What they actually said was *a document*: three cards and two lines of
+  /// text is Docs, is Notes, is Files, is Keep — and the app's entire thesis
+  /// is that screenshots are pictures. The ribbon claims something the product
+  /// can actually do instead, and it is a claim no file manager makes.
+  ///
+  /// Painted in [AppBrand.ribbon] on every variant, alone among everything
+  /// here in not being derived from the slab.
+  void _paintRibbon(Canvas canvas) {
+    const double top = -_cardHeight / 2;
+    const double middle = (_ribbonLeft + _ribbonRight) / 2;
 
-    for (final Rect rule in rules) {
-      final Path path = Path()
-        ..addRRect(RRect.fromRectAndRadius(rule, const Radius.circular(h / 2)));
+    final Path path = Path()
+      ..moveTo(_ribbonLeft, top)
+      ..lineTo(_ribbonRight, top)
+      ..lineTo(_ribbonRight, _ribbonBottom)
+      ..lineTo(middle, _ribbonBottom - _ribbonNotch)
+      ..lineTo(_ribbonLeft, _ribbonBottom)
+      ..close();
 
-      // In a stencil these are holes, not shapes. Running them through [_fill]
-      // cuts them out and then paints them back in the stencil's one colour,
-      // which leaves each bar outlined by its own clearance gap — a hairline
-      // ring around a black bar, at a size where the whole rule is three
-      // pixels tall.
-      canvas.drawPath(
-        path,
-        monochrome
-            ? (Paint()..blendMode = BlendMode.clear)
-            : (Paint()..color = AppBrand.rule),
-      );
-    }
+    // In a stencil this is a hole rather than a shape. Android's themed icons
+    // discard every colour, so a ribbon painted in the one value that survives
+    // would disappear into the card it is printed on. Cut out, it is the only
+    // piece of structure the themed icon keeps — and the reason the mark is
+    // still recognisable there.
+    canvas.drawPath(
+      path,
+      monochrome
+          ? (Paint()..blendMode = BlendMode.clear)
+          : (Paint()..color = AppBrand.ribbon),
+    );
   }
+
+  /// The tightest box the mark actually fills at rest, in the 100×100 box —
+  /// **with no slab under it**, which is the only case that needs this.
+  ///
+  /// On a slab there is nothing to solve: the slab *is* the box, the drawing
+  /// sits inside it wherever [_cardRest] puts it, and the deliberate weight to
+  /// the left is read as composition because there is a frame to be composed
+  /// in. Take the slab away and the same offset stops being composition and
+  /// becomes a centring bug — the mark alone on a field is centred by its own
+  /// ink or it is not centred at all. This is `(43.33, 51.27)` against the
+  /// box's `(50, 50)`, which at the ~192dp a splash icon is drawn at is about
+  /// thirteen physical pixels of drift. Easily enough to see, and impossible
+  /// to attribute to anything once it ships.
+  ///
+  /// **Computed rather than typed**, from the same constants the painting
+  /// reads, because the alternative is four magic numbers that go quietly
+  /// wrong the next time a card moves. The support function of a rounded
+  /// rectangle under rotation is exact — every extreme point lies on a corner
+  /// arc, so the box is the arc centres' own extent plus one radius — which
+  /// makes this the true bound rather than a safe over-estimate.
+  ///
+  /// Only the cards are measured. The ribbon is clipped to the front card, so
+  /// it can never reach past one.
+  static Rect get restBounds {
+    double left = double.infinity;
+    double top = double.infinity;
+    double right = double.negativeInfinity;
+    double bottom = double.negativeInfinity;
+
+    for (int i = 0; i < 3; i++) {
+      final double s = _cardScale[i];
+      final double halfWidth = _cardWidth / 2 * s;
+      final double halfHeight = _cardHeight / 2 * s;
+      final double radius = _cardRadius * s;
+
+      final double turn = (_cardRestTurn[i] * math.pi / 180).abs();
+      final double cos = math.cos(turn).abs();
+      final double sin = math.sin(turn).abs();
+
+      final double extentX =
+          (halfWidth - radius) * cos + (halfHeight - radius) * sin + radius;
+      final double extentY =
+          (halfWidth - radius) * sin + (halfHeight - radius) * cos + radius;
+
+      final Offset centre = _cardRest[i];
+      left = math.min(left, centre.dx - extentX);
+      right = math.max(right, centre.dx + extentX);
+      top = math.min(top, centre.dy - extentY);
+      bottom = math.max(bottom, centre.dy + extentY);
+    }
+
+    return Rect.fromLTRB(left, top, right, bottom);
+  }
+
+  /// The [markExtent] that makes a bare mark's ink exactly [width] across.
+  ///
+  /// The ink is wider than it is tall — 75.5 by 69.7 — so width is what binds
+  /// inside any square container, and it is the only dimension anything asks
+  /// for.
+  static double extentForInkWidth(double width) =>
+      width * 100 / restBounds.width;
+
+  /// The [centre] to pass so a bare mark's *ink* lands centred on [inkCentre].
+  ///
+  /// [centre] positions the 100×100 box, and the ink is not centred inside it
+  /// — see [restBounds]. This is the correction, and it is a static rather
+  /// than a flag on the painter because it is arithmetic every caller would
+  /// otherwise repeat slightly differently.
+  static Offset centreForInk(Offset inkCentre, double markExtent) =>
+      inkCentre -
+      (restBounds.center - const Offset(50, 50)) * (markExtent / 100);
 
   static double _lerp(double a, double b, double t) => a + (b - a) * t;
 

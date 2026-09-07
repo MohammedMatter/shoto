@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Mirrors AppPalette.light.background, which is AppPalette.canvasLight.
-         The native splash must match the app's first painted frame exactly, or
-         launching shows a flash of a different colour before Flutter takes
-         over.
+    <!-- The launch field, light mode. **`AppPalette.canvasLight`, exactly** —
+         the same colour the app's own background is, and it has to be the same
+         value rather than a near one.
 
-         This had drifted: it was #FAFAFA, which is AppPalette.paper — the
-         value the canvas *used* to be, before the light canvas was dropped a
-         step so a white card had somewhere to sit above it. Eleven values of
-         off-white, on the first frame of every cold start. Worth re-checking
-         here whenever a canvas moves; the mismatch is silent everywhere except
-         on a real device at launch. -->
+         **This is now a much stronger guarantee than it used to be, not a
+         weaker one.** The old note here was a warning: the native window handed
+         over to Flutter's first frame with no transition of any kind, so a
+         single level of difference was a visible flash, and this value had
+         already silently drifted to `#FAFAFA` once. That was a matching problem
+         nothing in the build could check.
+
+         `SplashCurtain` paints this same colour as Flutter's first frame and
+         then dissolves *only the lockup* off it — the field itself never
+         changes. So the background is one continuous colour from the moment
+         Android paints the launch window to the moment the app is fully on
+         screen, and the only thing that happens is the interface arriving.
+         Matching still matters; it is just no longer the only thing standing
+         between the app and a flash.
+
+         For a while this was the brand's teal in both modes, which let the mark
+         stand on a field designed for it. Following the canvas is the decision
+         now, and what it costs is written down in `shoto_brand_mark.dart`: on a
+         near-white field the mark's front card is six levels off the ground and
+         reads as a very quiet shape. The two teal cards behind it and the
+         ribbon are what carry the silhouette there. -->
     <color name="splash_background">#F4F4F4</color>
-
-    <!-- The same two values again, without the -night qualifier doing the
-         choosing.
-
-         `splash_background` above answers "what is the system set to", which is
-         the only question the starting window can ask: Android resolves it
-         before this app's process exists, so it cannot know the app has been
-         pinned to a mode of its own. These two answer "what did the user pick
-         inside Shoto", which is what MainActivity paints the activity window
-         with — and the activity window is what covers all but the first moment
-         of a cold start.
-
-         Keep all three in step. They are the same two colours written twice:
-         AppPalette.light.background and AppPalette.dark.background. -->
-    <color name="splash_background_light">#F4F4F4</color>
-    <color name="splash_background_dark">#111213</color>
 </resources>

@@ -104,12 +104,22 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
-            
-            <meta-data
-              android:name="io.flutter.embedding.android.NormalTheme"
-              android:resource="@style/NormalTheme"
-              />
-            
+
+            <!--
+                **No `io.flutter.embedding.android.NormalTheme` meta-data, and
+                its absence is load-bearing.**
+
+                That meta-data tells `FlutterActivity.onCreate` to swap
+                LaunchTheme for NormalTheme itself. `installSplashScreen()`
+                does the same swap, from `postSplashScreenTheme` in
+                `values/styles.xml`, and it has to be the one that does it —
+                the library reads the splash attributes off the theme that is
+                current when it is installed, and holds the window until Dart
+                says the handover is safe. Two mechanisms swapping the same
+                theme at two different moments is a race with nothing to gain
+                from winning it, so there is one.
+            -->
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

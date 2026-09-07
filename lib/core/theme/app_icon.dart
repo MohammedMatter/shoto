@@ -69,7 +69,7 @@ class AppIcon {
       all.firstWhere((AppIcon icon) => icon.id == id, orElse: () => fallback);
 
   /// The slab this variant paints.
-  Color get slab => tint?.accent(isDark: false) ?? AppBrand.ink;
+  Color get slab => tint?.accent(isDark: false) ?? AppBrand.ground;
 
   /// The Android component this variant is served by.
   ///

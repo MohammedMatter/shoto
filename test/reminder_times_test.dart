@@ -189,11 +189,55 @@ void main() {
     // now." The dial opened on a flat 09:00, so choosing today and moving only
     // the minutes composed 09:05 — already gone — and the save was then
     // refused in silence.
-    test('today opens five minutes from now, not nine in the morning', () {
+    test('today opens a few minutes from now, not nine in the morning', () {
+      // 16:51 + five minutes is 16:56, rounded up to the next five: 17:00.
       final DateTime now = DateTime(2026, 5, 4, 16, 51);
       expect(
         pickerOpensAt(DateTime(2026, 5, 4), now),
-        DateTime(2026, 5, 4, 16, 56),
+        DateTime(2026, 5, 4, 17),
+      );
+    });
+
+    test('the opening minute is always a round one', () {
+      // A default that reads as a decision rather than as a timestamp. Swept
+      // across the hour so no single lucky minute can carry the claim.
+      for (int minute = 0; minute < 60; minute++) {
+        final DateTime opening = pickerOpensAt(
+          DateTime(2026, 5, 4),
+          DateTime(2026, 5, 4, 10, minute),
+        );
+        expect(
+          opening.minute % 5,
+          0,
+          reason: 'opened on ${opening.hour}:${opening.minute} at 10:$minute',
+        );
+      }
+    });
+
+    test('and it never gives less than five minutes of notice', () {
+      for (int minute = 0; minute < 60; minute++) {
+        final DateTime now = DateTime(2026, 5, 4, 10, minute);
+        expect(
+          pickerOpensAt(DateTime(2026, 5, 4), now).difference(now).inMinutes,
+          greaterThanOrEqualTo(5),
+          reason: 'at 10:$minute',
+        );
+      }
+    });
+
+    test('a moment already on the step is left where it is', () {
+      // 10:20 + five is 10:25, which is already round: pushing it to 10:30
+      // would be rounding something that needed no rounding.
+      expect(
+        pickerOpensAt(DateTime(2026, 5, 4), DateTime(2026, 5, 4, 10, 20)),
+        DateTime(2026, 5, 4, 10, 25),
+      );
+    });
+
+    test('seconds are dropped, so it can be compared with the floor', () {
+      expect(
+        pickerOpensAt(DateTime(2026, 5, 4), DateTime(2026, 5, 4, 10, 21, 47)),
+        DateTime(2026, 5, 4, 10, 30),
       );
     });
 
@@ -216,13 +260,12 @@ void main() {
     });
 
     test('late at night, today rolls the opening time into tomorrow', () {
-      // 23:58 + 5 minutes is 00:03. The picker takes only the *time* off this,
-      // so it opens on 00:03 — and the composed moment is then in the past for
-      // today, which is exactly the case the message now explains rather than
-      // swallowing.
+      // 23:58 + five is 00:03, rounded up to 00:05 — and both are tomorrow.
+      // `openingChoice` is what refuses a result that has left the day; this
+      // function is allowed to hand one over.
       expect(
         pickerOpensAt(DateTime(2026, 5, 4), DateTime(2026, 5, 4, 23, 58)),
-        DateTime(2026, 5, 5, 0, 3),
+        DateTime(2026, 5, 5, 0, 5),
       );
     });
   });
@@ -252,7 +295,10 @@ void main() {
       // 10:30:45 is most of the way through 10:30. Answering 10:30 would hand
       // back a reminder the user watches fire before the sheet has closed.
       expect(
-        earliestChoiceOn(DateTime(2026, 5, 4), DateTime(2026, 5, 4, 10, 30, 45)),
+        earliestChoiceOn(
+          DateTime(2026, 5, 4),
+          DateTime(2026, 5, 4, 10, 30, 45),
+        ),
         DateTime(2026, 5, 4, 10, 31),
       );
     });
@@ -326,17 +372,37 @@ void main() {
     // choose is not on it — and the first chip is therefore not always today,
     // which is why the label is decided by the date and never by the index.
     test('drop today once the last minute of it is gone', () {
-      final List<DateTime> days = reminderDays(DateTime(2026, 5, 4, 23, 59, 30));
+      final List<DateTime> days = reminderDays(
+        DateTime(2026, 5, 4, 23, 59, 30),
+      );
       expect(days.first, DateTime(2026, 5, 5));
       expect(days.length, 13, reason: 'the span is a fortnight of dates');
     });
   });
 
   group('where the wheels open', () {
-    test('on today, five minutes ahead — the request this exists to serve', () {
+    test('on today, minutes ahead — the request this exists to serve', () {
       expect(
         openingChoice(DateTime(2026, 5, 4), DateTime(2026, 5, 4, 16, 51)),
-        DateTime(2026, 5, 4, 16, 56),
+        DateTime(2026, 5, 4, 17),
+      );
+    });
+
+    // The rounding moves the *default*, never the range. Everything from the
+    // floor upward is still there to be scrolled back to, which is the whole
+    // reason a tidier opening figure costs nothing.
+    test('the floor is still a minute away, however round the opening is', () {
+      final DateTime now = DateTime(2026, 5, 4, 16, 51);
+      expect(
+        earliestChoiceOn(DateTime(2026, 5, 4), now),
+        DateTime(2026, 5, 4, 16, 52),
+      );
+      expect(
+        openingChoice(
+          DateTime(2026, 5, 4),
+          now,
+        ).isAfter(earliestChoiceOn(DateTime(2026, 5, 4), now)),
+        isTrue,
       );
     });
 

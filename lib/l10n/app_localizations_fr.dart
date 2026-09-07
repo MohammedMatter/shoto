@@ -186,6 +186,11 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String remindersInMinutes(int count) {
+    return 'dans $count min';
+  }
+
+  @override
   String timeAgoDays(int count) {
     return 'il y a $count j';
   }
@@ -307,7 +312,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get reminderUnsupported =>
-      'Les rappels ne sont disponibles que sur Android pour le moment.';
+      'Les rappels ne sont pas disponibles sur cet appareil.';
 
   @override
   String reminderSet(String when) {
@@ -332,14 +337,43 @@ class AppLocalizationsFr extends AppLocalizations {
   String get remindersUpcoming => 'À venir';
 
   @override
+  String get remindersThisWeek => 'Cette semaine';
+
+  @override
+  String get remindersLater => 'Plus tard';
+
+  @override
+  String get remindersReschedule => 'Changer l’heure';
+
+  @override
+  String remindersRemoved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rappels supprimés',
+      one: 'Rappel supprimé',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get remindersClearMissed => 'Tout effacer';
+
+  @override
+  String get commonUndo => 'Annuler';
+
+  @override
   String get remindersNoneTitle => 'Aucun rappel';
 
   @override
   String get remindersNoneBody =>
-      'Ouvre les actions d’une capture et choisis « Me le rappeler » pour y revenir plus tard.';
+      'Les captures pour lesquelles vous fixez une heure attendent ici, même celles dont le moment est passé.';
 
   @override
   String get remindersClearOne => 'Effacer';
+
+  @override
+  String get remindersSwipeHint => 'Balayez un rappel';
 
   @override
   String remindersCount(int count) {
@@ -359,6 +393,17 @@ class AppLocalizationsFr extends AppLocalizations {
       locale: localeName,
       other: '$count manqués',
       one: '1 manqué',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersMissedTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count rappels manqués',
+      one: '1 rappel manqué',
     );
     return '$_temp0';
   }

@@ -11,6 +11,7 @@ import 'package:shoto/core/routes/app_router.dart';
 import 'package:shoto/core/theme/app_colors.dart';
 import 'package:shoto/core/theme/app_motion.dart';
 import 'package:shoto/core/theme/app_text_styles.dart';
+import 'package:shoto/core/widgets/splash_curtain.dart';
 import 'package:shoto/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:shoto/features/auth/presentation/bloc/auth_event.dart';
 import 'package:shoto/features/auth/presentation/bloc/auth_state.dart';
@@ -83,7 +84,9 @@ class AuthPage extends StatelessWidget {
 /// makes a screen read as typeset rather than as laid out.
 ///
 /// **The mark files itself.** See `AuthMark` — the app's own gesture, played
-/// once, saying what the product does before the copy gets a chance to.
+/// once, saying what the product does before the copy gets a chance to. It
+/// holds still on the one arrival where it would be the *second* time in two
+/// seconds; see `_cards`.
 ///
 /// **The two buttons stopped being the same drawing twice.** See
 /// [SocialSignInButton]. They are still equal in size and order, which is both
@@ -159,10 +162,27 @@ class _AuthBodyState extends State<AuthBody>
   /// the three on its own clock; a curve applied here would bunch the staggers
   /// together at whichever end of it is steepest. 0.58 of 760ms is the same
   /// ~440ms the mark is choreographed for everywhere else it plays.
-  late final Animation<double> _cards = CurvedAnimation(
-    parent: _controller,
-    curve: const Interval(0, 0.58),
-  );
+  ///
+  /// **Unless this screen *is* the launch**, in which case the mark is simply
+  /// already filed. Somebody arriving here from a cold start has been watching
+  /// the same three cards for the last second and a half, at 132 logical pixels
+  /// in the middle of the same screen, and has just watched them dissolve.
+  /// Assembling them again at 76 pixels in the corner a moment later is not a
+  /// second gesture, it is the first one stuttering.
+  ///
+  /// Everything else on the page still arrives — the headline, the sentence,
+  /// the buttons and the legal line are all new information and all keep their
+  /// entrance. Only the one element the user has already been shown holds
+  /// still, which is what makes the page read as continuing rather than as
+  /// starting over.
+  ///
+  /// Navigating here from onboarding is the other case and it is the common
+  /// one after a first install: the curtain is long gone by then, this is the
+  /// first time the mark has been seen on this screen, and it files itself.
+  /// See [SplashCurtain.isUp].
+  late final Animation<double> _cards = SplashCurtain.isUp
+      ? const AlwaysStoppedAnimation<double>(1)
+      : CurvedAnimation(parent: _controller, curve: const Interval(0, 0.58));
 
   late final Animation<double> _headline = _step(0.24, 0.66);
   late final Animation<double> _why = _step(0.32, 0.74);

@@ -1,18 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Shown by the OS while the process starts, before Flutter has drawn
-         anything. Removed automatically on the first Flutter frame. -->
-    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
-        <item name="android:windowBackground">@drawable/launch_background</item>
+<!--
+    **One styles file for every API level, where there used to be three.**
+
+    `values-v31/styles.xml` existed because Android 12 draws its own splash
+    window that cannot be turned off, and its attributes have no equivalent
+    below 31; `values-night/styles.xml` existed before that and had to be
+    deleted, because Android ranks the `night` qualifier above `vNN` and a dark
+    phone on Android 12 would silently resolve the wrong one. Both problems
+    were the same problem: the launch screen was described in more than one
+    place, and the places disagreed by configuration.
+
+    `androidx.core:core-splashscreen` is what collapses them. It backports the
+    platform splash attributes to API 21 and reads the same four items on every
+    version, so this file is the whole launch screen — one description, no
+    qualifier to lose a race with.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--
+        The launch window, and on Android 12+ the *platform's* splash window
+        too — `installSplashScreen()` in MainActivity maps these onto
+        `windowSplashScreen*` there and draws them itself below it.
+
+        `postSplashScreenTheme` is what the activity wears afterwards, applied
+        by the library. Flutter has its own mechanism for that — the
+        `io.flutter.embedding.android.NormalTheme` meta-data in the manifest —
+        and it has been **removed**, deliberately: two things swapping the same
+        theme at two different moments is a race with nothing to gain from
+        winning it.
+    -->
+    <style name="LaunchTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_mark</item>
+        <item name="postSplashScreenTheme">@style/NormalTheme</item>
+
+        <!--
+            **Both are honest, and on at least one vendor neither is obeyed.**
+            Written down because the next person will otherwise spend an
+            afternoon rediscovering it.
+
+            A smart force-dark inverts light neutral backgrounds and leaves
+            chroma alone, and `android:forceDarkAllowed` is the documented way
+            out — but the platform only consults it when `isLightTheme` is true,
+            so the two have to be set together or the opt-out is not read at all.
+            They are set together here.
+
+            On a Xiaomi with the vendor's own dark mode on it makes no
+            difference. Measured on the launch window with the app's night mode
+            pinned light: `#F4F4F4` reached the screen as `#212121`, while a
+            probe of pure red reached it as `#FE0000` — so the attribute *is*
+            being honoured and something downstream is repainting the result.
+            Setting `isLightTheme` false instead, which is the other thing
+            people try, changed nothing. The app itself is untouched throughout,
+            because Flutter draws into a SurfaceView, and that asymmetry is what
+            identified it.
+
+            There is no third attribute. What closes the seam is on the Flutter
+            side: `SplashChannel.sampleField` reads the pixel the window is
+            actually showing and hands it to `SplashCurtain`, so the handover
+            matches whatever the device decided to paint, and the field then
+            travels to the app's real background. See both files.
+
+            `windowLightStatusBar` tracks the field separately, because it is a
+            different question with a different answer: it decides the *icons*,
+            and dark icons on a near-white field is simply correct.
+
+            All of it is stated outright rather than inherited from the parent —
+            `Theme.SplashScreen` is the parent now and the library chooses what
+            that descends from, so relying on the ancestor would be relying on
+            somebody else's decision.
+        -->
+        <item name="android:isLightTheme" tools:targetApi="29">@bool/splash_field_is_light</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
+
         <item name="android:statusBarColor">@color/splash_background</item>
         <item name="android:navigationBarColor">@color/splash_background</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">@bool/splash_field_is_light</item>
     </style>
-    <!-- Applied once the process is running: this is what sits behind the
-         Flutter UI, so it must match the app background or edges flash. -->
-    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+
+    <!--
+        What the activity wears once the splash is done with. **A flat colour,
+        not artwork.**
+
+        It carried the launch drawable for a while, because the platform hands
+        its splash off as soon as the activity can draw — which is long before
+        Dart has finished starting — and a flat field for the rest of that is a
+        launch screen nobody sees. Holding the artwork here was the only lever
+        available at the time.
+
+        There is a better one now: `setKeepOnScreenCondition` holds the real
+        splash until Flutter's first frame, and that frame is `SplashCurtain`
+        drawing the same mark in the same place. So nothing needs to be
+        impersonated here, and this goes back to being what it should be — the
+        colour behind the Flutter surface, which is the same colour the curtain
+        paints, so any gap a resize opens is invisible instead of a torn piece
+        of artwork.
+    -->
+    <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowBackground">@color/splash_background</item>
+        <!-- Tracks the field, paired with the opt-out below. See LaunchTheme. -->
+        <item name="android:isLightTheme" tools:targetApi="29">@bool/splash_field_is_light</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
+
+        <!--
+            **The system bars, and leaving them out was a visible bug.**
+
+            This theme is what the activity wears from the moment the splash
+            hands over until the app's own `SystemChrome` call lands, and its
+            parent paints both bars black. The launch window had said
+            `splash_background` for both, so the handover turned a strip at the
+            top and another at the bottom black while the field between them did
+            not move — the one moment in the whole sequence that is supposed to
+            be invisible, and the only part of it the eye could actually catch.
+
+            Caught on a device rather than reasoned about, in a frame-by-frame
+            capture of a cold start. It is exactly the class of thing a
+            screenshot of the finished app never shows.
+        -->
+        <item name="android:statusBarColor">@color/splash_background</item>
+        <item name="android:navigationBarColor">@color/splash_background</item>
+        <item name="android:windowLightStatusBar">@bool/splash_field_is_light</item>
     </style>
+
     <!--
         Translucent on purpose: the sheet slides up over the app the user was
         already in, and that app has to stay visible behind the scrim.
@@ -35,5 +143,11 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <!-- The share sheet has no splash of its own: it opens over whatever
+             app the user was already in, and a branded field flashing behind a
+             translucent sheet would be the same bug in a different window.
+             Stated here rather than in a `values-v31` twin now that there is no
+             such file — the attribute simply does not resolve below 31. -->
+        <item name="android:windowSplashScreenBackground" tools:targetApi="31">@android:color/transparent</item>
     </style>
 </resources>

@@ -31,7 +31,6 @@ import 'package:shoto/features/screenshots/presentation/widgets/screenshots_body
 class LibraryPage extends StatelessWidget {
   const LibraryPage({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -75,19 +74,22 @@ class LibraryPage extends StatelessWidget {
               collapsedHeight: 56.h,
               toolbarHeight: 56.h,
               automaticallyImplyLeading: false,
-              flexibleSpace: FlexibleSpaceBar(
-                // Bottom-anchored and leading-aligned, so the large title
-                // lands exactly where the collapsed one starts: the two read
-                // as one label changing size rather than two swapping.
-                titlePadding: EdgeInsetsDirectional.only(
-                  start: 20.w,
-                  bottom: 14.h,
-                ),
-                expandedTitleScale: 1.5,
-                title: Text(
-                  context.l10n.navLibrary,
-                  style: context.text.titleLarge.copyWith(
-                    color: context.colors.textPrimary,
+              flexibleSpace: _SealedHeader(
+                hairline: context.colors.border,
+                child: FlexibleSpaceBar(
+                  // Bottom-anchored and leading-aligned, so the large title
+                  // lands exactly where the collapsed one starts: the two read
+                  // as one label changing size rather than two swapping.
+                  titlePadding: EdgeInsetsDirectional.only(
+                    start: 20.w,
+                    bottom: 14.h,
+                  ),
+                  expandedTitleScale: 1.5,
+                  title: Text(
+                    context.l10n.navLibrary,
+                    style: context.text.titleLarge.copyWith(
+                      color: context.colors.textPrimary,
+                    ),
                   ),
                 ),
               ),
@@ -237,6 +239,67 @@ class _LibraryActions extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// The hairline that says where the page now begins.
+///
+/// **Home already does this and the library did not**, which is the whole
+/// reason it is here. `_SearchHeader` fades a half-pixel rule in underneath
+/// itself the moment content starts passing behind it, because a pinned bar
+/// with no edge does not read as a bar — it reads as the content being cut
+/// off by nothing.
+///
+/// It matters more here than it does on Home. What scrolls under this bar is
+/// **photographs**: bright, busy, and every one of them a different colour, so
+/// the top row of tiles was being sliced along an invisible line that moved as
+/// you scrolled. Home's content is cards on the canvas, where the same missing
+/// edge is far easier to miss.
+///
+/// Read off [FlexibleSpaceBarSettings] rather than from a scroll listener,
+/// following `FolderDetailPage`: the number is already being computed for the
+/// title's own scale, so taking it costs nothing and cannot drift out of step
+/// with the collapse it describes.
+class _SealedHeader extends StatelessWidget {
+  final Color hairline;
+  final Widget child;
+
+  const _SealedHeader({required this.hairline, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints _) {
+        final FlexibleSpaceBarSettings? settings = context
+            .dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
+
+        // 0 fully expanded, 1 fully collapsed — and only at 1 is anything
+        // actually underneath. Built outside a sliver app bar, the harmless
+        // reading is "expanded", which draws no rule at all.
+        final double range = settings == null
+            ? 0
+            : settings.maxExtent - settings.minExtent;
+        final double sealed = settings == null || range <= 0
+            ? 0
+            : ((settings.maxExtent - settings.currentExtent) / range).clamp(
+                0.0,
+                1.0,
+              );
+
+        return DecoratedBox(
+          position: DecorationPosition.foreground,
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: hairline.withValues(alpha: sealed),
+                width: 0.5,
+              ),
+            ),
+          ),
+          child: child,
+        );
+      },
     );
   }
 }

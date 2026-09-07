@@ -82,25 +82,41 @@
   "settingsCaptureAlertsLastRun": "Última comprobación {when}",
   "@settingsCaptureAlertsLastRun": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "timeAgoMinutes": "hace {count} min",
   "@timeAgoMinutes": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoHours": "hace {count} h",
   "@timeAgoHours": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "remindersInMinutes": "en {count} min",
+  "@remindersInMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
     }
   },
   "timeAgoDays": "hace {count} d",
   "@timeAgoDays": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsQuickTile": "Acceso rápido",
@@ -138,7 +154,7 @@
   "reminderClear": "Quitar recordatorio",
   "reminderNotificationTitle": "Shoto",
   "reminderMuted": "Las notificaciones están desactivadas, así que esto no te llegará: actívalas en los ajustes del teléfono.",
-  "reminderUnsupported": "Por ahora los recordatorios solo están disponibles en Android.",
+  "reminderUnsupported": "Los recordatorios no están disponibles en este dispositivo.",
   "reminderSet": "Recordatorio para {when}",
   "@reminderSet": {
     "placeholders": {
@@ -159,9 +175,16 @@
   "remindersTitle": "Recordatorios",
   "remindersMissed": "Perdidos",
   "remindersUpcoming": "Próximos",
+  "remindersThisWeek": "Esta semana",
+  "remindersLater": "Más adelante",
+  "remindersReschedule": "Cambiar la hora",
+  "remindersRemoved": "{count, plural, =1{Recordatorio eliminado} other{{count} recordatorios eliminados}}",
+  "remindersClearMissed": "Borrar todos",
+  "commonUndo": "Deshacer",
   "remindersNoneTitle": "Sin recordatorios",
-  "remindersNoneBody": "Abre las acciones de una captura y elige «Recordármelo» para volver a ella más tarde.",
+  "remindersNoneBody": "Las capturas a las que pongas una hora esperan aquí, incluso aquellas cuyo momento ya pasó.",
   "remindersClearOne": "Quitar",
+  "remindersSwipeHint": "Desliza un recordatorio",
   "remindersCount": "{count, plural, =1{1 recordatorio} other{{count} recordatorios}}",
   "@remindersCount": {
     "placeholders": {
@@ -171,6 +194,7 @@
     }
   },
   "remindersMissedCount": "{count, plural, =1{1 perdido} other{{count} perdidos}}",
+  "remindersMissedTitle": "{count, plural, =1{1 recordatorio perdido} other{{count} recordatorios perdidos}}",
   "@remindersMissedCount": {
     "placeholders": {
       "count": {

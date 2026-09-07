@@ -184,6 +184,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String remindersInMinutes(int count) {
+    return 'in $count min';
+  }
+
+  @override
   String timeAgoDays(int count) {
     return '$count d ago';
   }
@@ -304,7 +309,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reminderUnsupported =>
-      'Reminders are only available on Android for now.';
+      'Reminders are not available on this device.';
 
   @override
   String reminderSet(String when) {
@@ -330,14 +335,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersUpcoming => 'Coming up';
 
   @override
+  String get remindersThisWeek => 'This week';
+
+  @override
+  String get remindersLater => 'Later';
+
+  @override
+  String get remindersReschedule => 'Change the time';
+
+  @override
+  String remindersRemoved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count reminders removed',
+      one: 'Reminder removed',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get remindersClearMissed => 'Clear all';
+
+  @override
+  String get commonUndo => 'Undo';
+
+  @override
   String get remindersNoneTitle => 'No reminders';
 
   @override
   String get remindersNoneBody =>
-      'Open a screenshot’s actions and pick “Remind me about this” to be brought back to it.';
+      'Screenshots you set a time on wait here — even the ones whose moment has passed.';
 
   @override
   String get remindersClearOne => 'Clear';
+
+  @override
+  String get remindersSwipeHint => 'Swipe a reminder';
 
   @override
   String remindersCount(int count) {
@@ -357,6 +391,17 @@ class AppLocalizationsEn extends AppLocalizations {
       locale: localeName,
       other: '$count missed',
       one: '1 missed',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersMissedTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count missed reminders',
+      one: '1 missed reminder',
     );
     return '$_temp0';
   }

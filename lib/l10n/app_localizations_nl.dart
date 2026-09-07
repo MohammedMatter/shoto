@@ -186,6 +186,11 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
+  String remindersInMinutes(int count) {
+    return 'over $count min';
+  }
+
+  @override
   String timeAgoDays(int count) {
     return '$count d geleden';
   }
@@ -306,7 +311,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get reminderUnsupported =>
-      'Herinneringen zijn voorlopig alleen op Android beschikbaar.';
+      'Herinneringen zijn niet beschikbaar op dit apparaat.';
 
   @override
   String reminderSet(String when) {
@@ -332,14 +337,43 @@ class AppLocalizationsNl extends AppLocalizations {
   String get remindersUpcoming => 'Binnenkort';
 
   @override
+  String get remindersThisWeek => 'Deze week';
+
+  @override
+  String get remindersLater => 'Later';
+
+  @override
+  String get remindersReschedule => 'Tijd wijzigen';
+
+  @override
+  String remindersRemoved(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count herinneringen verwijderd',
+      one: 'Herinnering verwijderd',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get remindersClearMissed => 'Alles wissen';
+
+  @override
+  String get commonUndo => 'Ongedaan maken';
+
+  @override
   String get remindersNoneTitle => 'Geen herinneringen';
 
   @override
   String get remindersNoneBody =>
-      'Open de acties van een screenshot en kies ‘Herinner me hieraan’ om er later op terug te komen.';
+      'Screenshots waarvoor je een tijd instelt wachten hier — ook die waarvan het moment voorbij is.';
 
   @override
   String get remindersClearOne => 'Wissen';
+
+  @override
+  String get remindersSwipeHint => 'Veeg over een herinnering';
 
   @override
   String remindersCount(int count) {
@@ -359,6 +393,17 @@ class AppLocalizationsNl extends AppLocalizations {
       locale: localeName,
       other: '$count gemist',
       one: '1 gemist',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String remindersMissedTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count gemiste herinneringen',
+      one: '1 gemiste herinnering',
     );
     return '$_temp0';
   }

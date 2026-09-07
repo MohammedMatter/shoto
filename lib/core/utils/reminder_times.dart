@@ -139,8 +139,31 @@ List<ReminderPreset> offeredPresets(DateTime now) => <ReminderPreset>[
     if (isPresetOffered(preset, now)) preset,
 ];
 
-/// How far past [now] the custom time picker opens when it has to guess.
+/// The least notice the picker's own default is ever allowed to give.
+///
+/// The opening time is rounded up from here to the next [_openingStep], so the
+/// default lands somewhere between five and ten minutes out — never nearer than
+/// this, and always on a round minute.
 const Duration _pickerHeadStart = Duration(minutes: 5);
+
+/// The minute the picker's default is allowed to land on.
+///
+/// **A default should look like a decision, and 11:31 does not.** Opening on
+/// exactly `now + 5` produced whatever minute the clock happened to be showing
+/// — 11:23, 11:26, 11:31 — which reads as a timestamp rather than as a
+/// suggestion, and starts the minute wheel on a number nobody would have
+/// chosen. Rounding up to the next five gives a figure that looks picked.
+///
+/// **Nothing is lost by it**, and that is what makes the rounding safe rather
+/// than merely tidier: the floor is still [earliestChoiceOn], one minute from
+/// now, so every minute between there and the opening figure is still there to
+/// be scrolled back to. The default moves; the range does not.
+///
+/// Five rather than fifteen, because the whole reason this picker exists is
+/// that somebody wants a time the presets do not offer — often a near one. A
+/// quarter-hour step would push "in a few minutes" out to as much as fifteen,
+/// which is the very failure [pickerOpensAt] was rewritten to fix.
+const int _openingStep = 5;
 
 /// How many days the picker offers before somebody has to open a calendar.
 ///
@@ -262,5 +285,22 @@ DateTime pickerOpensAt(DateTime day, DateTime now) {
     return DateTime(day.year, day.month, day.day, _morningHour);
   }
 
-  return now.add(_pickerHeadStart);
+  return _roundUpToStep(now.add(_pickerHeadStart));
+}
+
+/// [at] moved forward to the next whole [_openingStep] minutes, seconds
+/// dropped.
+///
+/// Already-on-the-step moments are left alone rather than pushed a further five
+/// minutes out. Seconds go because the wheels have no notion of them — carrying
+/// them made this function's answer un-comparable with the floor it is checked
+/// against, which is truncated to the minute.
+///
+/// Overflow past the hour, the day or the year is left to [DateTime], which
+/// normalises it: minute 62 becomes the next hour, 23:58 becomes 00:03
+/// tomorrow. [openingChoice] is what refuses a result that has left the day.
+DateTime _roundUpToStep(DateTime at) {
+  final int over = at.minute % _openingStep;
+  final int minute = over == 0 ? at.minute : at.minute + (_openingStep - over);
+  return DateTime(at.year, at.month, at.day, at.hour, minute);
 }

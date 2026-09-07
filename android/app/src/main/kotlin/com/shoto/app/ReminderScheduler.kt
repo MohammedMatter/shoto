@@ -27,8 +27,44 @@ import androidx.core.app.NotificationManagerCompat
  * against a short list of genuine uses — alarm clocks and calendars. "Remind
  * me about this screenshot this evening" is not on it, and asking would be
  * asking for a permission this feature does not need: nobody is timing an
- * egg. [AlarmManager.setAndAllowWhileIdle] needs no permission at all, still
- * fires through Doze, and is allowed to slide by a few minutes.
+ * egg. [AlarmManager.setAndAllowWhileIdle] needs no permission at all and
+ * still fires through Doze.
+ *
+ * **What it costs, measured rather than assumed.** Read back from
+ * `dumpsys alarm` on a real phone, the slack Android grants is proportional to
+ * how far out the alarm is, not a flat amount:
+ *
+ * ```
+ * origWhen=2026-08-18 11:36  window=+3m10s   (set five minutes ahead)
+ * origWhen=2026-08-18 14:07  window=+1h0m0s  (set three hours ahead)
+ * ```
+ *
+ * So "a few minutes" is right for the near ones and badly wrong for the far
+ * ones — an evening reminder can land an hour late. That is the honest shape of
+ * the trade, and it is the acceptable half: nobody sets "this evening" to the
+ * minute, and the near ones, which somebody *did* name a minute for, are the
+ * ones Android keeps tightest.
+ *
+ * **And there is no permission-free way out**, which is worth writing down
+ * because the obvious escape looks like one. [AlarmManager.setAlarmClock] is
+ * exact and immune to Doze, and it is widely described as needing no
+ * permission — that was true before Android 12 and is not true now. Tried on
+ * an Android 13 device, it throws:
+ *
+ * ```
+ * java.lang.SecurityException: Caller com.shoto.app needs to hold
+ * android.permission.SCHEDULE_EXACT_ALARM or android.permission.USE_EXACT_ALARM
+ * to set exact alarms.
+ * ```
+ *
+ * The failure is worse than the inaccuracy it was meant to fix: the exception
+ * leaves *no* alarm armed, and because the replacement never happened, whatever
+ * was armed before is still there pointing at the old time. A reminder that is
+ * merely late beats one that is silently gone.
+ *
+ * So exactness here is not an implementation choice, it is a permission
+ * decision — `USE_EXACT_ALARM` or `SCHEDULE_EXACT_ALARM`, both of which Play
+ * reviews — and it belongs to whoever owns that call, not to this file.
  *
  * ## Why Kotlin keeps its own copy of the list
  *

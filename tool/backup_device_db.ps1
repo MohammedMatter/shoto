@@ -46,12 +46,25 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-function Adb {
-    if ($Serial) { & adb -s $Serial @args } else { & adb @args }
+# **Resolved to the executable, once, and never called by bare name.**
+#
+# This wrapper used to be `function Adb { & adb ... }`, and it could not work:
+# PowerShell resolves a command name against functions before external
+# programs, and it does so case-insensitively — so `& adb` inside `Adb` found
+# `Adb`, which called itself until the interpreter gave up with "The script
+# failed due to call depth overflow". The script never reached a single device
+# command, which on a script whose entire job is to run before a destructive
+# install is the worst possible way to fail.
+$adbExe = (Get-Command adb -CommandType Application -ErrorAction SilentlyContinue |
+    Select-Object -First 1).Source
+if (-not $adbExe) { throw 'adb is not on PATH.' }
+
+function Invoke-Adb {
+    if ($Serial) { & $adbExe -s $Serial @args } else { & $adbExe @args }
 }
 
 # --- Pick a device -----------------------------------------------------------
-$devices = @(adb devices | Select-Object -Skip 1 |
+$devices = @(& $adbExe devices | Select-Object -Skip 1 |
     Where-Object { $_ -match '\sdevice$' } |
     ForEach-Object { ($_ -split '\s+')[0] })
 
@@ -65,7 +78,7 @@ if (-not $Serial) {
 Write-Host "Device: $Serial"
 
 # --- Refuse early rather than produce an empty backup ------------------------
-$flags = Adb shell "dumpsys package $Package | grep -m1 pkgFlags"
+$flags = Invoke-Adb shell "dumpsys package $Package | grep -m1 pkgFlags"
 if (-not $flags) { throw "$Package is not installed on $Serial — nothing to back up." }
 if ($flags -notmatch 'DEBUGGABLE') {
     throw "$Package on $Serial is NOT debuggable, so run-as cannot read its data. " +
@@ -83,9 +96,9 @@ New-Item -ItemType Directory -Force -Path $dest | Out-Null
 # has to clean up afterwards.
 Write-Host 'Pulling databases and shared_prefs...'
 $staged = "/data/local/tmp/shoto-backup-$stamp.tar"
-Adb shell "run-as $Package tar -cf - databases shared_prefs 2>/dev/null > $staged"
-Adb pull $staged "$dest/data.tar" | Out-Null
-Adb shell "rm -f $staged"
+Invoke-Adb shell "run-as $Package tar -cf - databases shared_prefs 2>/dev/null > $staged"
+Invoke-Adb pull $staged "$dest/data.tar" | Out-Null
+Invoke-Adb shell "rm -f $staged"
 
 $tar = Get-Item "$dest/data.tar" -ErrorAction SilentlyContinue
 if (-not $tar -or $tar.Length -lt 1024) {

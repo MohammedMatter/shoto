@@ -423,6 +423,21 @@ class _PressableScaleState extends State<PressableScale> {
   void _pressIn() {
     if (_isScrolling) return;
     _pressTimer?.cancel();
+
+    // **Off a scrollable, the wait buys nothing and costs everything it was
+    // meant to save.** [_slop] exists because a press inside a list is
+    // speculative — the arena has not yet decided between a tap and a drag, so
+    // the press is reported and then withdrawn. A row on a bottom sheet, a
+    // button on a dialog, a tile in a `Column`: there is no drag to lose to
+    // and no withdrawal to hide, so the timer is 55ms in which a control that
+    // has been touched looks untouched. That is the whole of what "sluggish"
+    // means for a tap target, and it was being paid by every control in the
+    // app that is not in a list.
+    if (_scrollPosition == null) {
+      _set(true);
+      return;
+    }
+
     _pressTimer = Timer(_slop, () {
       if (!_isScrolling) _set(true);
     });
